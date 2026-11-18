@@ -1,6 +1,12 @@
 param(
     [string]$Engine = 'H:/UE_5.8',
-    [Parameter(Mandatory=$true)][string]$CookedAsset,
+    [Parameter(Mandatory=$true)]
+    [ValidateScript({
+        if (-not (Test-Path -LiteralPath $_ -PathType Container)) {
+            throw 'CookedAsset must be the exported resource directory containing pages.bin and shader files, not resources.cooked.bin.'
+        }
+        $true
+    })][string]$CookedAsset,
     [switch]$SkipBuild
 )
 $ErrorActionPreference = 'Stop'
@@ -28,6 +34,10 @@ try {
     $taskBuildInputs = @('WebGPUShader.uplugin', 'Source/WebGPURHI/WebGPURHI.Build.cs',
         'Source/WebGPURHI/Private/WebGPUNaniteUploaderProbe.cpp', 'Source/WebGPURHI/Private/WebGPUDynamicRHI.cpp',
         'Source/WebGPURHI/Private/WebGPUDynamicRHI.h', 'Source/WebGPURHI/Private/WebGPURHIProbe.cpp',
+        'Source/WebGPURHI/Private/WebGPUTransitions.cpp', 'Source/WebGPURHI/Private/WebGPUTransitionProbe.cpp',
+        'Source/WebGPURHI/Private/WebGPUTransitionProbe.h',
+        'Source/WebGPURHI/Private/WebGPUTopologyProbe.h',
+        'Source/WebGPURHI/Private/WebGPUColorSpaceProbe.h',
         'Source/WebGPURHI/Private/WebGPUGlobalScope.cpp', 'Source/WebGPURHI/Private/WebGPUGlobalScope.h',
         'Intermediate/NaniteUploaderProbe/NaniteStreamingPageUploader.cpp',
         'Intermediate/NaniteUploaderProbe/NaniteStreamingPageUploader.h') | ForEach-Object { Get-TaskAudit (Join-Path $taskPlugin $_) }

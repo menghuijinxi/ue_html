@@ -1,0 +1,1996 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-buffer-pool-rejected-20261111.json",
+    "bytes": 94832,
+    "sha256": "f54b4c9e052309ee7fad0b06fc91e7dec073aa1cb21c6c09ce8d9f64930d372f",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "accepted": false,
+    "correctnessPassed": true,
+    "performancePassed": false,
+    "date": "2026-11-11T06:58:59.131Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-buffer-pool-evidence.cjs",
+      "sha256": "dd655519212f5935c451450456e9aa66482170bfa125bd83c2d645c882168638"
+    },
+    "packages": {
+      "nanite-core-scene": {
+        "package": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-core-scene\\package.json",
+          "sha256": "73c3f3ff484b91f7db800815c09979cafabd7f646c900000094157058e40e6c2"
+        },
+        "runtime": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\build.json",
+          "sha256": "4c4d8f76c47ebc2a080290a45a850b2f2b12a6553fa4c67080310e26f4be348b"
+        }
+      },
+      "nanite-core-default": {
+        "package": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-core-default\\package.json",
+          "sha256": "f1a878ac2258790bbd964aaa2b6fb33f394073aad18b399a9ad344b42b943321"
+        },
+        "runtime": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\build.json",
+          "sha256": "4c4d8f76c47ebc2a080290a45a850b2f2b12a6553fa4c67080310e26f4be348b"
+        }
+      }
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "c91e6225b2fb32c3565bedfe95d5084627da5e778d0ec2bc8f8e1ba62bb6731c"
+    },
+    "contract": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool-contract\\verified.json",
+      "sha256": "c86acaee10ab66197fed2114851e14e9e9fa45402010d057bcda5a4f30190094"
+    },
+    "runs": [
+      {
+        "suite": "villa",
+        "scalar": false,
+        "steps": 9,
+        "frames": 2592,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool\\packed.json",
+          "sha256": "61072b7316bdc0592a61b123f60e0749089904ce90802bcdf59caabf469d4cc2"
+        }
+      },
+      {
+        "suite": "default",
+        "scalar": false,
+        "steps": 8,
+        "frames": 4515,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed.json",
+          "sha256": "3991d48dc1872428fce30737811614ecd3226e4ecf54f856f051a41b9f9d9525"
+        }
+      },
+      {
+        "suite": "villa",
+        "scalar": true,
+        "steps": 9,
+        "frames": 2620,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool\\scalar.json",
+          "sha256": "4fdfc55440781999ed7243462e8f6ec6fd450e42adb1969e27a82069ceeb750f"
+        }
+      },
+      {
+        "suite": "default",
+        "scalar": true,
+        "steps": 8,
+        "frames": 4682,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar.json",
+          "sha256": "ceaacaf28f5110375cb6446ce95f6187900c09a3bef99cfc99122f7dbbfbe7b2"
+        }
+      }
+    ],
+    "comparisons": [
+      {
+        "scalar": false,
+        "step": 5,
+        "entries": 395,
+        "comparison": {
+          "compared": 13624,
+          "before": 107,
+          "after": 107,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0.003921598196029663
+        }
+      },
+      {
+        "scalar": false,
+        "step": 7,
+        "entries": 326,
+        "comparison": {
+          "compared": 14377,
+          "before": 107,
+          "after": 107,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0.003921598196029663
+        }
+      },
+      {
+        "scalar": false,
+        "step": 9,
+        "entries": 377,
+        "comparison": {
+          "compared": 13918,
+          "before": 93,
+          "after": 93,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0.003921598196029663
+        }
+      },
+      {
+        "scalar": true,
+        "step": 5,
+        "entries": 395,
+        "comparison": {
+          "compared": 13624,
+          "before": 107,
+          "after": 107,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0.003921598196029663
+        }
+      },
+      {
+        "scalar": true,
+        "step": 7,
+        "entries": 326,
+        "comparison": {
+          "compared": 14377,
+          "before": 107,
+          "after": 107,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0.003921598196029663
+        }
+      },
+      {
+        "scalar": true,
+        "step": 9,
+        "entries": 377,
+        "comparison": {
+          "compared": 13918,
+          "before": 93,
+          "after": 93,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0.003921598196029663
+        }
+      }
+    ],
+    "profiles": [
+      {
+        "enabled": 0,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-buffer-pool-0-20261111.json",
+          "sha256": "8cdc54a758c16668b3e91c9aa4054f87dcf4adf636f188c07e3871b87410e4be"
+        },
+        "samples": [
+          {
+            "baseline": {
+              "fps": 27.143218558233688,
+              "durationMs": 5010.459599999995
+            },
+            "sampledFPS": 26.62940741349552,
+            "calls": {
+              "createBuffer": 6,
+              "writeBuffer": 377.8858024691358,
+              "submit": 12,
+              "beginRenderPass": 332,
+              "beginRenderPass:(unlabelled)": 332,
+              "createBindGroup": 9.154320987654321,
+              "draw": 50,
+              "beginComputePass": 137,
+              "beginComputePass:(unlabelled)": 137,
+              "dispatchWorkgroups": 2579,
+              "drawIndexed": 869.9691358024692,
+              "dispatchWorkgroupsIndirect": 8,
+              "drawIndirect": 1045,
+              "drawIndexedIndirect": 188
+            },
+            "rhiMsPerFrame": 20.00391115376979
+          },
+          {
+            "baseline": {
+              "fps": 32.934194843966104,
+              "durationMs": 5009.99040000001
+            },
+            "sampledFPS": 32.07500616827041,
+            "calls": {
+              "createBuffer": 6,
+              "writeBuffer": 378.04615384615386,
+              "submit": 11.994871794871795,
+              "beginRenderPass": 371,
+              "beginRenderPass:(unlabelled)": 371,
+              "createBindGroup": 12.905128205128205,
+              "draw": 65,
+              "beginComputePass": 137,
+              "beginComputePass:(unlabelled)": 137,
+              "dispatchWorkgroups": 2304,
+              "drawIndexed": 796.0128205128206,
+              "dispatchWorkgroupsIndirect": 8,
+              "drawIndirect": 879,
+              "drawIndexedIndirect": 236
+            },
+            "rhiMsPerFrame": 19.309113575862003
+          }
+        ]
+      },
+      {
+        "enabled": 1,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-buffer-pool-1-20261111.json",
+          "sha256": "512c9c60ff4bc8d162d0c5a3697702454a19f86ace3072f1fe663b63b807af81"
+        },
+        "samples": [
+          {
+            "baseline": {
+              "fps": 26.312077666236746,
+              "durationMs": 5016.707599999994
+            },
+            "sampledFPS": 25.697865353037766,
+            "calls": {
+              "createBuffer": 6,
+              "writeBuffer": 377.8466453674121,
+              "submit": 12,
+              "beginRenderPass": 332,
+              "beginRenderPass:(unlabelled)": 332,
+              "createBindGroup": 9.389776357827476,
+              "draw": 50,
+              "beginComputePass": 137,
+              "beginComputePass:(unlabelled)": 137,
+              "dispatchWorkgroups": 2579,
+              "drawIndexed": 811.3067092651758,
+              "dispatchWorkgroupsIndirect": 8,
+              "drawIndirect": 1045,
+              "drawIndexedIndirect": 188
+            },
+            "rhiMsPerFrame": 20.243417721586866
+          },
+          {
+            "baseline": {
+              "fps": 31.52512719241544,
+              "durationMs": 5011.875100000005
+            },
+            "sampledFPS": 31.33996874228839,
+            "calls": {
+              "createBuffer": 6,
+              "writeBuffer": 378.0236220472441,
+              "submit": 11.994750656167978,
+              "beginRenderPass": 371,
+              "beginRenderPass:(unlabelled)": 371,
+              "createBindGroup": 17.69291338582677,
+              "draw": 65,
+              "beginComputePass": 137,
+              "beginComputePass:(unlabelled)": 137,
+              "dispatchWorkgroups": 2304,
+              "drawIndexed": 680.1889763779527,
+              "dispatchWorkgroupsIndirect": 8,
+              "drawIndirect": 879,
+              "drawIndexedIndirect": 236
+            },
+            "rhiMsPerFrame": 19.682316642420812
+          }
+        ]
+      }
+    ],
+    "renderProfiles": [
+      {
+        "enabled": 0,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\render-cpu-nanite-pool-firstfit-0-20261111.json",
+          "sha256": "891e88803b06f03a9daf8b4ad70aad925ad3154d2f1e7c47d2411b7b6bb43256"
+        },
+        "baselineFPS": 27.190646417800828,
+        "sampledFPS": 26.888205686446273,
+        "frames": 326,
+        "poolSelfMsPerFrame": 2.3479601226993863,
+        "self": [
+          {
+            "name": "__pthread_cond_timedwait",
+            "milliseconds": 2616.614
+          },
+          {
+            "name": "__pthread_cond_timedwait",
+            "milliseconds": 2261.792
+          },
+          {
+            "name": "FRDGBufferPool::ScheduleAllocation(FRHICommandListBase&, FRDGBufferDesc const&, char16_t const*, ERDGPooledBufferAlignment, FRHITransientAllocationFences const&)",
+            "milliseconds": 765.435
+          },
+          {
+            "name": "__pthread_cond_timedwait",
+            "milliseconds": 526.757
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGUserValidation::SetAllowRHIAccess(FRDGPass const*, bool)::$_0>(FRDGUserValidation::SetAllowRHIAccess(FRDGPass const*, bool)::$_0) const",
+            "milliseconds": 201.476
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGUserValidation::SetAllowRHIAccess(FRDGPass const*, bool)::$_0>(FRDGUserValidation::SetAllowRHIAccess(FRDGPass const*, bool)::$_0) const",
+            "milliseconds": 162.989
+          },
+          {
+            "name": "Nanite::AddWebResidentSceneCullPasses(FRDGBuilder&, FSceneView const&, UE::Math::TIntRect<int> const&, TRDGUniformBuffer<FSceneUniformParameters>*, unsigned int)",
+            "milliseconds": 150.125
+          },
+          {
+            "name": "FRDGBuilder::Execute()",
+            "milliseconds": 116.136
+          },
+          {
+            "name": "FRDGBuilder::CollectAllocations(FRDGBuilder::FCollectResourceContext&, FRDGPass*)",
+            "milliseconds": 96.453
+          },
+          {
+            "name": "FRDGAllocator::ReleaseAll()",
+            "milliseconds": 89.384
+          },
+          {
+            "name": "Nanite::AddWebResidentRasterPasses(FRDGBuilder&, Nanite::FWebSceneCullView const&, UE::Math::TIntPoint<int>, UE::Math::TIntRect<int>, Nanite::FWebRasterVisibility&, int, Nanite::FWebProgrammableRaster const*)",
+            "milliseconds": 65.5
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7>(FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7) const",
+            "milliseconds": 62.441
+          },
+          {
+            "name": "FGenericPlatformString::FormatV(char16_t*, unsigned long, char16_t const*, void*)",
+            "milliseconds": 58.984
+          },
+          {
+            "name": "FRDGBuilder::ExecutePassEpilogue(FRHIComputeCommandList&, FRDGPass*)",
+            "milliseconds": 54.048
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7>(FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7) const",
+            "milliseconds": 48.853
+          },
+          {
+            "name": "Nanite::AddWebOcclusionCullPasses(FRDGBuilder&, Nanite::FWebSceneCullView const&, Nanite::FWebHZB const&, Nanite::FWebHZB const*)",
+            "milliseconds": 48.641
+          },
+          {
+            "name": "FRDGBuilder::~FRDGBuilder()",
+            "milliseconds": 48.266
+          },
+          {
+            "name": "FRDGBuilder::CollectAllocateBuffer(FRDGBuilder::FCollectResourceContext&, ERHIPipeline, TRDGHandle<FRDGPass, unsigned int>, FRDGBuffer*)",
+            "milliseconds": 41.717
+          },
+          {
+            "name": "FRDGUserValidation::SetAllowRHIAccess(FRDGPass const*, bool)",
+            "milliseconds": 39.962
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7>(FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7) const",
+            "milliseconds": 39.667
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7>(FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7) const",
+            "milliseconds": 39.399
+          },
+          {
+            "name": "FRDGBuilder::AllocatePooledBuffers(FRHICommandListBase&, TArrayView<FRDGBuilder::FCollectResourceOp const, int>)",
+            "milliseconds": 38.772
+          },
+          {
+            "name": "bool FGPUOcclusionPacket::OcclusionCullPrimitive<false, FGPUOcclusionPacket::FProcessVisitor>(FGPUOcclusionPacket::FProcessVisitor&, FOcclusionCullResult&, int)",
+            "milliseconds": 38.639
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7>(FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7) const",
+            "milliseconds": 36.936
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7>(FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7) const",
+            "milliseconds": 36.889
+          },
+          {
+            "name": "TSet<TTuple<FString, IConsoleObject*>, TDefaultMapHashableKeyFuncs<FString, IConsoleObject*, false>, FDefaultSetAllocator>::Find(FString const&)",
+            "milliseconds": 31.7
+          },
+          {
+            "name": "FRDGBuilder::Compile()",
+            "milliseconds": 30.439
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7>(FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7) const",
+            "milliseconds": 28.372
+          },
+          {
+            "name": "FSetElementId TSet<FRDGResource*, DefaultKeyFuncs<FRDGResource*, false>, TSetAllocator<TSparseArrayAllocator<TRDGArrayAllocator<0u>, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>, TSizedInlineAllocator<1u, 32, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>>>::Emplace<FRDGResource*&>(FRDGResource*&, bool*)",
+            "milliseconds": 27.707
+          },
+          {
+            "name": "FSetElementId TSet<FRDGResource*, DefaultKeyFuncs<FRDGResource*, false>, TSetAllocator<TSparseArrayAllocator<TRDGArrayAllocator<0u>, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>, TSizedInlineAllocator<1u, 32, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>>>::Emplace<FRDGResource*&>(FRDGResource*&, bool*)",
+            "milliseconds": 26.596
+          },
+          {
+            "name": "_emscripten_get_now",
+            "milliseconds": 25.697
+          },
+          {
+            "name": "FSetElementId TSet<FRDGResource*, DefaultKeyFuncs<FRDGResource*, false>, TSetAllocator<TSparseArrayAllocator<TRDGArrayAllocator<0u>, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>, TSizedInlineAllocator<1u, 32, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>>>::Emplace<FRDGResource*&>(FRDGResource*&, bool*)",
+            "milliseconds": 25.371
+          },
+          {
+            "name": "FSetElementId TSet<FRDGResource*, DefaultKeyFuncs<FRDGResource*, false>, TSetAllocator<TSparseArrayAllocator<TRDGArrayAllocator<0u>, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>, TSizedInlineAllocator<1u, 32, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>>>::Emplace<FRDGResource*&>(FRDGResource*&, bool*)",
+            "milliseconds": 24.712
+          },
+          {
+            "name": "printf_core",
+            "milliseconds": 23.985
+          },
+          {
+            "name": "TSet<FRDGResource*, DefaultKeyFuncs<FRDGResource*, false>, TSetAllocator<TSparseArrayAllocator<TRDGArrayAllocator<0u>, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>, TSizedInlineAllocator<1u, 32, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>>>::Rehash()",
+            "milliseconds": 23.242
+          },
+          {
+            "name": "FSetElementId TSet<FRDGResource*, DefaultKeyFuncs<FRDGResource*, false>, TSetAllocator<TSparseArrayAllocator<TRDGArrayAllocator<0u>, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>, TSizedInlineAllocator<1u, 32, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>>>::Emplace<FRDGResource*&>(FRDGResource*&, bool*)",
+            "milliseconds": 22.713
+          },
+          {
+            "name": "FGenericPlatformString::FormatV(char16_t*, unsigned long, char16_t const*, void*)",
+            "milliseconds": 22.619
+          },
+          {
+            "name": "FSetElementId TSet<FRDGResource*, DefaultKeyFuncs<FRDGResource*, false>, TSetAllocator<TSparseArrayAllocator<TRDGArrayAllocator<0u>, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>, TSizedInlineAllocator<1u, 32, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>>>::Emplace<FRDGResource*&>(FRDGResource*&, bool*)",
+            "milliseconds": 22.259
+          },
+          {
+            "name": "FMaterialInstanceRenderProxy::GetMaterialNoFallback(ERHIFeatureLevel::Type) const",
+            "milliseconds": 22.031
+          },
+          {
+            "name": "FRDGBarrierBatchEnd::Submit(FRHIComputeCommandList&, ERHIPipeline)",
+            "milliseconds": 21.738
+          },
+          {
+            "name": "TRDGLambdaPass<void, FRDGPass* FComputeShaderUtils::AddPass<Nanite::FWebNaniteOcclusionCS>(FRDGBuilder&, FRDGEventName&&, ERDGPassFlags, TShaderRefBase<Nanite::FWebNaniteOcclusionCS, FShaderMapPointerTable> const&, FShaderParametersMetadata const*, Nanite::FWebNaniteOcclusionCS::FParameters*, UE::Math::TIntVector3<int>)::'lambda'(FRDGAsyncTask, FRHIComputeCommandList&)>::TRDGLambdaPass(FRDGEventName&&, FShaderParametersMetadata const*, void const*, ERDGPassFlags, FRDGPass* FComputeShaderUtils::AddPass<Nanite::FWebNaniteOcclusionCS>(FRDGBuilder&, FRDGEventName&&, ERDGPassFlags, TShaderRefBase<Nanite::FWebNaniteOcclusionCS, FShaderMapPointerTable> const&, FShaderParametersMetadata const*, Nanite::FWebNaniteOcclusionCS::FParameters*, UE::Math::TIntVector3<int>)::'lambda'(FRDGAsyncTask, FRHIComputeCommandList&)&&)",
+            "milliseconds": 21.394
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGBuilder::MarkResourcesAsProduced(FRDGPass*)::$_2>(FRDGBuilder::MarkResourcesAsProduced(FRDGPass*)::$_2) const",
+            "milliseconds": 21.054
+          },
+          {
+            "name": "Nanite::GetWebSceneEntryPixelBounds(Nanite::FWebSceneCullEntry const&, FSceneView const&, UE::Math::TIntRect<int>)",
+            "milliseconds": 20.908
+          },
+          {
+            "name": "SetShaderParameters(FRHIBatchedShaderParameters&, FShaderParameterBindings const&, FShaderParametersMetadata const*, void const*, TArrayView<unsigned short, int>)",
+            "milliseconds": 20.331
+          },
+          {
+            "name": "__pthread_cond_timedwait",
+            "milliseconds": 20.233
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7>(FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7) const",
+            "milliseconds": 19.218
+          },
+          {
+            "name": "FGenericPlatformString::FormatV(char16_t*, unsigned long, char16_t const*, void*)",
+            "milliseconds": 18.968
+          },
+          {
+            "name": "UE::Math::TMatrix<double>::operator*(UE::Math::TMatrix<double> const&) const",
+            "milliseconds": 18.908
+          },
+          {
+            "name": "SetupLCIUniformBuffers(FPrimitiveSceneProxy const*, FLightCacheInterface const*, FRHIUniformBuffer*&, FRHIUniformBuffer*&, FRHIUniformBuffer*&)",
+            "milliseconds": 18.898
+          },
+          {
+            "name": "TSet<FRDGResource*, DefaultKeyFuncs<FRDGResource*, false>, TSetAllocator<TSparseArrayAllocator<TRDGArrayAllocator<0u>, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>, TSizedInlineAllocator<1u, 32, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>>>::Rehash()",
+            "milliseconds": 18.718
+          },
+          {
+            "name": "FGenericPlatformString::FormatV(char16_t*, unsigned long, char16_t const*, void*)",
+            "milliseconds": 18.397
+          },
+          {
+            "name": "ClearUnusedGraphResourcesImpl(FShaderParameterBindings const&, FShaderParametersMetadata const*, void*, std::initializer_list<FRDGResource*>)",
+            "milliseconds": 18.324
+          },
+          {
+            "name": "FMallocPoisonProxy::Realloc(void*, unsigned long, unsigned int)",
+            "milliseconds": 18.312
+          },
+          {
+            "name": "FRDGBufferSRV* TRDGHandleRegistry<TRDGHandle<FRDGView, unsigned int>, (ERDGHandleRegistryDestructPolicy)2>::Allocate<FRDGBufferSRV, char16_t const* const&, FRDGBufferSRVDesc const&>(FRDGAllocator&, char16_t const* const&, FRDGBufferSRVDesc const&)",
+            "milliseconds": 18.047
+          },
+          {
+            "name": "SetShaderParameters(FRHIBatchedShaderParameters&, FShaderParameterBindings const&, FShaderParametersMetadata const*, void const*, TArrayView<unsigned short, int>)",
+            "milliseconds": 18.023
+          },
+          {
+            "name": "printf_core",
+            "milliseconds": 17.418
+          },
+          {
+            "name": "FMemory::Free(void*)",
+            "milliseconds": 17.322
+          },
+          {
+            "name": "FRHIBatchedShaderParametersAllocator::AppendParametersData(TArrayView<unsigned char, int>&, unsigned int, unsigned char const*)",
+            "milliseconds": 17.242
+          },
+          {
+            "name": "InjectTranslucencyLightingVolume(FRDGBuilder&, FViewInfo const&, unsigned int, FScene const*, FSceneRenderer const&, FTranslucentLightInjectionCollector const&, FTranslucencyLightingVolumeTextures&)::$_1::operator()(unsigned int, int, int) const",
+            "milliseconds": 17.156
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGBuilder::MarkResourcesAsProduced(FRDGPass*)::$_2>(FRDGBuilder::MarkResourcesAsProduced(FRDGPass*)::$_2) const",
+            "milliseconds": 16.933
+          }
+        ]
+      },
+      {
+        "enabled": 1,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\render-cpu-nanite-pool-firstfit-1-20261111.json",
+          "sha256": "441a033cbf19c8eb5c1f9918c6761bef0e7e9aaf435ad428a86274f9b75d6143"
+        },
+        "baselineFPS": 26.50999855478011,
+        "sampledFPS": 26.139069745969664,
+        "frames": 317,
+        "poolSelfMsPerFrame": 3.8610063091482654,
+        "self": [
+          {
+            "name": "__pthread_cond_timedwait",
+            "milliseconds": 2532.611
+          },
+          {
+            "name": "__pthread_cond_timedwait",
+            "milliseconds": 2129.22
+          },
+          {
+            "name": "FRDGBufferPool::ScheduleAllocation(FRHICommandListBase&, FRDGBufferDesc const&, char16_t const*, ERDGPooledBufferAlignment, FRHITransientAllocationFences const&)",
+            "milliseconds": 1223.939
+          },
+          {
+            "name": "__pthread_cond_timedwait",
+            "milliseconds": 524.418
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGUserValidation::SetAllowRHIAccess(FRDGPass const*, bool)::$_0>(FRDGUserValidation::SetAllowRHIAccess(FRDGPass const*, bool)::$_0) const",
+            "milliseconds": 201.063
+          },
+          {
+            "name": "Nanite::AddWebResidentSceneCullPasses(FRDGBuilder&, FSceneView const&, UE::Math::TIntRect<int> const&, TRDGUniformBuffer<FSceneUniformParameters>*, unsigned int)",
+            "milliseconds": 157.647
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGUserValidation::SetAllowRHIAccess(FRDGPass const*, bool)::$_0>(FRDGUserValidation::SetAllowRHIAccess(FRDGPass const*, bool)::$_0) const",
+            "milliseconds": 155.228
+          },
+          {
+            "name": "FRDGAllocator::ReleaseAll()",
+            "milliseconds": 100.312
+          },
+          {
+            "name": "FRDGBuilder::Execute()",
+            "milliseconds": 94.275
+          },
+          {
+            "name": "FRDGBuilder::CollectAllocations(FRDGBuilder::FCollectResourceContext&, FRDGPass*)",
+            "milliseconds": 76.945
+          },
+          {
+            "name": "Nanite::AddWebResidentRasterPasses(FRDGBuilder&, Nanite::FWebSceneCullView const&, UE::Math::TIntPoint<int>, UE::Math::TIntRect<int>, Nanite::FWebRasterVisibility&, int, Nanite::FWebProgrammableRaster const*)",
+            "milliseconds": 61.002
+          },
+          {
+            "name": "UE::RHI::Breadcrumbs::Private::TRHIBreadcrumb<UE::RHI::Breadcrumbs::Private::TRHIBreadcrumbDesc<17ul>>::GetTCHAR(FRHIBreadcrumbNode::FBuffer&) const",
+            "milliseconds": 59.571
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7>(FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7) const",
+            "milliseconds": 58.718
+          },
+          {
+            "name": "FRDGBuilder::CollectAllocateBuffer(FRDGBuilder::FCollectResourceContext&, ERHIPipeline, TRDGHandle<FRDGPass, unsigned int>, FRDGBuffer*)",
+            "milliseconds": 58.659
+          },
+          {
+            "name": "FRDGUserValidation::SetAllowRHIAccess(FRDGPass const*, bool)",
+            "milliseconds": 47.546
+          },
+          {
+            "name": "FSetElementId TSet<FRDGResource*, DefaultKeyFuncs<FRDGResource*, false>, TSetAllocator<TSparseArrayAllocator<TRDGArrayAllocator<0u>, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>, TSizedInlineAllocator<1u, 32, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>>>::Emplace<FRDGResource*&>(FRDGResource*&, bool*)",
+            "milliseconds": 44.721
+          },
+          {
+            "name": "FRDGBuilder::~FRDGBuilder()",
+            "milliseconds": 43.711
+          },
+          {
+            "name": "FRDGBuilder::AllocatePooledBuffers(FRHICommandListBase&, TArrayView<FRDGBuilder::FCollectResourceOp const, int>)",
+            "milliseconds": 39.469
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7>(FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7) const",
+            "milliseconds": 39.02
+          },
+          {
+            "name": "Nanite::AddWebOcclusionCullPasses(FRDGBuilder&, Nanite::FWebSceneCullView const&, Nanite::FWebHZB const&, Nanite::FWebHZB const*)",
+            "milliseconds": 38.641
+          },
+          {
+            "name": "FRDGBuilder::Compile()",
+            "milliseconds": 38.065
+          },
+          {
+            "name": "FRDGBuilder::ExecutePassEpilogue(FRHIComputeCommandList&, FRDGPass*)",
+            "milliseconds": 36.644
+          },
+          {
+            "name": "bool FGPUOcclusionPacket::OcclusionCullPrimitive<false, FGPUOcclusionPacket::FProcessVisitor>(FGPUOcclusionPacket::FProcessVisitor&, FOcclusionCullResult&, int)",
+            "milliseconds": 33.924
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7>(FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7) const",
+            "milliseconds": 33.867
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7>(FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7) const",
+            "milliseconds": 33.503
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7>(FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7) const",
+            "milliseconds": 31.051
+          },
+          {
+            "name": "FGenericPlatformString::FormatV(char16_t*, unsigned long, char16_t const*, void*)",
+            "milliseconds": 30.852
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7>(FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7) const",
+            "milliseconds": 30.379
+          },
+          {
+            "name": "FSetElementId TSet<FRDGResource*, DefaultKeyFuncs<FRDGResource*, false>, TSetAllocator<TSparseArrayAllocator<TRDGArrayAllocator<0u>, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>, TSizedInlineAllocator<1u, 32, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>>>::Emplace<FRDGResource*&>(FRDGResource*&, bool*)",
+            "milliseconds": 29.266
+          },
+          {
+            "name": "Nanite::GetWebSceneEntryPixelBounds(Nanite::FWebSceneCullEntry const&, FSceneView const&, UE::Math::TIntRect<int>)",
+            "milliseconds": 27.6
+          },
+          {
+            "name": "TSet<TTuple<FString, IConsoleObject*>, TDefaultMapHashableKeyFuncs<FString, IConsoleObject*, false>, FDefaultSetAllocator>::Find(FString const&)",
+            "milliseconds": 27.434
+          },
+          {
+            "name": "_emscripten_get_now",
+            "milliseconds": 26.785
+          },
+          {
+            "name": "SetShaderParameters(FRHIBatchedShaderParameters&, FShaderParameterBindings const&, FShaderParametersMetadata const*, void const*, TArrayView<unsigned short, int>)",
+            "milliseconds": 26.172
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7>(FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7) const",
+            "milliseconds": 24.994
+          },
+          {
+            "name": "FSetElementId TSet<FRDGResource*, DefaultKeyFuncs<FRDGResource*, false>, TSetAllocator<TSparseArrayAllocator<TRDGArrayAllocator<0u>, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>, TSizedInlineAllocator<1u, 32, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>>>::Emplace<FRDGResource*&>(FRDGResource*&, bool*)",
+            "milliseconds": 24.046
+          },
+          {
+            "name": "FSetElementId TSet<FRDGResource*, DefaultKeyFuncs<FRDGResource*, false>, TSetAllocator<TSparseArrayAllocator<TRDGArrayAllocator<0u>, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>, TSizedInlineAllocator<1u, 32, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>>>::Emplace<FRDGResource*&>(FRDGResource*&, bool*)",
+            "milliseconds": 23.555
+          },
+          {
+            "name": "_emscripten_get_now",
+            "milliseconds": 23.354
+          },
+          {
+            "name": "TSet<FRDGResource*, DefaultKeyFuncs<FRDGResource*, false>, TSetAllocator<TSparseArrayAllocator<TRDGArrayAllocator<0u>, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>, TSizedInlineAllocator<1u, 32, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>>>::Rehash()",
+            "milliseconds": 23.052
+          },
+          {
+            "name": "Nanite::AddWebMaterialBinPass(FRDGBuilder&, Nanite::FWebSceneRasterView const&, FRDGTexture*, TArrayView<Nanite::FWebMaterialBinMember const, int>)",
+            "milliseconds": 21.844
+          },
+          {
+            "name": "FSetElementId TSet<FRDGResource*, DefaultKeyFuncs<FRDGResource*, false>, TSetAllocator<TSparseArrayAllocator<TRDGArrayAllocator<0u>, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>, TSizedInlineAllocator<1u, 32, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>>>::Emplace<FRDGResource*&>(FRDGResource*&, bool*)",
+            "milliseconds": 20.373
+          },
+          {
+            "name": "FMaterialRenderProxy::GetMaterialWithFallback(ERHIFeatureLevel::Type, FMaterialRenderProxy const*&) const",
+            "milliseconds": 20.129
+          },
+          {
+            "name": "Nanite::BuildWebNativeMaterialDraws(Nanite::FWebSceneRasterView const&)",
+            "milliseconds": 19.353
+          },
+          {
+            "name": "Nanite::WebHierarchyBoundsVisible(Nanite::FWebSceneCullEntry const&)",
+            "milliseconds": 19.345
+          },
+          {
+            "name": "FGenericPlatformString::FormatV(char16_t*, unsigned long, char16_t const*, void*)",
+            "milliseconds": 19.34
+          },
+          {
+            "name": "FRDGBufferSRV* TRDGHandleRegistry<TRDGHandle<FRDGView, unsigned int>, (ERDGHandleRegistryDestructPolicy)2>::Allocate<FRDGBufferSRV, char16_t const* const&, FRDGBufferSRVDesc const&>(FRDGAllocator&, char16_t const* const&, FRDGBufferSRVDesc const&)",
+            "milliseconds": 19.323
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGBuilder::MarkResourcesAsProduced(FRDGPass*)::$_2>(FRDGBuilder::MarkResourcesAsProduced(FRDGPass*)::$_2) const",
+            "milliseconds": 18.986
+          },
+          {
+            "name": "printf_core",
+            "milliseconds": 18.925
+          },
+          {
+            "name": "(anonymous namespace)::TSafeDestIterator<char16_t>::Write(char16_t, int)",
+            "milliseconds": 18.2
+          },
+          {
+            "name": "FDeferredShadingSceneRenderer::Render(FRDGBuilder&, FSceneRenderUpdateInputs const*)",
+            "milliseconds": 18.039
+          },
+          {
+            "name": "FSetElementId TSet<FRDGResource*, DefaultKeyFuncs<FRDGResource*, false>, TSetAllocator<TSparseArrayAllocator<TRDGArrayAllocator<0u>, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>, TSizedInlineAllocator<1u, 32, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>>>::Emplace<FRDGResource*&>(FRDGResource*&, bool*)",
+            "milliseconds": 17.279
+          },
+          {
+            "name": "FRDGBarrierBatchEnd::Submit(FRHIComputeCommandList&, ERHIPipeline)",
+            "milliseconds": 16.687
+          },
+          {
+            "name": "UE::Math::TMatrix<double>::operator*(UE::Math::TMatrix<double> const&) const",
+            "milliseconds": 16.606
+          },
+          {
+            "name": "FMemory::Malloc(unsigned long, unsigned int)",
+            "milliseconds": 16.306
+          },
+          {
+            "name": "SetupLCIUniformBuffers(FPrimitiveSceneProxy const*, FLightCacheInterface const*, FRHIUniformBuffer*&, FRHIUniformBuffer*&, FRHIUniformBuffer*&)",
+            "milliseconds": 16.297
+          },
+          {
+            "name": "FSetElementId TSet<FRDGResource*, DefaultKeyFuncs<FRDGResource*, false>, TSetAllocator<TSparseArrayAllocator<TRDGArrayAllocator<0u>, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>, TSizedInlineAllocator<1u, 32, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>>>::Emplace<FRDGResource*&>(FRDGResource*&, bool*)",
+            "milliseconds": 16.134
+          },
+          {
+            "name": "FSetElementId TSet<FRDGResource*, DefaultKeyFuncs<FRDGResource*, false>, TSetAllocator<TSparseArrayAllocator<TRDGArrayAllocator<0u>, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>, TSizedInlineAllocator<1u, 32, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>>>::Emplace<FRDGResource*&>(FRDGResource*&, bool*)",
+            "milliseconds": 16
+          },
+          {
+            "name": "FGenericPlatformString::FormatV(char16_t*, unsigned long, char16_t const*, void*)",
+            "milliseconds": 15.247
+          },
+          {
+            "name": "SetShaderParameters(FRHIBatchedShaderParameters&, FShaderParameterBindings const&, FShaderParametersMetadata const*, void const*, TArrayView<unsigned short, int>)",
+            "milliseconds": 15.189
+          },
+          {
+            "name": "FMemory::Free(void*)",
+            "milliseconds": 14.804
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGBuilder::MarkResourcesAsProduced(FRDGPass*)::$_2>(FRDGBuilder::MarkResourcesAsProduced(FRDGPass*)::$_2) const",
+            "milliseconds": 14.529
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-buffer-pool-evidence.cjs",
+        "sha256": "dd655519212f5935c451450456e9aa66482170bfa125bd83c2d645c882168638"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-nanite-buffer-pool.ps1",
+        "sha256": "aae16db243e4c5e231a044ad80e35f7be5f6dced544377c4a0de3d3ab34895c3"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\fixtures\\nanite-buffer-pool\\prepare-contract.cjs",
+        "sha256": "8a41ffffa4140d0e24cc21ba2f0523c8f1cc3ce86479b8b535de281e4935c7b1"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\fixtures\\nanite-buffer-pool\\contract.cpp",
+        "sha256": "d065d2fe878f5c7703de5097907dc354410f21600804af77272b6ab5e3fc8a29"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\package-web-nanite-scene.cjs",
+        "sha256": "aa644bb28696d04b6fd8040cfd8d531ac36482bfee6d0b6b2de5ca6ca6baa54b"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\profile-web-render-cpu.cjs",
+        "sha256": "eed168dd34b44e1571918b14ffe38001e138270ec68f0e4e60420fb0588b9537"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\profile-web-cpu.cjs",
+        "sha256": "701aff2f03c95077dfc3ceff70a32d51ca2f9aeab17ec3272c3737c882648d8c"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-full-scene.cjs",
+        "sha256": "72a3c0d250b6283de36ecb698156a3535f684a49c02624adec214dd10a23a56c"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-automatic-scene.cjs",
+        "sha256": "6b95ec930e030e7fcb3b650cd683ec8005b20e52b036b619a7efc538a7cafa63"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\prepare-web-core-host.ps1",
+        "sha256": "01a4a592de4fa3430cad3ca11b25ff28b97f42119fcf179bee238486fa2c2676"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build-web-engine.ps1",
+        "sha256": "203e62c360d1f5ddf48d93267551429c19797517b1206cd3b74049444b6f4cd3"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-engine-worker.js",
+        "sha256": "6c4dfca737f74d93d1990089a72044233d7f09f27291afa3e214ed2f9ff4c2a5"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\Private\\WebNaniteAutomaticSceneTest.cpp",
+        "sha256": "90ff925897a2b0929177b4bd2606502ddfc8c81c6f12f4b0e62774ed25480ef5"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\RenderCore\\Private\\RenderGraphResourcePool.cpp",
+        "sha256": "30af9bd68d2f5bd3a87c615e6822686266a2c205cba717c82c7e2d28c5df1a69"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\RenderCore\\Private\\RenderGraphResourcePool.h",
+        "sha256": "a17d0317a97a49f5ff9cd02373b58eaeded8f847d1fcfd7d1f37c056b9bf6872"
+      }
+    ],
+    "artifacts": [
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-core-scene\\package.json",
+          "sha256": "73c3f3ff484b91f7db800815c09979cafabd7f646c900000094157058e40e6c2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\0-package.json.gz",
+          "sha256": "7a69ea41c3111dc1f2d98225ea149bd76756d9fda9c0881102747ad96814ebe7"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\build.json",
+          "sha256": "4c4d8f76c47ebc2a080290a45a850b2f2b12a6553fa4c67080310e26f4be348b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\1-build.json.gz",
+          "sha256": "1503179a5967daf304ad6eb0555ba6c2fda48145a9bb36de9fb2b20d7fe16bc7"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261111-133141\\verified.json",
+          "sha256": "8231737b82bf35b58cc9cbf7cf5eff57701e7442b29da7d1ec29aa8606b833e4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\2-verified.json.gz",
+          "sha256": "10bb8c37265dfc8d4ea4c47f732b9ad48f22a2598706a1f26e340dcdb60ac1e8"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-streaming-shaders\\verified.json",
+          "sha256": "8e2781e574b88c9772cfc4d957ed7707cfb4fe8df2e6d3d600da7b562799f340"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\3-verified.json.gz",
+          "sha256": "19c73cd9095030c07f45620f9d744b9c04a5f798245d1c6aeac5cae84209a3f2"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-nanite-full-scene-desktop-stage-results.json",
+          "sha256": "7082c581f67f1b2caf34b1c58628cb2729bc8a7abef851893a1348eb6aaadfce"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\4-web-project-nanite-full-scene-desktop-stage-results.json.gz",
+          "sha256": "281f9a364bbdc407054f595c391ef845896b17003a4d0fb8c7b812048afd4cc2"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-nanite-full-scene-desktop-cook-results.json",
+          "sha256": "589adf394c2cda184f530c27b6ec0fc05871caf3cd21f73045749c23a5479473"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\5-web-project-nanite-full-scene-desktop-cook-results.json.gz",
+          "sha256": "3b8a2a4c3dcb23c8f3adc26df4f3dcd764a4f60e23ab098ac122882262ae52da"
+        }
+      },
+      {
+        "original": {
+          "file": "C:\\Users\\wap80\\.cache\\ue-html-build-archive\\nanite-core-cook\\web-project-nanite-full-scene-desktop-cook\\20261111-133154\\ShaderConversion\\inventory.json",
+          "sha256": "c5b683e44520ff4a2a459a096798505aaa0e3082a8bbd80e210cca7ebf593da0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\6-inventory.json.gz",
+          "sha256": "e84f689a2820fd177130676ca0f2c9b860d755c47f3ced65ad86d0d5c9d64d36"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-full-scene-conversion-verified.json",
+          "sha256": "75f300f75ff1104216527437ba712b02e9f4eee8936bdbc31b6755bdaba8e915"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\7-nanite-full-scene-conversion-verified.json.gz",
+          "sha256": "91ceddc1722ffc2e2e8ad3dc1f67d6521f5e8e246fa8d0af387a2ec4cc6b8fe2"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-core-default\\package.json",
+          "sha256": "f1a878ac2258790bbd964aaa2b6fb33f394073aad18b399a9ad344b42b943321"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\8-package.json.gz",
+          "sha256": "e3c736cc5f7f4ccab12b8097b1fdc7f2bb8d73126b3db9ab7c7f03c20eee49cb"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-webgpu-sm5-default-stage-results.json",
+          "sha256": "1fc2c706bea05104ff2d439da56277cd43ccb597ee972492adfeb482fabc5c1c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\9-web-engine-webgpu-sm5-default-stage-results.json.gz",
+          "sha256": "ef93c4121efb476f1809998f72555cb82aa5b453e97e01ae95ef0f930b906a51"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-webgpu-sm5-default-cook-results.json",
+          "sha256": "53e986e0e2df6bd27ce67f5815713a40b4b6ebebffc9eb066bbf5473aa694319"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\10-web-engine-webgpu-sm5-default-cook-results.json.gz",
+          "sha256": "f1650493af80969be6f454c126c484e7c54d5c569544357865f4f3391f245aa4"
+        }
+      },
+      {
+        "original": {
+          "file": "C:\\Users\\wap80\\.cache\\ue-html-build-archive\\nanite-core-cook\\web-engine-webgpu-sm5-default-cook\\20261111-135540\\ShaderConversion\\inventory.json",
+          "sha256": "7b5ba6ab844fcc1cb1b9a8b74d3ad64a7872b47215d530ad8fe838790cee4caf"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\11-inventory.json.gz",
+          "sha256": "fcab48a20cdbba819552258fd61fefb5dd214d60a40c3012dfdb93adc753b891"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+          "sha256": "c91e6225b2fb32c3565bedfe95d5084627da5e778d0ec2bc8f8e1ba62bb6731c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\12-web-engine-full-thread-build-results.json.gz",
+          "sha256": "649b5a247ac7e09e19f8effc28326f460254249a97e0dc842a278ce30a04703f"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-20261111-143856.log",
+          "sha256": "a5a9a98422b56160117311f8001b1663f8c4c9d5b53e2bbed161d1cae3843c7c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\13-web-engine-full-thread-20261111-143856.log.gz",
+          "sha256": "c263d62b6602bdca6ee6073212b5996c08c2388fe744ba36c063ba107688777e"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\UEWebEngineThreads.js.rsp",
+          "sha256": "5e9f663e0ab2e52e6718490b14facb06d72aeec0e2485e7e1d9971f8f3cd0e69"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\14-UEWebEngineThreads.js.rsp.gz",
+          "sha256": "e9ad1e3e37582676665fdafd5da45cee0ee966d6caff529f69c76349204df5fb"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-nanite-buffer-pool.ps1",
+          "sha256": "aae16db243e4c5e231a044ad80e35f7be5f6dced544377c4a0de3d3ab34895c3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\15-verify-nanite-buffer-pool.ps1.gz",
+          "sha256": "c23125ee4ab534f1df335cc9491bebe8e1f702aaf91c6b3d41ed785d03af55eb"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\fixtures\\nanite-buffer-pool\\prepare-contract.cjs",
+          "sha256": "8a41ffffa4140d0e24cc21ba2f0523c8f1cc3ce86479b8b535de281e4935c7b1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\16-prepare-contract.cjs.gz",
+          "sha256": "06bfd2a5f0901dcb578b20d6073aa57839cf40351fc407049cee138e47fa78ab"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\fixtures\\nanite-buffer-pool\\contract.cpp",
+          "sha256": "d065d2fe878f5c7703de5097907dc354410f21600804af77272b6ab5e3fc8a29"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\17-contract.cpp.gz",
+          "sha256": "f00064828d072d9f0fc9e0ce7ae3724542d6853f8a4d11a250656f87d7dfae59"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\RenderCore\\Private\\RenderGraphResourcePool.cpp",
+          "sha256": "30af9bd68d2f5bd3a87c615e6822686266a2c205cba717c82c7e2d28c5df1a69"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\18-RenderGraphResourcePool.cpp.gz",
+          "sha256": "7e08adfed34f60650c64f754fd23836858c731192b6a974d32b68ef8c7da508e"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\RenderCore\\Private\\RenderGraphResourcePool.h",
+          "sha256": "a17d0317a97a49f5ff9cd02373b58eaeded8f847d1fcfd7d1f37c056b9bf6872"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\19-RenderGraphResourcePool.h.gz",
+          "sha256": "0ba0cb43c69cd3c0f31f77f7dca49713f0ad745edc7950eee0d48197b3333687"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool-contract\\compile.cmd",
+          "sha256": "6d512d27933b6e625bc7844a41ea59ebd9584421d5d2003083c8b121feedf735"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\20-compile.cmd.gz",
+          "sha256": "8abaff6c16fd7056ded84452ac180dd19b9b112e1e44517a92029004abe439d7"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool-contract\\contract.exe",
+          "sha256": "732d0ed5a8ff09eda6e7a0f25c3b39e48ddd544b2e1ba3b7daafe8c73db918c5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\21-contract.exe.gz",
+          "sha256": "f0a91fcc359eae4bc2b3c88c68f46155f5a35e7ae0d038dec124099c692c2b9a"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool-contract\\contract.obj",
+          "sha256": "9d159d173230a2f106eda67bea70081fe3e4e6d186af2fd266b14a9a97299386"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\22-contract.obj.gz",
+          "sha256": "25aa7406f8c9bf36bba601e8fa46e805f2e6df664ab0d288abb47b9a30fbd133"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool-contract\\native-build.log",
+          "sha256": "061152eb9108a5527a7b44760dacac9da4ae5ce68a78574fcd12a68bff1ae0b8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\23-native-build.log.gz",
+          "sha256": "80fc3664d6f373b9e825c3154af36957f981cff93c7a27206689b826046edc81"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool-contract\\native.json",
+          "sha256": "657dbd373e0688388a37dd277c8cbe8bb87ad7f919ec0b33087d505b4cc41f9f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\24-native.json.gz",
+          "sha256": "51f06c6f0e78719322ef0a2b4f96b4e7a34b15863c413de60ff5d813c1c85940"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool-contract\\production-search.h",
+          "sha256": "06038132b802aeaa08823d9d9ab1f71cc7dd08780192dd60bae4ab5e839cdc5f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\25-production-search.h.gz",
+          "sha256": "879e5a5b4b8aa0ea9e7bad9c2900b237433ccddc3965ed6394fe095c52417aa3"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool-contract\\wasm32-asan-build.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\26-wasm32-asan-build.log.gz",
+          "sha256": "46b50c321b39e89a491b6727a01628c34245605a30beb3e7414c5e01cff90e6e"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool-contract\\wasm32-asan-stderr.log",
+          "sha256": "6e1cde74c2021e249c995e4f1773e8139a4041dee757f7eb47179cd5d617d20d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\27-wasm32-asan-stderr.log.gz",
+          "sha256": "014fc048e93086fa5f10ada08e37aa9f0ed171218d7c3c5eb40a04672f4a067c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool-contract\\wasm32-asan.js",
+          "sha256": "eb007a97255854d355277b394ff7e3397ad78206aab1e3e034be61cd5b21cc10"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\28-wasm32-asan.js.gz",
+          "sha256": "c83e4d65a003e9105e4c9032d7fea82641567090d9b49585bb29cc229811b19f"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool-contract\\wasm32-asan.json",
+          "sha256": "ea4a3c44aafc66b1ae1e6525e33c0fd71ad0aa736698855b24c7e762d62eca16"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\29-wasm32-asan.json.gz",
+          "sha256": "7a9292b77ce99baa92b2bbad1247475cd34c77b97b833c2b46c0f92baee780cf"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool-contract\\wasm32-asan.wasm",
+          "sha256": "4b2c8deaf39e4eed6cb417a3fbf7e1d449258b2189e2c5f22d1676f4cb7ef03c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\30-wasm32-asan.wasm.gz",
+          "sha256": "3d2ad42514bddc9ccf881f8f41cffb79cc8d6aa58d126a4ab9b219bb1604ee99"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool-contract\\wasm64-build.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\31-wasm64-build.log.gz",
+          "sha256": "46b50c321b39e89a491b6727a01628c34245605a30beb3e7414c5e01cff90e6e"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool-contract\\wasm64-stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\32-wasm64-stderr.log.gz",
+          "sha256": "46b50c321b39e89a491b6727a01628c34245605a30beb3e7414c5e01cff90e6e"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool-contract\\wasm64.js",
+          "sha256": "9765cd0893309128c1ae0d1fe87a367c2b9c1176d9e81c1353bb41564a3d7747"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\33-wasm64.js.gz",
+          "sha256": "c11cab0ed610874afb494bc50c9ba29097ff0674e50376b3efe4ea4997b587e1"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool-contract\\wasm64.json",
+          "sha256": "ea4a3c44aafc66b1ae1e6525e33c0fd71ad0aa736698855b24c7e762d62eca16"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\34-wasm64.json.gz",
+          "sha256": "7a9292b77ce99baa92b2bbad1247475cd34c77b97b833c2b46c0f92baee780cf"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool-contract\\wasm64.wasm",
+          "sha256": "98a08b710077e8017d2880c84ef582da22d8e88938f763ca62583b68ad12aeed"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\35-wasm64.wasm.gz",
+          "sha256": "58a1d8d11ea27fb09a775132aef2616c9d45148fb0451eb0d676b1b83b1617f6"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool-contract\\verified.json",
+          "sha256": "c86acaee10ab66197fed2114851e14e9e9fa45402010d057bcda5a4f30190094"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\36-verified.json.gz",
+          "sha256": "522471a7dbe0887bdcdbfaff8a5afee694d9b3d2f59153f728948545f3d29131"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool\\packed-1.png",
+          "sha256": "9dd8a403bb4514b5639457aa951c1fa468404d14e62a3836f5ad3c70c91cab9b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\37-packed-1.png.gz",
+          "sha256": "ddb68007ac576d62ff569e55be5cd1242d1036d67ca45528c49ef1c410ada07d"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool\\packed-2.png",
+          "sha256": "0860467b5b16dbdf31f09e3eddf93cf5dc077e8c23b3ff167f8890c166848523"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\38-packed-2.png.gz",
+          "sha256": "ce2743a4357df9f9b249e5579fff4a8fcd7f767dd3c510ee8b2f186cbf904017"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool\\packed-3.png",
+          "sha256": "edfb8eedc372d2042986df0f4cafd3e2f55b906f05e809b4567ef24d8099b46d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\39-packed-3.png.gz",
+          "sha256": "84519ad73375e82488506ac6eda8e8764418dd978e505fd6b68d5f174bb33955"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool\\packed-4.png",
+          "sha256": "b8c46170ce3e4d47f0dc7b0209e8d286a13b3ba0a2275921a6eebbd3776a2adb"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\40-packed-4.png.gz",
+          "sha256": "d9839d23b4479488822b17efadf5235a81edc02f50c94c4aa4c15a1587ec0c82"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool\\packed-5.png",
+          "sha256": "a7dc931244480aaf1857f27cc1b769cd9745dc46f3caa58559d4e4aa8bfb96a0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\41-packed-5.png.gz",
+          "sha256": "a736ae14ec4d03ea343a575c74a3b3de2250c827edde77aec3346c1d3d83dc0b"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool\\packed-6.png",
+          "sha256": "2759401e4bdc06cbc47c58495c926138bd3c85e09502045c981d0467c9679c7a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\42-packed-6.png.gz",
+          "sha256": "b6ca08a27d25d5cedc9e59a7083375275030a53a2cf93bedad0188166f49d601"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool\\packed-7.png",
+          "sha256": "2759401e4bdc06cbc47c58495c926138bd3c85e09502045c981d0467c9679c7a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\43-packed-7.png.gz",
+          "sha256": "b6ca08a27d25d5cedc9e59a7083375275030a53a2cf93bedad0188166f49d601"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool\\packed-8.png",
+          "sha256": "6d20a24472488cf7de50380ee34bc00ba1ac46374e62ed658fa2fb6854aa2dcf"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\44-packed-8.png.gz",
+          "sha256": "0ec6fb8ac6f6641b0e60293cec69dd56871413fad0b60287d12639c52c7c696e"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool\\packed-9.png",
+          "sha256": "4c8d87f27181de053f3140f39af6d939006cd4c634739e7f727805472b8280d4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\45-packed-9.png.gz",
+          "sha256": "3046773eb071b99d2afe0677f6cfdd6be30f52f312152d2aff4ca32309abfab1"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool\\packed.json",
+          "sha256": "61072b7316bdc0592a61b123f60e0749089904ce90802bcdf59caabf469d4cc2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\46-packed.json.gz",
+          "sha256": "a8e0707b33578e0a00f6aace4883e8fc42d26c740ed966f8de9e3786c9c7581d"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-1.png",
+          "sha256": "0ef771359a9be2b7574f29760defd033c42c0d5b00348d4c987b883d348c7489"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\47-packed-1.png.gz",
+          "sha256": "1f23d2777def1157aa884c2a244309a93d792bcc46ca368315ccece0ecf17a77"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-2.png",
+          "sha256": "ae191c74c401c5f6f89d99752202412b150571aa434c876170234264b327d36a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\48-packed-2.png.gz",
+          "sha256": "2ebe394bf31826b3f1ab9786a5532d110cf96c0970bd825902cb067c7aacfd5d"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-3.png",
+          "sha256": "1b0282b98034fff197373b0ae058a48640e7c95e12317ae3b041a3aa02354e35"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\49-packed-3.png.gz",
+          "sha256": "e67514f955ce2561691f2dfa8ea03128571fdd0a2cf614591186e7e8988f8bc6"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-4.png",
+          "sha256": "14ed48673fb8c211843836f6e8bccccca982d446b5c0231cebf44ca455cc6425"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\50-packed-4.png.gz",
+          "sha256": "02ef67259d123091faeaae7e87adea12ac8dc1eb15c52523f03e0c22448cb428"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-5.png",
+          "sha256": "45f0f1944fc9a52a8a98961e8fc15858542c0198b03f36510e75c3d42a444fc6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\51-packed-5.png.gz",
+          "sha256": "e36a544e3b31ba14af8ae9f04efab3ea43cf84350518c4e3ab84982a29bafea5"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-6.png",
+          "sha256": "1908b841d7242c4ebf9f8c5c7fb0ea0bbab823ae32a25cdcb2705a901bc2bf24"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\52-packed-6.png.gz",
+          "sha256": "0a96c8b430e3e969256d480104a13f657255d499a6008dd1822494334bedff3e"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-7.png",
+          "sha256": "8dca7bdf17330b1af623d97894362e1da962aa05f1ce972173a688e9eb51805c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\53-packed-7.png.gz",
+          "sha256": "28637775d1fec549dbf22d07faab704b4f8ccc9494d71cbc511ef218e3962b92"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-8.png",
+          "sha256": "e411f74ebabb1684f3e46d85a36852b778df0956f96caee8b08f9092361a7a96"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\54-packed-8.png.gz",
+          "sha256": "194b360893583ff41e83f6ab704383dcf0a7c81e4f723b7f2337573051e24287"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed.json",
+          "sha256": "3991d48dc1872428fce30737811614ecd3226e4ecf54f856f051a41b9f9d9525"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\55-packed.json.gz",
+          "sha256": "2b55476ce9e0b2fad9345d38c5e33c481c8e70e5c1f03875f376b780ea7f4f07"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool\\scalar-1.png",
+          "sha256": "f52fa20e96f13a3239e10c3cf230809a7a31bf4d86f400a5b81dec88c42e8a02"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\56-scalar-1.png.gz",
+          "sha256": "eb4f83ec3c7b490b1d537e771a58e92c804399383d3c15035af799db620885e6"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool\\scalar-2.png",
+          "sha256": "712c64b5f041416d9c8d51750474e0b3aa66d3c8024b87fe56a5cdb93b315483"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\57-scalar-2.png.gz",
+          "sha256": "32aa561d526c4a3fcac5e5d5e5ad1034a4f852155b761aa63e497fdf15f5f493"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool\\scalar-3.png",
+          "sha256": "e2e9da8d8cb3852d8a1d2f15ffe40cd0eb6791fedb45a802cd6684bc75ecb08e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\58-scalar-3.png.gz",
+          "sha256": "923b32ad1ea439ab23832a96fea9c6c144c010300e645c9005c8c4977ab694ff"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool\\scalar-4.png",
+          "sha256": "49a52357f67e53a92e95f69a968e95f0316394435f5850c403da1c9d7d16ed82"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\59-scalar-4.png.gz",
+          "sha256": "1a7a74ac56e61ff986bac335bd606c8707bba3845e4f95809fa2743c760d4f71"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool\\scalar-5.png",
+          "sha256": "d023f1d40430052e9b5165f96284f077855824360aa9a134f99e163c23816e05"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\60-scalar-5.png.gz",
+          "sha256": "5a7b7774dac4f21973c305853900be4836dbb184a0b93a1c9d5ef86dcf4ddc8c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool\\scalar-6.png",
+          "sha256": "87071265c2216164d8be1f93d115d4299ac16fce4dfcc7c48533682d77ca6865"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\61-scalar-6.png.gz",
+          "sha256": "5e72f1d8259738997bb753c04e8bb4f78b7bdae65374002a299bbc20a59f6591"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool\\scalar-7.png",
+          "sha256": "bc04be25092ddc796ba10afa146b6eb2b74c3132411cb6c0b22bde850e7c5554"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\62-scalar-7.png.gz",
+          "sha256": "772ec4c2e6d6ec06901d179d91c82adda3522b34a040fa37660521f8201ea7d3"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool\\scalar-8.png",
+          "sha256": "a8069258c6e5996c2c0ec1e17579a8cb7cbfaf03aa7dc193abb4b2f623c2f7ac"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\63-scalar-8.png.gz",
+          "sha256": "f032ebf3ab1dcf688b38d104c833f51a1f5766dce9fd2fc27554288ed50a2e80"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool\\scalar-9.png",
+          "sha256": "680878323aaef70b59b3cc4af0d60c06d0ef82e13ba7849abfe34a7f7ef7e0f4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\64-scalar-9.png.gz",
+          "sha256": "8330235227f03d83e9372e8a936302f41360b6753d3aa849c48fb27c6a89da4e"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-buffer-pool\\scalar.json",
+          "sha256": "4fdfc55440781999ed7243462e8f6ec6fd450e42adb1969e27a82069ceeb750f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\65-scalar.json.gz",
+          "sha256": "f642a44dd09e8ff4ab991ddb4230d893a45b8694be256c056b71003b3f234c4d"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-1.png",
+          "sha256": "772ba706ef2c3d4c70e383627e3c39cc5b2912d96d89da1d171fa05a34b7a786"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\66-scalar-1.png.gz",
+          "sha256": "6505405bc2b0c741c5f0039a20f015e3f11a31d753f7c73cf3be54e64ac81d4f"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-2.png",
+          "sha256": "fb4b82f62c6104e52cf869294a1ad797ddd1106fc47108a04c835826aa9c0886"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\67-scalar-2.png.gz",
+          "sha256": "ba56ad958ffd7f857115c57050f79411f2c045e18871d83a3c8ab9479d5dc8ba"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-3.png",
+          "sha256": "9b658f408c67888df14246edb1a6b4fe2581f589a0f8b7459fb5e17bcb5b6167"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\68-scalar-3.png.gz",
+          "sha256": "b0dd13c4cc33f45143563e3001d15ac576eb14f683f530d5ec646bb49734ddb9"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-4.png",
+          "sha256": "6a4f9f7934d1741a79dd185f34b6afde92df0c89b6a4d09593308c40c38d971b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\69-scalar-4.png.gz",
+          "sha256": "e6b063c578984e9556dce93ef80d6f57b1a403a5632fa8bc7179f4d94640cfa0"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-5.png",
+          "sha256": "974ba02851aaf2a9f0f39bab940a51a37c16235fa50e201c96e8daf1a3943947"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\70-scalar-5.png.gz",
+          "sha256": "7ee81b00d60b547d0de4e6eea63f650fe4452734fa6a1c5f8705293c4aa7c867"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-6.png",
+          "sha256": "dc10d3bb24606e9eea476a0de9c9e24e46e11618347c88666e64c40de1a1bf28"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\71-scalar-6.png.gz",
+          "sha256": "00fee729fb539bf06c4b7181d6d5627d77843bc61aa7c3b2bc850f6960c2e92e"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-7.png",
+          "sha256": "77340d1a0715a06f3ec53cd2527264eaf8b1c9be27973b7fe55b18a6abbeb384"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\72-scalar-7.png.gz",
+          "sha256": "763349833ed08ab4cdf1f328b5d429af11f54757897b767601cf0a3c20066463"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-8.png",
+          "sha256": "bd83a0e4ae170c51dd5e3816da0500a9d8b6dd52c21af150e8f86e69a7502d2f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\73-scalar-8.png.gz",
+          "sha256": "2b3b050d5aa5e368e6a6579cba762ed9087f1134f33defd63212b17d4f1c550f"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar.json",
+          "sha256": "ceaacaf28f5110375cb6446ce95f6187900c09a3bef99cfc99122f7dbbfbe7b2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\74-scalar.json.gz",
+          "sha256": "94fcb19f223e4aa6a887f7e4bf7bfdbaad8c4e8aafdabb88d2bd13f028481d7e"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-buffer-pool-0-20261111.json",
+          "sha256": "8cdc54a758c16668b3e91c9aa4054f87dcf4adf636f188c07e3871b87410e4be"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\75-cpu-nanite-buffer-pool-0-20261111.json.gz",
+          "sha256": "cee5a690db0873b0bee139c9d2f95c829ca0a6227f5a8680ecee1a16a77c641c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-buffer-pool-0-20261111.log",
+          "sha256": "062e876d457993ffc3e7817f13097d0011e42661582609d14556b6952c10a8a5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\76-cpu-nanite-buffer-pool-0-20261111.log.gz",
+          "sha256": "aa8b8ff6a6baa28632e834c07dd12d45650ef251431a9d7695e226b6fa01d1be"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-buffer-pool-0-20261111-0.cpuprofile",
+          "sha256": "a9480f37e3e5fa5c1c594db4033bea1683201bf863380b41aa578bcdc71d6bba"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\77-cpu-nanite-buffer-pool-0-20261111-0.cpuprofile.gz",
+          "sha256": "3c24fd8bc3bee8619660d4cee60969fd20d30826b9ebf754d54cebe33f587feb"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-buffer-pool-0-20261111-0.png",
+          "sha256": "7f7e662221c013ce75a5102fb13be5ae6cdf0e8a4f043f04ffbc82c33c483345"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\78-cpu-nanite-buffer-pool-0-20261111-0.png.gz",
+          "sha256": "c51d74d6773736b0e151ff2c4728a30a7bba29914c47a338b0ef9dbdcdaf01a4"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-buffer-pool-0-20261111-1.cpuprofile",
+          "sha256": "6302d1e21e4fa2b864fa994044b5d6480ea9bdb2b2c8bfa71401018fb690f505"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\79-cpu-nanite-buffer-pool-0-20261111-1.cpuprofile.gz",
+          "sha256": "5f788ab7f7de7d246182736e9ffdea805f6dc3abb906dd15797764a412bf71a4"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-buffer-pool-0-20261111-1.png",
+          "sha256": "0dda60ca79f74ed7e6c11699a470d68cd4e093ff017f31c152367381767ef079"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\80-cpu-nanite-buffer-pool-0-20261111-1.png.gz",
+          "sha256": "2d7773cfd69cae0e1e82c0f429b4947aa5d330e0ed31518f1ab5b2568a13b9b6"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-buffer-pool-1-20261111.json",
+          "sha256": "512c9c60ff4bc8d162d0c5a3697702454a19f86ace3072f1fe663b63b807af81"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\81-cpu-nanite-buffer-pool-1-20261111.json.gz",
+          "sha256": "f7948461e4fc8050ba0c4d216047f30a4db30ebd395b28528ba5bbba69a188bc"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-buffer-pool-1-20261111.log",
+          "sha256": "bd0d069361189090f2ffa42482fe7ea8a161dae098c674032d1738edd37b9a59"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\82-cpu-nanite-buffer-pool-1-20261111.log.gz",
+          "sha256": "973f50332011be31dd0d0efce4ced886f50863a94e656f79be8c8aa7015aa6c4"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-buffer-pool-1-20261111-0.cpuprofile",
+          "sha256": "e7d8e4b51bf205678ee3c7c4ab1261b1004dfa9067c8ec663492026fd604987f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\83-cpu-nanite-buffer-pool-1-20261111-0.cpuprofile.gz",
+          "sha256": "6612c169abdeba0c32bb691c3102f00465f13cd3278eada5aaa7f91cad41a314"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-buffer-pool-1-20261111-0.png",
+          "sha256": "12048d957bb4886447a37ca8a223a2cd67810cde12aa718cf56936651604efbc"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\84-cpu-nanite-buffer-pool-1-20261111-0.png.gz",
+          "sha256": "b91ac2533cb2016235594926550ebf773f0a4998fa82b89df4fc8647b883f76d"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-buffer-pool-1-20261111-1.cpuprofile",
+          "sha256": "09063d4e376b9bb4bcde9f7fd6c692395c69faab4c1b9310720ce58aa3ab9970"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\85-cpu-nanite-buffer-pool-1-20261111-1.cpuprofile.gz",
+          "sha256": "c562211e20ae44ee4b6efc4f35d21aa431f43e4691720d7eef6064796e998c6a"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-buffer-pool-1-20261111-1.png",
+          "sha256": "04a0082d3b2847fd04f6f89ef5d626f3b3a199e46dc85240977108b5033f80fe"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\86-cpu-nanite-buffer-pool-1-20261111-1.png.gz",
+          "sha256": "30e4d398e70ba81c8de6b6578775fd9fdb3360ef11ffde6b65926aad79e0b531"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\render-cpu-nanite-pool-firstfit-0-20261111.json",
+          "sha256": "891e88803b06f03a9daf8b4ad70aad925ad3154d2f1e7c47d2411b7b6bb43256"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\87-render-cpu-nanite-pool-firstfit-0-20261111.json.gz",
+          "sha256": "fa44ab82ade35c831f734be919bf76f85f3c70d900d7855c46161776d43f8c0c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\render-cpu-nanite-pool-firstfit-0-20261111.cpuprofile",
+          "sha256": "ee132ebf16de296959649028d505055af426b9578fe3d8030eea4e7b1d869496"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\88-render-cpu-nanite-pool-firstfit-0-20261111.cpuprofile.gz",
+          "sha256": "94b3db20ba5805d29b3c32f33b65e3e884e593f1bd4e536921acb3493f66f665"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\render-cpu-nanite-pool-firstfit-1-20261111.json",
+          "sha256": "441a033cbf19c8eb5c1f9918c6761bef0e7e9aaf435ad428a86274f9b75d6143"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\89-render-cpu-nanite-pool-firstfit-1-20261111.json.gz",
+          "sha256": "4cd6a0bd9799584d23215393b75a8b0be4c5df94a22841181df324df7d7903be"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\render-cpu-nanite-pool-firstfit-1-20261111.cpuprofile",
+          "sha256": "ebfe96976dad1155693113b3f3986023a4bce879970b67171d5557c57c3f8088"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\90-render-cpu-nanite-pool-firstfit-1-20261111.cpuprofile.gz",
+          "sha256": "9c2549248184ceb960412365d4d3c52889d4ac06b8edcfc71c0decba5a9a27c9"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-buffer-pool-evidence.cjs",
+          "sha256": "dd655519212f5935c451450456e9aa66482170bfa125bd83c2d645c882168638"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\91-collect-nanite-buffer-pool-evidence.cjs.gz",
+          "sha256": "7d3747a9fb7d02b04f74a553653ccc3a54324b6fcf1b205ce9d802e473a15c5d"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\package-web-nanite-scene.cjs",
+          "sha256": "aa644bb28696d04b6fd8040cfd8d531ac36482bfee6d0b6b2de5ca6ca6baa54b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\92-package-web-nanite-scene.cjs.gz",
+          "sha256": "80e9f9d3898270bc211ca24d5d5ed01c6e95b479d275f39304a97c827517d03c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\profile-web-render-cpu.cjs",
+          "sha256": "eed168dd34b44e1571918b14ffe38001e138270ec68f0e4e60420fb0588b9537"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\93-profile-web-render-cpu.cjs.gz",
+          "sha256": "4d4a2a4d2641cc7d235d5dc6859e27e24acbe0634a0de38a8cf9932706409a5a"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\profile-web-cpu.cjs",
+          "sha256": "701aff2f03c95077dfc3ceff70a32d51ca2f9aeab17ec3272c3737c882648d8c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\94-profile-web-cpu.cjs.gz",
+          "sha256": "821ea9bf015a0e27fb7d7d0c0119d7ca90196693fec3f055ab192a8aeeb8d2ef"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-full-scene.cjs",
+          "sha256": "72a3c0d250b6283de36ecb698156a3535f684a49c02624adec214dd10a23a56c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\95-probe-nanite-full-scene.cjs.gz",
+          "sha256": "4ea65b5abbedf99f6ae51ffa664aafa4d3cae87eba9c2d048e3373d7f6ce80f4"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-automatic-scene.cjs",
+          "sha256": "6b95ec930e030e7fcb3b650cd683ec8005b20e52b036b619a7efc538a7cafa63"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\96-probe-nanite-automatic-scene.cjs.gz",
+          "sha256": "8c0f7ff93a1c9b3305eecc45966283a6741b065a1a09af979d8fe1f80ac2d2f7"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\prepare-web-core-host.ps1",
+          "sha256": "01a4a592de4fa3430cad3ca11b25ff28b97f42119fcf179bee238486fa2c2676"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\97-prepare-web-core-host.ps1.gz",
+          "sha256": "cb8b892088d27e119249fe2ccea94c7f69a6372e8e603cc9c855292e822c02e6"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build-web-engine.ps1",
+          "sha256": "203e62c360d1f5ddf48d93267551429c19797517b1206cd3b74049444b6f4cd3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\98-build-web-engine.ps1.gz",
+          "sha256": "1944225eb00ae17bc959934d163647d7fe92fe2899597a34ec8f9d7f60b89c06"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-engine-worker.js",
+          "sha256": "6c4dfca737f74d93d1990089a72044233d7f09f27291afa3e214ed2f9ff4c2a5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\99-web-engine-worker.js.gz",
+          "sha256": "c0e0cd79ef4b1a5d884b574d477b14f7d8ebc779c5d93635666d1837e538f2a2"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\Private\\WebNaniteAutomaticSceneTest.cpp",
+          "sha256": "90ff925897a2b0929177b4bd2606502ddfc8c81c6f12f4b0e62774ed25480ef5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\100-WebNaniteAutomaticSceneTest.cpp.gz",
+          "sha256": "34022e046b25f96e1930a2d16617d1ec4e2d0ebc17a412ed2996984f3b991213"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\pool-rotation-failure\\packed.json",
+          "sha256": "6577548e12f7ad4ed78ed10374ddd4219917c23e778070d9c1039f08092c0c5c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\101-packed.json.gz",
+          "sha256": "0bae0e57119cec6905de6b221882a28a3825ee804e05a7ccd3d015f3f12dd00d"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\pool-rotation-failure\\pool-packed.log",
+          "sha256": "7a410286f0855f4a26e8dc55c9123f6e0a8a8fdbab5ec8cc33816837344e301f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\102-pool-packed.log.gz",
+          "sha256": "de2c87e7ce61666a120204f9e47492eab497f068b5c52da5da347681f2a3bfbf"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\pool-rotation-failure\\RenderGraphResourcePool.cpp",
+          "sha256": "0cb67dca5a06b5dc8a1d0ec6db803e06d737481897c3f3f81465aea91c57edd7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\103-RenderGraphResourcePool.cpp.gz",
+          "sha256": "31fcee9c5b57951e3ece60191292d960923b98c4898df54500d047a0552b0cd8"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\pool-rotation-failure\\RenderGraphResourcePool.h",
+          "sha256": "840a90a29ce26a1c2d39353d6aafe6bf4e9fb38769f0ab93d83cb36492193a4f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\104-RenderGraphResourcePool.h.gz",
+          "sha256": "62f7604c8cdc0c2d7630f15c50d341b4c3ebbbd08662de83717a40ec3ecaed1d"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\pool-rotation-failure\\verified.json",
+          "sha256": "3191051a204622d2ff3c158502d1c3f302c2bcc28cb94d6c34b8f527a1f38723"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\105-verified.json.gz",
+          "sha256": "2491d45a97d4ee3881c493dd65326215d6b4a64b6b1fbb31a2514088954a40b0"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\pool-firstfit-contract-console.log",
+          "sha256": "3f936d3ca48218ac897974850d6bb10199b5f4fe1b4948c65357debdee661931"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\106-pool-firstfit-contract-console.log.gz",
+          "sha256": "ccdb1c7715fa30b2e1623fe094bac9b6b8de12b0713003e7dd5e07fe0eccbb86"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\pool-firstfit-build-console.log",
+          "sha256": "b6fc274a54c93354a5a45eea7b2b7da75a9078d2f7047cb27a10cd6280933aef"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\107-pool-firstfit-build-console.log.gz",
+          "sha256": "37bcbbf4d55e5d770a64e71a76bc0fb611696ce0b105a9e6d3881e49a66daa0a"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\pool-firstfit-runtime-import.log",
+          "sha256": "d239145de55850100c826dd9b9784a9d402d1f939ef883a6525e58edd09af32a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\108-pool-firstfit-runtime-import.log.gz",
+          "sha256": "e6172fe239927fe32ad4ebae4fe736d0566518089f96765ff1795620a8fca131"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\pool-firstfit-villa-package.log",
+          "sha256": "4e9bae4509c341a234077d7c804c1de358f0da0142250cb0a4b4666e6d753216"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\109-pool-firstfit-villa-package.log.gz",
+          "sha256": "9ec4abd5414ec5025933cfc89076fd651df6bcfb8a3a3439146b2b5982438e43"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\pool-firstfit-default-package.log",
+          "sha256": "928e02efc7ec73dbe53d9626427755d2e18cb542b67d042855e86fd642774fca"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\110-pool-firstfit-default-package.log.gz",
+          "sha256": "38eeede4327f60e1c4b3539a43a480f7651a4cab029c4d79ca3b8914c74a0bae"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\pool-contract-extraction-failure.log",
+          "sha256": "860096c2c33d437f8d648355b2b4d5ddb7385dd47cf88ba1515162c10f72ce25"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\111-pool-contract-extraction-failure.log.gz",
+          "sha256": "0c29c0308109cd4b62b91f5e10c5272a5e4f95d876edc2e2d07cb7bd57af9713"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\pool-contract-flags-failure.log",
+          "sha256": "f64cde079c83bbe094a626e4abfe28db5a7c5e74692d54da03f1912e98905024"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\112-pool-contract-flags-failure.log.gz",
+          "sha256": "109dea6fec0830fc278a5ee36c9fa1215278e7d11ca96dbe6cab774aa19caf7b"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\pool-performance-gate-failure.log",
+          "sha256": "4f00cd3b70aca9bfc8b3b63b5d757f93b79abef8a81b11f049776de798965a22"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-buffer-pool-rejected-20261111\\113-pool-performance-gate-failure.log.gz",
+          "sha256": "6336666c5650d79dbd5d527d7d763a01ac8755460af1b286146b736da75d72f3"
+        }
+      }
+    ],
+    "boundary": "REJECTED optimization, not an accepted runtime. Rotating allocation caused device loss. First-fit descriptor buckets passed correctness but regressed same-package rendering-thread allocation cost and game FPS; the optimization must be removed. pass means the evidence was fully verified and archived, not performance acceptance. Full Nanite delivery remains open."
+  }
+}

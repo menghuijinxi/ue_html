@@ -4,6 +4,7 @@
 #include "ShaderParameterMacros.h"
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
+#include "Containers/DynamicRHIResourceArray.h"
 
 namespace
 {
@@ -16,6 +17,128 @@ void ValueParameter(FRHICommandList &Cmd, Shader *InShader, const Value &InValue
                             MakeArrayView(&Parameter, 1), {}, {});
 }
 } // namespace
+
+TSharedRef<FJsonObject> RunWebGPUCanvasTransitionProbe(FWebGPUDynamicRHI& RHI)
+{
+    TArray<TSharedPtr<FJsonValue>> Checks;
+    uint64 Checked = 0;
+    bool Pass = true;
+    const auto Record = [&](const FString &Name, bool OK) {
+        auto Check = MakeShared<FJsonObject>();
+        Check->SetStringField(TEXT("name"), Name);
+        Check->SetBoolField(TEXT("pass"), OK);
+        Checks.Add(MakeShared<FJsonValueObject>(Check));
+        UE_LOG(LogRHI, Display, TEXT("P2_TRANSITION %s pass=%d"), *Name, OK);
+        Pass &= OK;
+    };
+    {
+        // TResourceArray::GetResourceData asserts on an empty array. Reproduce
+        // the descriptor emitted by a released cooked FRawStaticIndexBuffer.
+        TResourceArray<uint8> Empty;
+        FCommandList Cmd(&RHI);
+        auto Desc = FRHIBufferCreateDesc::CreateNull(TEXT("NaniteReleasedIndices"));
+        Desc.SetInitialState(ERHIAccess::VertexOrIndexBuffer | ERHIAccess::SRVMask);
+        Desc.SetInitActionResourceArray(&Empty);
+        auto Buffer = RHI.RHICreateBufferInitializer(Cmd, Desc).Finalize();
+        Record(TEXT("null-buffer-empty-array-no-upload"), Buffer && Buffer->GetSize() == 0 &&
+            !static_cast<FWebGPUBuffer*>(Buffer.GetReference())->Handle && Empty.IsEmpty());
+        auto Default = RHI.RHICreateBufferInitializer(Cmd, FRHIBufferCreateDesc::CreateNull(TEXT("NaniteNullBuffer")).SetInitialState(ERHIAccess::SRVMask)).Finalize();
+        Record(TEXT("null-buffer-default-no-allocation"), Default && Default->GetSize() == 0 &&
+            !static_cast<FWebGPUBuffer*>(Default.GetReference())->Handle);
+    }
+    const auto CheckAccess = [&](FRHIViewableResource *Resource, ERHIAccess Access) {
+        FString Error;
+        return RHI.ValidateAccess(Resource, Access, Error);
+    };
+    const auto RejectUse = [&](const TCHAR *Name, FRHIViewableResource *Resource, ERHIAccess Access,
+                               bool Internal = false) {
+        FString Error;
+        Record(Name, !RHI.ValidateAccess(Resource, Access, Error, Internal) && !Error.IsEmpty());
+    };
+    {
+        auto Native = WGPU_TEXTURE_DESCRIPTOR_INIT;
+        Native.size = {16, 16, 1}; Native.format = WGPUTextureFormat_RGBA8Unorm;
+        Native.usage = WGPUTextureUsage_RenderAttachment | WGPUTextureUsage_CopySrc;
+        const auto Desc = FRHITextureCreateDesc::Create2D(TEXT("CanvasBackbufferEpilogue"), 16, 16, PF_R8G8B8A8)
+            .SetFlags(TexCreate_RenderTargetable | TexCreate_Presentable).SetInitialState(ERHIAccess::RTV)
+            .SetClearValue(FClearValueBinding(FLinearColor(0.25f, 0.5f, 0.75f, 1)));
+        TRefCountPtr<FWebGPUTexture> Backbuffer = new FWebGPUTexture(Desc, wgpuDeviceCreateTexture(RHI.Device, &Native));
+        const auto Accepts = [&](ERHIAccess Before, ERHIAccess After) {
+            const FRHITransitionInfo Entry(Backbuffer, Before, After); FString Error;
+            const FRHITransitionCreateInfo Info(ERHIPipeline::Graphics, ERHIPipeline::Graphics,
+                ERHITransitionCreateFlags::None, MakeArrayView(&Entry, 1));
+            return RHI.ValidateTransitionCreate(Info, Error);
+        };
+        Record(TEXT("canvas-backbuffer-accept-rdg-epilogue"), Accepts(ERHIAccess::RTV, ERHIAccess::SRVMask));
+        Record(TEXT("canvas-backbuffer-reject-partial-srv"), !Accepts(ERHIAccess::RTV, ERHIAccess::SRVCompute));
+        Record(TEXT("canvas-backbuffer-reject-uav"), !Accepts(ERHIAccess::RTV, ERHIAccess::UAVCompute));
+        Backbuffer->SurfaceFrameActive = false;
+        Record(TEXT("canvas-backbuffer-reject-expired-frame"), !Accepts(ERHIAccess::RTV, ERHIAccess::SRVMask));
+        Backbuffer->SurfaceFrameActive = true;
+        RHI.RHIGetCommandContext(ERHIPipeline::Graphics);
+        {
+            FCommandList Cmd(&RHI);
+            Cmd.BeginRenderPass(FRHIRenderPassInfo(Backbuffer, ERenderTargetActions::Clear_Store), TEXT("CanvasBackbuffer"));
+            Cmd.EndRenderPass();
+            Cmd.TransitionLocal(RHI, FRHITransitionInfo(Backbuffer, ERHIAccess::RTV, ERHIAccess::SRVMask));
+            Cmd.EnqueueLambda([&, Backbuffer](FRHICommandListBase&) {
+                RejectUse(TEXT("canvas-backbuffer-reject-actual-srv"), Backbuffer, ERHIAccess::SRVGraphics);
+            });
+            Cmd.TransitionLocal(RHI, FRHITransitionInfo(Backbuffer, ERHIAccess::SRVMask, ERHIAccess::RTV));
+            Cmd.EnqueueLambda([&, Backbuffer](FRHICommandListBase&) {
+                Record(TEXT("canvas-backbuffer-restores-rtv"), CheckAccess(Backbuffer, ERHIAccess::RTV));
+            });
+            Cmd.TransitionLocal(RHI, FRHITransitionInfo(Backbuffer, ERHIAccess::RTV, ERHIAccess::Present));
+            Cmd.EnqueueLambda([&, Backbuffer](FRHICommandListBase&) {
+                Record(TEXT("canvas-backbuffer-restores-present"), CheckAccess(Backbuffer, ERHIAccess::Present));
+            });
+        }
+        RHI.SubmitCurrent();
+        TArray<FColor> Colors; RHI.RHIReadSurfaceData(Backbuffer, FIntRect(0, 0, 16, 16), Colors, RawReadback());
+        bool OK = Colors.Num() == 256;
+        for (const auto& Color : Colors) OK &= FMath::Abs(int32(Color.R) - 64) <= 1 && FMath::Abs(int32(Color.G) - 128) <= 1 && FMath::Abs(int32(Color.B) - 191) <= 1 && Color.A == 255;
+        Record(TEXT("canvas-backbuffer-preserves-clear"), OK);
+    }
+    {
+        RHI.RHIGetCommandContext(ERHIPipeline::Graphics);
+        FCommandList Cmd(&RHI);
+        const auto Desc = FRHITextureCreateDesc::Create2D(TEXT("StencilMetadataTransition"), 16, 16, PF_DepthStencil)
+            .SetFlags(TexCreate_DepthStencilTargetable | TexCreate_ShaderResource)
+            .SetInitialState(ERHIAccess::DSVWrite).SetClearValue(FClearValueBinding::DepthFar);
+        auto Texture = RHI.RHICreateTextureInitializer(Cmd, Desc).Finalize();
+        const auto Entry = [&](ERHIAccess Before, ERHIAccess After, uint32 Plane, EResourceTransitionFlags Flags) {
+            FRHITransitionInfo E(Texture, Before, After); E.PlaneSlice = Plane; E.Flags = Flags; return E;
+        };
+        const auto Accept = [&](FRHITransitionInfo E) {
+            FString Error; return RHI.ValidateTransitionCreate(FRHITransitionCreateInfo(ERHIPipeline::Graphics,
+                ERHIPipeline::Graphics, ERHITransitionCreateFlags::None, MakeArrayView(&E, 1)), Error);
+        };
+        Record(TEXT("stencil-metadata-accept"), Accept(Entry(ERHIAccess::DSVWrite, ERHIAccess::SRVCompute, 1, EResourceTransitionFlags::MaintainCompression)));
+        Record(TEXT("stencil-metadata-reject-depth-raw"), !Accept(Entry(ERHIAccess::DSVWrite, ERHIAccess::SRVCompute, 0, EResourceTransitionFlags::MaintainCompression)));
+        Record(TEXT("stencil-metadata-reject-uav"), !Accept(Entry(ERHIAccess::DSVWrite, ERHIAccess::UAVCompute, 1, EResourceTransitionFlags::MaintainCompression)));
+        Record(TEXT("stencil-metadata-reject-extra-flags"), !Accept(Entry(ERHIAccess::DSVWrite, ERHIAccess::SRVCompute, 1,
+            EResourceTransitionFlags::MaintainCompression | EResourceTransitionFlags::IgnoreAfterState)));
+        const auto TransitionPlane = [&](FRHITransitionInfo E) {
+            check(GDynamicRHI == &RHI);
+            auto* Transition = RHICreateTransition(FRHITransitionCreateInfo(ERHIPipeline::Graphics,
+                ERHIPipeline::Graphics, ERHITransitionCreateFlags::NoSplit, MakeArrayView(&E, 1)));
+            Cmd.BeginTransition(Transition); Cmd.EndTransition(Transition);
+        };
+        TransitionPlane(Entry(ERHIAccess::DSVWrite, ERHIAccess::SRVCompute, 1, EResourceTransitionFlags::MaintainCompression));
+        Cmd.EnqueueLambda([&, Texture](FRHICommandListBase&) {
+            FString Error;
+            Record(TEXT("stencil-metadata-independent-access"), RHI.ValidateAccess(Texture, ERHIAccess::SRVCompute, Error, false, 1) &&
+                RHI.ValidateAccess(Texture, ERHIAccess::DSVWrite, Error, false, 0));
+        });
+        TransitionPlane(Entry(ERHIAccess::SRVCompute, ERHIAccess::DSVWrite, 1, EResourceTransitionFlags::MaintainCompression));
+        Cmd.EnqueueLambda([&, Texture](FRHICommandListBase&) {
+            FString Error; Record(TEXT("stencil-metadata-restores-write"), RHI.ValidateAccess(Texture, ERHIAccess::DSVWrite, Error, false, 1));
+        });
+    }
+    auto Report = MakeShared<FJsonObject>();
+    Report->SetBoolField(TEXT("pass"), Pass); Report->SetArrayField(TEXT("checks"), Checks);
+    return Report;
+}
 
 TSharedRef<FJsonObject> RunWebGPUTransitionProbe(FWebGPUDynamicRHI &RHI, const FString &Directory,
                                                  const FString &OutputDirectory)

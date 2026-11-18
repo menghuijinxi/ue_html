@@ -53,20 +53,47 @@ if ($LASTEXITCODE -ne 0) { throw 'Automatic PSO collector overlay preparation fa
 $taskNaniteOverlays = @(
     'Source/Runtime/Engine/Private/Nanite/NaniteStreamingPageUploader.cpp',
     'Source/Runtime/Engine/Private/Rendering/NaniteStreamingManager.cpp',
+    'Source/Runtime/Engine/Private/Nanite/NaniteReadbackManager.cpp',
+    'Source/Runtime/Engine/Private/Nanite/NaniteOrderedScatterUpdater.cpp',
     'Source/Runtime/Engine/Public/Rendering/NaniteStreamingManager.h',
     'Source/Runtime/Engine/Private/Rendering/NaniteResources.cpp',
+    'Source/Runtime/Engine/Private/Nanite/NaniteWebInstance.cpp',
+    'Source/Runtime/Engine/Public/Rendering/NaniteWebInstance.h',
+    'Source/Runtime/Engine/Public/SkinnedMeshComponentHelper.h',
+    'Source/Runtime/Renderer/Private/Nanite/NaniteWebSkinningViewData.cpp',
+    'Source/Runtime/Engine/Private/Nanite/NaniteWebAssemblyTransforms.cpp',
+    'Source/Runtime/Engine/Private/Nanite/WebNaniteAssemblyCapacity.h',
+    'Source/Runtime/Engine/Public/Rendering/NaniteWebAssembly.h',
     'Source/Runtime/Engine/Private/Nanite/NaniteWebHierarchy.cpp',
     'Source/Runtime/Engine/Public/Rendering/NaniteWebHierarchy.h',
     'Source/Runtime/Engine/Private/Nanite/NaniteWebScene.cpp',
     'Source/Runtime/Engine/Public/Rendering/NaniteWebScene.h',
     'Source/Runtime/Engine/Private/Nanite/NaniteWebRaster.cpp',
     'Source/Runtime/Engine/Public/Rendering/NaniteWebRaster.h',
+    'Source/Runtime/Engine/Public/Rendering/NaniteWebRasterShaders.h',
+    'Source/Runtime/Engine/Private/Nanite/NaniteWebHZB.cpp',
+    'Source/Runtime/Engine/Public/Rendering/NaniteWebHZB.h',
     'Source/Runtime/Engine/Private/Nanite/NaniteWebDepth.cpp',
     'Source/Runtime/Engine/Public/Rendering/NaniteWebDepth.h',
     'Source/Runtime/Engine/Private/Nanite/NaniteWebGBuffer.cpp',
     'Source/Runtime/Engine/Public/Rendering/NaniteWebGBuffer.h',
+    'Source/Runtime/Engine/Private/Nanite/NaniteWebVertexFactory.cpp',
+    'Source/Runtime/Engine/Public/Rendering/NaniteWebMaterial.h',
     'Source/Runtime/Engine/Private/StaticMeshSceneProxy.cpp',
-    'Source/Runtime/Renderer/Private/DeferredShadingRenderer.cpp'
+    'Source/Runtime/Engine/Private/Components/StaticMeshComponent.cpp',
+    'Source/Runtime/Engine/Private/InstancedStaticMesh.cpp',
+    'Source/Runtime/Engine/Public/StaticMeshSceneProxy.h',
+    'Source/Runtime/Renderer/Private/Nanite/NaniteWebMaterialPass.cpp',
+    'Source/Runtime/Renderer/Private/Nanite/NaniteWebMaterialPass.h',
+    'Source/Runtime/Renderer/Private/Nanite/NaniteWebProgrammableRaster.cpp',
+    'Source/Runtime/Renderer/Private/Nanite/NaniteWebComposition.cpp',
+    'Source/Runtime/Renderer/Private/Nanite/NaniteWebComposition.h',
+    'Source/Runtime/Renderer/Private/BasePassRendering.cpp',
+    'Source/Runtime/Renderer/Private/DeferredShadingRenderer.cpp',
+    'Source/Runtime/Renderer/Private/GlobalDistanceField.cpp',
+    'Source/Runtime/Renderer/Private/SplineMeshSceneResources.cpp',
+    # Carries the render-thread frame timing published to __webThreadStages.
+    'Source/Runtime/Renderer/Private/SceneRendering.cpp'
 )
 foreach ($taskNaniteRelative in $taskNaniteOverlays) {
     $taskNaniteDestination = Join-Path $taskHost $taskNaniteRelative
@@ -108,7 +135,7 @@ Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runt
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/VirtualShadowMaps/VirtualShadowMapCacheManager.cpp') -Destination (Join-Path $taskRendererCopy 'Private/VirtualShadowMaps/VirtualShadowMapCacheManager.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/VirtualShadowMaps/VirtualShadowMapArray.cpp') -Destination (Join-Path $taskRendererCopy 'Private/VirtualShadowMaps/VirtualShadowMapArray.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/VirtualShadowMaps/VirtualShadowMapProjection.cpp') -Destination (Join-Path $taskRendererCopy 'Private/VirtualShadowMaps/VirtualShadowMapProjection.cpp') -Force
-foreach ($taskOcclusionOverlay in @('SceneOcclusion.cpp', 'SceneVisibility.cpp', 'SceneVisibilityPrivate.h', 'SceneRendering.h', 'SceneViewOcclusionHistory.h', 'WebOcclusionHistory.h')) {
+foreach ($taskOcclusionOverlay in @('RendererScene.cpp', 'SceneOcclusion.cpp', 'SceneVisibility.cpp', 'SceneVisibilityPrivate.h', 'SceneRendering.h', 'SceneViewOcclusionHistory.h', 'WebOcclusionHistory.h', 'WebOcclusionBounds.h')) {
     Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Renderer/Private/$taskOcclusionOverlay") -Destination (Join-Path $taskRendererCopy "Private/$taskOcclusionOverlay") -Force
 }
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/PostProcess/TemporalSuperResolution.cpp') -Destination (Join-Path $taskRendererCopy 'Private/PostProcess/TemporalSuperResolution.cpp') -Force
@@ -360,6 +387,9 @@ try {
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Experimental/Chaos/Private/ChaosVisualDebugger/ChaosVisualDebuggerTrace.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Experimental/Chaos/Private/ChaosVisualDebugger/ChaosVisualDebuggerTrace.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/Skinning/SkinningSceneExtension.cpp'
+    $taskFiles += Join-Path $Engine 'Engine/Source/Runtime/Renderer/Private/Skinning/SkinningTransformProvider.cpp'
+    $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/Skinning/SkinningTransformProvider.cpp'
+    $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/Skinning/SkinningTransformProvider.cpp'
     foreach ($taskDepthOverlay in @('GenerateConservativeDepthBuffer.cpp', 'GenerateConservativeDepthBuffer.h', 'VolumetricFog.cpp')) {
         $taskFiles += Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Renderer/Private/$taskDepthOverlay"
         $taskFiles += Join-Path $taskHost "Source/Runtime/Renderer/Private/$taskDepthOverlay"
@@ -400,6 +430,10 @@ try {
     $taskFiles += Join-Path $taskHost 'Source/Runtime/RHI/Private/PipelineStateCache.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/RHI/Private/RHICommandList.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/RHI/Private/RHICommandList.cpp'
+    foreach ($taskRHIResourceFile in @('Public/RHIResources.h', 'Private/RHIResources.cpp')) {
+        $taskFiles += Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/RHI/$taskRHIResourceFile"
+        $taskFiles += Join-Path $taskHost "Source/Runtime/RHI/$taskRHIResourceFile"
+    }
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Engine/Private/SceneTexturesConfig.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Engine/Private/SceneTexturesConfig.cpp'
     $taskFiles += @(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Experimental/ChaosCore') -File -Recurse | ForEach-Object { $_.FullName })
@@ -445,7 +479,7 @@ try {
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/SceneVisibility.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/PostProcess/PostProcessMotionBlur.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/PostProcess/PostProcessMotionBlur.cpp'
-    foreach ($taskOcclusionAudit in @('SceneOcclusion.cpp', 'SceneVisibilityPrivate.h', 'SceneRendering.h', 'SceneViewOcclusionHistory.h', 'WebOcclusionHistory.h')) {
+    foreach ($taskOcclusionAudit in @('RendererScene.cpp', 'SceneOcclusion.cpp', 'SceneVisibilityPrivate.h', 'SceneRendering.h', 'SceneViewOcclusionHistory.h', 'WebOcclusionHistory.h', 'WebOcclusionBounds.h')) {
         $taskFiles += Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Renderer/Private/$taskOcclusionAudit"
         $taskFiles += Join-Path $taskHost "Source/Runtime/Renderer/Private/$taskOcclusionAudit"
     }
@@ -481,6 +515,7 @@ try {
         'Renderer/Private/PostProcess/PostProcessCombineLUTs.cpp',
         'Renderer/Private/PostProcess/PostProcessHistogram.cpp', 'Renderer/Private/PostProcess/PostProcessWeightedSampleSum.cpp',
         'Renderer/Private/PostProcess/PostProcessUpscale.cpp', 'Renderer/Private/PostProcess/TemporalAA.cpp',
+        'Renderer/Private/PostProcess/TemporalSuperResolution.cpp',
         'Renderer/Private/SkyAtmosphereRendering.cpp', 'Renderer/Private/SkyPassRendering.cpp',
         'Renderer/Private/VolumetricCloudRendering.cpp', 'Renderer/Private/VolumetricRenderTarget.cpp',
         'Renderer/Private/ScreenPass.cpp', 'Engine/Private/VolumeTexture.cpp',

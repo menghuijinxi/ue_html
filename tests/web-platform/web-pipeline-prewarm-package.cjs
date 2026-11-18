@@ -32,7 +32,8 @@ function writePage(folder, page) {
 function startupContext(folder) {
   const {assets, args} = readPage(folder);
   return {args: args.filter(arg => arg !== '-WebPSOPrecacheTest'),
-    fixedRenderSize: resolveWebRenderSize(assets, args) || null};
+    fixedRenderSize: resolveWebRenderSize(assets, args) || null,
+    pipelineWarmup: assets.pipelineWarmup || null};
 }
 
 function prepareRecordedPrewarm(folder, input) {
@@ -74,6 +75,19 @@ function prepareRecordedPrewarm(folder, input) {
   }
   const needed = new Set((corpus.requests || []).filter(request => !request.name.endsWith('Async'))
     .map(request => request.descriptorId));
+  const contract = readPage(folder).assets.optimizationContract;
+  if (contract) assert(capture.runs?.some(run => run.pass && run.engine === 'ours' &&
+    run.optimizationAudit?.version === contract.version), 'Capture lacks native optimization verification');
+  const warmup = readPage(folder).assets.pipelineWarmup;
+  if (!automatic && warmup) {
+    assert.deepEqual(capture.scriptedMotionModes, warmup.modes, 'Capture lacks required movement coverage');
+    assert(capture.scriptedMotionSeconds >= warmup.seconds, 'Capture movement coverage is too short');
+    const run = capture.runs?.find(run => run.engine === 'ours' && run.pass);
+    assert(run?.scriptedMotion?.length === warmup.modes.length &&
+      run.scriptedMotion.every((state, index) => state.motion.completed && state.motion.updates > 5 &&
+        state.motion.mode === warmup.modes[index] && state.motion.elapsed >= warmup.seconds),
+      'Required capture routes did not complete');
+  }
   return {
     pack: {version: 1, wasm: versions[coreFiles[0]].sha256, content: versions['content.bin'].sha256,
       config: versions['config-files.json'].sha256, devices: corpus.devices,

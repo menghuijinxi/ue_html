@@ -74,6 +74,8 @@ try {
   report.project = stage.projectName;
   report.textureCompression = cook.textureCompression || 'Uncompressed';
   report.useProjectSettings = cook.useProjectSettings === true;
+  if (report.useProjectSettings)
+    assert(prepared.useProjectSettings, 'Project settings require an unchanged project preparation');
   assert.equal(stage.textureCompression, report.textureCompression);
   fs.mkdirSync(output, {recursive: true});
   let html = fs.readFileSync(template, 'utf8');
@@ -121,19 +123,25 @@ try {
     fs.copyFileSync(source, destination);
     assert.equal(audit(source).sha256, audit(destination).sha256);
   }
-  if (acceptedDefaults) {
+  // A project-settings Cook must retain its staged rendering and input settings.
+  if (acceptedDefaults && !report.useProjectSettings) {
     report.performanceProfile = applyAcceptedDefaults(output);
     report.sourceFiles.push(audit(require.resolve('./web-accepted-defaults.cjs')));
   }
   const extraFiles = [];
   if (acceptedDefaults) {
-    report.releaseDefaults = finalizeDesktopRelease(output, startupOptions);
+    report.releaseDefaults = finalizeDesktopRelease(output, {...startupOptions, optimizationBuild:build});
     report.startupPrewarm = report.releaseDefaults.prewarm;
     report.engineArguments = report.releaseDefaults.engineArguments;
     extraFiles.push(...report.releaseDefaults.files);
-    report.sourceFiles.push(...['web-release-defaults.cjs', 'web-pipeline-prewarm-package.cjs',
+    report.sourceFiles.push(...['web-release-defaults.cjs', 'web-pipeline-prewarm-package.cjs', 'web-optimization-contract.cjs',
       'web-pipeline-prewarm.js', 'probe-villa-startup.cjs', 'web-startup-profile.js'].map(name =>
       audit(path.join(__dirname, name))));
+  }
+  if (report.useProjectSettings) {
+    assert.equal(audit(path.join(output, 'config-files.json')).sha256, stage.configBundle.sha256,
+      'Packaging must preserve the project-settings configuration from staging');
+    report.projectSettingsPreserved = true;
   }
   report.products = [...new Set(['index.html', ...copies.map(([, name]) => name), ...extraFiles])]
     .map(name => audit(path.join(output, name)));

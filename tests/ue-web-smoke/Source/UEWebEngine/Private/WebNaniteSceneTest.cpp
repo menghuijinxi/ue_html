@@ -26,10 +26,10 @@ namespace
 UStaticMesh* SceneMesh;
 UStaticMeshComponent* SceneComponents[2];
 
-UStaticMesh* CreateResidentSceneMesh(bool WithNanite = true, bool WithFallback = true)
+UStaticMesh* CreateResidentSceneMesh(bool WithNanite = true, bool WithFallback = true, bool MultiMaterial = false)
 {
     TArray<uint8> Cooked, Triangles;
-    const FString Directory = TEXT("/Engine/Programs/UEWebEngine/Content/NaniteUploader/");
+    const FString Directory = MultiMaterial ? TEXT("/Engine/Programs/UEWebEngine/Content/NaniteMultiMaterial/") : TEXT("/Engine/Programs/UEWebEngine/Content/NaniteUploader/");
     if (!FFileHelper::LoadFileToArray(Cooked, *(Directory + TEXT("resources.cooked.bin"))) ||
         !FFileHelper::LoadFileToArray(Triangles, *(Directory + TEXT("source-triangles.bin"))) ||
         Triangles.Num() != 960 * 9 * sizeof(float)) return nullptr;
@@ -73,10 +73,27 @@ UStaticMesh* CreateResidentSceneMesh(bool WithNanite = true, bool WithFallback =
     // submits no fallback batches, so prepass/velocity cannot duplicate its depth.
     Section.NumTriangles = WithFallback ? 960 : 0; Section.MinVertexIndex = 0; Section.MaxVertexIndex = Vertices.Num() - 1;
     Section.bEnableCollision = false;
+    if (MultiMaterial)
+    {
+        // The cooked Nanite clusters reference slots 0/7/31/63. Expose their
+        // real section bindings to the proxy instead of relying on an old
+        // visibility pass that ignored missing materials.
+        for (int32 Slot = 1; Slot < 64; ++Slot)
+        {
+            auto& MaterialSection = LOD.Sections.AddDefaulted_GetRef();
+            MaterialSection.MaterialIndex = Slot; MaterialSection.NumTriangles = 0;
+            MaterialSection.MinVertexIndex = 0; MaterialSection.MaxVertexIndex = Vertices.Num() - 1;
+            MaterialSection.bEnableCollision = false;
+        }
+    }
     Data->Bounds = FBoxSphereBounds(Bounds);
     auto* Mesh = NewObject<UStaticMesh>(GetTransientPackage(), NAME_None, RF_Transient);
     Mesh->AddToRoot(); Mesh->NeverStream = true; Mesh->bAllowCPUAccess = true;
-    Mesh->GetStaticMaterials().Add(FStaticMaterial(UMaterial::GetDefaultMaterial(MD_Surface)));
+    for (int32 Slot = 0; Slot < (MultiMaterial ? 64 : 1); ++Slot)
+    {
+        Mesh->GetStaticMaterials().Add(FStaticMaterial(UMaterial::GetDefaultMaterial(MD_Surface)));
+        Mesh->GetStaticMaterials().Last().UVChannelData.bInitialized = true;
+    }
     // Runtime construction has no editor UV-density build. The fallback uses
     // constant UVs and the default material, so its streaming density is zero.
     Mesh->GetStaticMaterials()[0].UVChannelData.bInitialized = true;
@@ -89,6 +106,7 @@ UStaticMesh* CreateResidentSceneMesh(bool WithNanite = true, bool WithFallback =
 UStaticMesh* CreateWebNaniteSceneFixture() { return CreateResidentSceneMesh(); }
 UStaticMesh* CreateWebNaniteOrdinaryFixture() { return CreateResidentSceneMesh(false); }
 UStaticMesh* CreateWebNaniteDepthFixture() { return CreateResidentSceneMesh(true, false); }
+UStaticMesh* CreateWebNaniteMultiMaterialFixture() { return CreateResidentSceneMesh(true, false, true); }
 
 extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteSceneTest(int Step)
 {

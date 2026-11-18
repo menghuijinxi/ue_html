@@ -2,7 +2,7 @@
 #include "HAL/IConsoleManager.h"
 
 static TAutoConsoleVariable<int32> CVarWebGPUReusePresentEncoder(
-    TEXT("r.WebGPU.ReusePresentEncoder"), 0,
+    TEXT("r.WebGPU.ReusePresentEncoder"), PLATFORM_WEB ? 1 : 0,
     TEXT("Experiment: append the canvas copy to an open encoder and submit in the same owner task."), ECVF_RenderThreadSafe);
 
 #if defined(PLATFORM_WEB) && PLATFORM_WEB

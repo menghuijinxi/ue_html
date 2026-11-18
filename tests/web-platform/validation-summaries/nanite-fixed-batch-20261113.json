@@ -1,0 +1,1154 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-fixed-batch-20261113.json",
+    "bytes": 251843,
+    "sha256": "5276beffedb1b2f1b9df4ddd4f3204146839b98bf6970b343106449873498ea9",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "date": "2026-11-13T03:56:04.260Z",
+    "pass": true,
+    "naniteFullPerformanceAccepted": false,
+    "correctness": [
+      {
+        "tag": "nanite-fixed-final-default-correctness-20261113",
+        "scalar": false,
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "moved",
+            "on": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "dispatches": [
+          {
+            "label": "lifecycle",
+            "batch": 1,
+            "entries": 8,
+            "batched": 8,
+            "dispatchBuffers": 1
+          },
+          {
+            "label": "lifecycle",
+            "batch": 1,
+            "entries": 8,
+            "batched": 8,
+            "dispatchBuffers": 1
+          },
+          {
+            "label": "spawn",
+            "batch": 0,
+            "entries": 8,
+            "batched": 0,
+            "dispatchBuffers": 8
+          },
+          {
+            "label": "spawn",
+            "batch": 1,
+            "entries": 8,
+            "batched": 8,
+            "dispatchBuffers": 1
+          },
+          {
+            "label": "spawn",
+            "batch": 0,
+            "entries": 8,
+            "batched": 0,
+            "dispatchBuffers": 8
+          },
+          {
+            "label": "moved",
+            "batch": 0,
+            "entries": 4,
+            "batched": 0,
+            "dispatchBuffers": 4
+          },
+          {
+            "label": "moved",
+            "batch": 1,
+            "entries": 4,
+            "batched": 4,
+            "dispatchBuffers": 1
+          },
+          {
+            "label": "moved",
+            "batch": 0,
+            "entries": 4,
+            "batched": 0,
+            "dispatchBuffers": 4
+          },
+          {
+            "label": "portrait",
+            "batch": 0,
+            "entries": 8,
+            "batched": 0,
+            "dispatchBuffers": 8
+          },
+          {
+            "label": "portrait",
+            "batch": 1,
+            "entries": 8,
+            "batched": 8,
+            "dispatchBuffers": 1
+          },
+          {
+            "label": "portrait",
+            "batch": 0,
+            "entries": 8,
+            "batched": 0,
+            "dispatchBuffers": 8
+          }
+        ]
+      },
+      {
+        "tag": "nanite-fixed-final-default-scalar-20261113",
+        "scalar": true,
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "moved",
+            "on": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "dispatches": [
+          {
+            "label": "lifecycle",
+            "batch": 1,
+            "entries": 8,
+            "batched": 16,
+            "dispatchBuffers": 2
+          },
+          {
+            "label": "lifecycle",
+            "batch": 1,
+            "entries": 8,
+            "batched": 16,
+            "dispatchBuffers": 2
+          },
+          {
+            "label": "spawn",
+            "batch": 0,
+            "entries": 8,
+            "batched": 0,
+            "dispatchBuffers": 16
+          },
+          {
+            "label": "spawn",
+            "batch": 1,
+            "entries": 8,
+            "batched": 16,
+            "dispatchBuffers": 2
+          },
+          {
+            "label": "spawn",
+            "batch": 0,
+            "entries": 8,
+            "batched": 0,
+            "dispatchBuffers": 16
+          },
+          {
+            "label": "moved",
+            "batch": 0,
+            "entries": 4,
+            "batched": 0,
+            "dispatchBuffers": 8
+          },
+          {
+            "label": "moved",
+            "batch": 1,
+            "entries": 4,
+            "batched": 8,
+            "dispatchBuffers": 2
+          },
+          {
+            "label": "moved",
+            "batch": 0,
+            "entries": 4,
+            "batched": 0,
+            "dispatchBuffers": 8
+          },
+          {
+            "label": "portrait",
+            "batch": 0,
+            "entries": 8,
+            "batched": 0,
+            "dispatchBuffers": 16
+          },
+          {
+            "label": "portrait",
+            "batch": 1,
+            "entries": 8,
+            "batched": 16,
+            "dispatchBuffers": 2
+          },
+          {
+            "label": "portrait",
+            "batch": 0,
+            "entries": 8,
+            "batched": 0,
+            "dispatchBuffers": 16
+          }
+        ]
+      },
+      {
+        "tag": "nanite-fixed-final-villa-correctness-20261113",
+        "scalar": false,
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room",
+            "on": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room-turn",
+            "on": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "dispatches": [
+          {
+            "label": "lifecycle",
+            "batch": 1,
+            "entries": 606,
+            "batched": 326,
+            "dispatchBuffers": 5
+          },
+          {
+            "label": "lifecycle",
+            "batch": 1,
+            "entries": 606,
+            "batched": 326,
+            "dispatchBuffers": 5
+          },
+          {
+            "label": "spawn",
+            "batch": 0,
+            "entries": 606,
+            "batched": 0,
+            "dispatchBuffers": 326
+          },
+          {
+            "label": "spawn",
+            "batch": 1,
+            "entries": 606,
+            "batched": 326,
+            "dispatchBuffers": 5
+          },
+          {
+            "label": "spawn",
+            "batch": 0,
+            "entries": 606,
+            "batched": 0,
+            "dispatchBuffers": 326
+          },
+          {
+            "label": "room",
+            "batch": 0,
+            "entries": 308,
+            "batched": 0,
+            "dispatchBuffers": 136
+          },
+          {
+            "label": "room",
+            "batch": 1,
+            "entries": 308,
+            "batched": 136,
+            "dispatchBuffers": 3
+          },
+          {
+            "label": "room",
+            "batch": 0,
+            "entries": 308,
+            "batched": 0,
+            "dispatchBuffers": 136
+          },
+          {
+            "label": "room-turn",
+            "batch": 0,
+            "entries": 237,
+            "batched": 0,
+            "dispatchBuffers": 96
+          },
+          {
+            "label": "room-turn",
+            "batch": 1,
+            "entries": 237,
+            "batched": 96,
+            "dispatchBuffers": 2
+          },
+          {
+            "label": "room-turn",
+            "batch": 0,
+            "entries": 237,
+            "batched": 0,
+            "dispatchBuffers": 96
+          },
+          {
+            "label": "portrait",
+            "batch": 0,
+            "entries": 625,
+            "batched": 0,
+            "dispatchBuffers": 339
+          },
+          {
+            "label": "portrait",
+            "batch": 1,
+            "entries": 625,
+            "batched": 339,
+            "dispatchBuffers": 5
+          },
+          {
+            "label": "portrait",
+            "batch": 0,
+            "entries": 625,
+            "batched": 0,
+            "dispatchBuffers": 339
+          }
+        ]
+      }
+    ],
+    "argumentCases": 36,
+    "recovery": [
+      {
+        "mode": "packed",
+        "tests": 8,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-final-recovery-20261113\\packed.json",
+          "sha256": "2f5cdac7565e954fbbdd3cd9320f07449e5c538aa2b3a9bea5bb1287f1acb639"
+        }
+      },
+      {
+        "mode": "scalar",
+        "tests": 8,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-final-recovery-20261113\\scalar.json",
+          "sha256": "4c564edda928e59d54ff3f886d90542e2c2f4d3de2207a877ed2a41962a58bec"
+        }
+      }
+    ],
+    "materials": [
+      {
+        "tag": "nanite-fixed-final-programmable-20261113",
+        "scalar": false,
+        "tests": 52,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-final-programmable-20261113\\browser.json",
+          "sha256": "9e48c8ef21f62856a12c09dc3f264276946df60ab452a0dffacccde426a70124"
+        }
+      },
+      {
+        "tag": "nanite-fixed-final-programmable-20261113",
+        "scalar": true,
+        "tests": 52,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-final-programmable-20261113\\browser-scalar.json",
+          "sha256": "33b66b09ba378960b913caaa551cce9510c3dfee4bc1782a820ac366842817f9"
+        }
+      },
+      {
+        "tag": "nanite-fixed-final-wpo-20261113",
+        "scalar": false,
+        "tests": 36,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-final-wpo-20261113\\browser.json",
+          "sha256": "e4f3baaf3c382e1f1695411ee4252c2d03c0ec1c3e35993a5ce0e6d5f29fe6b7"
+        }
+      },
+      {
+        "tag": "nanite-fixed-final-wpo-20261113",
+        "scalar": true,
+        "tests": 36,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-final-wpo-20261113\\browser-scalar.json",
+          "sha256": "fa0a867b4035f593f4df004d163be4ce6107561ed8f845e06ee961d63a869677"
+        }
+      }
+    ],
+    "motion": {
+      "tag": "nanite-fixed-final-motion-abba-20261113",
+      "field": "fixed",
+      "off": {
+        "frames": 10232,
+        "fps": 85.17846791224578,
+        "low1": 26.575295811453906,
+        "maxMs": 78.33999999985099,
+        "over50": 15
+      },
+      "on": {
+        "frames": 10686,
+        "fps": 88.88314042118125,
+        "low1": 28.409279479704068,
+        "maxMs": 103.79999999888241,
+        "over50": 6
+      },
+      "runs": [
+        {
+          "index": 0,
+          "setting": {
+            "enabled": 0,
+            "registered": 2062,
+            "entries": 143,
+            "mergedEntries": 0,
+            "drawCalls": 89,
+            "indirectArguments": []
+          },
+          "overall": {
+            "frames": 5099,
+            "fps": 84.8913818182602,
+            "low1": 25.570061969826856,
+            "maxMs": 78.33999999985099,
+            "over33Ms": 24,
+            "over50Ms": 9,
+            "over100Ms": 0
+          },
+          "lowestFPS5s": {
+            "endSeconds": 60,
+            "frames": 193,
+            "fps": 38.421417252622405,
+            "low1": 17.358850844096573,
+            "maxMs": 58.09999999962747,
+            "over33Ms": 11,
+            "over50Ms": 4,
+            "over100Ms": 0
+          },
+          "travelCm": 1983.2998121310293,
+          "turnDegrees": 269.2232700195316
+        },
+        {
+          "index": 1,
+          "setting": {
+            "enabled": 1,
+            "registered": 2062,
+            "entries": 141,
+            "mergedEntries": 87,
+            "drawCalls": 2,
+            "indirectArguments": [
+              384,
+              267,
+              0,
+              0,
+              384,
+              10,
+              0,
+              0
+            ]
+          },
+          "overall": {
+            "frames": 5339,
+            "fps": 88.80812969480165,
+            "low1": 28.90993484578725,
+            "maxMs": 103.79999999888241,
+            "over33Ms": 21,
+            "over50Ms": 2,
+            "over100Ms": 1
+          },
+          "lowestFPS5s": {
+            "endSeconds": 60,
+            "frames": 224,
+            "fps": 44.5854991635104,
+            "low1": 26.060895626905783,
+            "maxMs": 40.87999999895692,
+            "over33Ms": 6,
+            "over50Ms": 0,
+            "over100Ms": 0
+          },
+          "travelCm": 1985.1189603266316,
+          "turnDegrees": 269.60643017578116
+        },
+        {
+          "index": 2,
+          "setting": {
+            "enabled": 1,
+            "registered": 2062,
+            "entries": 140,
+            "mergedEntries": 86,
+            "drawCalls": 2,
+            "indirectArguments": [
+              384,
+              261,
+              0,
+              0,
+              384,
+              9,
+              0,
+              0
+            ]
+          },
+          "overall": {
+            "frames": 5347,
+            "fps": 88.95816545536756,
+            "low1": 28.046630119480582,
+            "maxMs": 92.69500000029802,
+            "over33Ms": 22,
+            "over50Ms": 4,
+            "over100Ms": 0
+          },
+          "lowestFPS5s": {
+            "endSeconds": 60,
+            "frames": 226,
+            "fps": 45.22306376250877,
+            "low1": 27.43860611905224,
+            "maxMs": 38.70000000111759,
+            "over33Ms": 3,
+            "over50Ms": 0,
+            "over100Ms": 0
+          },
+          "travelCm": 1984.5657562667702,
+          "turnDegrees": 269.4150502929675
+        },
+        {
+          "index": 3,
+          "setting": {
+            "enabled": 0,
+            "registered": 2062,
+            "entries": 138,
+            "mergedEntries": 0,
+            "drawCalls": 86,
+            "indirectArguments": []
+          },
+          "overall": {
+            "frames": 5133,
+            "fps": 85.46558137199897,
+            "low1": 27.64376752658564,
+            "maxMs": 62.95000000111759,
+            "over33Ms": 20,
+            "over50Ms": 6,
+            "over100Ms": 0
+          },
+          "lowestFPS5s": {
+            "endSeconds": 60,
+            "frames": 193,
+            "fps": 38.47844658723151,
+            "low1": 19.285473217285215,
+            "maxMs": 52.34500000067055,
+            "over33Ms": 10,
+            "over50Ms": 2,
+            "over100Ms": 0
+          },
+          "travelCm": 1986.1553762707636,
+          "turnDegrees": 269.04616910807306
+        }
+      ]
+    },
+    "naniteGap": {
+      "tag": "nanite-fixed-final-onoff-abba-20261113",
+      "field": "nanite",
+      "off": {
+        "frames": 16627,
+        "fps": 138.50622036791947,
+        "low1": 55.33915112398482,
+        "maxMs": 43.419999999925494,
+        "over50": 0
+      },
+      "on": {
+        "frames": 10619,
+        "fps": 88.41636539547207,
+        "low1": 28.629566850710937,
+        "maxMs": 91.42500000074506,
+        "over50": 7
+      },
+      "runs": [
+        {
+          "index": 0,
+          "setting": {
+            "enabled": 0,
+            "registered": 0,
+            "entries": 0,
+            "hierarchyBatch": true,
+            "occlusionBatch": true,
+            "packBatch": true,
+            "materialPrecache": true
+          },
+          "overall": {
+            "frames": 8336,
+            "fps": 138.8887731852697,
+            "low1": 55.8351003370849,
+            "maxMs": 43.419999999925494,
+            "over33Ms": 2,
+            "over50Ms": 0,
+            "over100Ms": 0
+          },
+          "lowestFPS5s": {
+            "endSeconds": 59.75,
+            "frames": 454,
+            "fps": 90.83560755817905,
+            "low1": 44.78681476224227,
+            "maxMs": 27.6399999987334,
+            "over33Ms": 0,
+            "over50Ms": 0,
+            "over100Ms": 0
+          },
+          "travelCm": 1984.1262254150627,
+          "turnDegrees": 268.8534702148444
+        },
+        {
+          "index": 1,
+          "setting": {
+            "enabled": 1,
+            "registered": 2062,
+            "entries": 141,
+            "packDispatchBuffers": 2,
+            "hierarchyBatch": true,
+            "occlusionBatch": true,
+            "packBatch": true,
+            "materialPrecache": true
+          },
+          "overall": {
+            "frames": 5318,
+            "fps": 88.49701106254132,
+            "low1": 28.04466372365387,
+            "maxMs": 88.37999999895692,
+            "over33Ms": 20,
+            "over50Ms": 5,
+            "over100Ms": 0
+          },
+          "lowestFPS5s": {
+            "endSeconds": 59.5,
+            "frames": 222,
+            "fps": 44.55514100096669,
+            "low1": 21.77305221901336,
+            "maxMs": 52.98499999940395,
+            "over33Ms": 5,
+            "over50Ms": 1,
+            "over100Ms": 0
+          },
+          "travelCm": 1984.2473555869917,
+          "turnDegrees": 269.0384711914062
+        },
+        {
+          "index": 2,
+          "setting": {
+            "enabled": 1,
+            "registered": 2062,
+            "entries": 138,
+            "packDispatchBuffers": 2,
+            "hierarchyBatch": true,
+            "occlusionBatch": true,
+            "packBatch": true,
+            "materialPrecache": true
+          },
+          "overall": {
+            "frames": 5301,
+            "fps": 88.33560865709181,
+            "low1": 29.365541168877527,
+            "maxMs": 91.42500000074506,
+            "over33Ms": 14,
+            "over50Ms": 2,
+            "over100Ms": 0
+          },
+          "lowestFPS5s": {
+            "endSeconds": 60,
+            "frames": 222,
+            "fps": 44.352587084400824,
+            "low1": 27.978549778600353,
+            "maxMs": 36.26000000163913,
+            "over33Ms": 3,
+            "over50Ms": 0,
+            "over100Ms": 0
+          },
+          "travelCm": 1984.005770650906,
+          "turnDegrees": 269.36819091796883
+        },
+        {
+          "index": 3,
+          "setting": {
+            "enabled": 0,
+            "registered": 0,
+            "entries": 0,
+            "hierarchyBatch": true,
+            "occlusionBatch": true,
+            "packBatch": true,
+            "materialPrecache": true
+          },
+          "overall": {
+            "frames": 8291,
+            "fps": 138.12370993187855,
+            "low1": 54.85010391789028,
+            "maxMs": 35.80499999970198,
+            "over33Ms": 2,
+            "over50Ms": 0,
+            "over100Ms": 0
+          },
+          "lowestFPS5s": {
+            "endSeconds": 59.75,
+            "frames": 461,
+            "fps": 92.20719216096519,
+            "low1": 43.047783039035416,
+            "maxMs": 26.044999999925494,
+            "over33Ms": 0,
+            "over50Ms": 0,
+            "over100Ms": 0
+          },
+          "travelCm": 1984.164555040391,
+          "turnDegrees": 268.74203173828187
+        }
+      ]
+    },
+    "controlledGPU": [
+      {
+        "tag": "nanite-fixed-final-controlled-off-20261113",
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\gpu-nanite-fixed-final-controlled-off-20261113.json",
+          "sha256": "e9b618b8f2b6e6a59b99045888cbb464dc2cf46c409f3d70a2a5a39228ecda56"
+        },
+        "meanSpanMs": 12.972032,
+        "meanPassMs": 6.275071999999999,
+        "view": {
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 498,
+            "width": 1552,
+            "height": 873,
+            "outputWidth": 2560,
+            "outputHeight": 1440,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          }
+        },
+        "nativeBeforeCapture": {
+          "frame": 344,
+          "registered": 2062,
+          "entries": 395,
+          "primitiveVisibility": false,
+          "hierarchyBatch": true,
+          "hierarchyDispatchBuffers": 4,
+          "occlusionBatch": true,
+          "mainOcclusionDispatchBuffers": 4,
+          "finalOcclusionDispatchBuffers": 4,
+          "packBatch": true,
+          "packBatchedEntries": 395,
+          "packDispatchBuffers": 4,
+          "microBatch": true,
+          "microBatchedEntries": 161,
+          "microDispatchBuffers": 4,
+          "microDirectGroups": 14,
+          "microDispatchArguments": [
+            419,
+            1,
+            1,
+            222,
+            1,
+            1,
+            240,
+            1,
+            1
+          ],
+          "fixedMerge": false,
+          "fixedMergedEntries": 0,
+          "fixedDrawCalls": 162,
+          "fixedDrawArguments": []
+        },
+        "phases": [
+          {
+            "phase": "beginRenderPass",
+            "milliseconds": 2.8508160000000378,
+            "passes": 224.875,
+            "dispatches": 0,
+            "draws": 1752.0625
+          },
+          {
+            "phase": "beginComputePass",
+            "milliseconds": 2.793472000000015,
+            "passes": 129,
+            "dispatches": 268.875,
+            "draws": 0
+          },
+          {
+            "phase": "native-material",
+            "milliseconds": 0.26623999999999964,
+            "passes": 7,
+            "dispatches": 0,
+            "draws": 107
+          },
+          {
+            "phase": "hierarchy-batch",
+            "milliseconds": 0.167936,
+            "passes": 1,
+            "dispatches": 6,
+            "draws": 0
+          },
+          {
+            "phase": "mixed: micro-arguments, micro-raster, other-compute",
+            "milliseconds": 0.10240000000000003,
+            "passes": 2,
+            "dispatches": 18,
+            "draws": 0
+          },
+          {
+            "phase": "hzb-batch",
+            "milliseconds": 0.07782400000000002,
+            "passes": 2,
+            "dispatches": 20,
+            "draws": 0
+          },
+          {
+            "phase": "pack",
+            "milliseconds": 0.016384,
+            "passes": 2,
+            "dispatches": 8,
+            "draws": 0
+          }
+        ],
+        "pipelineWork": {
+          "other-compute": {
+            "draws": 0,
+            "dispatches": 296.875
+          },
+          "other-render": {
+            "draws": 814.0625,
+            "dispatches": 0
+          },
+          "pack": {
+            "draws": 0,
+            "dispatches": 8
+          },
+          "nanite-raster": {
+            "draws": 938,
+            "dispatches": 0
+          },
+          "micro-arguments": {
+            "draws": 0,
+            "dispatches": 8
+          },
+          "micro-raster": {
+            "draws": 0,
+            "dispatches": 8
+          },
+          "native-material": {
+            "draws": 107,
+            "dispatches": 0
+          }
+        }
+      },
+      {
+        "tag": "nanite-fixed-final-controlled-on-20261113",
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\gpu-nanite-fixed-final-controlled-on-20261113.json",
+          "sha256": "afa08fcd31fdebe982590aab610c5be5a3332d9b5a369249c1b3d164f4737c97"
+        },
+        "meanSpanMs": 12.414976,
+        "meanPassMs": 6.438911999999998,
+        "view": {
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 524,
+            "width": 1552,
+            "height": 873,
+            "outputWidth": 2560,
+            "outputHeight": 1440,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          }
+        },
+        "nativeBeforeCapture": {
+          "frame": 350,
+          "registered": 2062,
+          "entries": 395,
+          "primitiveVisibility": false,
+          "hierarchyBatch": true,
+          "hierarchyDispatchBuffers": 4,
+          "occlusionBatch": true,
+          "mainOcclusionDispatchBuffers": 4,
+          "finalOcclusionDispatchBuffers": 4,
+          "packBatch": true,
+          "packBatchedEntries": 395,
+          "packDispatchBuffers": 4,
+          "microBatch": true,
+          "microBatchedEntries": 162,
+          "microDispatchBuffers": 4,
+          "microDirectGroups": 0,
+          "microDispatchArguments": [
+            472,
+            1,
+            1,
+            162,
+            1,
+            1,
+            215,
+            1,
+            1,
+            37,
+            1,
+            1
+          ],
+          "fixedMerge": true,
+          "fixedMergedEntries": 162,
+          "fixedDrawCalls": 4,
+          "fixedDrawArguments": [
+            384,
+            472,
+            0,
+            0,
+            384,
+            162,
+            0,
+            0,
+            384,
+            215,
+            0,
+            0,
+            384,
+            37,
+            0,
+            0
+          ]
+        },
+        "phases": [
+          {
+            "phase": "beginComputePass",
+            "milliseconds": 2.9368320000000168,
+            "passes": 129,
+            "dispatches": 269,
+            "draws": 0
+          },
+          {
+            "phase": "beginRenderPass",
+            "milliseconds": 2.6992640000000345,
+            "passes": 213,
+            "dispatches": 0,
+            "draws": 1426.625
+          },
+          {
+            "phase": "native-material",
+            "milliseconds": 0.26214399999999966,
+            "passes": 7,
+            "dispatches": 0,
+            "draws": 107
+          },
+          {
+            "phase": "hierarchy-batch",
+            "milliseconds": 0.14745600000000003,
+            "passes": 1,
+            "dispatches": 6,
+            "draws": 0
+          },
+          {
+            "phase": "nanite-fixed-merged",
+            "milliseconds": 0.14745599999999998,
+            "passes": 8,
+            "dispatches": 0,
+            "draws": 8
+          },
+          {
+            "phase": "mixed: micro-arguments, micro-raster, other-compute",
+            "milliseconds": 0.11878400000000004,
+            "passes": 2,
+            "dispatches": 18,
+            "draws": 0
+          },
+          {
+            "phase": "hzb-batch",
+            "milliseconds": 0.08601600000000002,
+            "passes": 2,
+            "dispatches": 20,
+            "draws": 0
+          },
+          {
+            "phase": "fixed-arguments",
+            "milliseconds": 0.032768,
+            "passes": 6,
+            "dispatches": 6,
+            "draws": 0
+          },
+          {
+            "phase": "mixed: fixed-arguments, pack",
+            "milliseconds": 0.008192,
+            "passes": 2,
+            "dispatches": 10,
+            "draws": 0
+          }
+        ],
+        "pipelineWork": {
+          "other-compute": {
+            "draws": 0,
+            "dispatches": 297
+          },
+          "other-render": {
+            "draws": 812.625,
+            "dispatches": 0
+          },
+          "pack": {
+            "draws": 0,
+            "dispatches": 8
+          },
+          "fixed-arguments": {
+            "draws": 0,
+            "dispatches": 8
+          },
+          "nanite-fixed-merged": {
+            "draws": 8,
+            "dispatches": 0
+          },
+          "nanite-raster": {
+            "draws": 614,
+            "dispatches": 0
+          },
+          "micro-arguments": {
+            "draws": 0,
+            "dispatches": 8
+          },
+          "micro-raster": {
+            "draws": 0,
+            "dispatches": 8
+          },
+          "native-material": {
+            "draws": 107,
+            "dispatches": 0
+          }
+        }
+      }
+    ],
+    "originalFilesVerified": 1643,
+    "previousEvidence": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-micro-batch-20261113.json",
+      "sha256": "562a84c894bab02b7ec30b16f666541899cc3c7d9724cd1ebc8f223ddb696299"
+    },
+    "records": {
+      "$omitted": true,
+      "reason": "Large array",
+      "type": "array",
+      "entries": 459,
+      "bytes": 186606,
+      "sha256": "112838ac3d1bc1c074d359104d13b04ce362891feae2dafced45068455a23795"
+    },
+    "boundary": "Rigid fixed raster batches compact actual visible cluster slots and issue bounded indirect draws. Fresh CPU query tokens prevent old ready values being read before queued RHI BeginQuery. Initial recovery failures and baseline reproduction are retained; final runtime recovery and all final movement measurements pass. Exact geometry/depth/material comparisons, packed/scalar recovery, empty-scene work checks, complete runtime/Cooks and separate GPU diagnostics are archived. All stalls retained. Programmable raster draws remain per instance; full enabled performance acceptance stays open."
+  }
+}

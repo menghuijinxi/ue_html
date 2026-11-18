@@ -1,0 +1,3733 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-hzb-auto-20261114.json",
+    "bytes": 146639,
+    "sha256": "1830dd32299ec40af541ada4bf985698078b54b4022c3b7c0e87ff4100626ed2",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "date": "2026-11-13T17:32:42.642Z",
+    "pass": true,
+    "naniteFullPerformanceAccepted": false,
+    "runtime": "nanite-hzbauto5",
+    "switches": [
+      {
+        "tag": "nanite-hzbauto5-villa-hzb-mode-20261113",
+        "scalar": false,
+        "hzbMode": true,
+        "hzbAuto": false,
+        "shade": false,
+        "programmable": false,
+        "package": "facbf0ec6c79cf72e43a3cdd8e9864a746f511004555804ef50e4b7f48cc0cf8",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room",
+            "on": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room-turn",
+            "on": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 9640,
+            "entries": 308
+          },
+          {
+            "label": "room",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 9640,
+            "entries": 308
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 9640,
+            "entries": 308
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 6078,
+            "entries": 237
+          },
+          {
+            "label": "room-turn",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 6078,
+            "entries": 237
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 6078,
+            "entries": 237
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 17806,
+            "entries": 625
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 17806,
+            "entries": 625
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 17806,
+            "entries": 625
+          }
+        ]
+      },
+      {
+        "tag": "nanite-hzbauto5-villa-hzb-auto-two-phase-20261113",
+        "scalar": false,
+        "hzbMode": false,
+        "hzbAuto": true,
+        "shade": false,
+        "programmable": false,
+        "package": "facbf0ec6c79cf72e43a3cdd8e9864a746f511004555804ef50e4b7f48cc0cf8",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room",
+            "on": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room-turn",
+            "on": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": true,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": true,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": true,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 9640,
+            "entries": 308
+          },
+          {
+            "label": "room",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": true,
+            "clusterCapacity": 9640,
+            "entries": 308
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 9640,
+            "entries": 308
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 6078,
+            "entries": 237
+          },
+          {
+            "label": "room-turn",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": true,
+            "clusterCapacity": 6078,
+            "entries": 237
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 6078,
+            "entries": 237
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 17806,
+            "entries": 625
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": true,
+            "clusterCapacity": 17806,
+            "entries": 625
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 17806,
+            "entries": 625
+          }
+        ]
+      },
+      {
+        "tag": "nanite-hzbauto5-default-hzb-mode-20261113",
+        "scalar": false,
+        "hzbMode": true,
+        "hzbAuto": false,
+        "shade": false,
+        "programmable": false,
+        "package": "87b0269a17e28fd421c8b82c6f4f563e37d087af6fa594af67dd7898c4310742",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "moved",
+            "on": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "moved",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 1052,
+            "entries": 4
+          },
+          {
+            "label": "moved",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 1052,
+            "entries": 4
+          },
+          {
+            "label": "moved",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 1052,
+            "entries": 4
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 2104,
+            "entries": 8
+          }
+        ]
+      },
+      {
+        "tag": "nanite-hzbauto5-default-hzb-mode-scalar-20261113",
+        "scalar": true,
+        "hzbMode": true,
+        "hzbAuto": false,
+        "shade": false,
+        "programmable": false,
+        "package": "87b0269a17e28fd421c8b82c6f4f563e37d087af6fa594af67dd7898c4310742",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "moved",
+            "on": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "moved",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 1052,
+            "entries": 4
+          },
+          {
+            "label": "moved",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 1052,
+            "entries": 4
+          },
+          {
+            "label": "moved",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 1052,
+            "entries": 4
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 2104,
+            "entries": 8
+          }
+        ]
+      },
+      {
+        "tag": "nanite-hzbauto5-villa-shade-two-phase-20261113",
+        "scalar": false,
+        "hzbMode": false,
+        "hzbAuto": false,
+        "hzb": "1",
+        "shade": true,
+        "programmable": false,
+        "package": "facbf0ec6c79cf72e43a3cdd8e9864a746f511004555804ef50e4b7f48cc0cf8",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room",
+            "on": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room-turn",
+            "on": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 9640,
+            "entries": 308
+          },
+          {
+            "label": "room",
+            "value": 1,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 9640,
+            "entries": 308
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 9640,
+            "entries": 308
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 6078,
+            "entries": 237
+          },
+          {
+            "label": "room-turn",
+            "value": 1,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 6078,
+            "entries": 237
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 6078,
+            "entries": 237
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 17806,
+            "entries": 625
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 17806,
+            "entries": 625
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 17806,
+            "entries": 625
+          }
+        ]
+      },
+      {
+        "tag": "nanite-hzbauto5-villa-shade-auto-20261113",
+        "scalar": false,
+        "hzbMode": false,
+        "hzbAuto": false,
+        "hzb": "2",
+        "shade": true,
+        "programmable": false,
+        "package": "facbf0ec6c79cf72e43a3cdd8e9864a746f511004555804ef50e4b7f48cc0cf8",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room",
+            "on": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room-turn",
+            "on": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 9640,
+            "entries": 308
+          },
+          {
+            "label": "room",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 9640,
+            "entries": 308
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 9640,
+            "entries": 308
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 6078,
+            "entries": 237
+          },
+          {
+            "label": "room-turn",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 6078,
+            "entries": 237
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 6078,
+            "entries": 237
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 17806,
+            "entries": 625
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 17806,
+            "entries": 625
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 17806,
+            "entries": 625
+          }
+        ]
+      },
+      {
+        "tag": "nanite-hzbauto5-villa-programmable-auto-20261113",
+        "scalar": false,
+        "hzbMode": false,
+        "hzbAuto": false,
+        "hzb": "2",
+        "shade": false,
+        "programmable": true,
+        "package": "facbf0ec6c79cf72e43a3cdd8e9864a746f511004555804ef50e4b7f48cc0cf8",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room",
+            "on": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room-turn",
+            "on": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 16947,
+            "entries": 606
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 9640,
+            "entries": 308
+          },
+          {
+            "label": "room",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 9640,
+            "entries": 308
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 9640,
+            "entries": 308
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 6078,
+            "entries": 237
+          },
+          {
+            "label": "room-turn",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 6078,
+            "entries": 237
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 6078,
+            "entries": 237
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 17806,
+            "entries": 625
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 17806,
+            "entries": 625
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 17806,
+            "entries": 625
+          }
+        ]
+      },
+      {
+        "tag": "nanite-hzbauto5-default-shade-two-phase-20261113",
+        "scalar": false,
+        "hzbMode": false,
+        "hzbAuto": false,
+        "hzb": "1",
+        "shade": true,
+        "programmable": false,
+        "package": "87b0269a17e28fd421c8b82c6f4f563e37d087af6fa594af67dd7898c4310742",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "moved",
+            "on": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "moved",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 1052,
+            "entries": 4
+          },
+          {
+            "label": "moved",
+            "value": 1,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 1052,
+            "entries": 4
+          },
+          {
+            "label": "moved",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 1052,
+            "entries": 4
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "hzbMode": 1,
+            "twoPhase": true,
+            "clusterCapacity": 2104,
+            "entries": 8
+          }
+        ]
+      },
+      {
+        "tag": "nanite-hzbauto5-default-shade-auto-scalar-20261113",
+        "scalar": true,
+        "hzbMode": false,
+        "hzbAuto": false,
+        "hzb": "2",
+        "shade": true,
+        "programmable": false,
+        "package": "87b0269a17e28fd421c8b82c6f4f563e37d087af6fa594af67dd7898c4310742",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "moved",
+            "on": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "moved",
+            "value": 0,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 1052,
+            "entries": 4
+          },
+          {
+            "label": "moved",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 1052,
+            "entries": 4
+          },
+          {
+            "label": "moved",
+            "value": 0,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 1052,
+            "entries": 4
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 2104,
+            "entries": 8
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "hzbMode": 2,
+            "twoPhase": false,
+            "clusterCapacity": 2104,
+            "entries": 8
+          }
+        ]
+      }
+    ],
+    "fixtures": [
+      {
+        "kind": "programmable",
+        "file": "browser.json",
+        "scalar": false,
+        "tests": 52,
+        "paths": {
+          "programmablePrepareDispatches": 21246,
+          "programmablePrepareBatches": 21246,
+          "programmableDraws": 21246,
+          "shadeBinDispatches": 67872,
+          "binnedMaterialDraws": 35410,
+          "legacyMaterialDraws": 0
+        },
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-programmable-20261113\\browser.json",
+          "sha256": "34a548ceb9b15a6b1c56cdb4b671bfe118c49873b945fd804ffbac1c77a515f9"
+        }
+      },
+      {
+        "kind": "programmable",
+        "file": "browser-scalar.json",
+        "scalar": true,
+        "tests": 52,
+        "paths": {
+          "programmablePrepareDispatches": 42874,
+          "programmablePrepareBatches": 42874,
+          "programmableDraws": 42874,
+          "shadeBinDispatches": 68922,
+          "binnedMaterialDraws": 36087,
+          "legacyMaterialDraws": 0
+        },
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-programmable-20261113\\browser-scalar.json",
+          "sha256": "50d6489a5435f2f3051878e172c2fed517a1561331b2e78eed51900c0b941b69"
+        }
+      },
+      {
+        "kind": "wpo",
+        "file": "browser.json",
+        "scalar": false,
+        "tests": 36,
+        "paths": {
+          "programmablePrepareDispatches": 17901,
+          "programmablePrepareBatches": 31687,
+          "programmableDraws": 34237,
+          "shadeBinDispatches": 52260,
+          "binnedMaterialDraws": 35869,
+          "legacyMaterialDraws": 0
+        },
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-wpo-20261113\\browser.json",
+          "sha256": "d546822bb06586d324898fee06212a72a43c779ae67264bbf441dd68cc271241"
+        }
+      },
+      {
+        "kind": "wpo",
+        "file": "browser-scalar.json",
+        "scalar": true,
+        "tests": 36,
+        "paths": {
+          "programmablePrepareDispatches": 35748,
+          "programmablePrepareBatches": 63228,
+          "programmableDraws": 68372,
+          "shadeBinDispatches": 52203,
+          "binnedMaterialDraws": 35852,
+          "legacyMaterialDraws": 0
+        },
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-wpo-20261113\\browser-scalar.json",
+          "sha256": "d88b936ebf95005d086389b8a2142d0f6c67163077220a332ace514182163f55"
+        }
+      },
+      {
+        "kind": "recovery",
+        "file": "packed.json",
+        "scalar": false,
+        "tests": 8,
+        "occlusionHistory": {
+          "enabled": true,
+          "frame": 9000,
+          "polls": 28138,
+          "ready": 22554,
+          "hits": 12624,
+          "zero": 2572,
+          "fallback": 66465,
+          "expired": 1514,
+          "cameraRejected": 0,
+          "boundsRejected": 16,
+          "hzbSubmitted": 0,
+          "hzbCompleted": 0,
+          "hzbSkipped": 0,
+          "queryCaptured": 22598,
+          "queryDropped": 27,
+          "maxAgeFrames": 8,
+          "maxAgeMs": 80,
+          "motionQueryInterval": 0,
+          "motionQueriesSkipped": 0,
+          "groupMotionQueries": true,
+          "motionQueriesGrouped": 4,
+          "motionGroupHoldMs": 0,
+          "motionGroupHoldRequests": 0,
+          "groupNewMotionQueries": false,
+          "newMotionGroupRequests": 0,
+          "naniteActiveScenes": 1,
+          "naniteActivityTransitions": 5,
+          "boundsChangeSerial": 46,
+          "epoch": 6,
+          "mergeBoundsChanges": true,
+          "boundsChangeRegions": 3,
+          "boundsChangesMerged": 30
+        },
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-recovery-20261113\\packed.json",
+          "sha256": "106fa71395edd215c372580365e79e6b0bd663e8bef37a0991c5850c6ab84b71"
+        }
+      },
+      {
+        "kind": "recovery",
+        "file": "scalar.json",
+        "scalar": true,
+        "tests": 8,
+        "occlusionHistory": {
+          "enabled": true,
+          "frame": 8910,
+          "polls": 28190,
+          "ready": 22237,
+          "hits": 12491,
+          "zero": 2554,
+          "fallback": 65723,
+          "expired": 1549,
+          "cameraRejected": 2,
+          "boundsRejected": 10,
+          "hzbSubmitted": 0,
+          "hzbCompleted": 0,
+          "hzbSkipped": 0,
+          "queryCaptured": 22305,
+          "queryDropped": 35,
+          "maxAgeFrames": 8,
+          "maxAgeMs": 80,
+          "motionQueryInterval": 0,
+          "motionQueriesSkipped": 0,
+          "groupMotionQueries": true,
+          "motionQueriesGrouped": 4,
+          "motionGroupHoldMs": 0,
+          "motionGroupHoldRequests": 0,
+          "groupNewMotionQueries": false,
+          "newMotionGroupRequests": 0,
+          "naniteActiveScenes": 1,
+          "naniteActivityTransitions": 5,
+          "boundsChangeSerial": 44,
+          "epoch": 6,
+          "mergeBoundsChanges": true,
+          "boundsChangeRegions": 2,
+          "boundsChangesMerged": 22
+        },
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-recovery-20261113\\scalar.json",
+          "sha256": "ede0061dcad20c11c7144cb0b2bffd9ef12d8a3e856d0d4f01e3c4db9c81042b"
+        }
+      }
+    ],
+    "eligibility": {
+      "tests": 13,
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-eligibility-20261113\\report.json",
+        "sha256": "c325dfc75d96f78e97a03e65229b2aac88848e44e34f0ca472bf740a88a5063e"
+      }
+    },
+    "laps": {
+      "naniteTour": {
+        "tag": "nanite-hzbauto5-laps-onoff-b-20261114",
+        "folder": "nanite-hzbauto5-villa-20261113",
+        "switch": "r.Nanite",
+        "values": [
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1
+        ],
+        "still": false,
+        "seconds": 30,
+        "foreground": [
+          "msedge"
+        ],
+        "summary": {
+          "0": {
+            "laps": 4,
+            "fps": 126.94,
+            "fpsRange": [
+              125.2,
+              127.8
+            ],
+            "low1Fps": 48.5,
+            "frameMs": 7.878,
+            "rhiMs": 5.19,
+            "renderMs": 4.69
+          },
+          "1": {
+            "laps": 4,
+            "fps": 118.43,
+            "fpsRange": [
+              114.4,
+              122.3
+            ],
+            "low1Fps": 41.2,
+            "frameMs": 8.449,
+            "rhiMs": 5.52,
+            "renderMs": 6.1
+          }
+        }
+      },
+      "naniteTourEarlierBuild": {
+        "tag": "nanite-hzbauto4-laps-onoff-20261113",
+        "folder": "nanite-hzbauto4-villa-20261113",
+        "switch": "r.Nanite",
+        "values": [
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1
+        ],
+        "still": false,
+        "seconds": 30,
+        "foreground": [
+          "Clidex"
+        ],
+        "summary": {
+          "0": {
+            "laps": 4,
+            "fps": 133.89,
+            "fpsRange": [
+              133.2,
+              134.2
+            ],
+            "low1Fps": 49.9,
+            "frameMs": 7.469,
+            "rhiMs": 4.88,
+            "renderMs": 4.46
+          },
+          "1": {
+            "laps": 4,
+            "fps": 124.17,
+            "fpsRange": [
+              123.8,
+              124.6
+            ],
+            "low1Fps": 44.1,
+            "frameMs": 8.053,
+            "rhiMs": 5.28,
+            "renderMs": 5.89
+          }
+        }
+      },
+      "naniteStill": {
+        "tag": "nanite-hzbauto5-laps-onoff-still-b-20261114",
+        "folder": "nanite-hzbauto5-villa-20261113",
+        "switch": "r.Nanite",
+        "values": [
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1
+        ],
+        "still": true,
+        "seconds": 15,
+        "foreground": [
+          "Clidex"
+        ],
+        "summary": {
+          "0": {
+            "laps": 4,
+            "fps": 113.79,
+            "fpsRange": [
+              113.3,
+              114.7
+            ],
+            "low1Fps": 49.2,
+            "frameMs": 8.789,
+            "rhiMs": 6.01,
+            "renderMs": 5.56
+          },
+          "1": {
+            "laps": 4,
+            "fps": 110.38,
+            "fpsRange": [
+              108.7,
+              111.6
+            ],
+            "low1Fps": 56.5,
+            "frameMs": 9.06,
+            "rhiMs": 6.43,
+            "renderMs": 6.82
+          }
+        }
+      },
+      "hzbTour": {
+        "tag": "nanite-hzbauto5-laps-hzb-b-20261114",
+        "folder": "nanite-hzbauto5-villa-20261113",
+        "switch": "r.Nanite.WebHZB",
+        "values": [
+          1,
+          2,
+          2,
+          1,
+          1,
+          2,
+          2,
+          1
+        ],
+        "still": false,
+        "seconds": 30,
+        "foreground": [
+          "Clidex"
+        ],
+        "summary": {
+          "1": {
+            "laps": 4,
+            "fps": 110.62,
+            "fpsRange": [
+              105.5,
+              112.7
+            ],
+            "low1Fps": 38.3,
+            "frameMs": 9.047,
+            "rhiMs": 5.93,
+            "renderMs": 6.59
+          },
+          "2": {
+            "laps": 4,
+            "fps": 121.48,
+            "fpsRange": [
+              120.1,
+              122.2
+            ],
+            "low1Fps": 43.6,
+            "frameMs": 8.232,
+            "rhiMs": 5.38,
+            "renderMs": 5.81
+          }
+        }
+      },
+      "hzbTourEarlierBuild": {
+        "tag": "nanite-hzbauto4-laps-hzb-20261113",
+        "folder": "nanite-hzbauto4-villa-20261113",
+        "switch": "r.Nanite.WebHZB",
+        "values": [
+          1,
+          2,
+          2,
+          1,
+          1,
+          2,
+          2,
+          1
+        ],
+        "still": false,
+        "seconds": 30,
+        "foreground": [
+          "Clidex"
+        ],
+        "summary": {
+          "1": {
+            "laps": 4,
+            "fps": 114.72,
+            "fpsRange": [
+              114,
+              115.3
+            ],
+            "low1Fps": 40.1,
+            "frameMs": 8.717,
+            "rhiMs": 5.76,
+            "renderMs": 6.45
+          },
+          "2": {
+            "laps": 4,
+            "fps": 124.65,
+            "fpsRange": [
+              124,
+              125.1
+            ],
+            "low1Fps": 44.7,
+            "frameMs": 8.022,
+            "rhiMs": 5.26,
+            "renderMs": 5.72
+          }
+        }
+      },
+      "boundsMergeStill": {
+        "tag": "nanite-hzbauto5-laps-boundsmerge-still-b-20261114",
+        "folder": "nanite-hzbauto5-villa-20261113",
+        "switch": "r.Web.OcclusionMergeBoundsChanges",
+        "values": [
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0
+        ],
+        "still": true,
+        "seconds": 15,
+        "foreground": [
+          "Clidex"
+        ],
+        "summary": {
+          "0": {
+            "laps": 4,
+            "fps": 110.29,
+            "fpsRange": [
+              109.9,
+              110.7
+            ],
+            "low1Fps": 52.4,
+            "frameMs": 9.067,
+            "rhiMs": 6.33,
+            "renderMs": 6.98
+          },
+          "1": {
+            "laps": 4,
+            "fps": 111.11,
+            "fpsRange": [
+              110.7,
+              111.8
+            ],
+            "low1Fps": 52.8,
+            "frameMs": 9.001,
+            "rhiMs": 6.33,
+            "renderMs": 6.67
+          }
+        }
+      },
+      "rdgValidationTour": {
+        "tag": "nanite-hzbauto4-laps-rdgvalidation-20261113",
+        "folder": "nanite-hzbauto4-villa-20261113",
+        "switch": "r.RDG.Validation",
+        "values": [
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1
+        ],
+        "still": false,
+        "seconds": 30,
+        "foreground": [
+          "Clidex"
+        ],
+        "summary": {
+          "0": {
+            "laps": 4,
+            "fps": 125.95,
+            "fpsRange": [
+              125.5,
+              126.3
+            ],
+            "low1Fps": 45.1,
+            "frameMs": 7.94,
+            "rhiMs": 5.23,
+            "renderMs": 4.66
+          },
+          "1": {
+            "laps": 4,
+            "fps": 123.83,
+            "fpsRange": [
+              123.1,
+              124.3
+            ],
+            "low1Fps": 44.4,
+            "frameMs": 8.076,
+            "rhiMs": 5.28,
+            "renderMs": 5.72
+          }
+        }
+      },
+      "fixedRasterSinglePass": {
+        "tag": "nanite-hzbauto3-laps-singlepass-a-20261113",
+        "folder": "nanite-hzbauto3-villa-20261113",
+        "switch": "r.Nanite.WebFixedRasterSinglePass",
+        "values": [
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0
+        ],
+        "still": false,
+        "seconds": 30,
+        "foreground": [
+          "msedge"
+        ],
+        "summary": {
+          "0": {
+            "laps": 4,
+            "fps": 121.5,
+            "fpsRange": [
+              120.1,
+              124.1
+            ],
+            "low1Fps": 44.2,
+            "frameMs": 8.231,
+            "rhiMs": 5.35,
+            "renderMs": 5.81
+          },
+          "1": {
+            "laps": 4,
+            "fps": 121.14,
+            "fpsRange": [
+              119.5,
+              124.1
+            ],
+            "low1Fps": 43,
+            "frameMs": 8.257,
+            "rhiMs": 5.36,
+            "renderMs": 5.8
+          }
+        }
+      }
+    },
+    "firstTour": {
+      "tag": "nanite-hzbauto5-onoff-abba-b-20261114",
+      "runs": [
+        {
+          "index": 0,
+          "folder": "nanite-hzbauto5-villa-20261113",
+          "nanite": 0,
+          "fps": 136.28,
+          "low1Fps": 54.29,
+          "over33Ms": 2,
+          "over50Ms": 0,
+          "maxMs": 43.8,
+          "rhiMs": 4.91,
+          "renderMs": 4.41,
+          "foreground": [
+            "Clidex",
+            "Clidex"
+          ]
+        },
+        {
+          "index": 1,
+          "folder": "nanite-hzbauto5-villa-20261113",
+          "nanite": 1,
+          "fps": 125.79,
+          "low1Fps": 42.9,
+          "over33Ms": 8,
+          "over50Ms": 3,
+          "maxMs": 105.1,
+          "rhiMs": 5.32,
+          "renderMs": 5.86,
+          "foreground": [
+            "Clidex",
+            "Clidex"
+          ]
+        },
+        {
+          "index": 2,
+          "folder": "nanite-hzbauto5-villa-20261113",
+          "nanite": 1,
+          "fps": 126.36,
+          "low1Fps": 43.55,
+          "over33Ms": 8,
+          "over50Ms": 1,
+          "maxMs": 85.6,
+          "rhiMs": 5.29,
+          "renderMs": 5.84,
+          "foreground": [
+            "Clidex",
+            "Clidex"
+          ]
+        },
+        {
+          "index": 3,
+          "folder": "nanite-hzbauto5-villa-20261113",
+          "nanite": 0,
+          "fps": 135.1,
+          "low1Fps": 54.64,
+          "over33Ms": 2,
+          "over50Ms": 0,
+          "maxMs": 47.1,
+          "rhiMs": 4.95,
+          "renderMs": 4.45,
+          "foreground": [
+            "Clidex",
+            "Clidex"
+          ]
+        }
+      ],
+      "onOverOff": 0.9291
+    },
+    "disturbed": [
+      {
+        "tag": "nanite-hzbauto2-onoff-abba-20261113",
+        "runs": [
+          {
+            "index": 0,
+            "folder": "nanite-hzbauto2-villa-20261113",
+            "nanite": 0,
+            "fps": 127.57,
+            "low1Fps": 47.18,
+            "over33Ms": 5,
+            "over50Ms": 0,
+            "maxMs": 42.3,
+            "rhiMs": 5.22,
+            "renderMs": 4.81,
+            "foreground": [
+              "Clidex",
+              "Clidex"
+            ]
+          },
+          {
+            "index": 1,
+            "folder": "nanite-hzbauto2-villa-20261113",
+            "nanite": 1,
+            "fps": 116.1,
+            "low1Fps": 37.99,
+            "over33Ms": 6,
+            "over50Ms": 3,
+            "maxMs": 124.7,
+            "rhiMs": 5.69,
+            "renderMs": 6.35,
+            "foreground": [
+              "Clidex",
+              "Clidex"
+            ]
+          },
+          {
+            "index": 2,
+            "folder": "nanite-hzbauto2-villa-20261113",
+            "nanite": 1,
+            "fps": 114.55,
+            "low1Fps": 35.84,
+            "over33Ms": 9,
+            "over50Ms": 2,
+            "maxMs": 113.4,
+            "rhiMs": 5.76,
+            "renderMs": 6.34,
+            "foreground": [
+              "Clidex",
+              "Clidex"
+            ]
+          },
+          {
+            "index": 3,
+            "folder": "nanite-hzbauto2-villa-20261113",
+            "nanite": 0,
+            "fps": 126.19,
+            "low1Fps": 46.34,
+            "over33Ms": 5,
+            "over50Ms": 0,
+            "maxMs": 35.6,
+            "rhiMs": 5.28,
+            "renderMs": 4.82,
+            "foreground": [
+              "Clidex",
+              "Clidex"
+            ]
+          }
+        ]
+      },
+      {
+        "tag": "nanite-hzbauto2-hzb-abba-20261113",
+        "runs": [
+          {
+            "index": 0,
+            "folder": "nanite-hzbauto2-villa-20261113",
+            "cvar": {
+              "name": "r.Nanite.WebHZB",
+              "value": 1
+            },
+            "fps": 107.72,
+            "low1Fps": 37.34,
+            "over33Ms": 7,
+            "over50Ms": 2,
+            "maxMs": 81.4,
+            "rhiMs": 6.21,
+            "renderMs": 7.09,
+            "foreground": [
+              "Clidex",
+              "Clidex"
+            ]
+          },
+          {
+            "index": 1,
+            "folder": "nanite-hzbauto2-villa-20261113",
+            "cvar": {
+              "name": "r.Nanite.WebHZB",
+              "value": 2
+            },
+            "fps": 79.89,
+            "low1Fps": 27.36,
+            "over33Ms": 16,
+            "over50Ms": 5,
+            "maxMs": 103.2,
+            "rhiMs": 8.39,
+            "renderMs": 8.84,
+            "foreground": [
+              "Weixin",
+              "ShellExperienceHost"
+            ]
+          },
+          {
+            "index": 2,
+            "folder": "nanite-hzbauto2-villa-20261113",
+            "cvar": {
+              "name": "r.Nanite.WebHZB",
+              "value": 2
+            },
+            "fps": 110.22,
+            "low1Fps": 33.7,
+            "over33Ms": 11,
+            "over50Ms": 3,
+            "maxMs": 163.2,
+            "rhiMs": 6.01,
+            "renderMs": 6.62,
+            "foreground": [
+              "Notepad--",
+              "explorer"
+            ]
+          },
+          {
+            "index": 3,
+            "folder": "nanite-hzbauto2-villa-20261113",
+            "cvar": {
+              "name": "r.Nanite.WebHZB",
+              "value": 1
+            },
+            "fps": 77.9,
+            "low1Fps": 25.64,
+            "over33Ms": 19,
+            "over50Ms": 6,
+            "maxMs": 111.4,
+            "rhiMs": 8.48,
+            "renderMs": 9.48,
+            "foreground": [
+              "explorer",
+              "explorer"
+            ]
+          }
+        ]
+      },
+      {
+        "tag": "nanite-hzbauto2-singlepass-abba-20261113",
+        "runs": [
+          {
+            "index": 0,
+            "folder": "nanite-hzbauto2-villa-20261113",
+            "cvar": {
+              "name": "r.Nanite.WebFixedRasterSinglePass",
+              "value": 0
+            },
+            "fps": 86.8,
+            "low1Fps": 29.46,
+            "over33Ms": 11,
+            "over50Ms": 3,
+            "maxMs": 126.8,
+            "rhiMs": 7.6,
+            "renderMs": 8.13,
+            "foreground": [
+              "explorer",
+              "explorer"
+            ]
+          },
+          {
+            "index": 1,
+            "folder": "nanite-hzbauto2-villa-20261113",
+            "cvar": {
+              "name": "r.Nanite.WebFixedRasterSinglePass",
+              "value": 1
+            },
+            "fps": 78.54,
+            "low1Fps": 29.15,
+            "over33Ms": 12,
+            "over50Ms": 3,
+            "maxMs": 86.5,
+            "rhiMs": 8.45,
+            "renderMs": 8.89,
+            "foreground": [
+              "explorer",
+              "explorer"
+            ]
+          },
+          {
+            "index": 2,
+            "folder": "nanite-hzbauto2-villa-20261113",
+            "cvar": {
+              "name": "r.Nanite.WebFixedRasterSinglePass",
+              "value": 1
+            },
+            "fps": 77.01,
+            "low1Fps": 26.9,
+            "over33Ms": 18,
+            "over50Ms": 6,
+            "maxMs": 108.9,
+            "rhiMs": 8.64,
+            "renderMs": 9.24,
+            "foreground": [
+              "explorer",
+              "explorer"
+            ]
+          },
+          {
+            "index": 3,
+            "folder": "nanite-hzbauto2-villa-20261113",
+            "cvar": {
+              "name": "r.Nanite.WebFixedRasterSinglePass",
+              "value": 0
+            },
+            "fps": 82.78,
+            "low1Fps": 30.01,
+            "over33Ms": 10,
+            "over50Ms": 5,
+            "maxMs": 80.3,
+            "rhiMs": 8.13,
+            "renderMs": 8.71,
+            "foreground": [
+              "explorer",
+              "explorer"
+            ]
+          }
+        ]
+      },
+      {
+        "tag": "nanite-hzbauto5-laps-onoff-20261114",
+        "pass": false,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-laps-onoff-20261114\\report.json",
+          "sha256": "0127cf8c2be2845199b3fa4214ddcfc5ec9085fbe3216b352aafc1ae2bc4c48b"
+        }
+      },
+      {
+        "tag": "nanite-hzbauto4-laps-singlepass-20261113",
+        "pass": false,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto4-laps-singlepass-20261113\\report.json",
+          "sha256": "ad4fd32912cff87c7257741c1ae9d63a1859c8a857e372bdc68f2fe918b62af9"
+        }
+      }
+    ],
+    "calls": {
+      "on": {
+        "total": 5551,
+        "drawIndirect": 154.1,
+        "drawIndexedIndirect": 140.7,
+        "dispatchIndirect": 10.9,
+        "renderPassesWithIndirectDraws": 16.1,
+        "drawValidationPasses": 22.3,
+        "byTarget": {
+          "Nanite.Web.RasterExtent": {
+            "passes": 5.413420528859824,
+            "validations": 11.57989764003412
+          },
+          "WebCubeShadowFace": {
+            "passes": 7.687233437588854,
+            "validations": 7.687233437588854
+          },
+          "Dummy": {
+            "passes": 2,
+            "validations": 2
+          },
+          "SceneColor": {
+            "passes": 1,
+            "validations": 1
+          }
+        },
+        "pipelinesCreated": [
+          {
+            "seconds": 0.03308500000089407,
+            "method": "createRenderPipeline",
+            "kind": "other",
+            "shaderBytes": 2135
+          },
+          {
+            "seconds": 0.03335499999672174,
+            "method": "createRenderPipeline",
+            "kind": "other",
+            "shaderBytes": 2135
+          },
+          {
+            "seconds": 1.2485649999976158,
+            "method": "createRenderPipeline",
+            "kind": "nanite-other",
+            "shaderBytes": 23942
+          },
+          {
+            "seconds": 26.200780000001192,
+            "method": "createRenderPipeline",
+            "kind": "other",
+            "shaderBytes": 13425
+          },
+          {
+            "seconds": 36.54549000000208,
+            "method": "createRenderPipeline",
+            "kind": "other",
+            "shaderBytes": 22574
+          }
+        ]
+      },
+      "off": {
+        "total": 6365,
+        "drawIndirect": 0,
+        "drawIndexedIndirect": 136.8,
+        "dispatchIndirect": 8,
+        "renderPassesWithIndirectDraws": 9.3,
+        "drawValidationPasses": 9.3,
+        "byTarget": {
+          "WebCubeShadowFace": {
+            "passes": 7.300825796303578,
+            "validations": 7.300825796303578
+          },
+          "Dummy": {
+            "passes": 2,
+            "validations": 2
+          }
+        },
+        "pipelinesCreated": [
+          {
+            "seconds": 0.015594999998807908,
+            "method": "createRenderPipeline",
+            "kind": "other",
+            "shaderBytes": 2135
+          },
+          {
+            "seconds": 0.015855000004172327,
+            "method": "createRenderPipeline",
+            "kind": "other",
+            "shaderBytes": 2135
+          },
+          {
+            "seconds": 26.194405000001193,
+            "method": "createRenderPipeline",
+            "kind": "other",
+            "shaderBytes": 13425
+          },
+          {
+            "seconds": 54.43285000000149,
+            "method": "createRenderPipeline",
+            "kind": "other",
+            "shaderBytes": 5787
+          },
+          {
+            "seconds": 54.76546999999881,
+            "method": "createRenderPipeline",
+            "kind": "other",
+            "shaderBytes": 5787
+          },
+          {
+            "seconds": 57.847135000005366,
+            "method": "createRenderPipeline",
+            "kind": "other",
+            "shaderBytes": 12552
+          }
+        ]
+      }
+    },
+    "firstMovePipeline": {
+      "seconds": 0.7227599999979138,
+      "method": "createRenderPipeline",
+      "kind": "nanite-other",
+      "shaderBytes": 23942,
+      "markers": [
+        "WebRasterLocalToClip",
+        "WebRasterClusterBase",
+        "WebRasterFirstPage",
+        "WebRasterNumPages",
+        "WebRasterInstanceId",
+        "WebRasterViewRect",
+        "WebRasterMicroSpan",
+        "WebRasterMaterialMasks",
+        "WebRasterReverseCulling",
+        "WebInstanceDataOffset",
+        "WebStreamingPageOwners",
+        "WebRasterCullState",
+        "WebInstanceData",
+        "WebNanitePackedAtomicBuffer",
+        "WebNaniteAtomicMax",
+        "WebNaniteVisibilitySize"
+      ],
+      "label": "main_00004ef4_6cc05bb4 / main_00000ad0_a419fca8",
+      "entries": [
+        "main_00004ef4_6cc05bb4",
+        "main_00000ad0_a419fca8"
+      ]
+    },
+    "commandCosts": {
+      "note": "Measured while the correctness batch was running; compare patterns with each other.",
+      "patterns": [
+        {
+          "name": "empty encoder (floor)",
+          "gpuProcessUs": 0,
+          "submitUs": 0,
+          "wallUs": 0
+        },
+        {
+          "name": "render pass + draw, one pass each",
+          "gpuProcessUs": 4.76,
+          "submitUs": 2.34,
+          "wallUs": 5.1
+        },
+        {
+          "name": "render pass + drawIndirect, one pass each, distinct buffers",
+          "gpuProcessUs": 13.26,
+          "submitUs": 7.86,
+          "wallUs": 15.41
+        },
+        {
+          "name": "render pass + drawIndirect, one pass each, shared buffer",
+          "gpuProcessUs": 12.15,
+          "submitUs": 6.65,
+          "wallUs": 15.23
+        },
+        {
+          "name": "render pass + drawIndexedIndirect, one pass each, shared buffer",
+          "gpuProcessUs": 12.4,
+          "submitUs": 6.99,
+          "wallUs": 15.88
+        },
+        {
+          "name": "render pass + drawIndexed, one pass each",
+          "gpuProcessUs": 4.16,
+          "submitUs": 1.84,
+          "wallUs": 4.44
+        },
+        {
+          "name": "one pass: draw",
+          "gpuProcessUs": 0.63,
+          "submitUs": 0.48,
+          "wallUs": 1.06
+        },
+        {
+          "name": "one pass: drawIndirect, shared buffer",
+          "gpuProcessUs": 1.1,
+          "submitUs": 0.75,
+          "wallUs": 1.39
+        },
+        {
+          "name": "one pass: drawIndirect, distinct buffers",
+          "gpuProcessUs": 5.64,
+          "submitUs": 3.12,
+          "wallUs": 5.91
+        },
+        {
+          "name": "one pass: setBindGroup + draw",
+          "gpuProcessUs": 0.84,
+          "submitUs": 0.5,
+          "wallUs": 1.1
+        },
+        {
+          "name": "one pass: setPipeline + setBindGroup + draw",
+          "gpuProcessUs": 1.24,
+          "submitUs": 0.77,
+          "wallUs": 1.57
+        },
+        {
+          "name": "compute pass + dispatch, one pass each",
+          "gpuProcessUs": 2.19,
+          "submitUs": 0.98,
+          "wallUs": 2.55
+        },
+        {
+          "name": "one compute pass: setBindGroup + dispatch",
+          "gpuProcessUs": 1.85,
+          "submitUs": 1.31,
+          "wallUs": 2.47
+        },
+        {
+          "name": "one compute pass: dispatchIndirect, shared buffer",
+          "gpuProcessUs": 20.51,
+          "submitUs": 6.52,
+          "wallUs": 20.83
+        },
+        {
+          "name": "alternating compute pass and render pass with draw",
+          "gpuProcessUs": 9.01,
+          "submitUs": 4.95,
+          "wallUs": 11.63
+        },
+        {
+          "name": "queue.writeBuffer 64 bytes",
+          "gpuProcessUs": 1.12,
+          "submitUs": 0.49,
+          "wallUs": 1.4
+        },
+        {
+          "name": "queue.writeBuffer 16 KiB",
+          "gpuProcessUs": 4.3,
+          "submitUs": 0.6,
+          "wallUs": 5.03
+        },
+        {
+          "name": "copyBufferToBuffer 256 bytes",
+          "gpuProcessUs": 0.89,
+          "submitUs": 0.74,
+          "wallUs": 1.14
+        },
+        {
+          "name": "clearBuffer 256 bytes",
+          "gpuProcessUs": 0.72,
+          "submitUs": 0.64,
+          "wallUs": 1.06
+        },
+        {
+          "name": "createBindGroup",
+          "gpuProcessUs": 1.04,
+          "submitUs": 0.05,
+          "wallUs": 1.03
+        },
+        {
+          "name": "createBuffer 256 bytes + destroy",
+          "gpuProcessUs": 5.07,
+          "submitUs": 0.96,
+          "wallUs": 5.09
+        }
+      ]
+    },
+    "records": [
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-villa-hzb-mode-20261113\\report.json",
+          "sha256": "bff3a49e364a14cb4fb331a10a7548881bf2e9cb7b1bb2a063fa7eef96f35c55"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\0-report.json.gz",
+          "sha256": "4412e98b80196122ce939f254933ff55313b9b864925bccccce7d211bb10066d"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-villa-hzb-mode-20261113\\source.cjs",
+          "sha256": "df988412f0c8c45c7354d02b9bf84d388737bd8d914e794e82fd4f976b726372"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\1-source.cjs.gz",
+          "sha256": "b8b08690e6a0f1d2692b82bfa4f0e72d84799b5326442fc17d67a2dcfa3ee3d2"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-villa-hzb-auto-two-phase-20261113\\report.json",
+          "sha256": "e49004f11416121da30073814eb4718d0d5e4b0bb750277f44219f2c61db0a44"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\2-report.json.gz",
+          "sha256": "05cd6f75c51a770208637ae240bd5d5ed1e6c6ed591784134f4ba367ba0a0fcd"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-villa-hzb-auto-two-phase-20261113\\source.cjs",
+          "sha256": "df988412f0c8c45c7354d02b9bf84d388737bd8d914e794e82fd4f976b726372"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\3-source.cjs.gz",
+          "sha256": "b8b08690e6a0f1d2692b82bfa4f0e72d84799b5326442fc17d67a2dcfa3ee3d2"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-default-hzb-mode-20261113\\report.json",
+          "sha256": "59146b113bbd53ffc14115e53d63a1178f96e43561525c5eff002a364e1c8a0d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\4-report.json.gz",
+          "sha256": "86985b979013c2bd9011ddf12eea1eae582fb272c57850668089f575379cb34e"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-default-hzb-mode-20261113\\source.cjs",
+          "sha256": "df988412f0c8c45c7354d02b9bf84d388737bd8d914e794e82fd4f976b726372"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\5-source.cjs.gz",
+          "sha256": "b8b08690e6a0f1d2692b82bfa4f0e72d84799b5326442fc17d67a2dcfa3ee3d2"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-default-hzb-mode-scalar-20261113\\report.json",
+          "sha256": "9a410f16600e84345c868219286f2446b7d4168702bb3c56e718a2f54c55c28b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\6-report.json.gz",
+          "sha256": "0ed03af9776b454f81c57065c18f7a1be067a28e2b8e7aeb9bc7b0d8039f7334"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-default-hzb-mode-scalar-20261113\\source.cjs",
+          "sha256": "df988412f0c8c45c7354d02b9bf84d388737bd8d914e794e82fd4f976b726372"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\7-source.cjs.gz",
+          "sha256": "b8b08690e6a0f1d2692b82bfa4f0e72d84799b5326442fc17d67a2dcfa3ee3d2"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-villa-shade-two-phase-20261113\\report.json",
+          "sha256": "3d9c105e3ab7970c720991ef2306b58b3a71b9d390ba280724a883ec83d18835"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\8-report.json.gz",
+          "sha256": "e280a21a4fd099e3fb66a2cf3ce43271c3fad0df4a067d7c42f3e4f1953f39eb"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-villa-shade-two-phase-20261113\\source.cjs",
+          "sha256": "df988412f0c8c45c7354d02b9bf84d388737bd8d914e794e82fd4f976b726372"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\9-source.cjs.gz",
+          "sha256": "b8b08690e6a0f1d2692b82bfa4f0e72d84799b5326442fc17d67a2dcfa3ee3d2"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-villa-shade-auto-20261113\\report.json",
+          "sha256": "56f160ae14d103b85f3ac9d500c5c0ce3d6460fd3a30109a0f1d4c53273a3b88"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\10-report.json.gz",
+          "sha256": "68bf6d99df22a7d8dd5d44e554625e21c1f7952e795c8774a0d9f99d6b115291"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-villa-shade-auto-20261113\\source.cjs",
+          "sha256": "df988412f0c8c45c7354d02b9bf84d388737bd8d914e794e82fd4f976b726372"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\11-source.cjs.gz",
+          "sha256": "b8b08690e6a0f1d2692b82bfa4f0e72d84799b5326442fc17d67a2dcfa3ee3d2"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-villa-programmable-auto-20261113\\report.json",
+          "sha256": "4536859f42a0d295cc81266ef43d347e6289debcbaa2d369df2d0107c89afedb"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\12-report.json.gz",
+          "sha256": "3602ab0954529380f73b833a5e91e7e5f2e45f097e53df77696a985203a90230"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-villa-programmable-auto-20261113\\source.cjs",
+          "sha256": "df988412f0c8c45c7354d02b9bf84d388737bd8d914e794e82fd4f976b726372"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\13-source.cjs.gz",
+          "sha256": "b8b08690e6a0f1d2692b82bfa4f0e72d84799b5326442fc17d67a2dcfa3ee3d2"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-default-shade-two-phase-20261113\\report.json",
+          "sha256": "0f418f94144b525005fe27b568f607b011a3c539f747bfc46826743058ea23b8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\14-report.json.gz",
+          "sha256": "3f85d2b126726fd92428e960cd28b480bf9351533ad2f2e4996e35ccc61cabf8"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-default-shade-two-phase-20261113\\source.cjs",
+          "sha256": "df988412f0c8c45c7354d02b9bf84d388737bd8d914e794e82fd4f976b726372"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\15-source.cjs.gz",
+          "sha256": "b8b08690e6a0f1d2692b82bfa4f0e72d84799b5326442fc17d67a2dcfa3ee3d2"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-default-shade-auto-scalar-20261113\\report.json",
+          "sha256": "983b7de256690988d7b36e1227aea0ac3fe9d7d386ec85d8ac80844213751223"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\16-report.json.gz",
+          "sha256": "772d699841618ebe878e80b8ada4d06cff362e02141dd34db22938fed3e314f9"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-default-shade-auto-scalar-20261113\\source.cjs",
+          "sha256": "df988412f0c8c45c7354d02b9bf84d388737bd8d914e794e82fd4f976b726372"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\17-source.cjs.gz",
+          "sha256": "b8b08690e6a0f1d2692b82bfa4f0e72d84799b5326442fc17d67a2dcfa3ee3d2"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-programmable-20261113\\packed-source.cjs",
+          "sha256": "9bb7a42fba24a16cba4ae72a8b5f84018f9da586df4f60a6382c79f4393237e2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\18-packed-source.cjs.gz",
+          "sha256": "06cddf55371ad76127f7cce0def64ba08847feefcef1cbea973dd45532853019"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-programmable-20261113\\scalar-source.cjs",
+          "sha256": "9bb7a42fba24a16cba4ae72a8b5f84018f9da586df4f60a6382c79f4393237e2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\19-scalar-source.cjs.gz",
+          "sha256": "06cddf55371ad76127f7cce0def64ba08847feefcef1cbea973dd45532853019"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-wpo-20261113\\packed-source.cjs",
+          "sha256": "75ccd0da63ccaec61d4447e944aab0c56c59ad253acf5d1029b7d4f0c60939be"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\20-packed-source.cjs.gz",
+          "sha256": "c357d79e1ee13137dbc894778468ae66f8ee2b6c986608820ca869a9b337e836"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-wpo-20261113\\scalar-source.cjs",
+          "sha256": "75ccd0da63ccaec61d4447e944aab0c56c59ad253acf5d1029b7d4f0c60939be"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\21-scalar-source.cjs.gz",
+          "sha256": "c357d79e1ee13137dbc894778468ae66f8ee2b6c986608820ca869a9b337e836"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-recovery-20261113\\packed-source.cjs",
+          "sha256": "6855a942d044603c3713a49f901930ccec82a69919f8066e07ad5eedbb476df4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\22-packed-source.cjs.gz",
+          "sha256": "e38f7213a2edfe5ae034fc901fc7bddf54b4b60d80976f7ab91ec2b876df6b75"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-recovery-20261113\\scalar-source.cjs",
+          "sha256": "6855a942d044603c3713a49f901930ccec82a69919f8066e07ad5eedbb476df4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\23-scalar-source.cjs.gz",
+          "sha256": "e38f7213a2edfe5ae034fc901fc7bddf54b4b60d80976f7ab91ec2b876df6b75"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-eligibility-20261113\\report.json",
+          "sha256": "c325dfc75d96f78e97a03e65229b2aac88848e44e34f0ca472bf740a88a5063e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\24-report.json.gz",
+          "sha256": "af523cfa26cd7c6a372d7be6435944b1710f3941657ec26a777fffa5e7f33c6b"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-eligibility-20261113\\source.cjs",
+          "sha256": "59027d5853e70d09bd2979fd3ece882985adaf3425aad55f493807e74c96c752"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\25-source.cjs.gz",
+          "sha256": "ee13df68df6d2876a12ba8b222d9b439ba3f340b8bde993ce7fccae046c3e5ba"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-laps-onoff-b-20261114\\report.json",
+          "sha256": "69eec1de61a291f596d8dd6d5ad8cd6a65f5ad6065064fa40127eefd2ca194d4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\26-report.json.gz",
+          "sha256": "9367602df3310b6afb127baa548e992aa0a512691a85bb32dd89387d7eb728ff"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-laps-onoff-b-20261114\\source.cjs",
+          "sha256": "1405263b19298381f64116014340f3a43d01c3e4fb5dbe4f9e8e9ffb30393d28"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\27-source.cjs.gz",
+          "sha256": "c3f7cb0d3e8a96920b9dabdfc0727551b893a969c0c8eece7234318a0a105854"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto4-laps-onoff-20261113\\report.json",
+          "sha256": "b1424938b565967303211a761f94a417d7c52fc7528fbdb64b795d44082f973b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\28-report.json.gz",
+          "sha256": "7e9dafa26a8710f23ffa50829eea146871d990be9c523951d5f2a4633867a931"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto4-laps-onoff-20261113\\source.cjs",
+          "sha256": "4b44971527886cc856a9dc97f56d73a60a96e256395067f91a054fd878d5bb9a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\29-source.cjs.gz",
+          "sha256": "1a7ede42536f9cab0d641617377648ab8d05bd9224ddf840e46fa4d4d8f7af3d"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-laps-onoff-still-b-20261114\\report.json",
+          "sha256": "58c1400d00ecf528175558f2fce9c96d9612597946ca12a3d3e1fe5cf1388ee0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\30-report.json.gz",
+          "sha256": "598ace9d2cbffc76e9bdd879e99d4c5dd41d9b29263db4a277eeb7b19fe79565"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-laps-onoff-still-b-20261114\\source.cjs",
+          "sha256": "1405263b19298381f64116014340f3a43d01c3e4fb5dbe4f9e8e9ffb30393d28"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\31-source.cjs.gz",
+          "sha256": "c3f7cb0d3e8a96920b9dabdfc0727551b893a969c0c8eece7234318a0a105854"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-laps-hzb-b-20261114\\report.json",
+          "sha256": "2c057782d81db32f6c835c0c781e1c1c6cdc35ebad9d776ca1b93d74791c68b9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\32-report.json.gz",
+          "sha256": "ebfb62d02aa18d04fa5a5164547905565d15eb07fb0ef2ba5c5b946a73e7cd7e"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-laps-hzb-b-20261114\\source.cjs",
+          "sha256": "1405263b19298381f64116014340f3a43d01c3e4fb5dbe4f9e8e9ffb30393d28"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\33-source.cjs.gz",
+          "sha256": "c3f7cb0d3e8a96920b9dabdfc0727551b893a969c0c8eece7234318a0a105854"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto4-laps-hzb-20261113\\report.json",
+          "sha256": "62450b44ea21635679156d876164336ce99e8c59f4036e4b0b6c180172bde5b6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\34-report.json.gz",
+          "sha256": "c15d04b7ca569d407c1cdfaca95b6ce1bee93c15d738039fb035f33f56b93e7b"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto4-laps-hzb-20261113\\source.cjs",
+          "sha256": "4b44971527886cc856a9dc97f56d73a60a96e256395067f91a054fd878d5bb9a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\35-source.cjs.gz",
+          "sha256": "1a7ede42536f9cab0d641617377648ab8d05bd9224ddf840e46fa4d4d8f7af3d"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-laps-boundsmerge-still-b-20261114\\report.json",
+          "sha256": "2a02cee507366fd5aa4dae57c33727321041d0e8aead8db0312bde0f40527caa"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\36-report.json.gz",
+          "sha256": "edabf1ab524c5ad3cbd1caf791c997a72282e19bc889d65f4becf7d481878c17"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-laps-boundsmerge-still-b-20261114\\source.cjs",
+          "sha256": "1405263b19298381f64116014340f3a43d01c3e4fb5dbe4f9e8e9ffb30393d28"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\37-source.cjs.gz",
+          "sha256": "c3f7cb0d3e8a96920b9dabdfc0727551b893a969c0c8eece7234318a0a105854"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto4-laps-rdgvalidation-20261113\\report.json",
+          "sha256": "8e5c344416d63f5062a9b834b264e5bccd65ff6c490d41bc6d6930081edccad0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\38-report.json.gz",
+          "sha256": "6e4b3883bf1279e0f264007ff9613387fdc9c16038b120cb134596a8982cb7bb"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto4-laps-rdgvalidation-20261113\\source.cjs",
+          "sha256": "4b44971527886cc856a9dc97f56d73a60a96e256395067f91a054fd878d5bb9a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\39-source.cjs.gz",
+          "sha256": "1a7ede42536f9cab0d641617377648ab8d05bd9224ddf840e46fa4d4d8f7af3d"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto3-laps-singlepass-a-20261113\\report.json",
+          "sha256": "c629c01b342a2a0891e369faef4b4695ed4cd0adb147b932bf03f020f8713317"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\40-report.json.gz",
+          "sha256": "b25705c90124eaa452f8d6ff25f1870028ab007bc3223e7596b82a451c1d5a71"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto3-laps-singlepass-a-20261113\\source.cjs",
+          "sha256": "9320ee6aec6a045542143dcf5ee04cf9095acaec2d4636230bd292bc3334bdfd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\41-source.cjs.gz",
+          "sha256": "435e5f4e368c7a10e4d99c91e7bee80233f07a0191f5da14523821a7342a2d16"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-onoff-abba-b-20261114\\report.json",
+          "sha256": "1601d8bb96781efb2908dec72d3eaf40bf9d4507442fda2dc1b5d0ce7bee65b2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\42-report.json.gz",
+          "sha256": "e3683dad3e83159a997bf463b06d6a9ddc31b41cd8f53ce735efd334e4765481"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-onoff-abba-b-20261114\\source.cjs",
+          "sha256": "b2fe22da0cc406d7f5cf88ab83ddc4a5090bc33757812cd40104aeaca42bf517"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\43-source.cjs.gz",
+          "sha256": "1bde4f438ac68c28d506f82dd649f441359a26bda7a028e1d00b564b65d5cb8c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto2-onoff-abba-20261113\\report.json",
+          "sha256": "62b51e218a243ccb3e977eefdf4fd7c3aa29de2a437570b4aeb9a16dee9d0999"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\44-report.json.gz",
+          "sha256": "1688873784ea3bf726ac3c7c405a067b6b34413cdd2c4a195cd7f08fa918787a"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto2-onoff-abba-20261113\\source.cjs",
+          "sha256": "b2fe22da0cc406d7f5cf88ab83ddc4a5090bc33757812cd40104aeaca42bf517"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\45-source.cjs.gz",
+          "sha256": "1bde4f438ac68c28d506f82dd649f441359a26bda7a028e1d00b564b65d5cb8c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto2-hzb-abba-20261113\\report.json",
+          "sha256": "cff177044d5ff735f4b48073f62440765964dbf973395917efc225b39e8e70fd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\46-report.json.gz",
+          "sha256": "607100c65e7f4720ec729652b23fc4c5aff0e1aed0559692aaac2dd6aa36f9ab"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto2-hzb-abba-20261113\\source.cjs",
+          "sha256": "b2fe22da0cc406d7f5cf88ab83ddc4a5090bc33757812cd40104aeaca42bf517"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\47-source.cjs.gz",
+          "sha256": "1bde4f438ac68c28d506f82dd649f441359a26bda7a028e1d00b564b65d5cb8c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto2-singlepass-abba-20261113\\report.json",
+          "sha256": "1d39572fa8f343a2bf37b96ff7b80930235db871994f2e1864d58bbde6cf7a6d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\48-report.json.gz",
+          "sha256": "7e45b952c617116f1d795acf07bad071f1db48af4a41e6685d254af259dffa54"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto2-singlepass-abba-20261113\\source.cjs",
+          "sha256": "b2fe22da0cc406d7f5cf88ab83ddc4a5090bc33757812cd40104aeaca42bf517"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\49-source.cjs.gz",
+          "sha256": "1bde4f438ac68c28d506f82dd649f441359a26bda7a028e1d00b564b65d5cb8c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-laps-onoff-20261114\\report.json",
+          "sha256": "0127cf8c2be2845199b3fa4214ddcfc5ec9085fbe3216b352aafc1ae2bc4c48b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\50-report.json.gz",
+          "sha256": "cdddbb49078bb3eafebff26504cf22871ab8eb24951bd8c0a51f83fc5f97528a"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto4-laps-singlepass-20261113\\report.json",
+          "sha256": "ad4fd32912cff87c7257741c1ae9d63a1859c8a857e372bdc68f2fe918b62af9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\51-report.json.gz",
+          "sha256": "3ee1befa82fae5e010f260735fef1a5d5d348384aba0b85f6f006e821d8c7e39"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\webgpu-calls-hzbauto5-on-20261114.json",
+          "sha256": "9aeb0082e7796be1a4c49cadb34588646961bbbf3205b7c703bd75c088634ebb"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\52-webgpu-calls-hzbauto5-on-20261114.json.gz",
+          "sha256": "069cb83818632e7b6bebb1d6d7e360f0c4a556e9fefc42b708b892fe691d99dd"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\webgpu-calls-hzbauto5-off-20261114.json",
+          "sha256": "1bd69ea26d2a77d3e2dccc719270d96e4f70ea38aefe129543149abe64393a97"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\53-webgpu-calls-hzbauto5-off-20261114.json.gz",
+          "sha256": "5b3a4b635c6bf8c1be5ae72fba3feb5d4b7029e0a123c3d56b4698ab15da12a6"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\webgpu-calls-hzbauto5-pipelines-20261114.json",
+          "sha256": "b3a497cda6d20ad22b2b7b7e4817d9ecea7de85b2fc0887c977a6dfa36ad0aeb"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\54-webgpu-calls-hzbauto5-pipelines-20261114.json.gz",
+          "sha256": "63672c67bd9e46afa67679f65b922b0164a5b37cdc7353d72a3530eb5d1bda86"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\webgpu-command-costs-busy-e-20261114.json",
+          "sha256": "174bf0f417e7a54df033fba3f523cfa16327b32a43776c5250b87338df62d7de"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\55-webgpu-command-costs-busy-e-20261114.json.gz",
+          "sha256": "f828d7b3569b1846f25aca3f2c73eea633b5259b4a7b4fa6324062d71e628392"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\webgpu-command-costs-a-20261114.json",
+          "sha256": "0392bac728ba21def31dbd1ebdf9a99c0538cb1742d3163412be19ebd5b92656"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\56-webgpu-command-costs-a-20261114.json.gz",
+          "sha256": "a65db75b66e4b2c4e48faff1badb6f2ea7812c31ed672e3479a5d7a7959dde36"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\webgpu-command-costs-b-20261114.json",
+          "sha256": "f7beb2ec742d7164c46390e0fbf648880f7f9cd71f02dd817ed2305e7bd5bd78"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\57-webgpu-command-costs-b-20261114.json.gz",
+          "sha256": "4ecece82d7a09af7b357c3265db58da6956c798c78e17097678b9462a8801be0"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\webgpu-command-costs-busy-c-20261114.json",
+          "sha256": "cf5490a37e9b4f1ebed958ee22fa8ec51caed451082a80c06e9ebeef66ca8a97"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\58-webgpu-command-costs-busy-c-20261114.json.gz",
+          "sha256": "4fc8e2da64d4a18ef544a05d405321d688e7562bf722d4350236b8b8bd8a0242"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\webgpu-command-costs-busy-d-20261114.json",
+          "sha256": "9101c28fed2a3b22b6f1e301320a2196f6c71d3ab0ba925ad7e160647b3615f9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\59-webgpu-command-costs-busy-d-20261114.json.gz",
+          "sha256": "1708d29d01a6b617304e78f31b8d1aeb673b2933411d26ccbcd068448f78cb21"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\calls5.log",
+          "sha256": "4b1c3223035e58cbf0f45a20a7cb0bd3e7dc0013fc2ebae50a734a88b1954fd1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\60-calls5.log.gz",
+          "sha256": "4eeada53c401ff37a62bb15647e7172c398e1572bede577313dc901fa600f90d"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\chain4-done.txt",
+          "sha256": "e6ba58384eaf7a36b93570962bc2d10ef9043640527c7d542c9d9fe0bd0234bb"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\61-chain4-done.txt.gz",
+          "sha256": "2b8219d37a58c836e370b88e54d6432939a867738dbef9ea8b45b48378fa7b06"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\chain5-done.txt",
+          "sha256": "e6ba58384eaf7a36b93570962bc2d10ef9043640527c7d542c9d9fe0bd0234bb"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\62-chain5-done.txt.gz",
+          "sha256": "2b8219d37a58c836e370b88e54d6432939a867738dbef9ea8b45b48378fa7b06"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\correctness4-done.txt",
+          "sha256": "9a06685e4c9a82b37bf1799fbe4438e6ec3eea7717a0fb6b450bcd97963b03ce"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\63-correctness4-done.txt.gz",
+          "sha256": "41ea5a1a1f6c8df23918177095a4a71af31c8f792cd3f112c3695aae6220cd20"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\correctness4.log",
+          "sha256": "35aa1e999e203247ee2937c6f84ce4ee21e0ae7b186a7ca3bda52ba659377a12"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\64-correctness4.log.gz",
+          "sha256": "d705525aadeb9655eddb803b3491e2330f827cf70644bc567015b97eada26a37"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\correctness5-done.txt",
+          "sha256": "e43122428afd44de4a3d8074b19e9f0559551b898a1341dd3648602928648293"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\65-correctness5-done.txt.gz",
+          "sha256": "65795647bf7a22a571275879f6c1410dc4a1462c3488df464946e6cb30384f28"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\correctness5.log",
+          "sha256": "e473458f5aa4027c50b02e86cae46b8c86e5f8eccf8e390ce26359f146115210"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\66-correctness5.log.gz",
+          "sha256": "28ff7a40e5721d48e2e87faad3e5f11d1d3e0b0959677cb0e32b743060a59bc1"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\engine-commit-message.txt",
+          "sha256": "14b18c4f94c7186319ab9e311ac6c85d1148c6f67ced6749a7c71bf838eba2b1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\67-engine-commit-message.txt.gz",
+          "sha256": "af65c5fc6ab4945e742fcfe467bbebad2bc31f4bbcedff9289c622ad2b41b5c5"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\laps1-done.txt",
+          "sha256": "2649de2b43e3e7936005a87ac2281f4897f7a3de4c25fede44ed73115da8f338"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\68-laps1-done.txt.gz",
+          "sha256": "10d2d744e0e2011b0b961aa2755618ad884a5ee916cd50481081d2578959abda"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\laps1.log",
+          "sha256": "bf23ab9cb55d19bfbd744b87dc14219dd5e574fa56d7b9cd1658bc1e3073204e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\69-laps1.log.gz",
+          "sha256": "d125fe804df72505d05c7ebdc67ccdddf6353a14893e300cc4caae07a471aec8"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\laps4-done.txt",
+          "sha256": "b97c59a481348971d9a1314396b6440941ccc24e6ccfce5cad9e77b8029e7b8d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\70-laps4-done.txt.gz",
+          "sha256": "a327fd31b022c798956887a6ce5c1d846114f6105feb78b481f923e066aaad48"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\laps4.log",
+          "sha256": "71afcdd4d8ea7619c65dbcb43babdea5ff88ab42a7d6905cb6d2eea51163d04f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\71-laps4.log.gz",
+          "sha256": "783c8530633b91bbf005f4617636f2dbd7fe8b21b630d2de716c642ca7ab51a1"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\laps5.log",
+          "sha256": "0f15d6a9c2a02163de59523347e5f6ed7a67e821d5aa032cbcd03a7fcc6088ac"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\72-laps5.log.gz",
+          "sha256": "9e0ab6fce3364d11824798dde0ed4caa27abe6b01c8340e995c414a5ecccde9e"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\laps5b-done.txt",
+          "sha256": "d61ac82e98ba22341ed7a7529fe76166ee722e625ce2615524779d5c696e9a0d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\73-laps5b-done.txt.gz",
+          "sha256": "8ea271a2f6761f1741db59bc78fa2ed6c9b33b43d45bd400e8edb20c7ff6efe3"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\laps5b.log",
+          "sha256": "a49cc0ca549d46d2038f43ec1b5c7ce36eef0058ed1ee7bb393b3d22c6c95f84"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\74-laps5b.log.gz",
+          "sha256": "e2283576fd5e306d21895d941bab1f5fd38dd23f9531c28e31feaf5f043199b1"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\perf.log",
+          "sha256": "2c2939a8b5e479b09d11c8397b1b75a1a9b9f3009e2e94db08c42bc9b54b3096"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\75-perf.log.gz",
+          "sha256": "eda25d1478cff2b19387861b7e43f73cf6153f8a66f88c2b175c4474d144f000"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\perf5-done.txt",
+          "sha256": "f2255842ebf9cc8591b311c0ff37d62bf6d4e029e8e351188c4e1f2c9a7ebb1c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\76-perf5-done.txt.gz",
+          "sha256": "4a213375c9e7b64de2356d42093775128b9ed74aba4d81460d43e52a67321463"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\pipeline-done.txt",
+          "sha256": "377f1a1f1553edbbdf08fdd5b585c8d493f0fed48f93b0be511af04da39a6c0e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\77-pipeline-done.txt.gz",
+          "sha256": "5207bc81727f3a4d40cb09cfc6aefd23e3d5c8cfa7e0439047f220f82a5a098b"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\pipeline.log",
+          "sha256": "a793184294e0759a9fcdc10f9c902d36bb394caa7d16019365de0d00bae30111"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\78-pipeline.log.gz",
+          "sha256": "33db03479c0fac386f209824df395d419b1a31aabf19dbc0e68c3b67bbfaa2c0"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\pipeline2-done.txt",
+          "sha256": "377f1a1f1553edbbdf08fdd5b585c8d493f0fed48f93b0be511af04da39a6c0e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\79-pipeline2-done.txt.gz",
+          "sha256": "5207bc81727f3a4d40cb09cfc6aefd23e3d5c8cfa7e0439047f220f82a5a098b"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\pipeline2.log",
+          "sha256": "cf946b229c4747b538874012648fc987de9a6cf8ae70a1b59c26f5a12af580ea"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\80-pipeline2.log.gz",
+          "sha256": "98552f3681c091108178d54bff48d3768e3ab76d6b9ccca446ffa30b17f612b9"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\pipeline3-done.txt",
+          "sha256": "377f1a1f1553edbbdf08fdd5b585c8d493f0fed48f93b0be511af04da39a6c0e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\81-pipeline3-done.txt.gz",
+          "sha256": "5207bc81727f3a4d40cb09cfc6aefd23e3d5c8cfa7e0439047f220f82a5a098b"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\pipeline3.log",
+          "sha256": "0abbde50c2a52d5b5c4c656dc17fd600509c7a4bf54470164f31251275222d5b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\82-pipeline3.log.gz",
+          "sha256": "eda7780178542b4e673684610f5518e3232eac18e7bb7cdc8dada400575c6d7b"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\pipeline4-done.txt",
+          "sha256": "377f1a1f1553edbbdf08fdd5b585c8d493f0fed48f93b0be511af04da39a6c0e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\83-pipeline4-done.txt.gz",
+          "sha256": "5207bc81727f3a4d40cb09cfc6aefd23e3d5c8cfa7e0439047f220f82a5a098b"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\pipeline4.log",
+          "sha256": "90d68d338a102f8ff09eab99b531a56b4f8e77de3a647ef6618e3092793d0c98"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\84-pipeline4.log.gz",
+          "sha256": "15ca9d17d9a9ddfbfdccbd8b49b89ca4f4ef434351be8981e849adb6e62428b3"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\pipeline5-done.txt",
+          "sha256": "377f1a1f1553edbbdf08fdd5b585c8d493f0fed48f93b0be511af04da39a6c0e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\85-pipeline5-done.txt.gz",
+          "sha256": "5207bc81727f3a4d40cb09cfc6aefd23e3d5c8cfa7e0439047f220f82a5a098b"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\pipeline5.log",
+          "sha256": "24c9ad1caeaf6bf51ab3204da40e99b9b53b9e8434c288ced35d94f20655fd6d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\86-pipeline5.log.gz",
+          "sha256": "69165e30ce0f5fef551effe4e4178b0c3033d4802222526c8577f4142846fa55"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\run-chain4.ps1",
+          "sha256": "42cf15e52803ee7d464e7b1baaac26efc4fca0644602df5694663c4f03fb7103"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\87-run-chain4.ps1.gz",
+          "sha256": "fdeb5216f9d262b3a02f2f532952c8a7a2c63f335ffa0cdd505bd97057129c74"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\run-chain5.ps1",
+          "sha256": "ccdb4dd140656b36158b5433fbca9a365a22cd439a62ee120639939d1b44a2ff"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\88-run-chain5.ps1.gz",
+          "sha256": "91477c7e23cd69436f765892b20c01aa830b81b5c434fee4593cee67af68ea35"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\run-correctness.ps1",
+          "sha256": "57209a1f6dd386b82191fc4dc0c410ea0dd04b1b30e957dfb524d6b19935b82c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\89-run-correctness.ps1.gz",
+          "sha256": "dc52eb2eaccca2918041806eb90e65390eeaf19e0e0db3c246738ada13c046a1"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\run-laps.ps1",
+          "sha256": "be00c8e8e31385ee13875a776918bd57e501a0de68ca0bd74bbaaa712f7f0544"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\90-run-laps.ps1.gz",
+          "sha256": "508693b35188ddd01e4dbc7dd935881b723220676a13d230c115ba46290f530f"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\run-perf-then-correctness.ps1",
+          "sha256": "b9633cc24b1b252a0f8ccd06af03ad2f93da42baf50b0d0e894b54eb574476be"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\91-run-perf-then-correctness.ps1.gz",
+          "sha256": "70ca6f3c0cb2cb650515de2096484bd67fad0c0fc0c1311324d1ac936b53f1c4"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\run-perf.ps1",
+          "sha256": "a05709e82001192cb6ac4772730c08dbe16b240722c5aab636fd76406049eaab"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\92-run-perf.ps1.gz",
+          "sha256": "641df7ed4d81c60e9e621ef076d9656fd459bc2d9c6f1d3bffe3983b83a33be4"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\run-pipeline.ps1",
+          "sha256": "52c2a9e4bdb8fc42fe2dd553285c500f507c0df0930fb256df9f870f2e47c655"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\93-run-pipeline.ps1.gz",
+          "sha256": "ee8e6eeacafbf1037bf3acca2839382a5664b1bb2911ad10043154c3119ad5fc"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\run-pipeline2.ps1",
+          "sha256": "7d1b91fc4772ed7cb18cc0c66477a41ac88cde84f7d3b827eddbb1b3d078f5d2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\94-run-pipeline2.ps1.gz",
+          "sha256": "801393b6ca127e45854e9cb2280d349b322fd18626c8cd8127ef30848b85968b"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\run-pipeline3.ps1",
+          "sha256": "1f9a42e6400334855a042d28662e0635ae3a5edc1fdcc55c60e01d38350ad728"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\95-run-pipeline3.ps1.gz",
+          "sha256": "6f0aec31d3b752a493efa4ea340fdb74f99d007ff19e3f2647dc3314ecd5e5c3"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\run-pipeline4.ps1",
+          "sha256": "abfe39999e7e294ec758f64fb57a0b8e6b2b28b731247759c57a0b6480902448"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\96-run-pipeline4.ps1.gz",
+          "sha256": "302a483899fc29d44aa5c8fc8beccbace029606c9b11a4b370185f5544fa0977"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzb-auto-20261113\\run-pipeline5.ps1",
+          "sha256": "f2d4eb5d61637aed22bd5bf34732eca569b41074f1376776017efc345a5d6cf7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\97-run-pipeline5.ps1.gz",
+          "sha256": "588614d20a46d05231fa8005dae30b973f7fac59ee3c6e882331b4fbade02950"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-hzbauto5-default-20261113\\package.json",
+          "sha256": "87b0269a17e28fd421c8b82c6f4f563e37d087af6fa594af67dd7898c4310742"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\98-package.json.gz",
+          "sha256": "2e11ac96078b283ddbb0c3999ffd9de14e924ca018890e548a1dcb2754ff427f"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-hzbauto5-villa-20261113\\package.json",
+          "sha256": "facbf0ec6c79cf72e43a3cdd8e9864a746f511004555804ef50e4b7f48cc0cf8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\99-package.json.gz",
+          "sha256": "f49528cb7005b5fc4c4e1275554d6362d1637e62ec7b0427bb9f57201e45d75b"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-hzbauto5-regression-20261113\\package.json",
+          "sha256": "937773d775d8e8ce1106ea4c9e2efbb80452b0bd77fb4f2f6ac0d5cece4d8bd4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\100-package.json.gz",
+          "sha256": "839211c2a1de9e3ce67fae0d28f0fae9c6ab1756882b07ecb161d6a2a82fa0b4"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-hzb-auto.cjs",
+          "sha256": "d53cd44b3894ee2c18102255ffc4616a4927b0c2ee8adec86bd825990c3d6599"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\101-collect-nanite-hzb-auto.cjs.gz",
+          "sha256": "e430f1382bb41f1778ac624df094ffcdf710cb27d2d828ef6fda721b1212f4a3"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-switch-laps.cjs",
+          "sha256": "5176219dd00ddc2b3ceb524b895b82039988867fd9bb8c95bb3eb3d1b9c74716"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\102-probe-nanite-switch-laps.cjs.gz",
+          "sha256": "ae43ba37063fa1ae87fa06fdc6b4494b9a2eaee92fe58a8d8907ee40feefd5d7"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-hierarchy-batch.cjs",
+          "sha256": "df988412f0c8c45c7354d02b9bf84d388737bd8d914e794e82fd4f976b726372"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\103-probe-nanite-hierarchy-batch.cjs.gz",
+          "sha256": "b8b08690e6a0f1d2692b82bfa4f0e72d84799b5326442fc17d67a2dcfa3ee3d2"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-off-regression.cjs",
+          "sha256": "b2fe22da0cc406d7f5cf88ab83ddc4a5090bc33757812cd40104aeaca42bf517"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\104-probe-nanite-off-regression.cjs.gz",
+          "sha256": "1bde4f438ac68c28d506f82dd649f441359a26bda7a028e1d00b564b65d5cb8c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-primitive-recovery.cjs",
+          "sha256": "6855a942d044603c3713a49f901930ccec82a69919f8066e07ad5eedbb476df4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\105-probe-nanite-primitive-recovery.cjs.gz",
+          "sha256": "e38f7213a2edfe5ae034fc901fc7bddf54b4b60d80976f7ab91ec2b876df6b75"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\count-webgpu-calls.cjs",
+          "sha256": "992dcaa009d085ca2bdcb29691fc87031d09d4f12e9ad5e50138f151ee177a65"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\106-count-webgpu-calls.cjs.gz",
+          "sha256": "e80b4c4088eae2b5ad300b4bd5b9edc72a3a59cb4dc222d6321c388539614e27"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\bench-webgpu-command-costs.cjs",
+          "sha256": "bd5c2d41b3c9d767e74ab57dac38c1eaebdf557fab15c06912e172a392660590"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\107-bench-webgpu-command-costs.cjs.gz",
+          "sha256": "217bfaee39931c6e84fcf2b37f9de5a80b184b2fc3de3de6977f3bf73c41f1f8"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\analyze-gpu-process-events.cjs",
+          "sha256": "3365350618815e3349b9661e43efcd3f91baa94e908e2b606e91ee717f3f7d97"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\108-analyze-gpu-process-events.cjs.gz",
+          "sha256": "2e0b323eacaf9839b26d93588581017c503469fa6cdd2c29ae987976bc534ba8"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\analyze-render-cpu-tree.cjs",
+          "sha256": "debcdaa5893c2b6b48cf1f185d1907fbea97b0fdd0706f01577b28c8233679b6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\109-analyze-render-cpu-tree.cjs.gz",
+          "sha256": "78dc2d44ec881a37605c7e655bb4c458f14532d890e15d4708fda0b902a6755f"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\profile-web-render-cpu.cjs",
+          "sha256": "f968c023d27860a5050c42db43c7abcfc7eed3adcb6e76e6bcdfe2a341e4b6cf"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\110-profile-web-render-cpu.cjs.gz",
+          "sha256": "32bcdf53c2f2b668d715d5e208ebc3e3dceaacb6c9eeca015a9bd56ce37a8d0c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\sample-test-environment.cjs",
+          "sha256": "66962c93c039761a94d501770ee83bcad5121e4964e6f5771a324db6e66304f6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hzb-auto-20261114\\111-sample-test-environment.cjs.gz",
+          "sha256": "9a159817733c7d85573c05929c261ba73f865df0029eb4f30005d70a40911445"
+        }
+      }
+    ],
+    "referencedOnly": {
+      "$omitted": true,
+      "reason": "Large array",
+      "type": "array",
+      "entries": 138,
+      "bytes": 27361,
+      "sha256": "a7d466b37fd43f91708c4943be4b39a19d8946e826990508dc2d7d87908bf825"
+    },
+    "boundary": "Automatic occlusion mode takes one raster round below the cluster threshold; forced modes and the forced-threshold test keep two-phase covered. Lap comparisons are steady-state within one browser session; the first-tour comparison uses separate sessions. Sessions differ by several percent, so only rows of one report are compared. Command costs were measured on a busy machine. Disturbed and failed runs are kept. Full enabled performance acceptance stays open."
+  }
+}

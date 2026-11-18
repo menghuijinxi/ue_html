@@ -501,7 +501,7 @@ TSharedRef<FJsonObject> RunMode(IDynamicRHIModule &Module, const FString &Direct
                 bool(wgpuDeviceHasFeature(RHI.Device, WGPUFeatureName_RG11B10UfloatRenderable)));
             Invalid = Desc;
             Invalid.Flags |= ETextureCreateFlags::SRGB;
-            Record(TEXT("reflection-packed-reject-srgb"), !RHI.ValidateTextureInitialization(Invalid, Error));
+            Record(TEXT("reflection-packed-srgb-flag-keeps-linear-format"), RHI.ValidateTextureInitialization(Invalid, Error));
             const FLinearColor Linear[] = {FLinearColor(1, 0, 0), FLinearColor(0, 0.5f, 0),
                 FLinearColor(0, 0, 0.25f), FLinearColor(1, 0.5f, 0.25f)};
             const FColor Expected[] = {FColor(255, 0, 0), FColor(0, 128, 0),

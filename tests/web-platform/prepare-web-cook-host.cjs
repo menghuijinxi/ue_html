@@ -113,9 +113,13 @@ try {
   assert(renderer.installedInputs.every(valid));
   report.nativeRendererBuildReport = audit(rendererReportFile);
   report.nativeRenderer = audit(rendererDestination);
+  report.nativeNaniteBuilder = require('./activate-native-nanite-builder.cjs').activate(path.join(host, 'Engine'));
   // Match the installed sources used by the rebuilt modules, including their dependent DLL exports.
   for (const entry of fs.readdirSync(path.join(engine, 'Binaries/Win64'), {withFileTypes: true})) {
-    if (/^UnrealEditor-(?:BuildSettings(?:Stock)?|RenderCore|Renderer)\./.test(entry.name)) continue;
+    // Cook loads DLLs, not debug symbols. Retain existing PDBs without trying
+    // to replace symbols left by other native targets in the isolated host.
+    if (/\.pdb$/i.test(entry.name)) continue;
+    if (/^UnrealEditor-(?:BuildSettings(?:Stock)?|RenderCore|Renderer|NaniteBuilder)\./.test(entry.name)) continue;
     const source = path.join(engine, 'Binaries/Win64', entry.name);
     const destination = path.join(binaries, entry.name);
     if (entry.isFile() && fs.existsSync(destination) && sha(destination) !== sha(source)) {
@@ -202,13 +206,13 @@ try {
   assert.equal(sha(preserved), sha(stockDLL));
   assert.equal(sha(hostDDPI), sha(ddpi));
   report.platformMap = rebuilt;
-  report.sourceFiles = [__filename, path.join(__dirname, 'link-or-copy.cjs'), ddpi, generated, compileResponse, sharedResponse,
+  report.sourceFiles = [__filename, path.join(__dirname, 'activate-native-nanite-builder.cjs'), path.join(__dirname, 'link-or-copy.cjs'), ddpi, generated, compileResponse, sharedResponse,
     path.join(build, 'UnrealEditor-Definitions.h'), path.join(build, 'UnrealEditor-Forward.def')].map(audit);
   if (manualConfig) {
     report.manualConfig = manualConfig;
     report.sourceFiles.push(...manualConfig.sources);
   }
-  report.products = [replacement, preserved, hostDDPI, destinationDLL, rendererDestination, path.join(binaries, 'UnrealEditor-Cmd.exe')].map(audit);
+  report.products = [replacement, preserved, hostDDPI, destinationDLL, rendererDestination, path.join(binaries, 'UnrealEditor-NaniteBuilder.dll'), path.join(binaries, 'UnrealEditor-Cmd.exe')].map(audit);
   report.boundary = `Isolated installed 5.8 native Cook host with ${report.profile} assigned to Web. ` +
     (es31 ? 'ES3.1 Cook profile matching the Web browser feature level. ' :
       'Uses the target 5.8.3 Web DDPI. ') +

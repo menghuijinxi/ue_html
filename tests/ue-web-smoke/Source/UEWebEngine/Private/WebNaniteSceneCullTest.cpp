@@ -12,10 +12,12 @@
 #include "Rendering/NaniteWebRaster.h"
 #include "Rendering/NaniteWebDepth.h"
 #include "HAL/IConsoleManager.h"
+#include "PipelineStateCache.h"
 #include "RenderingThread.h"
 #include "RHIGPUReadback.h"
 #include "RenderGraphBuilder.h"
 #include "RenderGraphUtils.h"
+#include "WebNaniteCullReadback.h"
 #include "Serialization/JsonSerializer.h"
 #include <emscripten.h>
 
@@ -36,10 +38,13 @@ FDelegateHandle DepthObserver;
 UStaticMesh* OrdinaryMesh;
 UStaticMeshComponent* OrdinaryComponent;
 int SavedDepthMode = 0;
+float SavedPixelsPerEdge = 1.0f;
+int SavedHZB = 1;
 TUniquePtr<FRHIGPUBufferReadback> DepthBefore, DepthAfter;
 uint32 DepthBytes = 0;
 bool DepthCapture = false;
 int ActiveStep = 0, SettledFrames = 0;
+uint32 PendingPSOFrames = 0, MaximumPendingPSOs = 0;
 bool Requested = false;
 struct FReadback
 {
@@ -65,25 +70,46 @@ TArray<TSharedPtr<FJsonValue>> MatrixJSON(const FMatrix& Matrix)
 
 void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View)
 {
-    if (ActiveStep >= 20) return;
-    if (!Requested || ++SettledFrames < 4) return;
+    if (ActiveStep >= 20 && ActiveStep <= 25) return;
+    if (!Requested) return;
+    const uint32 PendingPSOs = PipelineStateCache::NumActivePrecacheRequests();
+    if (PendingPSOs)
+    {
+        // UE delays proxy creation while component PSOs are compiling. In
+        // particular, registering a mirrored component requests its opposite
+        // cull mode. Observe completion and four subsequent frames so the
+        // game-thread completion task has recreated the proxy before capture.
+        ++PendingPSOFrames; MaximumPendingPSOs = FMath::Max(MaximumPendingPSOs, PendingPSOs);
+        SettledFrames = 0; return;
+    }
+    if (++SettledFrames < 4) return;
     Requested = false;
     Report = MakeShared<FJsonObject>();
     Report->SetNumberField(TEXT("step"), ActiveStep);
+    Report->SetNumberField(TEXT("pendingPSOsAtCapture"), PendingPSOs);
+    Report->SetNumberField(TEXT("pendingPSOFrames"), PendingPSOFrames);
+    Report->SetNumberField(TEXT("maximumPendingPSOs"), MaximumPendingPSOs);
     Report->SetNumberField(TEXT("frame"), View.View->Family->FrameNumber);
     Report->SetNumberField(TEXT("registered"), View.Registered);
     Report->SetNumberField(TEXT("skipped"), View.Skipped);
     Report->SetNumberField(TEXT("rejected"), View.Rejected);
     Report->SetBoolField(TEXT("perspective"), View.View->IsPerspectiveProjection());
+    Report->SetBoolField(TEXT("cullBackfaces"), true); // The fixture uses the single-sided default material.
+    Report->SetBoolField(TEXT("reverseView"), View.View->bReverseCulling);
     Report->SetArrayField(TEXT("worldToClip"), MatrixJSON(View.View->ViewMatrices.GetWorldToClip()));
+    Report->SetArrayField(TEXT("worldToView"), MatrixJSON(View.View->ViewMatrices.GetViewMatrix()));
+    Report->SetArrayField(TEXT("projection"), MatrixJSON(View.View->ViewMatrices.GetProjectionMatrix()));
+    Report->SetNumberField(TEXT("lodViewHeight"), View.RasterViewRect.Height());
+    Report->SetNumberField(TEXT("pixelsPerEdge"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.MaxPixelsPerEdge"))->GetFloat());
     Nanite::FWebSceneCullView RasterView = View;
-    if (ActiveStep >= 14)
+    if (ActiveStep >= 14 && ActiveStep <= 19)
     {
         // Simulate a failed GPU cull, including a count that exceeds capacity.
         // The raster API must suppress the entire entry without reading keys.
         for (auto& Entry : RasterView.Entries)
         {
             Entry.Result.State = Graph.CreateBuffer(FRDGBufferDesc::CreateStructuredDesc(4, 4), TEXT("WebRasterInvalidCullState"));
+            Entry.Result.StateOffset = 0;
             TArray<uint32> Invalid = {Entry.Input.MaxVisibleClusters + (ActiveStep == 19 ? 1u : 0u),
                 ActiveStep == 19 ? 0u : 1u << (ActiveStep - 14), 0, 0};
             Graph.QueueBufferUpload(Entry.Result.State, MakeArrayView(Invalid));
@@ -91,7 +117,7 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View)
     }
     Nanite::FWebRasterVisibility Raster;
     check(Nanite::AddWebResidentRasterPasses(Graph, RasterView, RasterExtent, RasterRect, Raster));
-    Report->SetBoolField(TEXT("invalidCullState"), ActiveStep >= 14);
+    Report->SetBoolField(TEXT("invalidCullState"), ActiveStep >= 14 && ActiveStep <= 19);
     if (ActiveStep == 1)
     {
         Nanite::FWebRasterVisibility Invalid;
@@ -147,17 +173,22 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View)
         Copy.Json->SetNumberField(TEXT("clusterBase"), Raster.ClusterBases[EntryIndex]);
         Copy.Json->SetNumberField(TEXT("instanceId"), Entry.InstanceSceneDataOffset);
         Copy.Json->SetArrayField(TEXT("localToWorld"), MatrixJSON(Entry.LocalToWorld));
+        Copy.Json->SetNumberField(TEXT("lodMode"), Entry.Input.LODMode);
+        Copy.Json->SetArrayField(TEXT("localToView"), MatrixJSON(FMatrix(Entry.Input.LocalToView)));
+        TArray<TSharedPtr<FJsonValue>> LODParameters;
+        for (int32 Axis = 0; Axis < 4; ++Axis) LODParameters.Add(MakeShared<FJsonValueNumber>(Entry.Input.LODParameters[Axis]));
+        Copy.Json->SetArrayField(TEXT("lodParameters"), LODParameters);
         Copy.Keys = MakeUnique<FRHIGPUBufferReadback>(TEXT("WebSceneCullKeys"));
         Copy.State = MakeUnique<FRHIGPUBufferReadback>(TEXT("WebSceneCullState"));
-        AddEnqueueCopyPass(Graph, Copy.Keys.Get(), Entry.Result.ClusterKeys, Copy.Capacity * 4);
-        AddEnqueueCopyPass(Graph, Copy.State.Get(), Entry.Result.State, 16);
+        AddEnqueueCopyPass(Graph, Copy.Keys.Get(), WebNaniteCullReadbackRange(Graph, Entry.Result.ClusterKeys, Entry.Result.ClusterOffset, Copy.Capacity), Copy.Capacity * 4);
+        AddEnqueueCopyPass(Graph, Copy.State.Get(), WebNaniteCullReadbackRange(Graph, Entry.Result.State, Entry.Result.StateOffset, 4), 16);
     }
 }
 
 void ObserveDepth(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View, FIntRect Rect,
     FRDGTextureRef Resolved, FRDGTextureRef SceneDepth, bool After)
 {
-    if (ActiveStep < 20) return;
+    if (ActiveStep < 20 || ActiveStep > 24) return;
     if (!After)
     {
         if (!Requested || ++SettledFrames < 4) return;
@@ -200,7 +231,7 @@ void ObserveDepth(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View, FIn
 void Poll()
 {
     if (!Report) return;
-    if (ActiveStep >= 20)
+    if (ActiveStep >= 20 && ActiveStep <= 24)
     {
         if (!DepthBefore || !DepthAfter || !DepthBefore->IsReady() || !DepthAfter->IsReady()) return;
         const auto Read = [](FRHIGPUBufferReadback& Copy)
@@ -261,11 +292,16 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteSceneCullTest(int Step)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);
     static int LastStep = 0;
-    if (Step < 0 || Step > 25 || !GEngine || !Nanite::GStreamingManager.IsWebResidentMode()) return 0;
+    if (Step < 0 || Step > 36 || !GEngine || !Nanite::GStreamingManager.IsWebResidentMode()) return 0;
     if (!Step) { ENQUEUE_RENDER_COMMAND(PollWebSceneCull)([](FRHICommandListImmediate&) { Poll(); }); return 1; }
     if (Step != LastStep + 1) return 0;
-    if (Step == 1)
+    if (Step == 1 || Step == 26)
     {
+        // The existing source-mesh raster oracle requires full source detail.
+        auto* Pixels = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.MaxPixelsPerEdge")); check(Pixels);
+        SavedPixelsPerEdge = Pixels->GetFloat(); Pixels->Set(Step == 1 ? 0.01f : 1.0f, ECVF_SetByCode);
+        auto* HZB = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebHZB"));
+        SavedHZB = HZB->GetInt(); HZB->Set(0, ECVF_SetByCode); // Full visibility oracle; HZB has its own two-phase tests.
         UWorld* World = nullptr;
         for (const auto& Context : GEngine->GetWorldContexts()) if (Context.WorldType == EWorldType::Game) World = Context.World();
         if (!World || !World->GetFirstPlayerController()) return 0;
@@ -352,11 +388,41 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteSceneCullTest(int Step)
     if (Step == 22) OrdinaryComponent->SetWorldLocation(FVector(100350, 35, 100000));
     if (Step == 23) for (auto* Component : Components) Component->SetHiddenInGame(true);
     if (Step == 24) { for (auto* Component : Components) Component->SetHiddenInGame(false); OrdinaryComponent->SetHiddenInGame(true); }
-    if (Step == 25)
+    if (Step == 27 || Step == 28 || Step == 29)
     {
-        IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebResidentSceneDepth"))->Set(SavedDepthMode, ECVF_SetByCode);
-        OrdinaryComponent->UnregisterComponent(); OrdinaryComponent->RemoveFromRoot(); OrdinaryComponent->DestroyComponent(); OrdinaryComponent = nullptr;
-        OrdinaryMesh->ReleaseResources(); OrdinaryMesh->RemoveFromRoot(); OrdinaryMesh = nullptr;
+        const double Distance = Step == 27 ? 1000.0 : Step == 28 ? 2000.0 : 150.0;
+        for (int I = 0; I < 2; ++I) Components[I]->SetWorldLocation(FVector(Distance, I ? 100 : -100, 0));
+    }
+    if (Step >= 30 && Step <= 32)
+    {
+        for (int I = 0; I < 2; ++I) Components[I]->SetWorldLocation(FVector(500, I ? 100 : -100, 0));
+        auto* Lens = Camera->GetCameraComponent(); Lens->SetProjectionMode(ECameraProjectionMode::Orthographic);
+        Lens->SetAutoCalculateOrthoPlanes(false); Lens->SetOrthoNearClipPlane(10); Lens->SetOrthoFarClipPlane(4000);
+        Lens->SetOrthoWidth(Step == 30 ? 800 : Step == 31 ? 400 : 3200);
+    }
+    if (Step == 33)
+    {
+        const FVector Origin(10000000, -20000000, 30000000);
+        Camera->SetActorLocation(Origin); Camera->GetCameraComponent()->SetProjectionMode(ECameraProjectionMode::Perspective);
+        for (int I = 0; I < 2; ++I) Components[I]->SetWorldTransform(FTransform(FRotator(10, 20, 5),
+            Origin + FVector(500, I ? 100 : -100, 0), FVector(-0.5, 2, 1)));
+    }
+    if (Step == 34)
+    {
+        Camera->SetActorLocation(FVector::ZeroVector);
+        for (int I = 0; I < 2; ++I) Components[I]->SetWorldTransform(FTransform(FRotator::ZeroRotator, FVector(500, I ? 100 : -100, 0)));
+    }
+    if (Step == 35) IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.MaxPixelsPerEdge"))->Set(2.0f, ECVF_SetByCode);
+    if (Step == 25 || Step == 36)
+    {
+        IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.MaxPixelsPerEdge"))->Set(SavedPixelsPerEdge, ECVF_SetByCode);
+        IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebHZB"))->Set(SavedHZB, ECVF_SetByCode);
+        if (Step == 25)
+        {
+            IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebResidentSceneDepth"))->Set(SavedDepthMode, ECVF_SetByCode);
+            OrdinaryComponent->UnregisterComponent(); OrdinaryComponent->RemoveFromRoot(); OrdinaryComponent->DestroyComponent(); OrdinaryComponent = nullptr;
+            OrdinaryMesh->ReleaseResources(); OrdinaryMesh->RemoveFromRoot(); OrdinaryMesh = nullptr;
+        }
         for (auto*& Component : Components) { Component->UnregisterComponent(); Component->RemoveFromRoot(); Component->DestroyComponent(); Component = nullptr; }
         Mesh->ReleaseResources(); Mesh->RemoveFromRoot(); Mesh = nullptr;
         if (SavedViewTarget.IsValid()) Controller->SetViewTarget(SavedViewTarget.Get());
@@ -370,8 +436,9 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteSceneCullTest(int Step)
     LastStep = Step;
     ENQUEUE_RENDER_COMMAND(RequestWebSceneCull)([Step](FRHICommandListImmediate&) {
         check(!Requested && !Report && Pending.IsEmpty()); ActiveStep = Step; Requested = true; SettledFrames = 0;
+        PendingPSOFrames = 0; MaximumPendingPSOs = 0;
         MAIN_THREAD_ASYNC_EM_ASM({
-            if ($0 >= 20) globalThis.__webNaniteSceneDepthTest = ({pending:true,step:$0});
+            if ($0 >= 20 && $0 <= 25) globalThis.__webNaniteSceneDepthTest = ({pending:true,step:$0});
             else globalThis.__webNaniteSceneCullTest = ({pending:true,step:$0});
         }, Step);
     });

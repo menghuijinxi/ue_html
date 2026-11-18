@@ -1,0 +1,1402 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-wpo-20261110.json",
+    "bytes": 61554180,
+    "sha256": "9d53c48e6905176517f11661572033429bd7021257999827d831e9e5a651cba1",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-10T07:40:27.625Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-wpo-evidence.cjs",
+      "sha256": "610ee9fc8d4024ad5ddda241fc00ad355677508d181a5b590301f4b333f3a5cb"
+    },
+    "package": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\package.json",
+      "sha256": "eef27e4c40aebbc366d866713f41f47d9819dbbd8df90d113301b72da130b850"
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "d1ffc45fd032c2ae64258fccb6d91903f73f2d186a0fd0aae4c66ef8178c5312"
+    },
+    "images": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-wpo-20261110-packed-3.png",
+        "sha256": "0b6b4022c78b1b3f547e7d70ce4cb1fd58358f1f8e71da6a275e53621924f1a6"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-wpo-20261110-packed-7.png",
+        "sha256": "12f3e316969221b5fdaa4dc79cf459f2bcb076c415a43408976749f69ab899d0"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-wpo-20261110-packed-14.png",
+        "sha256": "812ec94e46707c810ef78f84c48b456cb67f96fb548470011b355615a9822b1d"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-wpo-20261110-packed-15.png",
+        "sha256": "23c558272662c8c56802cafa55f143a604058663f2af9eb99c3816501baec61c"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-wpo-20261110-packed-21.png",
+        "sha256": "7995e86899c5b7ac4f688506e94e1580d5024e055d636d6f89c8b89382426c04"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-wpo-20261110-packed-26.png",
+        "sha256": "38565beafb5e690ba271507aa1f925cf56658f70de439e755c88dbda86537251"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-wpo-20261110-packed-33.png",
+        "sha256": "570f7ced46446ffa0d95008759d8a10b9a5d2e756dd137710d83407915aa77e4"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-wpo-20261110-packed-35.png",
+        "sha256": "cec158f04292c000411934aa1d18b11516d9d411d9b1ab6c84578cb448cdce50"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-wpo-20261110-scalar-3.png",
+        "sha256": "aefe9e0f00d08b52cd5956c4314310ebbcd578b6db7c4e2c4aaf7f3958e4e942"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-wpo-20261110-scalar-7.png",
+        "sha256": "7d697130c1649b20addfeead7fafd7e21bec84a945189ca2205e339b36e639c9"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-wpo-20261110-scalar-14.png",
+        "sha256": "27c38ca5c006f16afb9b77f40879e74a9ac1e75fdff19aca9f67f033df950eae"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-wpo-20261110-scalar-15.png",
+        "sha256": "9f1e5b6d4df0296f4eb38f3252b672f4bd6e195d758138f920679b8183e6a1ef"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-wpo-20261110-scalar-21.png",
+        "sha256": "30184a336dfb4f410a4b8305825b919f8b720436ef6f84004d8f53e7b255cb4a"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-wpo-20261110-scalar-26.png",
+        "sha256": "51c378103ba26fe95c068e1e9f9a3cbbf61bd100c4191e5dad40862e2b2382b1"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-wpo-20261110-scalar-33.png",
+        "sha256": "297cee7ed59e7ca39878fdef7a0bf338816ec793902b4dd4f756bb09d053bf77"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-wpo-20261110-scalar-35.png",
+        "sha256": "da8249202bd074802f34258971a3ab2f98f763dd8551123dee676c7a1d36a915"
+      }
+    ],
+    "runs": [
+      {
+        "scalar": false,
+        "frames": 19987,
+        "steps": [
+          {
+            "step": 1,
+            "counts": {
+              "0": 900
+            },
+            "compared": 853,
+            "edgeSamples": 47,
+            "maxDepthError": 1.2690048414865096e-8,
+            "maxDepthResidual": 1.2690048414865096e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 2,
+            "counts": {
+              "0": 767,
+              "1": 121
+            },
+            "compared": 881,
+            "edgeSamples": 7,
+            "maxDepthError": 1.5157883337391098e-8,
+            "maxDepthResidual": 1.5157883337391098e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 3,
+            "counts": {
+              "0": 767,
+              "1": 121
+            },
+            "compared": 881,
+            "edgeSamples": 7,
+            "maxDepthError": 1.5157883337391098e-8,
+            "maxDepthResidual": 1.5157883337391098e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0.00001394518959794977,
+            "maxVelocityDepthError": 4.452427326134822e-9,
+            "maxVelocityDepthTolerance": 1e-7,
+            "moving": 762
+          },
+          {
+            "step": 4,
+            "counts": {
+              "0": 604,
+              "1": 384
+            },
+            "compared": 977,
+            "edgeSamples": 11,
+            "maxDepthError": 3.2475558988526165e-8,
+            "maxDepthResidual": 3.2475558988526165e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 5,
+            "counts": {
+              "0": 720,
+              "1": 201
+            },
+            "compared": 910,
+            "edgeSamples": 11,
+            "maxDepthError": 1.9997573433988558e-8,
+            "maxDepthResidual": 1.9997573433988558e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 6,
+            "counts": {
+              "0": 48,
+              "1": 784
+            },
+            "compared": 825,
+            "edgeSamples": 7,
+            "maxDepthError": 8.887255546069506e-9,
+            "maxDepthResidual": 8.887255546069506e-9,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 7,
+            "counts": {
+              "0": 521,
+              "1": 784
+            },
+            "compared": 1304,
+            "edgeSamples": 1,
+            "maxDepthError": 7.410588671874496e-8,
+            "maxDepthResidual": 7.410588671874496e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 8,
+            "counts": {
+              "0": 900
+            },
+            "compared": 853,
+            "edgeSamples": 47,
+            "maxDepthError": 1.2690048414865096e-8,
+            "maxDepthResidual": 1.2690048414865096e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 9,
+            "counts": {
+              "0": 767,
+              "1": 121
+            },
+            "compared": 881,
+            "edgeSamples": 7,
+            "maxDepthError": 1.5157883337391098e-8,
+            "maxDepthResidual": 1.5157883337391098e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 10,
+            "counts": {
+              "0": 900
+            },
+            "compared": 853,
+            "edgeSamples": 47,
+            "maxDepthError": 1.2690048414865096e-8,
+            "maxDepthResidual": 1.2690048414865096e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 11,
+            "counts": {
+              "0": 767,
+              "1": 121
+            },
+            "compared": 881,
+            "edgeSamples": 7,
+            "maxDepthError": 1.5157883337391098e-8,
+            "maxDepthResidual": 1.5157883337391098e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 12,
+            "counts": {
+              "0": 767,
+              "1": 121
+            },
+            "compared": 881,
+            "edgeSamples": 7,
+            "maxDepthError": 1.5157883337391098e-8,
+            "maxDepthResidual": 1.5157883337391098e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 13,
+            "counts": {
+              "0": 767,
+              "1": 121
+            },
+            "compared": 881,
+            "edgeSamples": 7,
+            "maxDepthError": 1.5157883337391098e-8,
+            "maxDepthResidual": 1.5157883337391098e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 14,
+            "counts": {
+              "0": 767,
+              "1": 121
+            },
+            "compared": 881,
+            "edgeSamples": 7,
+            "maxDepthError": 1.5157883337391098e-8,
+            "maxDepthResidual": 1.5157883337391098e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 15,
+            "counts": {
+              "0": 448,
+              "1": 784
+            },
+            "compared": 1228,
+            "edgeSamples": 4,
+            "maxDepthError": 1.619887216031124e-8,
+            "maxDepthResidual": 1.619887216031124e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 16,
+            "counts": {
+              "0": 350,
+              "1": 784
+            },
+            "compared": 1131,
+            "edgeSamples": 3,
+            "maxDepthError": 1.2806336213699865e-8,
+            "maxDepthResidual": 1.2806336213699865e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 17,
+            "counts": {
+              "0": 350,
+              "1": 784
+            },
+            "compared": 1131,
+            "edgeSamples": 3,
+            "maxDepthError": 1.2806336213699865e-8,
+            "maxDepthResidual": 1.2806336213699865e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 18,
+            "counts": {
+              "0": 767,
+              "1": 121
+            },
+            "compared": 881,
+            "edgeSamples": 7,
+            "maxDepthError": 1.5157883337391098e-8,
+            "maxDepthResidual": 1.5157883337391098e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 19,
+            "counts": {
+              "1": 784
+            },
+            "compared": 784,
+            "edgeSamples": 0,
+            "maxDepthError": 6.588034055787784e-9,
+            "maxDepthResidual": 6.588034055787784e-9,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 20,
+            "counts": {
+              "0": 725,
+              "1": 197
+            },
+            "compared": 914,
+            "edgeSamples": 9,
+            "maxDepthError": 2.04824385785507e-8,
+            "maxDepthResidual": 2.04824385785507e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 21,
+            "counts": {
+              "0": 252,
+              "1": 67
+            },
+            "compared": 314,
+            "edgeSamples": 5,
+            "maxDepthError": 1.0507579240037757e-7,
+            "maxDepthResidual": 1.0507579240037757e-7,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 22,
+            "counts": {
+              "1": 784
+            },
+            "compared": 784,
+            "edgeSamples": 0,
+            "maxDepthError": 6.588034055787784e-9,
+            "maxDepthResidual": 6.588034055787784e-9,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 23,
+            "counts": {
+              "0": 767,
+              "1": 121
+            },
+            "compared": 881,
+            "edgeSamples": 7,
+            "maxDepthError": 1.5157883337391098e-8,
+            "maxDepthResidual": 1.5157883337391098e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 24,
+            "counts": {
+              "1": 784
+            },
+            "compared": 784,
+            "edgeSamples": 0,
+            "maxDepthError": 6.588034055787784e-9,
+            "maxDepthResidual": 6.588034055787784e-9,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 25,
+            "counts": {
+              "0": 767,
+              "1": 121
+            },
+            "compared": 881,
+            "edgeSamples": 7,
+            "maxDepthError": 1.5157883337391098e-8,
+            "maxDepthResidual": 1.5157883337391098e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 26,
+            "counts": {
+              "0": 850,
+              "1": 47
+            },
+            "compared": 856,
+            "edgeSamples": 41,
+            "maxDepthError": 1.6577215662672007e-8,
+            "maxDepthResidual": 1.6577215662672007e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 27,
+            "counts": {
+              "0": 850,
+              "1": 47
+            },
+            "compared": 856,
+            "edgeSamples": 41,
+            "maxDepthError": 1.6577215662672007e-8,
+            "maxDepthResidual": 1.6577215662672007e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 28,
+            "counts": {
+              "0": 777,
+              "1": 85
+            },
+            "compared": 855,
+            "edgeSamples": 7,
+            "maxDepthError": 1.6577215662672007e-8,
+            "maxDepthResidual": 1.6577215662672007e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 29,
+            "counts": {
+              "0": 924,
+              "1": 47
+            },
+            "compared": 959,
+            "edgeSamples": 12,
+            "maxDepthError": 1.3473909307726295e-8,
+            "maxDepthResidual": 1.3473909307726295e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 30,
+            "counts": {
+              "0": 816,
+              "1": 130
+            },
+            "compared": 940,
+            "edgeSamples": 6,
+            "maxDepthError": 3.8601667223803204e-8,
+            "maxDepthResidual": 3.8601667223803204e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0.000013696964087331343,
+            "maxVelocityDepthError": 4.707633876471773e-9,
+            "maxVelocityDepthTolerance": 1e-7,
+            "moving": 810
+          },
+          {
+            "step": 31,
+            "counts": {
+              "0": 755,
+              "1": 123
+            },
+            "compared": 874,
+            "edgeSamples": 4,
+            "maxDepthError": 4.0703022268634426e-8,
+            "maxDepthResidual": 4.0703022268634426e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0.000013608811058010706,
+            "maxVelocityDepthError": 4.395112915972499e-9,
+            "maxVelocityDepthTolerance": 1e-7,
+            "moving": 752
+          },
+          {
+            "step": 32,
+            "counts": {
+              "0": 826,
+              "1": 128
+            },
+            "compared": 942,
+            "edgeSamples": 12,
+            "maxDepthError": 3.0331706493691435e-8,
+            "maxDepthResidual": 3.0331706493691435e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0.000013823044962668618,
+            "maxVelocityDepthError": 4.389613506017298e-9,
+            "maxVelocityDepthTolerance": 1e-7,
+            "moving": 816
+          },
+          {
+            "step": 33,
+            "counts": {
+              "0": 561,
+              "1": 435
+            },
+            "compared": 989,
+            "edgeSamples": 8,
+            "maxDepthError": 4.710647334357776e-8,
+            "maxDepthResidual": 4.710647334357776e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0.000014060885066100037,
+            "maxVelocityDepthError": 5.655857917424845e-9,
+            "maxVelocityDepthTolerance": 1e-7,
+            "moving": 558
+          },
+          {
+            "step": 34,
+            "counts": {
+              "0": 159,
+              "1": 153
+            },
+            "compared": 309,
+            "edgeSamples": 3,
+            "maxDepthError": 6.229896069021024e-7,
+            "maxDepthResidual": 1.1733284699388946e-7,
+            "subpixelChecks": 3,
+            "maxDepthIntervalWidth": 6.702875577913048e-7,
+            "maxVelocityError": 0.000011820904678466748,
+            "maxVelocityDepthError": 7.238174892787441e-8,
+            "maxVelocityDepthTolerance": 1.7881393432617188e-7,
+            "moving": 156
+          },
+          {
+            "step": 35,
+            "counts": {
+              "0": 532,
+              "1": 310
+            },
+            "compared": 825,
+            "edgeSamples": 17,
+            "maxDepthError": 3.375197701188659e-8,
+            "maxDepthResidual": 3.375197701188659e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0.000013458296225302147,
+            "maxVelocityDepthError": 4.862008216172109e-9,
+            "maxVelocityDepthTolerance": 1e-7,
+            "moving": 520
+          },
+          {
+            "step": 36,
+            "counts": {
+              "0": 547,
+              "1": 443
+            },
+            "compared": 972,
+            "edgeSamples": 18,
+            "maxDepthError": 9.972670134833495e-8,
+            "maxDepthResidual": 9.972670134833495e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0.000013887148537491956,
+            "maxVelocityDepthError": 5.246933446750868e-9,
+            "maxVelocityDepthTolerance": 1e-7,
+            "moving": 538
+          }
+        ]
+      },
+      {
+        "scalar": true,
+        "frames": 18614,
+        "steps": [
+          {
+            "step": 1,
+            "counts": {
+              "0": 900
+            },
+            "compared": 853,
+            "edgeSamples": 47,
+            "maxDepthError": 1.2690048414865096e-8,
+            "maxDepthResidual": 1.2690048414865096e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 2,
+            "counts": {
+              "0": 767,
+              "1": 121
+            },
+            "compared": 881,
+            "edgeSamples": 7,
+            "maxDepthError": 1.5157883337391098e-8,
+            "maxDepthResidual": 1.5157883337391098e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 3,
+            "counts": {
+              "0": 767,
+              "1": 121
+            },
+            "compared": 881,
+            "edgeSamples": 7,
+            "maxDepthError": 1.5157883337391098e-8,
+            "maxDepthResidual": 1.5157883337391098e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0.00001394518959794977,
+            "maxVelocityDepthError": 4.452427326134822e-9,
+            "maxVelocityDepthTolerance": 1e-7,
+            "moving": 762
+          },
+          {
+            "step": 4,
+            "counts": {
+              "0": 604,
+              "1": 384
+            },
+            "compared": 977,
+            "edgeSamples": 11,
+            "maxDepthError": 3.2475558988526165e-8,
+            "maxDepthResidual": 3.2475558988526165e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 5,
+            "counts": {
+              "0": 720,
+              "1": 201
+            },
+            "compared": 910,
+            "edgeSamples": 11,
+            "maxDepthError": 1.9997573433988558e-8,
+            "maxDepthResidual": 1.9997573433988558e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 6,
+            "counts": {
+              "0": 48,
+              "1": 784
+            },
+            "compared": 825,
+            "edgeSamples": 7,
+            "maxDepthError": 8.887255546069506e-9,
+            "maxDepthResidual": 8.887255546069506e-9,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 7,
+            "counts": {
+              "0": 521,
+              "1": 784
+            },
+            "compared": 1304,
+            "edgeSamples": 1,
+            "maxDepthError": 7.410588671874496e-8,
+            "maxDepthResidual": 7.410588671874496e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 8,
+            "counts": {
+              "0": 900
+            },
+            "compared": 853,
+            "edgeSamples": 47,
+            "maxDepthError": 1.2690048414865096e-8,
+            "maxDepthResidual": 1.2690048414865096e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 9,
+            "counts": {
+              "0": 767,
+              "1": 121
+            },
+            "compared": 881,
+            "edgeSamples": 7,
+            "maxDepthError": 1.5157883337391098e-8,
+            "maxDepthResidual": 1.5157883337391098e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 10,
+            "counts": {
+              "0": 900
+            },
+            "compared": 853,
+            "edgeSamples": 47,
+            "maxDepthError": 1.2690048414865096e-8,
+            "maxDepthResidual": 1.2690048414865096e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 11,
+            "counts": {
+              "0": 767,
+              "1": 121
+            },
+            "compared": 881,
+            "edgeSamples": 7,
+            "maxDepthError": 1.5157883337391098e-8,
+            "maxDepthResidual": 1.5157883337391098e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 12,
+            "counts": {
+              "0": 767,
+              "1": 121
+            },
+            "compared": 881,
+            "edgeSamples": 7,
+            "maxDepthError": 1.5157883337391098e-8,
+            "maxDepthResidual": 1.5157883337391098e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 13,
+            "counts": {
+              "0": 767,
+              "1": 121
+            },
+            "compared": 881,
+            "edgeSamples": 7,
+            "maxDepthError": 1.5157883337391098e-8,
+            "maxDepthResidual": 1.5157883337391098e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 14,
+            "counts": {
+              "0": 767,
+              "1": 121
+            },
+            "compared": 881,
+            "edgeSamples": 7,
+            "maxDepthError": 1.5157883337391098e-8,
+            "maxDepthResidual": 1.5157883337391098e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 15,
+            "counts": {
+              "0": 448,
+              "1": 784
+            },
+            "compared": 1228,
+            "edgeSamples": 4,
+            "maxDepthError": 1.619887216031124e-8,
+            "maxDepthResidual": 1.619887216031124e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 16,
+            "counts": {
+              "0": 350,
+              "1": 784
+            },
+            "compared": 1131,
+            "edgeSamples": 3,
+            "maxDepthError": 1.2806336213699865e-8,
+            "maxDepthResidual": 1.2806336213699865e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 17,
+            "counts": {
+              "0": 350,
+              "1": 784
+            },
+            "compared": 1131,
+            "edgeSamples": 3,
+            "maxDepthError": 1.2806336213699865e-8,
+            "maxDepthResidual": 1.2806336213699865e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 18,
+            "counts": {
+              "0": 767,
+              "1": 121
+            },
+            "compared": 881,
+            "edgeSamples": 7,
+            "maxDepthError": 1.5157883337391098e-8,
+            "maxDepthResidual": 1.5157883337391098e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 19,
+            "counts": {
+              "1": 784
+            },
+            "compared": 784,
+            "edgeSamples": 0,
+            "maxDepthError": 6.588034055787784e-9,
+            "maxDepthResidual": 6.588034055787784e-9,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 20,
+            "counts": {
+              "0": 725,
+              "1": 197
+            },
+            "compared": 914,
+            "edgeSamples": 9,
+            "maxDepthError": 2.04824385785507e-8,
+            "maxDepthResidual": 2.04824385785507e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 21,
+            "counts": {
+              "0": 252,
+              "1": 67
+            },
+            "compared": 314,
+            "edgeSamples": 5,
+            "maxDepthError": 1.0507579240037757e-7,
+            "maxDepthResidual": 1.0507579240037757e-7,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 22,
+            "counts": {
+              "1": 784
+            },
+            "compared": 784,
+            "edgeSamples": 0,
+            "maxDepthError": 6.588034055787784e-9,
+            "maxDepthResidual": 6.588034055787784e-9,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 23,
+            "counts": {
+              "0": 767,
+              "1": 121
+            },
+            "compared": 881,
+            "edgeSamples": 7,
+            "maxDepthError": 1.5157883337391098e-8,
+            "maxDepthResidual": 1.5157883337391098e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 24,
+            "counts": {
+              "1": 784
+            },
+            "compared": 784,
+            "edgeSamples": 0,
+            "maxDepthError": 6.588034055787784e-9,
+            "maxDepthResidual": 6.588034055787784e-9,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 25,
+            "counts": {
+              "0": 767,
+              "1": 121
+            },
+            "compared": 881,
+            "edgeSamples": 7,
+            "maxDepthError": 1.5157883337391098e-8,
+            "maxDepthResidual": 1.5157883337391098e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 26,
+            "counts": {
+              "0": 850,
+              "1": 47
+            },
+            "compared": 856,
+            "edgeSamples": 41,
+            "maxDepthError": 1.6577215662672007e-8,
+            "maxDepthResidual": 1.6577215662672007e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 27,
+            "counts": {
+              "0": 850,
+              "1": 47
+            },
+            "compared": 856,
+            "edgeSamples": 41,
+            "maxDepthError": 1.6577215662672007e-8,
+            "maxDepthResidual": 1.6577215662672007e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 28,
+            "counts": {
+              "0": 777,
+              "1": 85
+            },
+            "compared": 855,
+            "edgeSamples": 7,
+            "maxDepthError": 1.6577215662672007e-8,
+            "maxDepthResidual": 1.6577215662672007e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 29,
+            "counts": {
+              "0": 924,
+              "1": 47
+            },
+            "compared": 959,
+            "edgeSamples": 12,
+            "maxDepthError": 1.3473909307726295e-8,
+            "maxDepthResidual": 1.3473909307726295e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0
+          },
+          {
+            "step": 30,
+            "counts": {
+              "0": 816,
+              "1": 130
+            },
+            "compared": 940,
+            "edgeSamples": 6,
+            "maxDepthError": 3.8601667223803204e-8,
+            "maxDepthResidual": 3.8601667223803204e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0.000013696964087331343,
+            "maxVelocityDepthError": 4.707633876471773e-9,
+            "maxVelocityDepthTolerance": 1e-7,
+            "moving": 810
+          },
+          {
+            "step": 31,
+            "counts": {
+              "0": 756,
+              "1": 128
+            },
+            "compared": 863,
+            "edgeSamples": 21,
+            "maxDepthError": 3.085276538070114e-8,
+            "maxDepthResidual": 3.085276538070114e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0.00001380580243706686,
+            "maxVelocityDepthError": 4.831065734955953e-9,
+            "maxVelocityDepthTolerance": 1e-7,
+            "moving": 741
+          },
+          {
+            "step": 32,
+            "counts": {
+              "0": 836,
+              "1": 140
+            },
+            "compared": 964,
+            "edgeSamples": 13,
+            "maxDepthError": 3.011844975850386e-8,
+            "maxDepthResidual": 3.011844975850386e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0.000013514514987628123,
+            "maxVelocityDepthError": 4.843395049608512e-9,
+            "maxVelocityDepthTolerance": 1e-7,
+            "moving": 825
+          },
+          {
+            "step": 33,
+            "counts": {
+              "0": 489,
+              "1": 456
+            },
+            "compared": 937,
+            "edgeSamples": 8,
+            "maxDepthError": 1.1413509114557852e-7,
+            "maxDepthResidual": 8.01609838715911e-8,
+            "subpixelChecks": 2,
+            "maxDepthIntervalWidth": 1.4311046232437508e-7,
+            "maxVelocityError": 0.00001267478920095877,
+            "maxVelocityDepthError": 6.0087478742643086e-9,
+            "maxVelocityDepthTolerance": 1e-7,
+            "moving": 484
+          },
+          {
+            "step": 34,
+            "counts": {
+              "0": 175,
+              "1": 142
+            },
+            "compared": 297,
+            "edgeSamples": 20,
+            "maxDepthError": 8.907060176088777e-7,
+            "maxDepthResidual": 1.1203465632991794e-7,
+            "subpixelChecks": 5,
+            "maxDepthIntervalWidth": 0.0000015780002418086525,
+            "maxVelocityError": 0.000011402216758799044,
+            "maxVelocityDepthError": 9.510217857666703e-8,
+            "maxVelocityDepthTolerance": 1.7881393432617188e-7,
+            "moving": 167
+          },
+          {
+            "step": 35,
+            "counts": {
+              "0": 575,
+              "1": 326
+            },
+            "compared": 890,
+            "edgeSamples": 11,
+            "maxDepthError": 8.049732651629893e-8,
+            "maxDepthResidual": 8.049732651629893e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0.000013780794152914999,
+            "maxVelocityDepthError": 5.226397824936724e-9,
+            "maxVelocityDepthTolerance": 1e-7,
+            "moving": 569
+          },
+          {
+            "step": 36,
+            "counts": {
+              "0": 551,
+              "1": 338
+            },
+            "compared": 879,
+            "edgeSamples": 10,
+            "maxDepthError": 4.824982686654766e-8,
+            "maxDepthResidual": 4.824982686654766e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0.000013774415360379155,
+            "maxVelocityDepthError": 4.769112448704815e-9,
+            "maxVelocityDepthTolerance": 1e-7,
+            "moving": 543
+          }
+        ]
+      }
+    ],
+    "regressions": [
+      {
+        "suite": "wpo-streaming",
+        "scalar": false,
+        "frames": 2364,
+        "steps": 9
+      },
+      {
+        "suite": "programmable",
+        "scalar": false,
+        "frames": 24589,
+        "steps": 52
+      },
+      {
+        "suite": "materials",
+        "scalar": false,
+        "frames": 4097,
+        "steps": 10
+      },
+      {
+        "suite": "composition",
+        "scalar": false,
+        "frames": 1339,
+        "steps": 9
+      },
+      {
+        "suite": "composition-unmerged",
+        "scalar": false,
+        "frames": 1344,
+        "steps": 9
+      },
+      {
+        "suite": "streaming",
+        "scalar": false,
+        "frames": 2307,
+        "steps": 9
+      },
+      {
+        "suite": "wpo-streaming",
+        "scalar": true,
+        "frames": 2217,
+        "steps": 9
+      },
+      {
+        "suite": "programmable",
+        "scalar": true,
+        "frames": 22691,
+        "steps": 52
+      },
+      {
+        "suite": "materials",
+        "scalar": true,
+        "frames": 3702,
+        "steps": 10
+      },
+      {
+        "suite": "composition",
+        "scalar": true,
+        "frames": 1252,
+        "steps": 9
+      },
+      {
+        "suite": "composition-unmerged",
+        "scalar": true,
+        "frames": 1290,
+        "steps": 9
+      },
+      {
+        "suite": "streaming",
+        "scalar": true,
+        "frames": 2107,
+        "steps": 9
+      }
+    ],
+    "kernelChecks": 52,
+    "payloadEncoding": "gzip-base64-json-sections",
+    "payload": {
+      "$omitted": true,
+      "reason": "Full diagnostic data is retained in the original report",
+      "type": "object",
+      "bytes": 61513046,
+      "sha256": "31debca83a76573b54a143423f646051f60843bdc62c4d75d118fb495725b112"
+    },
+    "boundary": "Cooked WPO vertex graphs, current/previous deformation, component/distance/always-evaluate policy, mixed slots, conservative rotated bounds and streaming are covered by this evidence. Spline, skinning, assemblies, curves, remaining materials/views, full-scene temporal reconstruction and performance remain subject to the completion tracker."
+  }
+}

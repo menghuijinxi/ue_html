@@ -70,6 +70,16 @@ bool SupportedTransitionAccess(FRHIViewableResource* Resource, ERHIAccess Access
     if (Resource && Resource->GetType() == RRT_Buffer && Access == ERHIAccess::SRVMask &&
         EnumHasAnyFlags(static_cast<FRHIBuffer*>(Resource)->GetUsage(), BUF_VertexBuffer | BUF_IndexBuffer))
         return true;
+    // Canvas uses the default RDG SRVMask epilogue after drawing letterbox bars
+    // into the presentable backbuffer. This is only a parked transition state:
+    // actual sampling still goes through SupportedAccess and requires an SRV.
+    if (Resource && Resource->GetType() == RRT_Texture && Access == ERHIAccess::SRVMask)
+    {
+        const auto* Texture = static_cast<const FWebGPUTexture*>(Resource);
+        if (Texture->SurfaceFrameActive &&
+            EnumHasAllFlags(Texture->GetFlags(), TexCreate_Presentable | TexCreate_RenderTargetable) &&
+            !EnumHasAnyFlags(Texture->GetFlags(), TexCreate_ShaderResource)) return true;
+    }
     return SupportedAccess(Resource, Access);
 }
 } // namespace
@@ -226,7 +236,12 @@ bool FWebGPUDynamicRHI::ValidateTransitionCreate(const FRHITransitionCreateInfo 
         const auto* Texture = Resource->GetType() == RRT_Texture ? static_cast<FWebGPUTexture*>(Resource) : nullptr;
         const uint32 Mips = Texture ? Texture->GetNumMips() : 1;
         const uint32 Slices = Texture ? Texture->LayerCount() : 1;
-        if ((!Upload && Entry.Flags != EResourceTransitionFlags::None) || Entry.CommitInfo.IsSet() ||
+        // RDG stencil metadata SRVs request MaintainCompression. WebGPU manages
+        // physical compression and exposes the stencil aspect without a format
+        // conversion. Keep tracking its real access and Begin/End lifecycle.
+        const bool StencilMetadata = DepthStencil && Entry.PlaneSlice == 1 &&
+            Entry.Flags == EResourceTransitionFlags::MaintainCompression;
+        if ((!Upload && !StencilMetadata && Entry.Flags != EResourceTransitionFlags::None) || Entry.CommitInfo.IsSet() ||
             (!Entry.IsAllMips() && Entry.MipIndex >= Mips) ||
             (!Entry.IsAllArraySlices() && Entry.ArraySlice >= Slices) ||
             (Entry.PlaneSlice != 0 && !Entry.IsAllPlaneSlices() && !(DepthStencil && Entry.PlaneSlice == 1)))

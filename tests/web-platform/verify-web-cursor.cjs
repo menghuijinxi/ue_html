@@ -4,7 +4,7 @@ initializeProjectOutput();
 const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
 const {chromium} = require('playwright');
 const template = fs.readFileSync(path.join(__dirname, 'web-default-template.html'), 'utf8');
-const begin = template.indexOf("Module.canvas.addEventListener('click', event => {");
+const begin = template.indexOf('let canvasInputListeners;');
 const end = template.indexOf("addEventListener('error', event => {", begin);
 assert(begin >= 0 && end > begin, 'Missing production canvas click handler');
 const clickHandler = template.slice(begin, end);
@@ -35,6 +35,8 @@ let context, server;
         terminate() {}
       };
       globalThis.Module = {canvas: document.getElementById('canvas'), arguments: []};
+      globalThis.loadingComplete = true;
+      globalThis.loadingRender = () => {};
       globalThis.__webEngineReady = true;
       globalThis.lockRequests = 0;
       globalThis.lockExits = 0;
@@ -96,6 +98,19 @@ let context, server;
     await page.evaluate(() => completeLateLock());
     await check('late pointer lock cannot hide an open UI cursor',
       {cursor: 'default', locked: false, requests: 2, exits: 3});
+    await page.evaluate(() => {
+      const original = Module.canvas, replacement = original.cloneNode();
+      original.replaceWith(replacement);
+      Module.canvas = replacement;
+      replacement.requestPointerLock = () => { lockRequests++; };
+      document.dispatchEvent(new Event('web-engine-canvas-replaced'));
+      original.click();
+      replacement.click();
+    });
+    assert.equal(await page.evaluate(() => lockRequests), 2, 'Canvas replacement must preserve UI cursor behavior');
+    await send('cursor', {cursor: {visible: false, type: 0, css: 'none'}});
+    await page.locator('#canvas').click();
+    assert.equal(await page.evaluate(() => lockRequests), 3, 'Replacement canvas must bind game input once');
     report.pass = true;
     console.log(JSON.stringify(report));
   } catch (error) {

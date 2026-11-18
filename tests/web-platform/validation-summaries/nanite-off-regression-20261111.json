@@ -1,0 +1,1331 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-off-regression-20261111.json",
+    "bytes": 66432,
+    "sha256": "d71314ff66cb1664d826503efeb284283fefacdf9529938e5d8edd19f351e6f2",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "date": "2026-11-11T15:00:51.700Z",
+    "auditPassed": true,
+    "performanceAccepted": false,
+    "configDifferences": [
+      {
+        "key": "/Engine/Platforms/Web/Config/WebEngine.ini SystemSettings r.Nanite",
+        "old": null,
+        "current": "0"
+      }
+    ],
+    "appliedSettings": {
+      "t.MaxFPS": 0,
+      "r.VSync": 0,
+      "r.MotionBlurQuality": 0,
+      "r.Shadow.CSMCaching": 1,
+      "r.WebGPU.ReuseComputePass": 1,
+      "r.WebGPU.StagingUploadPages": 1,
+      "r.WebGPU.RDGMergeRenderPasses": 1,
+      "r.WebGPU.BatchSubmissions": 1,
+      "r.WebGPU.ReusePresentEncoder": 1,
+      "r.WebGPU.FrameUniformSnapshots": 1,
+      "r.WebGPU.MergeShadowMaskClear": 1,
+      "r.Web.OcclusionMotionQueryInterval": 0,
+      "r.Web.OcclusionGroupMotionQueries": 1,
+      "r.Web.LightGridAllocationBuckets": 1,
+      "r.WebGPU.StagingReadbackPool": 1,
+      "r.WebGPU.GroupAccessRevalidation": 2,
+      "r.WebGPU.DynamicGlobalsGroupReuse": 1,
+      "r.WebGPU.BindingPlan": 1
+    },
+    "packageAudit": [
+      {
+        "folder": "villa-default-20261107",
+        "wasm": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\UEWebEngineThreads.wasm",
+          "sha256": "3869b11682fbb95f84966e3d85c948882d128619cb12471c2794c4d84f67d62f"
+        },
+        "memory": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\UEWebEngineThreads.wasm",
+          "size": 171500919,
+          "memories": [
+            {
+              "module": "env",
+              "field": "memory",
+              "flags": 3,
+              "addressBits": 32,
+              "shared": true,
+              "minimum": 2048,
+              "maximum": 32768,
+              "minimumBytes": 134217728,
+              "maximumBytes": 2147483648
+            }
+          ],
+          "tables": [
+            {
+              "flags": 1,
+              "addressBits": 32,
+              "shared": false,
+              "minimum": 216468,
+              "maximum": 216468
+            }
+          ]
+        },
+        "runtimeAssets": {
+          "performanceProfile": "desktop-accepted-20261107",
+          "gameFrameClock": "page",
+          "pageFrameBudget": 3,
+          "inputBridge": "direct-game-thread",
+          "pageFrameMaxFPS": 0,
+          "localFrameBudget": 0,
+          "localFrameBudgetMode": "submitted",
+          "reuseReplayScratch": true
+        },
+        "manifest": {
+          "source": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\asset-versions.json",
+            "sha256": "14b254b5ead06ea05eb306364459f7fca1266ffdaf7e12800bce5e1def63814e"
+          },
+          "archive": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\0-asset-versions.json.gz",
+            "sha256": "60fd9df9cc25c9a469f01e8764669d1cd57f9c2111c39d2a31eabd436400e063"
+          }
+        },
+        "config": {
+          "source": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\config-files.json",
+            "sha256": "f59cbb29faf01d82ab6739c9de0c5bc41d56bcb5de9c6a5583768c505c61536a"
+          },
+          "archive": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\1-config-files.json.gz",
+            "sha256": "76eb79ac1f9445695bef4768f5b5f63968587af5d84cbe1620094f209d459dea"
+          }
+        }
+      },
+      {
+        "folder": "villa-nanite-off-20261111",
+        "wasm": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-nanite-off-20261111\\UEWebEngineThreads.wasm",
+          "sha256": "d4c4fa1c8cc87b28754971d3f6e37319009c4da570f71e28595cb75ce270eb8b"
+        },
+        "memory": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-nanite-off-20261111\\UEWebEngineThreads.wasm",
+          "size": 173953070,
+          "memories": [
+            {
+              "module": "env",
+              "field": "memory",
+              "flags": 3,
+              "addressBits": 32,
+              "shared": true,
+              "minimum": 2048,
+              "maximum": 32768,
+              "minimumBytes": 134217728,
+              "maximumBytes": 2147483648
+            }
+          ],
+          "tables": [
+            {
+              "flags": 1,
+              "addressBits": 32,
+              "shared": false,
+              "minimum": 217922,
+              "maximum": 217922
+            }
+          ]
+        },
+        "runtimeAssets": {
+          "performanceProfile": "desktop-accepted-20261107",
+          "gameFrameClock": "page",
+          "pageFrameBudget": 3,
+          "inputBridge": "direct-game-thread",
+          "pageFrameMaxFPS": 0,
+          "localFrameBudget": 0,
+          "localFrameBudgetMode": "submitted",
+          "reuseReplayScratch": true
+        },
+        "manifest": {
+          "source": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-nanite-off-20261111\\asset-versions.json",
+            "sha256": "536328a35b3c773c2be8211bc9847a4dfdef5fc2e24ee91bcfe60ff50db4bdb8"
+          },
+          "archive": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\2-asset-versions.json.gz",
+            "sha256": "7108d750c50424ecb855a9a1fbdc2c4521469fa272f4ef030f8aac3c68affc2d"
+          }
+        },
+        "config": {
+          "source": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-nanite-off-20261111\\config-files.json",
+            "sha256": "2b7db6a6b09da0528e2edb73d412a858127a1a73404ff28bddb6d9be48dc524e"
+          },
+          "archive": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\3-config-files.json.gz",
+            "sha256": "d233866b0fb35f65bf36b6c9eb16c31129ba08eb2ae1efc00e17396c06b448b3"
+          }
+        }
+      }
+    ],
+    "build": {
+      "date": "2026-11-11T18:07:45.3202715+08:00",
+      "allocator": "mimalloc",
+      "trace": false,
+      "simd": false,
+      "lowerMemory64": true,
+      "compileFlags": {
+        "-O2": {
+          "$omitted": true,
+          "reason": "Large array",
+          "type": "array",
+          "entries": 445,
+          "bytes": 14095,
+          "sha256": "64607ab89398275aa34d2709ab66be73307426a5731985a65aced138828fb534"
+        },
+        "-O1": [
+          "Module.Chaos.19.cpp.o.rsp"
+        ]
+      },
+      "linkOptimization": "default-O0",
+      "note": "Final-link O0 is not C++ O0. The pre-Nanite November 6 addressing build also used default final-link O0; its binary is not asserted identical to the November 7 package."
+    },
+    "geometry": {
+      "changedMeshes": [
+        {
+          "mesh": "/Game/BigTriplexHouseVilla/Meshes/Props/SM_PotStick.SM_PotStick",
+          "before": 5706,
+          "after": 19018
+        },
+        {
+          "mesh": "/Game/BigTriplexHouseVilla/Meshes/Props/SM_EggsBasket.SM_EggsBasket",
+          "before": 8727,
+          "after": 17454
+        },
+        {
+          "mesh": "/Game/BigTriplexHouseVilla/Meshes/Props/SM_Ladles1_polySurface117.SM_Ladles1_polySurface117",
+          "before": 7205,
+          "after": 14412
+        },
+        {
+          "mesh": "/Game/BigTriplexHouseVilla/Meshes/Props/SM_LaudryStuffShelf6.SM_LaudryStuffShelf6",
+          "before": 7562,
+          "after": 12605
+        },
+        {
+          "mesh": "/Game/BigTriplexHouseVilla/Meshes/Props/SM_LaudryStuffShelf10.SM_LaudryStuffShelf10",
+          "before": 3152,
+          "after": 5255
+        },
+        {
+          "mesh": "/Game/BigTriplexHouseVilla/Meshes/Props/SM_LaudryStuffShelf5.SM_LaudryStuffShelf5",
+          "before": 10538,
+          "after": 21076
+        },
+        {
+          "mesh": "/Game/BigTriplexHouseVilla/Meshes/Props/SM_LaudryStuffShelf11.SM_LaudryStuffShelf11",
+          "before": 4327,
+          "after": 7213
+        },
+        {
+          "mesh": "/Game/BigTriplexHouseVilla/Meshes/Props/SM_Bar.SM_Bar",
+          "before": 7811,
+          "after": 13018
+        },
+        {
+          "mesh": "/Game/BigTriplexHouseVilla/Meshes/Props/SM_Sofa_1.SM_Sofa_1",
+          "before": 7163,
+          "after": 10232
+        },
+        {
+          "mesh": "/Game/BigTriplexHouseVilla/Meshes/Props/SM_Fruits.SM_Fruits",
+          "before": 7061,
+          "after": 14122
+        },
+        {
+          "mesh": "/Game/BigTriplexHouseVilla/Meshes/Props/SM_SwingBig.SM_SwingBig",
+          "before": 9038,
+          "after": 18078
+        },
+        {
+          "mesh": "/Game/BigTriplexHouseVilla/Meshes/Props/SM_Apples.SM_Apples",
+          "before": 6913,
+          "after": 17281
+        },
+        {
+          "mesh": "/Game/BigTriplexHouseVilla/Meshes/Props/SM_Potatos.SM_Potatos",
+          "before": 6921,
+          "after": 23071
+        }
+      ],
+      "weightedLOD0Before": 2702571,
+      "weightedLOD0After": 2984339,
+      "note": "Sum over scene instances, not visible triangles per frame. Does not quantify FPS attribution."
+    },
+    "runs": [
+      {
+        "sequence": "a",
+        "mode": "off",
+        "browser": "157.0.4341.46",
+        "phases": [
+          {
+            "name": "spawn",
+            "frames": 2451,
+            "fps": 122.51704291548495,
+            "low1Fps": 62.43366423918854,
+            "p50Ms": 7.180000007152557,
+            "p95Ms": 11.659999966621399,
+            "p99Ms": 13.560000002384186,
+            "maxMs": 22.089999973773956,
+            "over33Ms": 0,
+            "over50Ms": 0,
+            "rhiMs": 5.927705589820063,
+            "lowestRolling5sLow": 60.28246641157898,
+            "camera": {
+              "x": 410.7359315721519,
+              "y": -478.05903852213453,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": 89.99945068359375
+            },
+            "view": {
+              "frame": 1795,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 3,
+              "parallelRendering": true
+            },
+            "diagnosticFrames": 2460,
+            "drawsPerDiagnosticFrame": 1477.689024390244,
+            "preparedBindingsPerDiagnosticFrame": 4423.417073170732,
+            "boundsRejectedPerDiagnosticFrame": 21.602845528455283,
+            "runtimeAsyncPipelines": 0,
+            "createdGraphicsPipelines": 0,
+            "createdComputePipelines": 0
+          },
+          {
+            "name": "mouse",
+            "frames": 1813,
+            "fps": 113.35029523933912,
+            "low1Fps": 44.87429295032722,
+            "p50Ms": 8.25,
+            "p95Ms": 17.5799999833107,
+            "p99Ms": 19.634999990463257,
+            "maxMs": 32.22499996423721,
+            "over33Ms": 0,
+            "over50Ms": 0,
+            "rhiMs": 6.203662981545873,
+            "lowestRolling5sLow": 40.726561850202046,
+            "camera": {
+              "x": 410.73593159268967,
+              "y": -478.0590385230464,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": 89.9994507133961
+            },
+            "view": {
+              "frame": 5261,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 3,
+              "parallelRendering": true
+            },
+            "diagnosticFrames": 1800,
+            "drawsPerDiagnosticFrame": 1686.4905555555556,
+            "preparedBindingsPerDiagnosticFrame": 4456.966666666666,
+            "boundsRejectedPerDiagnosticFrame": 1.4272222222222222,
+            "runtimeAsyncPipelines": 0,
+            "createdGraphicsPipelines": 0,
+            "createdComputePipelines": 0
+          },
+          {
+            "name": "room",
+            "frames": 2762,
+            "fps": 138.0633096754702,
+            "low1Fps": 66.44281764667677,
+            "p50Ms": 5.639999985694885,
+            "p95Ms": 10.925000011920929,
+            "p99Ms": 12.5,
+            "maxMs": 21.935000002384186,
+            "over33Ms": 0,
+            "over50Ms": 0,
+            "rhiMs": 5.033203213328735,
+            "lowestRolling5sLow": 61.20753726591422,
+            "camera": {
+              "x": -175,
+              "y": -80,
+              "z": 160,
+              "pitch": -5.0000000000000036,
+              "yaw": 50.00000000000001
+            },
+            "view": {
+              "frame": 8373,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 3,
+              "parallelRendering": true
+            },
+            "diagnosticFrames": 2760,
+            "drawsPerDiagnosticFrame": 961.6177536231884,
+            "preparedBindingsPerDiagnosticFrame": 3961.066304347826,
+            "boundsRejectedPerDiagnosticFrame": 5,
+            "runtimeAsyncPipelines": 0,
+            "createdGraphicsPipelines": 0,
+            "createdComputePipelines": 0
+          }
+        ]
+      },
+      {
+        "sequence": "a",
+        "mode": "no-scene",
+        "browser": "157.0.4341.46",
+        "phases": [
+          {
+            "name": "spawn",
+            "frames": 2611,
+            "fps": 130.50543239494604,
+            "low1Fps": 57.66088990766101,
+            "p50Ms": 6.590000033378601,
+            "p95Ms": 10.870000004768372,
+            "p99Ms": 12.485000014305115,
+            "maxMs": 27.975000023841858,
+            "over33Ms": 0,
+            "over50Ms": 0,
+            "rhiMs": 5.617207601250153,
+            "lowestRolling5sLow": 51.67386406226846,
+            "camera": {
+              "x": 410.7359315721519,
+              "y": -478.05903852213453,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": 89.99945068359375
+            },
+            "view": {
+              "frame": 1866,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 3,
+              "parallelRendering": true
+            },
+            "diagnosticFrames": 2610,
+            "drawsPerDiagnosticFrame": 1394.0609195402299,
+            "preparedBindingsPerDiagnosticFrame": 4323.645593869732,
+            "boundsRejectedPerDiagnosticFrame": 0,
+            "runtimeAsyncPipelines": 0,
+            "createdGraphicsPipelines": 0,
+            "createdComputePipelines": 0
+          },
+          {
+            "name": "mouse",
+            "frames": 1879,
+            "fps": 117.45287898611473,
+            "low1Fps": 48.165282960848664,
+            "p50Ms": 7.944999992847443,
+            "p95Ms": 17.060000002384186,
+            "p99Ms": 18.865000009536743,
+            "maxMs": 32.310000002384186,
+            "over33Ms": 0,
+            "over50Ms": 0,
+            "rhiMs": 6.0266602996307,
+            "lowestRolling5sLow": 44.368853078446506,
+            "camera": {
+              "x": 410.7359317775296,
+              "y": -478.05903853125346,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": 89.999450981617
+            },
+            "view": {
+              "frame": 5521,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 3,
+              "parallelRendering": true
+            },
+            "diagnosticFrames": 1890,
+            "drawsPerDiagnosticFrame": 1669.6449735449735,
+            "preparedBindingsPerDiagnosticFrame": 4425.7846560846565,
+            "boundsRejectedPerDiagnosticFrame": 0,
+            "runtimeAsyncPipelines": 0,
+            "createdGraphicsPipelines": 0,
+            "createdComputePipelines": 0
+          },
+          {
+            "name": "room",
+            "frames": 2740,
+            "fps": 136.94590636674025,
+            "low1Fps": 71.92211859765929,
+            "p50Ms": 5.664999961853027,
+            "p95Ms": 10.590000033378601,
+            "p99Ms": 11.824999988079071,
+            "maxMs": 26.740000009536743,
+            "over33Ms": 0,
+            "over50Ms": 0,
+            "rhiMs": 4.910868012987693,
+            "lowestRolling5sLow": 55.890454680044414,
+            "camera": {
+              "x": -175,
+              "y": -80,
+              "z": 160,
+              "pitch": -5.0000000000000036,
+              "yaw": 50.00000000000001
+            },
+            "view": {
+              "frame": 8783,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 3,
+              "parallelRendering": true
+            },
+            "diagnosticFrames": 2760,
+            "drawsPerDiagnosticFrame": 957.0097826086957,
+            "preparedBindingsPerDiagnosticFrame": 3956.0373188405797,
+            "boundsRejectedPerDiagnosticFrame": 0,
+            "runtimeAsyncPipelines": 0,
+            "createdGraphicsPipelines": 0,
+            "createdComputePipelines": 0
+          }
+        ]
+      },
+      {
+        "sequence": "a",
+        "mode": "legacy",
+        "browser": "157.0.4341.46",
+        "phases": [
+          {
+            "name": "spawn",
+            "frames": 2534,
+            "fps": 126.67612155083096,
+            "low1Fps": 63.39530630905212,
+            "p50Ms": 6.629999995231628,
+            "p95Ms": 10.7950000166893,
+            "p99Ms": 12.2049999833107,
+            "maxMs": 29.939999997615814,
+            "over33Ms": 0,
+            "over50Ms": 0,
+            "rhiMs": 5.399734333926973,
+            "lowestRolling5sLow": 54.200541965397086,
+            "camera": {
+              "x": 410.7359315721519,
+              "y": -478.05903852213453,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": 89.99945068359375
+            },
+            "view": {
+              "frame": 1433,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 22,
+              "parallelRendering": true
+            },
+            "diagnosticFrames": 2550,
+            "drawsPerDiagnosticFrame": 1354.0498039215686,
+            "preparedBindingsPerDiagnosticFrame": 4144.078823529412,
+            "boundsRejectedPerDiagnosticFrame": 0,
+            "runtimeAsyncPipelines": 0,
+            "createdGraphicsPipelines": 0,
+            "createdComputePipelines": 0
+          },
+          {
+            "name": "mouse",
+            "frames": 1908,
+            "fps": 119.35413648392216,
+            "low1Fps": 49.395522261873154,
+            "p50Ms": 8,
+            "p95Ms": 16.37999999523163,
+            "p99Ms": 18.10499995946884,
+            "maxMs": 27.09500002861023,
+            "over33Ms": 0,
+            "over50Ms": 0,
+            "rhiMs": 5.962386298466577,
+            "lowestRolling5sLow": 43.36701499723738,
+            "camera": {
+              "x": 410.735931469463,
+              "y": -478.059038517575,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": 89.99945053458214
+            },
+            "view": {
+              "frame": 5031,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 3,
+              "parallelRendering": true
+            },
+            "diagnosticFrames": 1920,
+            "drawsPerDiagnosticFrame": 1665.0489583333333,
+            "preparedBindingsPerDiagnosticFrame": 4337.008854166666,
+            "boundsRejectedPerDiagnosticFrame": 0,
+            "runtimeAsyncPipelines": 0,
+            "createdGraphicsPipelines": 0,
+            "createdComputePipelines": 0
+          },
+          {
+            "name": "room",
+            "frames": 2817,
+            "fps": 140.81324774213786,
+            "low1Fps": 65.97131385605876,
+            "p50Ms": 5.8450000286102295,
+            "p95Ms": 10.185000002384186,
+            "p99Ms": 11.449999988079071,
+            "maxMs": 34.730000019073486,
+            "over33Ms": 1,
+            "over50Ms": 0,
+            "rhiMs": 4.755650429015464,
+            "lowestRolling5sLow": 54.687767020308,
+            "camera": {
+              "x": -175,
+              "y": -80,
+              "z": 160,
+              "pitch": -5.0000000000000036,
+              "yaw": 50.00000000000001
+            },
+            "view": {
+              "frame": 8381,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 4,
+              "parallelRendering": true
+            },
+            "diagnosticFrames": 2820,
+            "drawsPerDiagnosticFrame": 952.6648936170212,
+            "preparedBindingsPerDiagnosticFrame": 3870.6152482269504,
+            "boundsRejectedPerDiagnosticFrame": 0,
+            "runtimeAsyncPipelines": 0,
+            "createdGraphicsPipelines": 0,
+            "createdComputePipelines": 0
+          }
+        ]
+      },
+      {
+        "sequence": "d",
+        "mode": "no-scene",
+        "browser": "157.0.4341.46",
+        "phases": [
+          {
+            "name": "spawn",
+            "frames": 2590,
+            "fps": 129.45171451062643,
+            "low1Fps": 63.6888066899921,
+            "p50Ms": 6.625,
+            "p95Ms": 11,
+            "p99Ms": 13.064999997615814,
+            "maxMs": 22.185000002384186,
+            "over33Ms": 0,
+            "over50Ms": 0,
+            "rhiMs": 5.668755622154674,
+            "lowestRolling5sLow": 59.77286311284213,
+            "camera": {
+              "x": 410.7359315721519,
+              "y": -478.05903852213453,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": 89.99945068359375
+            },
+            "view": {
+              "frame": 1832,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 3,
+              "parallelRendering": true
+            },
+            "diagnosticFrames": 2580,
+            "drawsPerDiagnosticFrame": 1392.582945736434,
+            "preparedBindingsPerDiagnosticFrame": 4318.406201550388,
+            "boundsRejectedPerDiagnosticFrame": 0,
+            "runtimeAsyncPipelines": 0,
+            "createdGraphicsPipelines": 0,
+            "createdComputePipelines": 0
+          },
+          {
+            "name": "mouse",
+            "frames": 1873,
+            "fps": 117.14475758457115,
+            "low1Fps": 44.640234954856425,
+            "p50Ms": 7.9549999833106995,
+            "p95Ms": 17.105000019073486,
+            "p99Ms": 19.32499998807907,
+            "maxMs": 27.72000002861023,
+            "over33Ms": 0,
+            "over50Ms": 0,
+            "rhiMs": 6.045081456502278,
+            "lowestRolling5sLow": 40.95842718039689,
+            "camera": {
+              "x": 410.7359312230098,
+              "y": -478.0590385066323,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": 89.99945017695427
+            },
+            "view": {
+              "frame": 5476,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 3,
+              "parallelRendering": true
+            },
+            "diagnosticFrames": 1890,
+            "drawsPerDiagnosticFrame": 1667.0661375661375,
+            "preparedBindingsPerDiagnosticFrame": 4420.318518518518,
+            "boundsRejectedPerDiagnosticFrame": 0,
+            "runtimeAsyncPipelines": 0,
+            "createdGraphicsPipelines": 0,
+            "createdComputePipelines": 0
+          },
+          {
+            "name": "room",
+            "frames": 2735,
+            "fps": 136.68213731877236,
+            "low1Fps": 67.17447370191515,
+            "p50Ms": 5.599999964237213,
+            "p95Ms": 10.52999997138977,
+            "p99Ms": 12.125,
+            "maxMs": 22.25499999523163,
+            "over33Ms": 0,
+            "over50Ms": 0,
+            "rhiMs": 4.891258210498688,
+            "lowestRolling5sLow": 61.87024928913572,
+            "camera": {
+              "x": -175,
+              "y": -80,
+              "z": 160,
+              "pitch": -5.0000000000000036,
+              "yaw": 50.00000000000001
+            },
+            "view": {
+              "frame": 8730,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 3,
+              "parallelRendering": true
+            },
+            "diagnosticFrames": 2760,
+            "drawsPerDiagnosticFrame": 957.6847826086956,
+            "preparedBindingsPerDiagnosticFrame": 3961.0717391304347,
+            "boundsRejectedPerDiagnosticFrame": 0,
+            "runtimeAsyncPipelines": 0,
+            "createdGraphicsPipelines": 0,
+            "createdComputePipelines": 0
+          }
+        ]
+      },
+      {
+        "sequence": "d",
+        "mode": "off",
+        "browser": "157.0.4341.46",
+        "phases": [
+          {
+            "name": "spawn",
+            "frames": 2484,
+            "fps": 124.12862604002699,
+            "low1Fps": 58.19434581733432,
+            "p50Ms": 7.129999995231628,
+            "p95Ms": 11.405000030994415,
+            "p99Ms": 14.115000009536743,
+            "maxMs": 23.2049999833107,
+            "over33Ms": 0,
+            "over50Ms": 0,
+            "rhiMs": 5.8458111415686504,
+            "lowestRolling5sLow": 54.09791721324123,
+            "camera": {
+              "x": 410.7359315721519,
+              "y": -478.05903852213453,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": 89.99945068359375
+            },
+            "view": {
+              "frame": 1771,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 3,
+              "parallelRendering": true
+            },
+            "diagnosticFrames": 2460,
+            "drawsPerDiagnosticFrame": 1478.279674796748,
+            "preparedBindingsPerDiagnosticFrame": 4425.34349593496,
+            "boundsRejectedPerDiagnosticFrame": 21.588211382113823,
+            "runtimeAsyncPipelines": 0,
+            "createdGraphicsPipelines": 0,
+            "createdComputePipelines": 0
+          },
+          {
+            "name": "mouse",
+            "frames": 1823,
+            "fps": 113.93482965243003,
+            "low1Fps": 45.703289431500025,
+            "p50Ms": 8.305000007152557,
+            "p95Ms": 17.4099999666214,
+            "p99Ms": 19.160000026226044,
+            "maxMs": 25.964999973773956,
+            "over33Ms": 0,
+            "over50Ms": 0,
+            "rhiMs": 6.167285013617131,
+            "lowestRolling5sLow": 42.432214545003575,
+            "camera": {
+              "x": 410.73593206505836,
+              "y": -478.05903854402,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": 89.99945139884947
+            },
+            "view": {
+              "frame": 5278,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 3,
+              "parallelRendering": true
+            },
+            "diagnosticFrames": 1830,
+            "drawsPerDiagnosticFrame": 1688.2655737704918,
+            "preparedBindingsPerDiagnosticFrame": 4450.365027322405,
+            "boundsRejectedPerDiagnosticFrame": 1.8087431693989071,
+            "runtimeAsyncPipelines": 0,
+            "createdGraphicsPipelines": 0,
+            "createdComputePipelines": 0
+          },
+          {
+            "name": "room",
+            "frames": 2809,
+            "fps": 140.45308996796254,
+            "low1Fps": 65.16414622406622,
+            "p50Ms": 5.534999966621399,
+            "p95Ms": 10.8299999833107,
+            "p99Ms": 12.584999978542328,
+            "maxMs": 19.930000007152557,
+            "over33Ms": 0,
+            "over50Ms": 0,
+            "rhiMs": 4.934999037263743,
+            "lowestRolling5sLow": 61.07136625116724,
+            "camera": {
+              "x": -175,
+              "y": -80,
+              "z": 160,
+              "pitch": -5.0000000000000036,
+              "yaw": 50.00000000000001
+            },
+            "view": {
+              "frame": 8505,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 3,
+              "parallelRendering": true
+            },
+            "diagnosticFrames": 2820,
+            "drawsPerDiagnosticFrame": 961.6510638297873,
+            "preparedBindingsPerDiagnosticFrame": 3962.3762411347516,
+            "boundsRejectedPerDiagnosticFrame": 5,
+            "runtimeAsyncPipelines": 0,
+            "createdGraphicsPipelines": 0,
+            "createdComputePipelines": 0
+          }
+        ]
+      }
+    ],
+    "failedControls": [
+      {
+        "sequence": "b",
+        "failure": "page.waitForFunction: Target page, context or browser has been closed\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-off-regression.cjs:98:20",
+        "errors": [],
+        "result": "Browser closed before startup completed while large runtime files were intercepted; no performance sample."
+      },
+      {
+        "sequence": "c",
+        "failure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(!await page.evaluate(() => globalThis.__webEngineFailure))\n\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-off-regression.cjs:92:9",
+        "errors": [
+          "Fatal error: [File:G:/UE_HTML/ue_html/.tools/ue58-web-build-host/Engine/Source\\Runtime/Engine/Private/ShaderCompiler/ShaderCompiler.cpp] [Line: 4974] \nMissing global shader FWebNaniteGPUInstanceTestCS's permutation 0, Please make sure cooking was successful.\n",
+          "unreachable"
+        ],
+        "result": "Old Cook lacks required new global shaders; runtime-only crossover is not a valid performance sample."
+      }
+    ],
+    "conclusion": "Accepted switches are present and applied; current C++ objects remain optimized. The retained scene flag causes bounds-history invalidation and additional ordinary draws with Nanite off. Removing it is diagnostic only and removes a correctness safeguard, not an accepted fix. Geometry also changed. These short routes do not explain all earlier run-to-run variation or establish reproduction/resolution of the user-reported 19 low.",
+    "archived": [
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\asset-versions.json",
+          "sha256": "14b254b5ead06ea05eb306364459f7fca1266ffdaf7e12800bce5e1def63814e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\0-asset-versions.json.gz",
+          "sha256": "60fd9df9cc25c9a469f01e8764669d1cd57f9c2111c39d2a31eabd436400e063"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\config-files.json",
+          "sha256": "f59cbb29faf01d82ab6739c9de0c5bc41d56bcb5de9c6a5583768c505c61536a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\1-config-files.json.gz",
+          "sha256": "76eb79ac1f9445695bef4768f5b5f63968587af5d84cbe1620094f209d459dea"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-nanite-off-20261111\\asset-versions.json",
+          "sha256": "536328a35b3c773c2be8211bc9847a4dfdef5fc2e24ee91bcfe60ff50db4bdb8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\2-asset-versions.json.gz",
+          "sha256": "7108d750c50424ecb855a9a1fbdc2c4521469fa272f4ef030f8aac3c68affc2d"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-nanite-off-20261111\\config-files.json",
+          "sha256": "2b7db6a6b09da0528e2edb73d412a858127a1a73404ff28bddb6d9be48dc524e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\3-config-files.json.gz",
+          "sha256": "d233866b0fb35f65bf36b6c9eb16c31129ba08eb2ae1efc00e17396c06b448b3"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-off-regression-20261111-a\\0-off.log",
+          "sha256": "cb82c8a82e521c38a8054efc9016b0f4d5a207f73a63ce566219d71392638924"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\4-0-off.log.gz",
+          "sha256": "3f097e2022de1cd214e8d83557cfbb0d40c20d88dfbb6413873d52c16afbfa44"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-off-regression-20261111-a\\0-off.png",
+          "sha256": "3ee466562ad9d78763d8dcec2f82fc868f767839e458bffccd14e408e9402e48"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\5-0-off.png.gz",
+          "sha256": "470fdf45aa1b5f51e8452f0243fd701f57b57ccf0af2096145fd53d100751586"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-off-regression-20261111-a\\1-no-scene.log",
+          "sha256": "f4ca10dbe156b04c0e9c5062caa548c30bc91cbc86a37d7f22f73df311c98beb"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\6-1-no-scene.log.gz",
+          "sha256": "58063217fae62b3d7b609e60727c666304ec0f1a92d964b756240b7a89fef83f"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-off-regression-20261111-a\\1-no-scene.png",
+          "sha256": "fe4ddb9c9a08f20dcefd1e4896598ad75ba8b17d9b5f71e4fd9d40a8a92d3731"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\7-1-no-scene.png.gz",
+          "sha256": "8a0ea16316c4d329dd8e4f733313db7eda1beddb8a0a51cce20bad2e97ce6c77"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-off-regression-20261111-a\\2-legacy.log",
+          "sha256": "8bad778073e8015051dac15f0e684b916a04b764f72c09d6891e24c9dbf414b7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\8-2-legacy.log.gz",
+          "sha256": "fa7336aca5b096c97170cac38bd3d3b63e2e2706d229b7bac9726ad270226f22"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-off-regression-20261111-a\\2-legacy.png",
+          "sha256": "4c0d7b3e1045bee35f7d13e2a5d07d11e40c173fac30a6122c858636931cb66f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\9-2-legacy.png.gz",
+          "sha256": "857c6c69e1c56c1d4e22594b8873665c1cb23225055dd6a97a020a01d0076235"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-off-regression-20261111-a\\report.json",
+          "sha256": "cb95366666eec3bc8c1a4b8f33cb245fe3367d80bebdede8e7a86ddc84c926d4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\10-report.json.gz",
+          "sha256": "e4de0b96984b5d4ae1660450f19c1363dac509d6c6dd1fcfd92fb54054227c96"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-off-regression-20261111-a\\source.cjs",
+          "sha256": "b104b3cd02c941adb29a1fbb8a3563d22439712312fcefccc7f913816fc65cba"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\11-source.cjs.gz",
+          "sha256": "e6dd2b9803a2126c8633684214caad6783d0759c257aacfe45e238b2e139df08"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-off-regression-20261111-d\\0-no-scene.log",
+          "sha256": "ac4969f2f303ea87240bc9c5222a7de96ac6ec836a79ea360ca001be9a6eeb2d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\12-0-no-scene.log.gz",
+          "sha256": "da8196e1cdab50337154b6b24a8b68ee03af283bee7ac9b188bfdedadc05a6d1"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-off-regression-20261111-d\\0-no-scene.png",
+          "sha256": "eecebaf954b69e2f84f63e15e3196d31be0eb81e715a34216c1f560edac25139"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\13-0-no-scene.png.gz",
+          "sha256": "c66cda5ffe9e526c49d3d04fe43d676728212c5073fe1cd67eea952b3d214a19"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-off-regression-20261111-d\\1-off.log",
+          "sha256": "a7d5b259c9e88eb0ba349a7ef1d9aed5e0ebde8c2c95492d723336169e401b7e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\14-1-off.log.gz",
+          "sha256": "816eee1f58e9c0aa62c4cf7942498aca6321aecd6a22e1abbc7a94ff99dde3a8"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-off-regression-20261111-d\\1-off.png",
+          "sha256": "207f37166f01bbe752e0587a03487549f532f4f62cda7d87a74863e3f7b82ad0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\15-1-off.png.gz",
+          "sha256": "487b48e36019bdf9ce8d4971c0b45be00fd5958c117b721b1d679defc328ce57"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-off-regression-20261111-d\\report.json",
+          "sha256": "c9734c36bdea90d4625bfc0cafd35f6a95b9e46a267bd999264e281dc9b8969f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\16-report.json.gz",
+          "sha256": "c88e6ab0be536587d28ec146a2ff8f6d3175c88b92f88f629d7dae3c6620140d"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-off-regression-20261111-d\\source.cjs",
+          "sha256": "65b094390dcfbe75a2a710d482c8db692b2d22efa63f5ebd2a31a960443cb3a0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\17-source.cjs.gz",
+          "sha256": "bd27347f7720661f940d14a682520df4724c0c36b1867aae4e2138a123f4bd50"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-off-regression-20261111-b\\0-legacy-new-runtime.log",
+          "sha256": "2416f592e5d75b24912ea32534f8aab396c963bd72902d731c064ada3a9db402"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\18-0-legacy-new-runtime.log.gz",
+          "sha256": "265cda4ea63ddf8119352bd8ec50483f7b23112d73012675c054f1f783435699"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-off-regression-20261111-b\\report.json",
+          "sha256": "704a18af7b02f1ca27502ae19d70ebeae1de61efb01f78766785d081f23609ec"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\19-report.json.gz",
+          "sha256": "a3951c70f5dd64ce7ff4a876a1e82dd78ae9238a80a001d93126272dc02ec905"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-off-regression-20261111-b\\source.cjs",
+          "sha256": "bdb1912c8c2b7acda959fc36d20b8b8228266dc2c814011cddd45137751740ad"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\20-source.cjs.gz",
+          "sha256": "7a922b077bc7d300b18cfa94deced462978172f4f7c8a4f3918249e2f3256206"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-off-regression-20261111-c\\0-legacy-new-runtime.log",
+          "sha256": "22dfbdf9d4361a248a2b1ba41068502e0d2101a80a385b150bf174be61a8e4a3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\21-0-legacy-new-runtime.log.gz",
+          "sha256": "da678a94d27470f8dfa65bf6601ab9eaf67fed19a0f2fe85a30af5148f1829eb"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-off-regression-20261111-c\\report.json",
+          "sha256": "8ad97c96a46d016f98958e9b90ea891e514bdb5e5858f43ee0152cf8f0ad14bd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\22-report.json.gz",
+          "sha256": "559acdb04c52133cddeab8b186b53e78e43d5cffa9506b5fc7353805fc5f4c78"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-off-regression-20261111-c\\source.cjs",
+          "sha256": "65b094390dcfbe75a2a710d482c8db692b2d22efa63f5ebd2a31a960443cb3a0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\23-source.cjs.gz",
+          "sha256": "bd27347f7720661f940d14a682520df4724c0c36b1867aae4e2138a123f4bd50"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-off-regression.cjs",
+          "sha256": "d3f0c09bbdc6b339b0d83a701924ab927afd8531a523e39abdfbc7b28fb300d3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\24-collect-nanite-off-regression.cjs.gz",
+          "sha256": "3adeb66bdf5781eb69c1e6dd3fbc2414dce211a255ffe869a0437bbc7afeb006"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-off-regression.cjs",
+          "sha256": "d1fa786ac45573b9717edae055ec758d67934c94ee2c79802d07bb593dd5c304"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\25-probe-nanite-off-regression.cjs.gz",
+          "sha256": "f2de504e9fa2a87805003024fb0c79e3d9d24bcad1b29ea39d0dd7a9fed49b7e"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-accepted-defaults.cjs",
+          "sha256": "a57b378f38aa264ca2afae72459601b527cbdf4f8180b3a74335bbb21654d7a0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\26-web-accepted-defaults.cjs.gz",
+          "sha256": "1703624fed32b5ccd389f580f5716509933ebba307ba1647c17d74903497641d"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+          "sha256": "8f020ee6a4a6a2e7a81d2194a85abcf35661079bb1f5ab85051369883e14be87"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\27-web-engine-full-thread-build-results.json.gz",
+          "sha256": "2b2a9320fa4811b7bc45179767ea0b1c825881461071399c81e7319ac8e07830"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-address32-runtime-20261106-build.json",
+          "sha256": "d61317b85b972ff51678f2a945dc50eefb00414c6edf36f0d78d07fdfa199c9d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\28-villa-address32-runtime-20261106-build.json.gz",
+          "sha256": "ce5adeb4c87bbb1c0a60d6a287848f9aca36a3437d83275209f9dd059bdc9be0"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-full-scene-conversion-verified.json",
+          "sha256": "75f300f75ff1104216527437ba712b02e9f4eee8936bdbc31b6755bdaba8e915"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\29-nanite-full-scene-conversion-verified.json.gz",
+          "sha256": "91ceddc1722ffc2e2e8ad3dc1f67d6521f5e8e246fa8d0af387a2ec4cc6b8fe2"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-legacy-new-runtime-20261111-package.json",
+          "sha256": "66c427ff02f7a22e3c80db2c164bbf40ff3634c706e3eae5bdc60b192331bf7e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\30-villa-legacy-new-runtime-20261111-package.json.gz",
+          "sha256": "977a3490f7bdb86892c9a776a630ea9900805f7792df98e48890783b9d01fa15"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-legacy-new-runtime-20261111-package.cjs",
+          "sha256": "4537f0374cdf34db7da8735ad77b046b0e4f17d5ec894de35e6b06d617b7800f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\31-villa-legacy-new-runtime-20261111-package.cjs.gz",
+          "sha256": "bb3f272635dc326f3f82f6f8bf45ad609f9c780b3c3512ee0d9b0304aa0920ce"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\UEWebEngineThreads.js.rsp",
+          "sha256": "4ca52870a35ddf36c97cc804f3aca77fddf05b0414f9dac3dd2ed8a993a6e038"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\32-UEWebEngineThreads.js.rsp.gz",
+          "sha256": "d536de599c5d05fd468d1ea532929da7b282314ad2abc593a7cc75899082292d"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\RendererScene.cpp",
+          "sha256": "6b371dcfd9273ef6493077f7f4f43c083e37b9f1c8cba14bfe0084c3c630c0a3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\33-RendererScene.cpp.gz",
+          "sha256": "6d61d69457bf1fa6dec91f268a924fb15656eaae0fb68977a8c5ce4cb8e8b5f1"
+        }
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\SceneOcclusion.cpp",
+          "sha256": "bacdf7a2f9e668c2a9e6a87588bcb0e676358c79990f5f9d69714c6c7dec32b7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-off-regression-20261111\\34-SceneOcclusion.cpp.gz",
+          "sha256": "1889648fba8fd644f9908c499a1b2f8efd3340312de70512c603e70a34d143a1"
+        }
+      }
+    ]
+  }
+}

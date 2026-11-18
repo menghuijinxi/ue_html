@@ -1,0 +1,582 @@
+{
+  "date": "2026-11-13T01:24:17.589Z",
+  "root": "G:\\UE_HTML\\ue_html\\tests\\web-platform",
+  "targets": [
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\gpu-nanite-batch-off-spawn-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3683435440,
+      "files": 1168,
+      "lastWrite": 1794459466512.7815
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\gpu-nanite-batch-on-spawn-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3683312389,
+      "files": 1167,
+      "lastWrite": 1794459524691.8574
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\gpu-nanite-occlusion-controlled-off-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3683585231,
+      "files": 1173,
+      "lastWrite": 1794463441332.994
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\gpu-nanite-occlusion-controlled-on-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3683705937,
+      "files": 1174,
+      "lastWrite": 1794463499708.039
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\gpu-nanite-occlusion-off-spawn-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3683560822,
+      "files": 1171,
+      "lastWrite": 1794462667592.0332
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\gpu-nanite-occlusion-on-spawn-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3683437046,
+      "files": 1169,
+      "lastWrite": 1794462714406.333
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\gpu-nanite-pack-controlled-off-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3678327335,
+      "files": 1171,
+      "lastWrite": 1794470055524.9292
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\gpu-nanite-pack-controlled-on-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3678327308,
+      "files": 1171,
+      "lastWrite": 1794470107568.0386
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-batch-cpu-off-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687530383,
+      "files": 1169,
+      "lastWrite": 1794459692333.8538
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-batch-cpu-on-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687529903,
+      "files": 1168,
+      "lastWrite": 1794459825691.0447
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-batch-default-correctness-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 517541183,
+      "files": 975,
+      "lastWrite": 1794459104126.8625
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-batch-default-correctness-fixed-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 517139620,
+      "files": 978,
+      "lastWrite": 1794459225772.1892
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-batch-default-scalar-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 517034860,
+      "files": 977,
+      "lastWrite": 1794460710209.8037
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-batch-late-stall-diagnostic-20261112-0",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687654842,
+      "files": 1171,
+      "lastWrite": 1794460506415.0952
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-batch-motion-abba-20261112-0",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687654440,
+      "files": 1171,
+      "lastWrite": 1794459965168.9343
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-batch-motion-abba-20261112-1",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687654462,
+      "files": 1171,
+      "lastWrite": 1794460087662.6758
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-batch-motion-abba-20261112-2",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687653854,
+      "files": 1170,
+      "lastWrite": 1794460208344.7344
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-batch-motion-abba-20261112-3",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687777619,
+      "files": 1172,
+      "lastWrite": 1794460330965.5288
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-batch-villa-correctness-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3681635249,
+      "files": 1169,
+      "lastWrite": 1794459372953.2383
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-material-precache-default-off-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 517161533,
+      "files": 980,
+      "lastWrite": 1794467399176.7925
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-material-precache-default-on-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 517161076,
+      "files": 979,
+      "lastWrite": 1794467449871.7473
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-material-precache-default-scalar-off-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 517303851,
+      "files": 981,
+      "lastWrite": 1794467500780.0925
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-material-precache-default-scalar-on-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 517181094,
+      "files": 981,
+      "lastWrite": 1794467550024.544
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-material-precache-eligibility-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3682409338,
+      "files": 1170,
+      "lastWrite": 1794468041564.0159
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-material-precache-motion-abba-20261112-0",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687134873,
+      "files": 1172,
+      "lastWrite": 1794466946348.0276
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-material-precache-motion-abba-20261112-1",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687136095,
+      "files": 1172,
+      "lastWrite": 1794467064762.0955
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-material-precache-motion-abba-20261112-2",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687135391,
+      "files": 1173,
+      "lastWrite": 1794467196151.1284
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-material-precache-motion-abba-20261112-3",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687135510,
+      "files": 1173,
+      "lastWrite": 1794467323916.6443
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-material-precache-motion-baab-20261112-0",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687135463,
+      "files": 1173,
+      "lastWrite": 1794468157031.618
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-material-precache-motion-baab-20261112-1",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687135611,
+      "files": 1173,
+      "lastWrite": 1794468278996.8445
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-material-precache-motion-baab-20261112-2",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687135331,
+      "files": 1173,
+      "lastWrite": 1794468393576.2778
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-material-precache-motion-baab-20261112-3",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687134870,
+      "files": 1172,
+      "lastWrite": 1794468508016.0999
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-material-precache-off-diagnostic-20261112-0",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687135347,
+      "files": 1172,
+      "lastWrite": 1794466794053.9011
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-material-precache-on-diagnostic-20261112-0",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687135911,
+      "files": 1173,
+      "lastWrite": 1794466624874.901
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-material-precache-recovery-20261112-packed",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 517093249,
+      "files": 977,
+      "lastWrite": 1794467888747.6606
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-material-precache-recovery-20261112-scalar",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 517118123,
+      "files": 978,
+      "lastWrite": 1794467947234.413
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-material-precache-villa-off-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3681781094,
+      "files": 1172,
+      "lastWrite": 1794467661419.8403
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-material-precache-villa-on-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3681780927,
+      "files": 1172,
+      "lastWrite": 1794467778775.781
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-occlusion-default-correctness-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 517141562,
+      "files": 980,
+      "lastWrite": 1794462138798.49
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-occlusion-default-scalar-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 517160102,
+      "files": 981,
+      "lastWrite": 1794462341217.583
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-occlusion-eligibility-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3682243221,
+      "files": 1167,
+      "lastWrite": 1794462567379.654
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-occlusion-motion-abba-20261112-0",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687779858,
+      "files": 1174,
+      "lastWrite": 1794462990556.247
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-occlusion-motion-abba-20261112-1",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687779576,
+      "files": 1174,
+      "lastWrite": 1794463110747.484
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-occlusion-motion-abba-20261112-2",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687778778,
+      "files": 1173,
+      "lastWrite": 1794463229485.8047
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-occlusion-motion-abba-20261112-3",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687779561,
+      "files": 1174,
+      "lastWrite": 1794463349733.7534
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-occlusion-off-spawn-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3683461176,
+      "files": 1171,
+      "lastWrite": 1794462794518.9973
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-occlusion-on-spawn-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3683461014,
+      "files": 1171,
+      "lastWrite": 1794462872362.288
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-occlusion-recovery-20261112-packed",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 517077622,
+      "files": 977,
+      "lastWrite": 1794462401002.7021
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-occlusion-recovery-20261112-scalar",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 517097020,
+      "files": 978,
+      "lastWrite": 1794462462022.3022
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-occlusion-stall-diagnostic-20261112-0",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687780088,
+      "files": 1174,
+      "lastWrite": 1794463661037.837
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-occlusion-villa-correctness-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3681760306,
+      "files": 1171,
+      "lastWrite": 1794462272620.6326
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-on-off-gap-20261112-0",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 13071529,
+      "files": 185,
+      "lastWrite": 1794492325420.4783
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-on-off-gap-retry-20261112-0",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3685496354,
+      "files": 1131,
+      "lastWrite": 1794492474381.1365
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-on-off-gap-retry-20261112-1",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687018525,
+      "files": 1174,
+      "lastWrite": 1794492605723.2659
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-on-off-gap-retry-20261112-2",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3686894914,
+      "files": 1173,
+      "lastWrite": 1794492722205.447
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-on-off-gap-retry-20261112-3",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3685373384,
+      "files": 1130,
+      "lastWrite": 1794492831114.061
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-pack-default-correctness-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 517183076,
+      "files": 979,
+      "lastWrite": 1794469820185.427
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-pack-default-scalar-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 517202983,
+      "files": 981,
+      "lastWrite": 1794469872196.4124
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-pack-eligibility-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3682431069,
+      "files": 1171,
+      "lastWrite": 1794471141572.872
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-pack-motion-abba-20261112-0",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687945235,
+      "files": 1175,
+      "lastWrite": 1794470499037.1196
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-pack-motion-abba-20261112-1",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687821486,
+      "files": 1173,
+      "lastWrite": 1794470612667.0955
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-pack-motion-abba-20261112-2",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687822648,
+      "files": 1174,
+      "lastWrite": 1794470731857.7024
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-pack-motion-abba-20261112-3",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687821183,
+      "files": 1174,
+      "lastWrite": 1794470850265.8367
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-pack-motion-diagnostic-20261112-0",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3687823229,
+      "files": 1174,
+      "lastWrite": 1794471297741.6226
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-pack-off-spawn-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3683648007,
+      "files": 1173,
+      "lastWrite": 1794470303655.031
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-pack-on-spawn-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3683648306,
+      "files": 1174,
+      "lastWrite": 1794470383890.0547
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-pack-programmable-20261112-packed",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3794044029,
+      "files": 233,
+      "lastWrite": 1794471451605.2283
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-pack-programmable-final-20261112-packed",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3956557865,
+      "files": 235,
+      "lastWrite": 1794471698422.3845
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-pack-programmable-retry-20261112-packed",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3793831363,
+      "files": 234,
+      "lastWrite": 1794471563815.5083
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-pack-programmable-verified-20261112-packed",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 4081209608,
+      "files": 1170,
+      "lastWrite": 1794471968137.8606
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-pack-programmable-verified-20261112-scalar",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 4081586388,
+      "files": 1181,
+      "lastWrite": 1794472105925.1182
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-pack-recovery-20261112-packed",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 517119770,
+      "files": 976,
+      "lastWrite": 1794470989809.5972
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-pack-recovery-20261112-scalar",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 517139425,
+      "files": 978,
+      "lastWrite": 1794471049764.9407
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-pack-villa-correctness-20261112",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 3681802014,
+      "files": 1172,
+      "lastWrite": 1794469971902.137
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-pack-wpo-20261112-packed",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 4081642952,
+      "files": 1167,
+      "lastWrite": 1794472231306.4443
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-pack-wpo-20261112-scalar",
+      "reason": "已结束的自动测试浏览器缓存",
+      "bytes": 4081731282,
+      "files": 1176,
+      "lastWrite": 1794472350940.6804
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-pack-programmable-20261112",
+      "reason": "已归档的失败专项包及配套内容副本",
+      "bytes": 3780123040,
+      "files": 13,
+      "lastWrite": 1794471420601.389
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-pack-programmable-content-20261112",
+      "reason": "已归档的失败专项包及配套内容副本",
+      "bytes": 3604798214,
+      "files": 5,
+      "lastWrite": 1794471353724.2305
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-pack-material-20261112",
+      "reason": "已归档的失败专项包及配套内容副本",
+      "bytes": 3779909830,
+      "files": 13,
+      "lastWrite": 1794471540700.9446
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-pack-material-content-20261112",
+      "reason": "已归档的失败专项包及配套内容副本",
+      "bytes": 3604588831,
+      "files": 5,
+      "lastWrite": 1794471533295.0781
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-pack-fixture-20261112",
+      "reason": "已归档的失败专项包及配套内容副本",
+      "bytes": 3942512565,
+      "files": 13,
+      "lastWrite": 1794471681899.4702
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-pack-fixture-content-20261112",
+      "reason": "已归档的失败专项包及配套内容副本",
+      "bytes": 3767192116,
+      "files": 5,
+      "lastWrite": 1794471674566.5571
+    }
+  ],
+  "logicalBytes": 247110133714,
+  "boundary": "Fixed automatic-browser caches and three archived failed package pairs only. Preserve source, original Villa, engine, Cook outputs, current packages, raw test reports and evidence. Logical bytes include hard links and do not predict reclaimed disk bytes."
+}

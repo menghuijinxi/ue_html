@@ -1,0 +1,465 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-fixed-bins-20261111.json",
+    "bytes": 20778,
+    "sha256": "c19604873571c5605d60064faf20d6f826650ddb557cb654f5ba9df1c343d219",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-11T02:21:18.169Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-fixed-bins-evidence.cjs",
+      "sha256": "08737ec1b4db689a8d1730280a6bd8b48f79d40d5cd22a8520eefcfc9a371c0b"
+    },
+    "bins": {
+      "pass": true,
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-nanite-fixed-bins.cjs",
+        "sha256": "87a9baffc4e75fe70f40146e7e4e954f538f876375f8cc6b7e20726948aa7864"
+      },
+      "production": {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\Nanite\\NaniteCullRaster.cpp",
+        "sha256": "f92524b8e468fcb22c24157400becd04ebe7ed73141e0828aee49683a1f30e35"
+      },
+      "oldHead": "ea3eff92dbb83f8fcb4affbf8d70228e9454d3fd",
+      "results": [
+        {
+          "name": "old",
+          "exitCode": 16,
+          "cases": 262144,
+          "files": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-bins\\old.cpp",
+              "sha256": "f62389bbd810d19cddb7b2ebe4976fad722eee4783ead3872ad2d5b64257adab"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-bins\\old.obj",
+              "sha256": "4a52dafd6265d496a6758b2602444bdf478957aa49da6d04bec373e778b492a0"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-bins\\old.exe",
+              "sha256": "b0729fa94320cfeb2ba3614279315adbbb8c4fc2c7ce5342e57d2926d6497ae4"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-bins\\old-compile.log",
+              "sha256": "6696bd9fba2125babe7fc4b247ddcce13f13052166f63437781a31a6248b7339"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-bins\\old-link.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ]
+        },
+        {
+          "name": "current",
+          "exitCode": 0,
+          "cases": 262144,
+          "files": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-bins\\current.cpp",
+              "sha256": "68568f806e3088e582c0f084df69d67d830b95cd99017043a1da44dab68cb20d"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-bins\\current.obj",
+              "sha256": "dc8216e2903c37f7687e11685c6b54eba64c510de882ad5275fb4a8f8ac7f7b5"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-bins\\current.exe",
+              "sha256": "70964141ac8c6281820602f89358492a6530d67e9138b5837f3b4e05dcb5b1fd"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-bins\\current-compile.log",
+              "sha256": "5100c022a9dc9982af741e0831455d8a66406c5f96630035fa9fc9ed5cf0561f"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-bins\\current-link.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ]
+        }
+      ],
+      "boundary": "Native executable tests all 16-bit bin IDs for all curve/voxel feature combinations. Full native scene rendering remains a separate requirement."
+    },
+    "nativePreflight": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\run.json",
+      "sha256": "bea3e2ebead16738beff85022307e1d9de07cd70c892f8f36cb15cf53168afe9"
+    },
+    "renderer": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\native-renderer-build-results.json",
+      "sha256": "6f90df016277695159bf5279bdc350d9c4a967ef9f427c0b6532373af99f6249"
+    },
+    "fullBuild": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "6f861f53df76ea5a7ef5bec86b40ccb0a3e0ffca5e44b1f6c2762a097ec8a0d8"
+    },
+    "files": [
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-fixed-bins-evidence.cjs",
+          "sha256": "08737ec1b4db689a8d1730280a6bd8b48f79d40d5cd22a8520eefcfc9a371c0b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\0-collect-nanite-fixed-bins-evidence.cjs.gz",
+          "sha256": "c68fcd7a9731ee40b86998d3b01a52b00f69d12c76a23437f42c7b029d6210f4"
+        },
+        "bytes": 3554
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-nanite-fixed-bins.cjs",
+          "sha256": "87a9baffc4e75fe70f40146e7e4e954f538f876375f8cc6b7e20726948aa7864"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\1-verify-nanite-fixed-bins.cjs.gz",
+          "sha256": "380ac7432265f9b36c8e9232fae94801731f4dcad3e11b1b03597edc0481d3e3"
+        },
+        "bytes": 4159
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\Nanite\\NaniteCullRaster.cpp",
+          "sha256": "f92524b8e468fcb22c24157400becd04ebe7ed73141e0828aee49683a1f30e35"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\2-NaniteCullRaster.cpp.gz",
+          "sha256": "7f82e54fd078caab2e9a901de8267d763127ac1c253dddf5ca9c4dd29b9d78e1"
+        },
+        "bytes": 339757
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\run.json",
+          "sha256": "bea3e2ebead16738beff85022307e1d9de07cd70c892f8f36cb15cf53168afe9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\3-run.json.gz",
+          "sha256": "878faec31f5362e4953ec73ccf866242dc8620e4d82c0f4677b498b82f56b0e8"
+        },
+        "bytes": 5152
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\native.log",
+          "sha256": "64fd605c4e93fd52fa1c85c0c724beb22d5ea2e7b4288cc2b46acaf081977f1f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\4-native.log.gz",
+          "sha256": "41922df4787982c7ba7c1ded95ff2248cb8c0980755dd1e19e1e5e8d7bfad706"
+        },
+        "bytes": 205594
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-native-groom-pipeline\\native.log",
+          "sha256": "c0e26d9244a0ab64d58830b7029e0a1a4cb13c497d60a4b249912d6729b04b3b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\5-native.log.gz",
+          "sha256": "c939cd1af05c65c61ef55d5a4e18b082f7b980e30ebd43fc41c8aec120e3c41f"
+        },
+        "bytes": 201341
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\native-renderer-build-results.json",
+          "sha256": "6f90df016277695159bf5279bdc350d9c4a967ef9f427c0b6532373af99f6249"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\6-native-renderer-build-results.json.gz",
+          "sha256": "3d377458ac2f9796c0f25effd40f1164585153c1d0eb0f80f36ae1c386f0ea30"
+        },
+        "bytes": 20806
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\native-renderer-20261111-101428.log",
+          "sha256": "4fd585068570334e12940228dda7237134bd3ffa1ff5b5f18ee324355fd0c148"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\7-native-renderer-20261111-101428.log.gz",
+          "sha256": "9c71c226e053734348a9023ce5cd6e397ea44949762048219188b658e745280e"
+        },
+        "bytes": 12236
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+          "sha256": "6f861f53df76ea5a7ef5bec86b40ccb0a3e0ffca5e44b1f6c2762a097ec8a0d8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\8-web-engine-full-thread-build-results.json.gz",
+          "sha256": "549cc9e616b9697453f0d9f9fc4b0a353dadeb93189217ab7e9b1b179a87ce5d"
+        },
+        "bytes": 4848960
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-20261111-101322.log",
+          "sha256": "d75a59999dcd58bfc99f113d1814617f810ec37f9dd8f7eb97e1ddc1b47b7f13"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\9-web-engine-full-thread-20261111-101322.log.gz",
+          "sha256": "7ac47629e5bc2e3ed75492c84bdd613795e6162de174b7de4be7aab7303181a3"
+        },
+        "bytes": 1084
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-bins\\old.cpp",
+          "sha256": "f62389bbd810d19cddb7b2ebe4976fad722eee4783ead3872ad2d5b64257adab"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\10-old.cpp.gz",
+          "sha256": "cf62a8c94fca009ffd4b9f73e7d2f7b973a601d98a3b660e4a1d4c1b74c1ca40"
+        },
+        "bytes": 1234
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-bins\\old.obj",
+          "sha256": "4a52dafd6265d496a6758b2602444bdf478957aa49da6d04bec373e778b492a0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\11-old.obj.gz",
+          "sha256": "56e99f85e909260d4ddf692cec138e962b4166af99376b6a6f95795f0e26e34f"
+        },
+        "bytes": 1740
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-bins\\old.exe",
+          "sha256": "b0729fa94320cfeb2ba3614279315adbbb8c4fc2c7ce5342e57d2926d6497ae4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\12-old.exe.gz",
+          "sha256": "7ded12443ea092b47246131acaafed6c1cd4f26eb2c5a434650d40249008b04f"
+        },
+        "bytes": 2560
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-bins\\old-compile.log",
+          "sha256": "6696bd9fba2125babe7fc4b247ddcce13f13052166f63437781a31a6248b7339"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\13-old-compile.log.gz",
+          "sha256": "c54179b42ae1c2e9f2e47a521770289a5241f78aa3055682deae2540d8be9455"
+        },
+        "bytes": 9
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-bins\\old-link.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\14-old-link.log.gz",
+          "sha256": "46b50c321b39e89a491b6727a01628c34245605a30beb3e7414c5e01cff90e6e"
+        },
+        "bytes": 0
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-bins\\current.cpp",
+          "sha256": "68568f806e3088e582c0f084df69d67d830b95cd99017043a1da44dab68cb20d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\15-current.cpp.gz",
+          "sha256": "a330070b5d97a52750b5072049191fd6a38db907a331f4c2b37ba5f6fc40b4c8"
+        },
+        "bytes": 1538
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-bins\\current.obj",
+          "sha256": "dc8216e2903c37f7687e11685c6b54eba64c510de882ad5275fb4a8f8ac7f7b5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\16-current.obj.gz",
+          "sha256": "721de9c5252addfdac9ecea8500b4b845c3f976ff3268a8f513fa425726ad028"
+        },
+        "bytes": 1775
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-bins\\current.exe",
+          "sha256": "70964141ac8c6281820602f89358492a6530d67e9138b5837f3b4e05dcb5b1fd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\17-current.exe.gz",
+          "sha256": "5715363b5120c689f1ae0ffa5066f76124e987370be183e4d3aa44159c3b4db2"
+        },
+        "bytes": 2560
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-bins\\current-compile.log",
+          "sha256": "5100c022a9dc9982af741e0831455d8a66406c5f96630035fa9fc9ed5cf0561f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\18-current-compile.log.gz",
+          "sha256": "7319f6a25dba8f8aa0d93a0509cb7531f76064af4784afdd76f4bce86032b5c4"
+        },
+        "bytes": 13
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fixed-bins\\current-link.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\19-current-link.log.gz",
+          "sha256": "46b50c321b39e89a491b6727a01628c34245605a30beb3e7414c5e01cff90e6e"
+        },
+        "bytes": 0
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small.bin",
+          "sha256": "c8b5230d99f0f0b7cc68597bc7f38226a236e3f7de487bd6c66336e627fa955d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\20-preflight-small.bin.gz",
+          "sha256": "3bf2b13af444aa99a4db22803641bd880c07fa6b1fde8107ba6a1ee7c6ef9378"
+        },
+        "bytes": 614400
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small.json",
+          "sha256": "9b454fea904c659f173d4e4a95499393cb2164fac7c8cff8d8a7c15fb88f5a1a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\21-preflight-small.json.gz",
+          "sha256": "653bab9a6457065b7668de7c1f4ffa50988660cebfc84144b1fdc5285e0ff04a"
+        },
+        "bytes": 999
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small.png",
+          "sha256": "aa3334a384a8a3c38737e5ee0a72bc97f5ea249f5ae7aab556825e9bd8c2c3e6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\22-preflight-small.png.gz",
+          "sha256": "f77c7bc8d2919ff6061b2a79c7a6c65644379bbf7d9679971b12bc9f63eccc27"
+        },
+        "bytes": 468277
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\capture-nanite-curves-native.ps1",
+          "sha256": "db74387aec24ae28ebf083f32f82e2ac28c3aaed420291e3896056d280ed6764"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\23-capture-nanite-curves-native.ps1.gz",
+          "sha256": "5f548c6b5678908080dfc1942a82d8a8df442ce1faf446af79b5257bcc0aeba0"
+        },
+        "bytes": 6269
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\prepare-nanite-curves-native-input.cjs",
+          "sha256": "f09bb3441593a7aab5a79127f3374d89eec0de6712a7db1404283f812e65dacf"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\24-prepare-nanite-curves-native-input.cjs.gz",
+          "sha256": "6bf2905b81cd9f2af0ee4ddbd604b11c00c68ccda2135e8a4d4907b1407ad6fb"
+        },
+        "bytes": 1301
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\input.json",
+          "sha256": "0170465eafa209fabdf639a4dde513a824d2ffede3cb36f4b72113382e364346"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\25-input.json.gz",
+          "sha256": "1f30a7390a6c07c66ec58de64f647e55b9781fc298cd668ad4db6d7f47c52afb"
+        },
+        "bytes": 1325
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-groom-build.json",
+          "sha256": "c32ea67559f463cf20e790f866e3049cfa4bd9c6ae5c593fd439030773e11610"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\26-native-groom-build.json.gz",
+          "sha256": "608db84f3c52699d883e68c1d21bf6fbc4fee9792b6147dbde9fd88d7427cf0e"
+        },
+        "bytes": 70031
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\fixture-host\\Config\\DefaultEngine.ini",
+          "sha256": "b9481945d089e5e95ddc84e03f762477c01088960441751408547d597bbc14ad"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\27-DefaultEngine.ini.gz",
+          "sha256": "ceae7c106585802f7fd65bd4e68f48ab942f7554a2ddae479a75b244f4f90f39"
+        },
+        "bytes": 173
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\fixture-host\\Plugins\\HairStrands\\Source\\HairStrandsCore\\Private\\GroomComponent.cpp",
+          "sha256": "3153fba1bbd835e494a1a93251856902fcea3f2154210ab02576d8d03da2af4f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\28-GroomComponent.cpp.gz",
+          "sha256": "b1fcf7f065f672e602e577c766e253fe2be251bc547be8e7558ac114a5b5fc87"
+        },
+        "bytes": 173066
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\fixture-host\\Binaries\\Win64\\UnrealEditor.modules",
+          "sha256": "f6f63f0ae1f7fac3b9b05a37bd04a9d484f54668766778829c175aedd8a3c579"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\29-UnrealEditor.modules.gz",
+          "sha256": "5687b9beedb7eda18eb140730b33aacc4bcab676fda9ec205484d98b8a3f6f4f"
+        },
+        "bytes": 112
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\WebGroomNativeCapture.usf",
+          "sha256": "0a20cd2f415849d4523614bdfee2d09bb66f5f5039a6f908114a30acfe63f99c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\30-WebGroomNativeCapture.usf.gz",
+          "sha256": "63dd7dc236f6bb11888375b9814de04879d42addcff197a8eb4555b60abe544d"
+        },
+        "bytes": 672
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-nanite-cook-host\\Engine\\Shaders\\Private\\Nanite\\NaniteRasterizer.usf",
+          "sha256": "39f1e44438a563635fb81e3eb158b7c52e9f6f60a849d4bf916fcce378532fff"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\31-NaniteRasterizer.usf.gz",
+          "sha256": "e0977fc60fb649f723d4a9c83fab8e1e22180e93f65c940ccadf556d694836d6"
+        },
+        "bytes": 127994
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-nanite-cook-host\\Engine\\Shaders\\Private\\Nanite\\NaniteDataDecode.ush",
+          "sha256": "ba17f139209de27d7355077614bc8698d87441e4983ade65be8c332cf09c2e92"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-fixed-bins-20261111\\32-NaniteDataDecode.ush.gz",
+          "sha256": "bf9fad6964472fe06a4694332e598096487e419f3025ab803d4d6a8d2bffa480"
+        },
+        "bytes": 47813
+      }
+    ],
+    "boundary": "Fixes the disabled voxel slots allocated between triangle and curve fixed bins. Native two-component SM6 Groom preflight and complete Web compile/link pass; browser curve acceptance, all 21 native comparisons and full Nanite completion remain open."
+  }
+}

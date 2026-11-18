@@ -1,0 +1,1968 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-native-materials-20261110.json",
+    "bytes": 1455098,
+    "sha256": "9555477232e475cbb6a4de2792dabc84197b958cfe522d0c4b4f4a6c42513ddf",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-09T17:26:22.518Z",
+    "sources": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-material-evidence.cjs",
+        "sha256": "8b6c1c9ff3b24bb0f129fdfd092c649546ae6a8de85fcccf644421a4bcc1d7f0"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-materials\\browser.json",
+        "sha256": "14c226b21736d6bf2fca9173453b543989898dc84d9c8cf8e90e9618f2bd4a47"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-materials\\browser-scalar.json",
+        "sha256": "fa0da612042cefd5c2168df3c7c0884e14b3ab36e10012dd310d8781f0536e8b"
+      }
+    ],
+    "package": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\package.json",
+      "sha256": "e232503315f4dfc7ef97f3b12677bca69f1d75510ce13a1cd5018be6c2b83b6d"
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "ab1d62ae279d1443c2d9ec2f658eb07cc8369fd8eeb6f9dbf2b8d808cca4e1d6"
+    },
+    "cook": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-nanite-materials-desktop-cook-results.json",
+      "sha256": "bb8457a734fd9532c50614e9ebed9201aba2a047bb937561bdb6d45fd080b6f0"
+    },
+    "runs": [
+      {
+        "scalarVisibility": false,
+        "frames": 3551,
+        "draws": 9564,
+        "shaderPrograms": 3,
+        "features": [
+          "atomic-vec2u-min-max",
+          "rg11b10ufloat-renderable",
+          "texture-formats-tier1",
+          "texture-compression-bc",
+          "clip-distances",
+          "texture-formats-tier2",
+          "core-features-and-limits",
+          "float32-filterable",
+          "subgroups"
+        ],
+        "steps": [
+          {
+            "step": 1,
+            "bins": 3,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2225,
+                "clusterBase": 0,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "clusterBase": 15,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2227,
+                "clusterBase": 30,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 194,
+                "1": 179,
+                "2": 191
+              },
+              "maxError": {
+                "baseColorCode": 0.2598759168961067,
+                "emissive": 0.00007467269897459827,
+                "normalAngleCosine": 0.000022618094436932523
+              }
+            }
+          },
+          {
+            "step": 2,
+            "bins": 3,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2225,
+                "clusterBase": 0,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "clusterBase": 15,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2227,
+                "clusterBase": 30,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 192,
+                "1": 179,
+                "2": 192
+              },
+              "maxError": {
+                "baseColorCode": 0.2598759168961067,
+                "emissive": 0.0001036763191223089,
+                "normalAngleCosine": 0.0000236106176447759
+              }
+            }
+          },
+          {
+            "step": 3,
+            "bins": 3,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2225,
+                "clusterBase": 0,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "clusterBase": 15,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2227,
+                "clusterBase": 30,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 192,
+                "1": 178,
+                "2": 191
+              },
+              "maxError": {
+                "baseColorCode": 0.2598759168961067,
+                "emissive": 0,
+                "normalAngleCosine": 0.000023453757261093777
+              }
+            }
+          },
+          {
+            "step": 4,
+            "bins": 3,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "clusterBase": 0,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "clusterBase": 15,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "clusterBase": 30,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  0.8754260980655929,
+                  0.40821789367673494,
+                  0.2588190451025209,
+                  0,
+                  -0.37546513700583156,
+                  0.9115328603407027,
+                  -0.16773125949652065,
+                  0,
+                  -0.3043929659483657,
+                  0.04965879379552998,
+                  0.9512512425641977,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 194,
+                "1": 179,
+                "2": 191
+              },
+              "maxError": {
+                "baseColorCode": 0.2598759168961067,
+                "emissive": 0,
+                "normalAngleCosine": 0.000024753582253511652
+              }
+            }
+          },
+          {
+            "step": 5,
+            "bins": 2,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "clusterBase": 0,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "clusterBase": 15,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  0.8754260980655929,
+                  0.40821789367673494,
+                  0.2588190451025209,
+                  0,
+                  -0.37546513700583156,
+                  0.9115328603407027,
+                  -0.16773125949652065,
+                  0,
+                  -0.3043929659483657,
+                  0.04965879379552998,
+                  0.9512512425641977,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 192,
+                "2": 192
+              },
+              "maxError": {
+                "baseColorCode": 0.2598759168961067,
+                "emissive": 0,
+                "normalAngleCosine": 0.000023050750636577355
+              }
+            }
+          },
+          {
+            "step": 6,
+            "bins": 3,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "clusterBase": 0,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "clusterBase": 15,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "clusterBase": 30,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  0.8754260980655929,
+                  0.40821789367673494,
+                  0.2588190451025209,
+                  0,
+                  -0.37546513700583156,
+                  0.9115328603407027,
+                  -0.16773125949652065,
+                  0,
+                  -0.3043929659483657,
+                  0.04965879379552998,
+                  0.9512512425641977,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 192,
+                "1": 179,
+                "2": 193
+              },
+              "maxError": {
+                "baseColorCode": 0.2598759168961067,
+                "emissive": 0,
+                "normalAngleCosine": 0.000023226018542765736
+              }
+            }
+          },
+          {
+            "step": 7,
+            "bins": 2,
+            "entries": [
+              {
+                "component": 1,
+                "instance": 2226,
+                "clusterBase": 0,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "clusterBase": 15,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  0.8754260980655929,
+                  0.40821789367673494,
+                  0.2588190451025209,
+                  0,
+                  -0.37546513700583156,
+                  0.9115328603407027,
+                  -0.16773125949652065,
+                  0,
+                  -0.3043929659483657,
+                  0.04965879379552998,
+                  0.9512512425641977,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "1": 179,
+                "2": 192
+              },
+              "maxError": {
+                "baseColorCode": 0.2598759168961067,
+                "emissive": 0,
+                "normalAngleCosine": 0.000024909103721104664
+              }
+            }
+          },
+          {
+            "step": 8,
+            "bins": 3,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "clusterBase": 0,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "clusterBase": 15,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "clusterBase": 30,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  0.8754260980655929,
+                  0.40821789367673494,
+                  0.2588190451025209,
+                  0,
+                  -0.37546513700583156,
+                  0.9115328603407027,
+                  -0.16773125949652065,
+                  0,
+                  -0.3043929659483657,
+                  0.04965879379552998,
+                  0.9512512425641977,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 191,
+                "1": 180,
+                "2": 192
+              },
+              "maxError": {
+                "baseColorCode": 0.2598759168961067,
+                "emissive": 0.00010014772415159467,
+                "normalAngleCosine": 0.000024191388401262337
+              }
+            }
+          },
+          {
+            "step": 9,
+            "bins": 3,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "clusterBase": 0,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "clusterBase": 15,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "clusterBase": 30,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  0.8754260980655929,
+                  0.40821789367673494,
+                  0.2588190451025209,
+                  0,
+                  -0.37546513700583156,
+                  0.9115328603407027,
+                  -0.16773125949652065,
+                  0,
+                  -0.3043929659483657,
+                  0.04965879379552998,
+                  0.9512512425641977,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 192,
+                "1": 179,
+                "2": 191
+              },
+              "maxError": {
+                "baseColorCode": 0.2598759168961067,
+                "emissive": 0.00008697211742400568,
+                "normalAngleCosine": 0.0021345824715189865
+              }
+            }
+          },
+          {
+            "step": 10,
+            "bins": 3,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "clusterBase": 0,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "clusterBase": 15,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "clusterBase": 30,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  0.8754260980655929,
+                  0.40821789367673494,
+                  0.2588190451025209,
+                  0,
+                  -0.37546513700583156,
+                  0.9115328603407027,
+                  -0.16773125949652065,
+                  0,
+                  -0.3043929659483657,
+                  0.04965879379552998,
+                  0.9512512425641977,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 192,
+                "1": 179,
+                "2": 192
+              },
+              "maxError": {
+                "baseColorCode": 0.2598759168961067,
+                "emissive": 0.00004166364669799805,
+                "normalAngleCosine": 0.000023050750636577355
+              }
+            }
+          }
+        ],
+        "errors": []
+      },
+      {
+        "scalarVisibility": true,
+        "frames": 3428,
+        "draws": 9281,
+        "shaderPrograms": 3,
+        "features": [
+          "rg11b10ufloat-renderable",
+          "texture-formats-tier1",
+          "texture-compression-bc",
+          "texture-formats-tier2",
+          "clip-distances",
+          "core-features-and-limits",
+          "float32-filterable",
+          "subgroups"
+        ],
+        "steps": [
+          {
+            "step": 1,
+            "bins": 3,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "clusterBase": 0,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "clusterBase": 15,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "clusterBase": 30,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 192,
+                "1": 178,
+                "2": 190
+              },
+              "maxError": {
+                "baseColorCode": 0.2598759168961067,
+                "emissive": 0.00007408857345581055,
+                "normalAngleCosine": 0.000023474117425092977
+              }
+            }
+          },
+          {
+            "step": 2,
+            "bins": 3,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "clusterBase": 0,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "clusterBase": 15,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "clusterBase": 30,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 192,
+                "1": 178,
+                "2": 190
+              },
+              "maxError": {
+                "baseColorCode": 0.2598759168961067,
+                "emissive": 0.00010968446731565717,
+                "normalAngleCosine": 0.000023474117425092977
+              }
+            }
+          },
+          {
+            "step": 3,
+            "bins": 3,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "clusterBase": 0,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "clusterBase": 15,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "clusterBase": 30,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 191,
+                "1": 180,
+                "2": 192
+              },
+              "maxError": {
+                "baseColorCode": 0.2598759168961067,
+                "emissive": 0,
+                "normalAngleCosine": 0.000022805658934310635
+              }
+            }
+          },
+          {
+            "step": 4,
+            "bins": 3,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "clusterBase": 0,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "clusterBase": 15,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "clusterBase": 30,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  0.8754260980655929,
+                  0.40821789367673494,
+                  0.2588190451025209,
+                  0,
+                  -0.37546513700583156,
+                  0.9115328603407027,
+                  -0.16773125949652065,
+                  0,
+                  -0.3043929659483657,
+                  0.04965879379552998,
+                  0.9512512425641977,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 192,
+                "1": 178,
+                "2": 192
+              },
+              "maxError": {
+                "baseColorCode": 0.2598759168961067,
+                "emissive": 0,
+                "normalAngleCosine": 0.00002472946344223015
+              }
+            }
+          },
+          {
+            "step": 5,
+            "bins": 2,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "clusterBase": 0,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "clusterBase": 15,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  0.8754260980655929,
+                  0.40821789367673494,
+                  0.2588190451025209,
+                  0,
+                  -0.37546513700583156,
+                  0.9115328603407027,
+                  -0.16773125949652065,
+                  0,
+                  -0.3043929659483657,
+                  0.04965879379552998,
+                  0.9512512425641977,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 192,
+                "2": 193
+              },
+              "maxError": {
+                "baseColorCode": 0.2598759168961067,
+                "emissive": 0,
+                "normalAngleCosine": 0.000023047355400596103
+              }
+            }
+          },
+          {
+            "step": 6,
+            "bins": 3,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "clusterBase": 0,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "clusterBase": 15,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "clusterBase": 30,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  0.8754260980655929,
+                  0.40821789367673494,
+                  0.2588190451025209,
+                  0,
+                  -0.37546513700583156,
+                  0.9115328603407027,
+                  -0.16773125949652065,
+                  0,
+                  -0.3043929659483657,
+                  0.04965879379552998,
+                  0.9512512425641977,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 192,
+                "1": 179,
+                "2": 193
+              },
+              "maxError": {
+                "baseColorCode": 0.2598759168961067,
+                "emissive": 0,
+                "normalAngleCosine": 0.000023226018542765736
+              }
+            }
+          },
+          {
+            "step": 7,
+            "bins": 2,
+            "entries": [
+              {
+                "component": 1,
+                "instance": 2226,
+                "clusterBase": 0,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "clusterBase": 15,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  0.8754260980655929,
+                  0.40821789367673494,
+                  0.2588190451025209,
+                  0,
+                  -0.37546513700583156,
+                  0.9115328603407027,
+                  -0.16773125949652065,
+                  0,
+                  -0.3043929659483657,
+                  0.04965879379552998,
+                  0.9512512425641977,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "1": 178,
+                "2": 191
+              },
+              "maxError": {
+                "baseColorCode": 0.2598759168961067,
+                "emissive": 0,
+                "normalAngleCosine": 0.000025199966207090085
+              }
+            }
+          },
+          {
+            "step": 8,
+            "bins": 3,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "clusterBase": 0,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "clusterBase": 15,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "clusterBase": 30,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  0.8754260980655929,
+                  0.40821789367673494,
+                  0.2588190451025209,
+                  0,
+                  -0.37546513700583156,
+                  0.9115328603407027,
+                  -0.16773125949652065,
+                  0,
+                  -0.3043929659483657,
+                  0.04965879379552998,
+                  0.9512512425641977,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 192,
+                "1": 179,
+                "2": 193
+              },
+              "maxError": {
+                "baseColorCode": 0.2598759168961067,
+                "emissive": 0.00009568333625792347,
+                "normalAngleCosine": 0.000023226018542765736
+              }
+            }
+          },
+          {
+            "step": 9,
+            "bins": 3,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "clusterBase": 0,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "clusterBase": 15,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "clusterBase": 30,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  0.8754260980655929,
+                  0.40821789367673494,
+                  0.2588190451025209,
+                  0,
+                  -0.37546513700583156,
+                  0.9115328603407027,
+                  -0.16773125949652065,
+                  0,
+                  -0.3043929659483657,
+                  0.04965879379552998,
+                  0.9512512425641977,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 192,
+                "1": 178,
+                "2": 191
+              },
+              "maxError": {
+                "baseColorCode": 0.2598759168961067,
+                "emissive": 0.0000537186861038208,
+                "normalAngleCosine": 0.0020193956118236267
+              }
+            }
+          },
+          {
+            "step": 10,
+            "bins": 3,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "clusterBase": 0,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "clusterBase": 15,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "clusterBase": 30,
+                "clusterCount": 15,
+                "materialSlots": 1,
+                "localToWorld": [
+                  0.8754260980655929,
+                  0.40821789367673494,
+                  0.2588190451025209,
+                  0,
+                  -0.37546513700583156,
+                  0.9115328603407027,
+                  -0.16773125949652065,
+                  0,
+                  -0.3043929659483657,
+                  0.04965879379552998,
+                  0.9512512425641977,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 194,
+                "1": 179,
+                "2": 191
+              },
+              "maxError": {
+                "baseColorCode": 0.2598759168961067,
+                "emissive": 0.000025558471679690276,
+                "normalAngleCosine": 0.000024753582253511652
+              }
+            }
+          }
+        ],
+        "errors": []
+      }
+    ],
+    "failures": [
+      {
+        "artifact": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-materials\\failure-static-ub-20261110.json",
+          "sha256": "95261e03e8a21266ffa0ba2df8b3c27d77b442284416a2e33db8c09b17282e74"
+        },
+        "failure": {
+          "$omitted": true,
+          "reason": "Large text",
+          "type": "string",
+          "bytes": 4700,
+          "sha256": "ce33c0a7ad21ed58de124a4660d8cdce3ad2a0251c674b7bb2365e62c53a2052"
+        },
+        "errors": [
+          "Assertion failed: !Effective[Slot] [File:G:/UE_HTML/ue_html/tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private\\WebGPUDynamicRHI.cpp] [Line: 3311] \nUniform buffer is bound through both static and shader slots\n"
+        ]
+      },
+      {
+        "artifact": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-materials\\failure-fixture-cleanup-20261110.json",
+          "sha256": "4aa5fdcf97b0ffc7c73bfd40308216ed92b9127ee17883b8d4a351639b2ff1f5"
+        },
+        "failure": {
+          "$omitted": true,
+          "reason": "Large text",
+          "type": "string",
+          "bytes": 3415,
+          "sha256": "59dc134214e19ce795c1bfbafb5a7fb500c72bb5afb7a6ea869240e5a3ae893b"
+        },
+        "errors": [
+          "Assertion failed: !IsRooted() [File:G:/UE_HTML/ue_html/.tools/ue58-web-build-host/Engine/Source/Runtime/CoreUObject/Public\\UObject/UObjectBaseUtility.h] [Line: 209] \n\n",
+          "Assertion failed: IsOK || IsEngineExitRequested() [File:G:/UE_HTML/ue_html/.tools/ue58-web-build-host/Engine/Source\\Runtime/Core/Private/HAL/ThreadingBase.cpp] [Line: 130] \nOnly Scopes tagged with ETaskTag::EParallelThread can be tagged multiple times. ActiveNamedThreads(52) cannot be tagged multiple times in the same callstack with the current Tag(2)\n"
+        ]
+      },
+      {
+        "artifact": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-materials\\failure-initial-proxy-pending-20261110.json",
+          "sha256": "e8b417ba069c8418daf934199fa9fb7d24777ec2ba5a7a49970841aa08cdc513"
+        },
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 3\n\n    at verify (G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-materials.cjs:10:9)\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-materials.cjs:54:43",
+        "errors": []
+      }
+    ],
+    "regression": {
+      "artifact": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\results.json",
+        "sha256": "5249dc4db5869672ed0945148c036af38fa31b93f3188c05f3b48e634ec8d2b1"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-web-nanite-uploader.cjs",
+        "sha256": "c907847624d47accc37988b616ea46c885e8853356914a71a91fd92c85a3c635"
+      },
+      "frames": 42089,
+      "errors": [],
+      "enabledPipelines": {
+        "sampleFrame": 42090,
+        "graphicsPipelines": 972,
+        "computePipelines": 1575,
+        "graphicsPipelineCreateMs": 55.877685546875,
+        "computePipelineCreateMs": 43.09844970703125,
+        "textureReadbacks": 0,
+        "textureReadbacksReady": 0,
+        "textureReadbackMaps": 0,
+        "textureReadbackNotReady": 0,
+        "psoPrecaching": true,
+        "precachedGraphicsPipelines": 757,
+        "storageFormatPrecached": 9,
+        "storageFormatPrecachedUsed": 1,
+        "storageFormatPrecachedBinds": 41553,
+        "asyncPrecacheRequested": 2251,
+        "asyncPrecacheCompleted": 2251,
+        "asyncPrecacheFailed": 0,
+        "unsupportedPrecacheRequests": 0,
+        "precachedGraphicsUsed": 89,
+        "precachedGraphicsBinds": 428121,
+        "precacheConcurrency": 8,
+        "runtimeAsyncPSO": false,
+        "runtimeAsyncRequested": 0,
+        "runtimeAsyncCompleted": 0,
+        "runtimeAsyncFailed": 0
+      },
+      "disabledPipelines": {
+        "sampleFrame": 540,
+        "graphicsPipelines": 850,
+        "computePipelines": 1566,
+        "graphicsPipelineCreateMs": 58.312177658081055,
+        "computePipelineCreateMs": 41.11003875732422,
+        "textureReadbacks": 0,
+        "textureReadbacksReady": 0,
+        "textureReadbackMaps": 0,
+        "textureReadbackNotReady": 0,
+        "psoPrecaching": true,
+        "precachedGraphicsPipelines": 735,
+        "storageFormatPrecached": 9,
+        "storageFormatPrecachedUsed": 1,
+        "storageFormatPrecachedBinds": 291,
+        "asyncPrecacheRequested": 2229,
+        "asyncPrecacheCompleted": 2229,
+        "asyncPrecacheFailed": 0,
+        "unsupportedPrecacheRequests": 0,
+        "precachedGraphicsUsed": 70,
+        "precachedGraphicsBinds": 114946,
+        "precacheConcurrency": 8,
+        "runtimeAsyncPSO": false,
+        "runtimeAsyncRequested": 0,
+        "runtimeAsyncCompleted": 0,
+        "runtimeAsyncFailed": 0
+      },
+      "groups": {
+        "cases": 4,
+        "residency": 4,
+        "scene": 5,
+        "sceneCulling": 19,
+        "sceneDepth": 5,
+        "sceneGBuffer": 26,
+        "sceneLOD": 10,
+        "sceneHZB": 9,
+        "sceneInstances": 13,
+        "sceneMicroRepeats": 128,
+        "sceneViews": 10
+      }
+    },
+    "payloadEncoding": "gzip-base64-json",
+    "payload": {
+      "$omitted": true,
+      "reason": "Full diagnostic data is retained in the original report",
+      "type": "string",
+      "bytes": 1397988,
+      "sha256": "f5cb2c210b813b03aff1f9a7a58e2c0afa4f785e7fbceaa1db8cfd782a8b78a3"
+    },
+    "boundary": "Resident rigid opaque Unlit/DefaultLit UMaterial graphs, GPUScene attributes, MID colors, normal textures and proxy lifetime. Lightmap/Substrate/streaming/full-scene acceptance remains open."
+  }
+}

@@ -95,6 +95,8 @@ struct FWebGPUBindingPlan
     bool Initialized = false;
 };
 
+struct FWebGPUStoragePipelineCache;
+
 struct FWebGPUShaderData
 {
     FRHIShader* Owner = nullptr;
@@ -103,6 +105,9 @@ struct FWebGPUShaderData
     uint32 VertexInputMask = MAX_uint32;
     FString Entry;
     FString StorageFormatSource;
+    // Wrappers retain the cache; the shader keeps only a weak reference because
+    // each compiled pipeline already retains its shader.
+    TWeakPtr<FWebGPUStoragePipelineCache, ESPMode::ThreadSafe> StoragePipelineCache;
     TSharedPtr<FJsonObject> Metadata;
     UE::WebGPUShader::FRuntimeMetadata RuntimeMetadata;
     TMap<uint32, TRefCountPtr<FRHIResource>> Resources;
@@ -494,7 +499,8 @@ class FWebGPUGraphicsPipeline final : public FRHIGraphicsPipelineState
 {
   public:
     WGPURenderPipeline Handle = nullptr;
-    uint32 VertexStreamMask = 0;
+    // WebGPU slots are dense; UE stream indices can be sparse (e.g. primitive IDs).
+    TArray<uint8> VertexStreams;
     TArray<WGPUBindGroupLayout> GroupLayouts;
     TSet<uint64> DynamicBindings;
     uint32 PreviousGroupsFrame = MAX_uint32;
@@ -541,6 +547,8 @@ class FWebGPUComputePipeline final : public FRHIComputePipelineState
     TSet<uint64> DynamicBindings;
     TMap<uint64, uint32> StorageFormats;
     TMap<FString, TRefCountPtr<FWebGPUComputePipeline>> FormatVariants;
+    TSharedPtr<FWebGPUStoragePipelineCache, ESPMode::ThreadSafe> SharedFormatCache;
+    bool FormatPrecached = false, FormatPrecacheUsed = false;
     FWebGPUBindingPlan BindingPlan;
     uint32 PreviousGroupsFrame = MAX_uint32;
     TArray<FWebGPUBindGroupCacheEntry*> PreviousGroups;
@@ -554,6 +562,12 @@ class FWebGPUComputePipeline final : public FRHIComputePipelineState
         for (auto Layout : GroupLayouts) if (Layout) WebGPUOnOwner([&] { wgpuBindGroupLayoutRelease(Layout); });
         if (Handle) WebGPUOnOwner([&] { wgpuComputePipelineRelease(Handle); });
     }
+};
+
+struct FWebGPUStoragePipelineCache
+{
+    // Accessed only on the WebGPU owner. Pending/failed handles are never bound.
+    TMap<FString, TRefCountPtr<FWebGPUComputePipeline>> Precached;
 };
 
 struct FWebGPUOcclusionResultSlot
@@ -905,6 +919,8 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
         TSet<uint64>& DynamicBindings, TArray<WGPUBindGroupLayout>& Layouts,
         const TMap<uint64, uint32>* StorageFormats = nullptr);
     TRefCountPtr<FWebGPUComputePipeline> ResolveComputePipeline(FWebGPUComputePipeline& Pipeline);
+    TRefCountPtr<FWebGPUComputePipeline> CreateComputePipeline(const FComputePipelineStateInitializer& Initializer,
+        const TMap<uint64, uint32>* StorageFormats = nullptr);
     void Bind(FWebGPUShaderData &Shader, const FRHIShaderParameterResource &Parameter);
     void Parameters(FWebGPUShaderData &Shader, TConstArrayView<uint8>, TConstArrayView<FRHIShaderParameter>,
                     TConstArrayView<FRHIShaderParameterResource>, TConstArrayView<FRHIShaderParameterResource>);

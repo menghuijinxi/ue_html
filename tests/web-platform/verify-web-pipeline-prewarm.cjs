@@ -50,17 +50,21 @@ const pack = {
     {...readyState, ...changed}), 'Hybrid startup must wait for both sources');
   assert(!isWebPipelinePrecacheReady({}, [], {__webEngineFrames: 60}),
     'A package without either prewarm source must not claim precache readiness');
+  const observed = [];
+  globalThis.__webRecordPipelineEvent = event => observed.push(event);
   const device = fakeDevice(), cache = createWebPipelineCache(device);
   await cache.replay(pack, 2);
   const module = device.createShaderModule({label: 'engine-name', code: 'shader-a'});
   const bgl = device.createBindGroupLayout({entries: [{visibility: 4, buffer: {type: 'uniform'}, binding: 0}]});
   const layout = device.createPipelineLayout({bindGroupLayouts: [bgl]});
   const descriptor = {compute: {constants: {size: 1}, entryPoint: 'main', module}, layout};
+  const beforeHits = observed.length;
   const warm = device.createComputePipeline(descriptor);
   assert.equal(await device.createComputePipelineAsync({...descriptor, label: 'new-label'}), warm);
   assert.equal(cache.counts.hits, 2);
   assert.equal(cache.counts.misses, 0);
   assert.equal(cache.counts.modules, 1);
+  assert.equal(observed.length, beforeHits, 'Prewarmed cache hits must not report native compilation');
   for (const changed of [
     {...descriptor, compute: {...descriptor.compute, constants: {size: 1, label: 2}}},
     {...descriptor, compute: {...descriptor.compute, constants: {size: 2}}},
@@ -69,6 +73,10 @@ const pack = {
     {...descriptor, layout: device.createPipelineLayout({bindGroupLayouts: []})}
   ]) assert.notEqual(device.createComputePipeline(changed), warm);
   assert.equal(cache.counts.misses, 5);
+  assert.equal(observed.filter(event => event.name === 'createComputePipeline').length, 5,
+    'Misses on an adopted device must reach the performance HUD');
+  assert(observed.every(event => event.cacheMiss && event.end >= event.start));
+  delete globalThis.__webRecordPipelineEvent;
   const second = fakeDevice(), secondCache = createWebPipelineCache(second);
   await secondCache.replay(pack, 1);
   assert.equal(secondCache.counts.hits, 0);

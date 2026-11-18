@@ -4,7 +4,8 @@ const diskLimit = 1024 * 1024 * 1024;
 const stats = {memoryLimit, memoryBytes: 0, peakMemoryBytes: 0, memoryHits: 0,
   diskReads: 0, diskReadBytes: 0, downloadedBytes: 0, downloads: 0,
   persistentHits: 0, evictions: 0, diskEvictions: 0, activeReads: 0, peakActiveReads: 0,
-  verification: 'sampled', hashedBytes: 0, hashMs: 0, downloadMs: 0, diskReadMs: 0};
+  verification: 'sampled', hashedBytes: 0, hashMs: 0, downloadMs: 0, diskReadMs: 0,
+  quotaRetries: 0, quotaFailures: 0, reclaimedBytes: 0, missingFileRetries: 0, staleHandleRetries: 0};
 const assets = new Map(), blocks = new Map(), pendingBlocks = new Map();
 const queue = [];
 let directory, baseUrl, active = 0, fullVerification = false;
@@ -19,6 +20,18 @@ const hash = async bytes => {
 const markerName = value => value + '.json';
 const lockName = value => 'ue-web-local-' + value;
 const preparationLockName = value => lockName(value) + '-prepare';
+const cacheDirectory = async () => (await navigator.storage.getDirectory()).getDirectoryHandle('ue-web-local-v1', {create: true});
+
+async function removeEntry(name) {
+  try { await directory.removeEntry(name); }
+  catch (error) { if (error.name !== 'NotFoundError') throw error; }
+}
+
+// Call only while holding this asset's exclusive lock.
+async function discard(value) {
+  await removeEntry(markerName(value));
+  await removeEntry(value + '.bin');
+}
 
 async function exists(info) {
   try {
@@ -27,19 +40,23 @@ async function exists(info) {
     const file = await (await directory.getFileHandle(info.sha256 + '.bin')).getFile();
     return marker.sha256 === info.sha256 && marker.size === info.size && file.size === info.size &&
       (!fullVerification || marker.verification === 'full');
-  } catch { return false; }
+  } catch (error) {
+    if (error.name === 'InvalidStateError') throw error;
+    return false;
+  }
 }
 
 async function download(info) {
   const started = performance.now();
   const response = await fetch(new URL(info.url + '?v=' + info.sha256, baseUrl));
   if (!response.ok) throw new Error(`Local content download: HTTP ${response.status} (${info.url})`);
-  const handle = await directory.getFileHandle(info.sha256 + '.bin', {create: true});
-  const writer = await handle.createWritable();
   const reader = response.body.getReader();
+  let writer, marker;
   let offset = 0, used = 0, received = 0, previousProgress = 0;
   let buffer = new Uint8Array(Math.min(4 * 1024 * 1024, info.size));
   try {
+    const handle = await directory.getFileHandle(info.sha256 + '.bin', {create: true});
+    writer = await handle.createWritable();
     for (;;) {
       const {done, value} = await reader.read();
       if (done) break;
@@ -73,7 +90,7 @@ async function download(info) {
     }
     if (used || offset !== info.size) throw new Error('Incomplete local content');
     await writer.close();
-    const marker = await (await directory.getFileHandle(markerName(info.sha256), {create: true})).createWritable();
+    marker = await (await directory.getFileHandle(markerName(info.sha256), {create: true})).createWritable();
     await marker.write(JSON.stringify({sha256: info.sha256, size: info.size, used: Date.now(),
       verification: stats.verification}));
     await marker.close();
@@ -81,29 +98,42 @@ async function download(info) {
     stats.downloadMs += performance.now() - started;
   } catch (error) {
     await reader.cancel().catch(() => {});
-    await writer.abort().catch(() => {});
+    if (writer) await writer.abort().catch(() => {});
+    if (marker) await marker.abort().catch(() => {});
+    await discard(info.sha256);
     throw error;
   } finally { reader.releaseLock(); }
 }
 
-async function trimDisk() {
-  const items = [];
+async function trimDisk(quotaRecovery = false) {
+  const entries = new Map();
   for await (const [name, handle] of directory.entries()) {
-    if (!/^[a-f0-9]{64}\.json$/.test(name)) continue;
-    try { items.push(JSON.parse(await (await handle.getFile()).text())); } catch {}
+    const match = /^([a-f0-9]{64})\.(json|bin)$/.exec(name);
+    if (!match || handle.kind !== 'file') continue;
+    const item = entries.get(match[1]) || {sha256: match[1], size: 0, used: 0};
+    entries.set(match[1], item);
+    try {
+      const file = await handle.getFile();
+      if (match[2] === 'bin') item.size = file.size;
+      else {
+        const marker = JSON.parse(await file.text());
+        if (Number.isFinite(marker.used)) item.used = marker.used;
+      }
+    } catch (error) { if (error.name !== 'NotFoundError' && !(error instanceof SyntaxError)) throw error; }
   }
+  const items = [...entries.values()];
   let bytes = items.reduce((sum, item) => sum + item.size, 0);
   for (const item of items.sort((a, b) => a.used - b.used)) {
-    if (bytes <= diskLimit) break;
+    if (!quotaRecovery && bytes <= diskLimit) break;
     if (assets.has(item.sha256)) continue;
     await navigator.locks.request(preparationLockName(item.sha256), {ifAvailable: true}, async preparing => {
       if (!preparing) return;
       await navigator.locks.request(lockName(item.sha256), {ifAvailable: true}, async lock => {
         if (!lock) return;
-        await directory.removeEntry(markerName(item.sha256));
-        await directory.removeEntry(item.sha256 + '.bin');
+        await discard(item.sha256);
         bytes -= item.size;
         ++stats.diskEvictions;
+        stats.reclaimedBytes += item.size;
       });
     });
   }
@@ -127,24 +157,63 @@ async function asset(info) {
       info.blocks.length !== Math.ceil(info.size / info.blockSize) ||
       !info.blocks.every(value => /^[a-f0-9]{64}$/.test(value)))
     throw new Error('Invalid local content manifest');
-  if (!assets.has(info.sha256)) assets.set(info.sha256,
-    navigator.locks.request(preparationLockName(info.sha256), async () => {
-      // Serialize preparation only. Taking an exclusive content lock on every
-      // cache hit would wait forever behind another page's lifetime read lease.
-      let downloaded = false;
-      for (;;) {
-        const file = await openShared(info);
-        if (file) {
-          if (!downloaded) ++stats.persistentHits;
-          return {info, file};
-        }
-        await navigator.locks.request(lockName(info.sha256), {ifAvailable: true}, async lock => {
-          if (!lock) throw new Error('Local content cache needs rebuilding but another page is using it. Close that page and reload.');
-          if (!await exists(info)) {await download(info); downloaded = true;}
-        });
+  if (!assets.has(info.sha256)) assets.set(info.sha256, (async () => {
+    for (let attempt = 0; ; ++attempt) {
+      try { return await openAsset(info); }
+      catch (error) {
+        if (!['NotFoundError', 'InvalidStateError'].includes(error.name) || attempt !== 0) throw error;
+        // OPFS can invalidate a cached directory/file handle independently of
+        // our Web Locks (for example when browser storage is reclaimed).
+        // Reopen from the storage root and revalidate under the preparation lock.
+        // A stale snapshot can also fail with InvalidStateError after browser
+        // storage changes. Download already discards any partial write while
+        // holding the exclusive lock. Retry opening with fresh handles once;
+        // a second invalidation remains an error, never partial data.
+        if (error.name === 'NotFoundError') ++stats.missingFileRetries;
+        else ++stats.staleHandleRetries;
+        directory = await cacheDirectory();
       }
-    }).catch(error => {assets.delete(info.sha256); throw error;}));
+    }
+  })().catch(error => { assets.delete(info.sha256); throw error; }));
   return assets.get(info.sha256);
+}
+
+async function openAsset(info) {
+  return navigator.locks.request(preparationLockName(info.sha256), async () => {
+    // Cache hits acquire a shared lease so another page's lifetime lease cannot
+    // block preparation. Only a missing asset needs the exclusive content lock.
+    let downloaded = false;
+    for (;;) {
+      const file = await openShared(info);
+      if (file) {
+        if (!downloaded) ++stats.persistentHits;
+        return {info, file};
+      }
+      if (downloaded) throw new DOMException('Local content cache disappeared after download', 'NotFoundError');
+      await navigator.locks.request(lockName(info.sha256), {ifAvailable: true}, async lock => {
+        if (!lock) throw new Error('Local content cache needs rebuilding but another page is using it. Close that page and reload.');
+        if (await exists(info)) return;
+        try { await download(info); }
+        catch (error) {
+          if (error.name !== 'QuotaExceededError') throw error;
+          ++stats.quotaRetries;
+          // Large packs may exceed the normal idle-cache budget. On quota
+          // failure reclaim all unused versions, including interrupted files.
+          // Active assets in this worker and shared leases in other tabs survive.
+          await trimDisk(true);
+          try { await download(info); }
+          catch (retryError) {
+            if (retryError.name === 'QuotaExceededError') {
+              ++stats.quotaFailures;
+              throw new Error(`Insufficient browser storage for ${info.url} (${info.size} bytes) after reclaiming unused content`);
+            }
+            throw retryError;
+          }
+        }
+        downloaded = true;
+      });
+    }
+  });
 }
 
 async function block(value, index) {
@@ -186,7 +255,7 @@ async function execute(message) {
     baseUrl = message.baseUrl;
     fullVerification = message.verification === 'full';
     stats.verification = fullVerification ? 'full' : 'sampled';
-    directory = await (await navigator.storage.getDirectory()).getDirectoryHandle('ue-web-local-v1', {create: true});
+    directory = await cacheDirectory();
     return null;
   }
   if (message.type === 'asset') return (await asset(message.info)).file;
@@ -232,7 +301,8 @@ function pump() {
     stats.peakActiveReads = Math.max(stats.peakActiveReads, active);
     execute(message).then(result => {
       postMessage({id: message.id, result, stats}, result instanceof ArrayBuffer ? [result] : []);
-    }, error => postMessage({id: message.id, error: error.message, stats})).finally(() => {
+    }, error => postMessage({id: message.id,
+      error: `${message.type}${message.info?.url ? ' ' + message.info.url : ''}: ${error.name}: ${error.message}`, stats})).finally(() => {
       --active;
       stats.activeReads = active;
       pump();

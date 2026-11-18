@@ -13,7 +13,9 @@ const patch = `
 			if ((ModuleName == "RenderCore" &&
 				Environment.GetEnvironmentVariable("UE_WEB_NATIVE_RENDERCORE") == "1") ||
 				(ModuleName == "Renderer" &&
-				Environment.GetEnvironmentVariable("UE_WEB_NATIVE_RENDERER") == "1"))
+				Environment.GetEnvironmentVariable("UE_WEB_NATIVE_RENDERER") == "1") ||
+				(ModuleName == "NaniteBuilder" &&
+				Environment.GetEnvironmentVariable("UE_WEB_NATIVE_NANITEBUILDER") == "1"))
 			{
 				RulesObject.bUsePrecompiled = false;
 				RulesObject.bUseUnity = true;
@@ -22,6 +24,12 @@ const patch = `
 					RulesObject.OptimizeCode = ModuleRules.CodeOptimization.Never;
 				}
 				RulesObject.PrivateDefinitions.Add("PLATFORM_WEB=0");
+				if (ModuleName == "NaniteBuilder")
+				{
+					// Installed module constructors skip third-party dependencies while
+					// bUsePrecompiled is still true; restore them for this isolated build.
+					RulesObject.PrivateDependencyModuleNames.AddRange(new string[] { "metis", "MikkTSpace", "Embree" });
+				}
 			}
 `;
 fs.mkdirSync(path.dirname(output), {recursive: true});

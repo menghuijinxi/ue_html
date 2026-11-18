@@ -52,7 +52,21 @@ function triangle(page, cluster, tri) {
       const header=page.readUInt32LE(decodeInfo+i*4), n=header&31;
       const value=decodeUV((header>>>5)+readBits(attrOffset,bit,n));bit+=n;return value;
     });
-    return {position,normal,color,uv};
+    const influences=[];
+    if(extract(word(5,1),1,23)){
+      const headerOffset=decodeInfo+numUVs*8;
+      const a=page.readUInt32LE(headerOffset),b=page.readUInt32LE(headerOffset+4);
+      const address=extract(a,22,0),count=a>>>22,indexBits=extract(b,6,0),weightBits=extract(b,5,6);
+      assert(count>0&&count<=32&&indexBits<=16&&weightBits<=16,'valid vertex bone influence header');
+      for(let influence=0;influence<count;influence++){
+        const offset=(index*count+influence)*(indexBits+weightBits);
+        const bone=readBits(address,offset,indexBits),encoded=readBits(address,offset+indexBits,weightBits);
+        const weight=weightBits?Math.fround(encoded*Math.fround(1/(2**weightBits-1))):1;
+        influences.push({bone,weight});
+      }
+      assert(Math.abs(influences.reduce((n,i)=>n+i.weight,0)-1)<1e-6,'normalized decoded bone weights');
+    }
+    return {position,normal,color,uv,influences};
   });
   const encoding=word(5,3);let material=0xffffffff;
   if(encoding<0xfe000000) {
@@ -72,14 +86,15 @@ module.exports = function verifyMaterialInputs(result, page, tolerances = {posit
   assert(stride>0);assert.equal(width,Math.ceil((rect[2]-rect[0])/stride));assert.equal(height,Math.ceil((rect[3]-rect[1])/stride));
   assert.equal(inputs.length,width*height*16);
   const capacity=entries.reduce((n,e)=>n+e.keys.length,0);
-  assert.equal(records.length,Math.max(capacity,1)*2);
+  assert.equal(records.length,Math.max(capacity,1)*3);
   let validRecords=0;
   for(const entry of entries) {
     assert(Number.isInteger(entry.instanceId)&&entry.instanceId>=0&&entry.instanceId<2**24);
     for(let slot=0;slot<entry.keys.length;++slot) {
-      const offset=(entry.clusterBase+slot)*2;
+      const offset=(entry.clusterBase+slot)*3;
       const raw=BigInt(records[offset])|(BigInt(records[offset+1])<<32n);
-      if(result.invalidCullState||slot>=entry.state[0]) {assert.equal(raw,0n);continue;}
+      if(result.invalidCullState||slot>=entry.state[0]) {assert.equal(raw,0n);assert.equal(records[offset+2],0);continue;}
+      assert.equal(records[offset+2],0xffffff,"ordinary meshes must carry the invalid assembly index");
       // Fields cross dword boundaries: flags 5, view 12, instance 24, pool 23.
       // Root pool references use 6 cluster bits, whereas cull keys use 8.
       const pool=Number(raw>>41n), key=entry.keys[slot];
@@ -126,5 +141,29 @@ module.exports = function verifyMaterialInputs(result, page, tolerances = {posit
   // The camera-inside/near-plane case may cover every sample in the viewport.
   if(result.raster?.covered>50) assert(covered>0);
   if(result.step===1&&!result.rect) assert.equal(result.materialInputRejections,7);
-  return {pass:true,validRecords,covered,empty,maxError,materialSlots:[...materialSlots].sort()};
+  return {pass:true,validRecords,covered,empty,maxError,materialSlots:[...materialSlots].sort((a,b)=>a-b)};
 };
+
+// Independently solve UV at neighboring subpixel locations on the same decoded
+// triangle. Central differences avoid copying UE's analytic derivative formula.
+module.exports.sampleUV = function(result, page, sample) {
+  const id=result.before[sample*28], slot=(id>>>8)-1;
+  const entry=result.entries.find(e=>slot>=e.clusterBase&&slot<e.clusterBase+e.keys.length);
+  assert(entry);
+  const key=entry.keys[slot-entry.clusterBase], decoded=triangle(page,key&255,id&255);
+  const m=Array.from({length:16},(_,i)=>Math.fround([0,1,2,3].reduce((s,k)=>s+
+    entry.localToWorld[Math.floor(i/4)*4+k]*result.worldToClip[k*4+i%4],0)));
+  const clip=decoded.vertices.map(v=>transform([...v.position,1],m)), rect=result.rect;
+  const px=rect[0]+sample%result.materialWidth*result.materialStride+.5;
+  const py=rect[1]+Math.floor(sample/result.materialWidth)*result.materialStride+.5;
+  const solve=(x,y)=>{
+    const ndc=[(x-rect[0])/(rect[2]-rect[0])*2-1,1-(y-rect[1])/(rect[3]-rect[1])*2];
+    const a=clip.map(v=>v[0]-ndc[0]*v[3]), b=clip.map(v=>v[1]-ndc[1]*v[3]);
+    const w=[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]], sum=w.reduce((s,v)=>s+v,0);
+    return [0,1].map(c=>decoded.vertices.reduce((s,v,j)=>s+v.uv[c]*w[j]/sum,0));
+  };
+  const h=.001, uv=solve(px,py), xp=solve(px+h,py), xm=solve(px-h,py), yp=solve(px,py+h), ym=solve(px,py-h);
+  return {uv,dx:xp.map((v,c)=>(v-xm[c])/(2*h)),dy:yp.map((v,c)=>(v-ym[c])/(2*h))};
+};
+module.exports.triangleMaterial = (page,cluster,tri) => triangle(page,cluster,tri).material;
+module.exports.decodeTriangle = triangle;

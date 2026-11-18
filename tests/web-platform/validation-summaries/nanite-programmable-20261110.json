@@ -1,0 +1,1911 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-programmable-20261110.json",
+    "bytes": 18371100,
+    "sha256": "58e87cd1cd97ef8323e830f8ebd015149c5853de9409e7a2fc6de002218da337",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-10T01:22:34.256Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-programmable-evidence.cjs",
+      "sha256": "f119d165bd41528951c0548330fad7b23226b8fef7ed8fd3ffa90c1ea34fc2c2"
+    },
+    "packages": {
+      "nanite-browser": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\package.json",
+        "sha256": "8c5ef9662ecfe14428f4ea42b6c884f1482aede591f137cd5640e9652450b67c"
+      },
+      "nanite-default-scene": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-default-scene\\package.json",
+        "sha256": "f33f8316ba5f85c50a69d46dd40f0b2be369b3c9c602dc6e8f52174bede55090"
+      },
+      "nanite-full-scene": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-full-scene\\package.json",
+        "sha256": "5c4cc388e9e58a8c44a400651b39a3431eb69528858186e58fb2ca697d991297"
+      }
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "fb25d6ded30a908c0c6474106dce21898b3ff301e7def5ddde411f2c55653468"
+    },
+    "images": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-programmable-20261110-packed-4.png",
+        "sha256": "b015ee706597cabc6db41c21ad371242628a2dbfe0074e1dbe4b5a749b6c88ee"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-programmable-20261110-packed-6.png",
+        "sha256": "137fbbe368df32c9a69c3025881251c264eb3de2291c0c2844af5eb855d06a0d"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-programmable-20261110-packed-11.png",
+        "sha256": "85b4556cfa0f5ead10ad628e2fdaa57183c4a9dbb3767a05889494e25e595072"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-programmable-20261110-packed-28.png",
+        "sha256": "9a8dee889777e08f59d85d3207ce5915aa07e810a0406393c40b487b950e0dda"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-programmable-20261110-packed-44.png",
+        "sha256": "624a1b3360fd9f7b998f782570fc993f3343c6348d55b81038fd3afaebd6baa5"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-programmable-20261110-packed-48.png",
+        "sha256": "3a6418e817abf76a99e1dd78a3cd92d5e0333be14f73c387ad3fba7c0a07a0e2"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-programmable-20261110-packed-52.png",
+        "sha256": "3cf90b115b9a7531e886cb41a6d4119e750bb62f698f462eccc15b93b3f6c7f0"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-programmable-20261110-scalar-4.png",
+        "sha256": "8e6ea18b5e2df804ba628c05ae86dee59e7eb99963429cd610a9d7666f3c3c14"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-programmable-20261110-scalar-6.png",
+        "sha256": "3f8530b54765800eeb094f287b66125199e4848ba3722d5e7e88a6b5930c591c"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-programmable-20261110-scalar-11.png",
+        "sha256": "c18ba35c70d245ed76bd10ac50242b9b211ce610997d43def953dc4821cc45ed"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-programmable-20261110-scalar-28.png",
+        "sha256": "d8497c2ee396ead4b137c8f443f607942301150ee857ad99da4c32125bb2bd05"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-programmable-20261110-scalar-44.png",
+        "sha256": "ccb8d91ce356777a79767384c3a9083f07e55837f3f344621164bb610f5bff68"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-programmable-20261110-scalar-48.png",
+        "sha256": "133fc5eae795566bb2d88bd149b8dc80550061869de4e6c0928bab877f787b53"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-programmable-20261110-scalar-52.png",
+        "sha256": "2586f51c4e6431cf6d25204335109a69c213f993ebb21035f2ac745c3093ad0f"
+      }
+    ],
+    "runs": [
+      {
+        "scalar": false,
+        "frames": 21654,
+        "steps": [
+          {
+            "step": 1,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 900
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 2,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "1": 784
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 3,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 900
+            },
+            "compared": 900,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 3.469446951953614e-18,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 4,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 452,
+              "1": 390
+            },
+            "compared": 842,
+            "holes": 448,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 3.725290298461914e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 5,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 900
+            },
+            "compared": 900,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 5.28746373074096e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 6,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 116,
+              "1": 784
+            },
+            "compared": 900,
+            "holes": 0,
+            "pdoChangedWinner": 784,
+            "maxDepthError": 3.6179458803853315e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 7,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 900
+            },
+            "compared": 900,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 3.725290301931361e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 8,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 58,
+              "1": 784
+            },
+            "compared": 842,
+            "holes": 448,
+            "pdoChangedWinner": 394,
+            "maxDepthError": 3.6179458803853315e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 9,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 452,
+              "1": 390
+            },
+            "compared": 842,
+            "holes": 448,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 3.725290298461914e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 10,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 900
+            },
+            "compared": 900,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 5.587935447692871e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 11,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "1": 784
+            },
+            "compared": 784,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 12,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 452,
+              "1": 390
+            },
+            "compared": 842,
+            "holes": 448,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 3.725290298461914e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 13,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "1": 784
+            },
+            "compared": 784,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 14,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 452,
+              "1": 390
+            },
+            "compared": 842,
+            "holes": 448,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 3.725290298461914e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 15,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "1": 784
+            },
+            "compared": 784,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 16,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 452,
+              "1": 390
+            },
+            "compared": 842,
+            "holes": 448,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 3.725290298461914e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 17,
+            "scenario": 0,
+            "phase": 0,
+            "counts": {
+              "0": 900
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 18,
+            "scenario": 0,
+            "phase": 1,
+            "counts": {
+              "1": 784
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 19,
+            "scenario": 0,
+            "phase": 2,
+            "counts": {
+              "0": 452,
+              "1": 390
+            },
+            "compared": 842,
+            "holes": 448,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 3.725290298461914e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 20,
+            "scenario": 0,
+            "phase": 3,
+            "counts": {
+              "0": 58,
+              "1": 784
+            },
+            "compared": 842,
+            "holes": 448,
+            "pdoChangedWinner": 394,
+            "maxDepthError": 3.6179458803853315e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 21,
+            "scenario": 1,
+            "phase": 0,
+            "counts": {
+              "0": 900
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 22,
+            "scenario": 1,
+            "phase": 1,
+            "counts": {
+              "1": 784
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 23,
+            "scenario": 1,
+            "phase": 2,
+            "counts": {
+              "1": 784
+            },
+            "compared": 784,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 24,
+            "scenario": 1,
+            "phase": 3,
+            "counts": {
+              "0": 58,
+              "1": 784
+            },
+            "compared": 842,
+            "holes": 452,
+            "pdoChangedWinner": 390,
+            "maxDepthError": 3.041325080666013e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 25,
+            "scenario": 2,
+            "phase": 0,
+            "counts": {
+              "0": 900
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 26,
+            "scenario": 2,
+            "phase": 1,
+            "counts": {
+              "1": 784
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 27,
+            "scenario": 2,
+            "phase": 2,
+            "counts": {
+              "0": 448,
+              "1": 394
+            },
+            "compared": 842,
+            "holes": 452,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 3.725290298461914e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 28,
+            "scenario": 2,
+            "phase": 3,
+            "counts": {
+              "0": 58,
+              "1": 784
+            },
+            "compared": 842,
+            "holes": 452,
+            "pdoChangedWinner": 390,
+            "maxDepthError": 3.362315890986789e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 29,
+            "scenario": 3,
+            "phase": 0,
+            "counts": {
+              "0": 900
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 30,
+            "scenario": 3,
+            "phase": 1,
+            "counts": {
+              "1": 784
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 31,
+            "scenario": 3,
+            "phase": 2,
+            "counts": {
+              "1": 784
+            },
+            "compared": 784,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 32,
+            "scenario": 3,
+            "phase": 3,
+            "counts": {
+              "0": 58,
+              "1": 784
+            },
+            "compared": 842,
+            "holes": 448,
+            "pdoChangedWinner": 394,
+            "maxDepthError": 3.1391737126407193e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 33,
+            "scenario": 4,
+            "phase": 0,
+            "counts": {
+              "0": 900
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 34,
+            "scenario": 4,
+            "phase": 1,
+            "counts": {
+              "1": 784
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 35,
+            "scenario": 4,
+            "phase": 2,
+            "counts": {
+              "1": 784
+            },
+            "compared": 784,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 36,
+            "scenario": 4,
+            "phase": 3,
+            "counts": {
+              "0": 58,
+              "1": 784
+            },
+            "compared": 842,
+            "holes": 448,
+            "pdoChangedWinner": 394,
+            "maxDepthError": 3.6179458803853315e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 37,
+            "scenario": 5,
+            "phase": 0,
+            "counts": {
+              "0": 900
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 38,
+            "scenario": 5,
+            "phase": 1,
+            "counts": {
+              "1": 784
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 39,
+            "scenario": 5,
+            "phase": 2,
+            "counts": {
+              "0": 448,
+              "1": 394
+            },
+            "compared": 842,
+            "holes": 452,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 3.725290298461914e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 40,
+            "scenario": 5,
+            "phase": 3,
+            "counts": {
+              "0": 58,
+              "1": 784
+            },
+            "compared": 842,
+            "holes": 452,
+            "pdoChangedWinner": 390,
+            "maxDepthError": 3.041325080666013e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 41,
+            "scenario": 6,
+            "phase": 0,
+            "counts": {
+              "0": 726
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 42,
+            "scenario": 6,
+            "phase": 1,
+            "counts": {
+              "1": 784
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 43,
+            "scenario": 6,
+            "phase": 2,
+            "counts": {
+              "0": 365,
+              "1": 537
+            },
+            "compared": 902,
+            "holes": 361,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 3.469446951953614e-18,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 44,
+            "scenario": 6,
+            "phase": 3,
+            "counts": {
+              "0": 118,
+              "1": 784
+            },
+            "compared": 902,
+            "holes": 361,
+            "pdoChangedWinner": 247,
+            "maxDepthError": 3.467333434259423e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 45,
+            "scenario": 7,
+            "phase": 0,
+            "counts": {
+              "0": 289
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 46,
+            "scenario": 7,
+            "phase": 1,
+            "counts": {
+              "1": 289
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 47,
+            "scenario": 7,
+            "phase": 2,
+            "counts": {
+              "0": 144,
+              "1": 145
+            },
+            "compared": 289,
+            "holes": 145,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 1.1920928955078125e-7,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 48,
+            "scenario": 7,
+            "phase": 3,
+            "counts": {
+              "1": 289
+            },
+            "compared": 289,
+            "holes": 145,
+            "pdoChangedWinner": 144,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 49,
+            "scenario": 8,
+            "phase": 0,
+            "counts": {
+              "0": 289
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 50,
+            "scenario": 8,
+            "phase": 1,
+            "counts": {
+              "1": 289
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 51,
+            "scenario": 8,
+            "phase": 2,
+            "counts": {
+              "1": 289
+            },
+            "compared": 289,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 52,
+            "scenario": 8,
+            "phase": 3,
+            "counts": {
+              "1": 289
+            },
+            "compared": 289,
+            "holes": 144,
+            "pdoChangedWinner": 145,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          }
+        ]
+      },
+      {
+        "scalar": true,
+        "frames": 21422,
+        "steps": [
+          {
+            "step": 1,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 900
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 2,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "1": 784
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 3,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 900
+            },
+            "compared": 900,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 3.469446951953614e-18,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 4,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 452,
+              "1": 390
+            },
+            "compared": 842,
+            "holes": 448,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 3.725290298461914e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 5,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 900
+            },
+            "compared": 900,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 5.28746373074096e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 6,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 116,
+              "1": 784
+            },
+            "compared": 900,
+            "holes": 0,
+            "pdoChangedWinner": 784,
+            "maxDepthError": 3.6179458803853315e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 7,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 900
+            },
+            "compared": 900,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 3.725290301931361e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 8,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 58,
+              "1": 784
+            },
+            "compared": 842,
+            "holes": 448,
+            "pdoChangedWinner": 394,
+            "maxDepthError": 3.6179458803853315e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 9,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 452,
+              "1": 390
+            },
+            "compared": 842,
+            "holes": 448,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 3.725290298461914e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 10,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 900
+            },
+            "compared": 900,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 5.587935447692871e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 11,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "1": 784
+            },
+            "compared": 784,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 12,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 452,
+              "1": 390
+            },
+            "compared": 842,
+            "holes": 448,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 3.725290298461914e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 13,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "1": 784
+            },
+            "compared": 784,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 14,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 452,
+              "1": 390
+            },
+            "compared": 842,
+            "holes": 448,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 3.725290298461914e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 15,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "1": 784
+            },
+            "compared": 784,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 16,
+            "scenario": -1,
+            "phase": -1,
+            "counts": {
+              "0": 452,
+              "1": 390
+            },
+            "compared": 842,
+            "holes": 448,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 3.725290298461914e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 17,
+            "scenario": 0,
+            "phase": 0,
+            "counts": {
+              "0": 900
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 18,
+            "scenario": 0,
+            "phase": 1,
+            "counts": {
+              "1": 784
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 19,
+            "scenario": 0,
+            "phase": 2,
+            "counts": {
+              "0": 452,
+              "1": 390
+            },
+            "compared": 842,
+            "holes": 448,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 3.725290298461914e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 20,
+            "scenario": 0,
+            "phase": 3,
+            "counts": {
+              "0": 58,
+              "1": 784
+            },
+            "compared": 842,
+            "holes": 448,
+            "pdoChangedWinner": 394,
+            "maxDepthError": 3.6179458803853315e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 21,
+            "scenario": 1,
+            "phase": 0,
+            "counts": {
+              "0": 900
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 22,
+            "scenario": 1,
+            "phase": 1,
+            "counts": {
+              "1": 784
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 23,
+            "scenario": 1,
+            "phase": 2,
+            "counts": {
+              "1": 784
+            },
+            "compared": 784,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 24,
+            "scenario": 1,
+            "phase": 3,
+            "counts": {
+              "0": 58,
+              "1": 784
+            },
+            "compared": 842,
+            "holes": 452,
+            "pdoChangedWinner": 390,
+            "maxDepthError": 3.041325080666013e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 25,
+            "scenario": 2,
+            "phase": 0,
+            "counts": {
+              "0": 900
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 26,
+            "scenario": 2,
+            "phase": 1,
+            "counts": {
+              "1": 784
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 27,
+            "scenario": 2,
+            "phase": 2,
+            "counts": {
+              "0": 448,
+              "1": 394
+            },
+            "compared": 842,
+            "holes": 452,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 3.725290298461914e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 28,
+            "scenario": 2,
+            "phase": 3,
+            "counts": {
+              "0": 58,
+              "1": 784
+            },
+            "compared": 842,
+            "holes": 452,
+            "pdoChangedWinner": 390,
+            "maxDepthError": 3.362315890986789e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 29,
+            "scenario": 3,
+            "phase": 0,
+            "counts": {
+              "0": 900
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 30,
+            "scenario": 3,
+            "phase": 1,
+            "counts": {
+              "1": 784
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 31,
+            "scenario": 3,
+            "phase": 2,
+            "counts": {
+              "1": 784
+            },
+            "compared": 784,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 32,
+            "scenario": 3,
+            "phase": 3,
+            "counts": {
+              "0": 58,
+              "1": 784
+            },
+            "compared": 842,
+            "holes": 448,
+            "pdoChangedWinner": 394,
+            "maxDepthError": 3.1391737126407193e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 33,
+            "scenario": 4,
+            "phase": 0,
+            "counts": {
+              "0": 900
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 34,
+            "scenario": 4,
+            "phase": 1,
+            "counts": {
+              "1": 784
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 35,
+            "scenario": 4,
+            "phase": 2,
+            "counts": {
+              "1": 784
+            },
+            "compared": 784,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 36,
+            "scenario": 4,
+            "phase": 3,
+            "counts": {
+              "0": 58,
+              "1": 784
+            },
+            "compared": 842,
+            "holes": 448,
+            "pdoChangedWinner": 394,
+            "maxDepthError": 3.6179458803853315e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 37,
+            "scenario": 5,
+            "phase": 0,
+            "counts": {
+              "0": 900
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 38,
+            "scenario": 5,
+            "phase": 1,
+            "counts": {
+              "1": 784
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 39,
+            "scenario": 5,
+            "phase": 2,
+            "counts": {
+              "0": 448,
+              "1": 394
+            },
+            "compared": 842,
+            "holes": 452,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 3.725290298461914e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 40,
+            "scenario": 5,
+            "phase": 3,
+            "counts": {
+              "0": 58,
+              "1": 784
+            },
+            "compared": 842,
+            "holes": 452,
+            "pdoChangedWinner": 390,
+            "maxDepthError": 3.041325080666013e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 41,
+            "scenario": 6,
+            "phase": 0,
+            "counts": {
+              "0": 726
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 42,
+            "scenario": 6,
+            "phase": 1,
+            "counts": {
+              "1": 784
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 43,
+            "scenario": 6,
+            "phase": 2,
+            "counts": {
+              "0": 365,
+              "1": 537
+            },
+            "compared": 902,
+            "holes": 361,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 3.469446951953614e-18,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 44,
+            "scenario": 6,
+            "phase": 3,
+            "counts": {
+              "0": 118,
+              "1": 784
+            },
+            "compared": 902,
+            "holes": 361,
+            "pdoChangedWinner": 247,
+            "maxDepthError": 3.467333434259423e-9,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 45,
+            "scenario": 7,
+            "phase": 0,
+            "counts": {
+              "0": 289
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 46,
+            "scenario": 7,
+            "phase": 1,
+            "counts": {
+              "1": 289
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 47,
+            "scenario": 7,
+            "phase": 2,
+            "counts": {
+              "0": 144,
+              "1": 145
+            },
+            "compared": 289,
+            "holes": 145,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 1.1920928955078125e-7,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 48,
+            "scenario": 7,
+            "phase": 3,
+            "counts": {
+              "1": 289
+            },
+            "compared": 289,
+            "holes": 145,
+            "pdoChangedWinner": 144,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 49,
+            "scenario": 8,
+            "phase": 0,
+            "counts": {
+              "0": 289
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 50,
+            "scenario": 8,
+            "phase": 1,
+            "counts": {
+              "1": 289
+            },
+            "compared": 0,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 51,
+            "scenario": 8,
+            "phase": 2,
+            "counts": {
+              "1": 289
+            },
+            "compared": 289,
+            "holes": 0,
+            "pdoChangedWinner": 0,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          },
+          {
+            "step": 52,
+            "scenario": 8,
+            "phase": 3,
+            "counts": {
+              "1": 289
+            },
+            "compared": 289,
+            "holes": 144,
+            "pdoChangedWinner": 145,
+            "maxDepthError": 0,
+            "maxColorError": 0.2598759168961067
+          }
+        ]
+      }
+    ],
+    "regressions": [
+      {
+        "suite": "materials",
+        "mode": "packed",
+        "frames": 3401,
+        "steps": 10
+      },
+      {
+        "suite": "sidedness",
+        "mode": "packed",
+        "frames": 8707,
+        "steps": 22
+      },
+      {
+        "suite": "streaming",
+        "mode": "packed",
+        "frames": 2124,
+        "steps": 9
+      },
+      {
+        "suite": "automatic",
+        "mode": "packed",
+        "frames": 4611,
+        "steps": 8
+      },
+      {
+        "suite": "full-scene",
+        "mode": "packed",
+        "frames": 1824,
+        "steps": 6,
+        "views": [
+          {
+            "step": 1,
+            "registered": 2062,
+            "entries": 395,
+            "materialDraws": 107,
+            "validation": {
+              "covered": 13618,
+              "suppressed": 2062,
+              "ordinaryFallback": 99,
+              "visible": 1904,
+              "shadingModels": {
+                "0": 292,
+                "1": 11755,
+                "2": 1571
+              }
+            },
+            "performance": {
+              "frames": 122,
+              "milliseconds": 8667.075000047684,
+              "fps": 14.076259868447982,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 2,
+            "registered": 0,
+            "entries": 0,
+            "validation": {
+              "covered": 0,
+              "suppressed": 0
+            },
+            "performance": {
+              "frames": 128,
+              "milliseconds": 1349.0149999856949,
+              "fps": 94.88404502645065,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 3,
+            "registered": 2062,
+            "entries": 395,
+            "materialDraws": 107,
+            "validation": {
+              "covered": 13611,
+              "suppressed": 2062,
+              "ordinaryFallback": 99,
+              "visible": 1905,
+              "shadingModels": {
+                "0": 291,
+                "1": 11733,
+                "2": 1587
+              }
+            },
+            "performance": {
+              "frames": 121,
+              "milliseconds": 8709.759999990463,
+              "fps": 13.892460871497319,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 4,
+            "registered": 2062,
+            "entries": 326,
+            "materialDraws": 107,
+            "validation": {
+              "covered": 14378,
+              "suppressed": 2062,
+              "ordinaryFallback": 99,
+              "visible": 374,
+              "shadingModels": {
+                "1": 14378
+              }
+            },
+            "performance": {
+              "frames": 120,
+              "milliseconds": 7694.014999985695,
+              "fps": 15.59653834834259,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 5,
+            "registered": 2062,
+            "entries": 377,
+            "materialDraws": 93,
+            "validation": {
+              "covered": 13918,
+              "suppressed": 2062,
+              "ordinaryFallback": 99,
+              "visible": 2166,
+              "shadingModels": {
+                "0": 5008,
+                "1": 8910
+              }
+            },
+            "performance": {
+              "frames": 120,
+              "milliseconds": 8125.209999978542,
+              "fps": 14.768849051325061,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 6,
+            "registered": 2062,
+            "entries": 395,
+            "materialDraws": 107,
+            "validation": {
+              "covered": 13621,
+              "suppressed": 2062,
+              "ordinaryFallback": 99,
+              "visible": 1905,
+              "shadingModels": {
+                "0": 294,
+                "1": 11755,
+                "2": 1572
+              }
+            },
+            "performance": {
+              "frames": 120,
+              "milliseconds": 8636.644999980927,
+              "fps": 13.894284180982895,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          }
+        ]
+      },
+      {
+        "suite": "materials",
+        "mode": "scalar",
+        "frames": 3469,
+        "steps": 10
+      },
+      {
+        "suite": "sidedness",
+        "mode": "scalar",
+        "frames": 8531,
+        "steps": 22
+      },
+      {
+        "suite": "streaming",
+        "mode": "scalar",
+        "frames": 2043,
+        "steps": 9
+      },
+      {
+        "suite": "automatic",
+        "mode": "scalar",
+        "frames": 4110,
+        "steps": 8
+      },
+      {
+        "suite": "full-scene",
+        "mode": "scalar",
+        "frames": 1804,
+        "steps": 6,
+        "views": [
+          {
+            "step": 1,
+            "registered": 2062,
+            "entries": 395,
+            "materialDraws": 107,
+            "validation": {
+              "covered": 13611,
+              "suppressed": 2062,
+              "ordinaryFallback": 99,
+              "visible": 1905,
+              "shadingModels": {
+                "0": 291,
+                "1": 11733,
+                "2": 1587
+              }
+            },
+            "performance": {
+              "frames": 120,
+              "milliseconds": 11083.099999964237,
+              "fps": 10.82729561227339,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 2,
+            "registered": 0,
+            "entries": 0,
+            "validation": {
+              "covered": 0,
+              "suppressed": 0
+            },
+            "performance": {
+              "frames": 120,
+              "milliseconds": 1148.675000011921,
+              "fps": 104.46819161099062,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 3,
+            "registered": 2062,
+            "entries": 395,
+            "materialDraws": 107,
+            "validation": {
+              "covered": 13621,
+              "suppressed": 2062,
+              "ordinaryFallback": 99,
+              "visible": 1905,
+              "shadingModels": {
+                "0": 294,
+                "1": 11755,
+                "2": 1572
+              }
+            },
+            "performance": {
+              "frames": 120,
+              "milliseconds": 11237.039999961853,
+              "fps": 10.678968838805181,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 4,
+            "registered": 2062,
+            "entries": 326,
+            "materialDraws": 107,
+            "validation": {
+              "covered": 14378,
+              "suppressed": 2062,
+              "ordinaryFallback": 99,
+              "visible": 374,
+              "shadingModels": {
+                "1": 14378
+              }
+            },
+            "performance": {
+              "frames": 120,
+              "milliseconds": 9820.70499998331,
+              "fps": 12.219082031300596,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 5,
+            "registered": 2062,
+            "entries": 377,
+            "materialDraws": 93,
+            "validation": {
+              "covered": 13913,
+              "suppressed": 2062,
+              "ordinaryFallback": 99,
+              "visible": 2164,
+              "shadingModels": {
+                "0": 5002,
+                "1": 8911
+              }
+            },
+            "performance": {
+              "frames": 120,
+              "milliseconds": 10710.210000038147,
+              "fps": 11.20426210126343,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 6,
+            "registered": 2062,
+            "entries": 395,
+            "materialDraws": 107,
+            "validation": {
+              "covered": 13624,
+              "suppressed": 2062,
+              "ordinaryFallback": 99,
+              "visible": 1903,
+              "shadingModels": {
+                "0": 289,
+                "1": 11759,
+                "2": 1576
+              }
+            },
+            "performance": {
+              "frames": 121,
+              "milliseconds": 11309.534999966621,
+              "fps": 10.698936782136235,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "payloadEncoding": "gzip-base64-json",
+    "payload": {
+      "$omitted": true,
+      "reason": "Full diagnostic data is retained in the original report",
+      "type": "string",
+      "bytes": 18322692,
+      "sha256": "96f5f1a786651402b6d334404a8af0dd0e5216e1ba7b380f23c213650b717d9b"
+    },
+    "boundary": "Rigid masked and PDO materials execute actual cooked native material graphs before visibility competition, including both device paths, sidedness, mirrors, reverse culling and orthographic projection. Programmable vertices, deformation, other material and view permutations, native full-scene visual/performance and remaining tracker requirements are still open."
+  }
+}

@@ -1,0 +1,5037 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-rigid-batch-20261114.json",
+    "bytes": 207513,
+    "sha256": "44413dc0f78a5e97b7d0f94f3a7bd3613077a146b77097ccbb12e3a73f0dd9e9",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "date": "2026-11-14T08:07:39.339Z",
+    "pass": true,
+    "naniteFullPerformanceAccepted": false,
+    "runtime": "nanite-rigid",
+    "batchInstances": [
+      {
+        "tag": "nanite-rigid-villa-batch-instances-20261114",
+        "scalar": false,
+        "hzb": "1",
+        "package": "9b482188e0d73f9af69162636befdcd7599525f2946dbeaad58c6d7b5750763f",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room",
+            "on": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room-turn",
+            "on": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 606,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 606,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 606,
+            "other": 5,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "entries": 606,
+            "batched": 606,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 606,
+            "other": 5,
+            "twoPhase": true
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 308,
+            "other": 3,
+            "twoPhase": true
+          },
+          {
+            "label": "room",
+            "value": 1,
+            "entries": 308,
+            "batched": 308,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 308,
+            "other": 3,
+            "twoPhase": true
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 237,
+            "other": 2,
+            "twoPhase": true
+          },
+          {
+            "label": "room-turn",
+            "value": 1,
+            "entries": 237,
+            "batched": 237,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 237,
+            "other": 2,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 625,
+            "other": 5,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "entries": 625,
+            "batched": 625,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 625,
+            "other": 5,
+            "twoPhase": true
+          }
+        ]
+      },
+      {
+        "tag": "nanite-rigid-villa-batch-instances-auto-20261114",
+        "scalar": false,
+        "hzb": "2",
+        "package": "9b482188e0d73f9af69162636befdcd7599525f2946dbeaad58c6d7b5750763f",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room",
+            "on": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room-turn",
+            "on": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 606,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 606,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 606,
+            "other": 5,
+            "twoPhase": false
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "entries": 606,
+            "batched": 606,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 606,
+            "other": 5,
+            "twoPhase": false
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 308,
+            "other": 3,
+            "twoPhase": false
+          },
+          {
+            "label": "room",
+            "value": 1,
+            "entries": 308,
+            "batched": 308,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 308,
+            "other": 3,
+            "twoPhase": false
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 237,
+            "other": 2,
+            "twoPhase": false
+          },
+          {
+            "label": "room-turn",
+            "value": 1,
+            "entries": 237,
+            "batched": 237,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 237,
+            "other": 2,
+            "twoPhase": false
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 625,
+            "other": 5,
+            "twoPhase": false
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "entries": 625,
+            "batched": 625,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 625,
+            "other": 5,
+            "twoPhase": false
+          }
+        ]
+      },
+      {
+        "tag": "nanite-rigid-default-batch-instances-scalar-20261114",
+        "scalar": true,
+        "hzb": "1",
+        "package": "da062a3a65090c0379f255cf722b203df5b205f686b18530e0844f07bc16be8c",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "moved",
+            "on": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 8,
+            "batched": 8,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 8,
+            "batched": 8,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 8,
+            "batched": 8,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "entries": 8,
+            "batched": 8,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 8,
+            "batched": 8,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "moved",
+            "value": 0,
+            "entries": 4,
+            "batched": 4,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "moved",
+            "value": 1,
+            "entries": 4,
+            "batched": 4,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "moved",
+            "value": 0,
+            "entries": 4,
+            "batched": 4,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 8,
+            "batched": 8,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "entries": 8,
+            "batched": 8,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 8,
+            "batched": 8,
+            "other": 1,
+            "twoPhase": true
+          }
+        ]
+      }
+    ],
+    "switches": [
+      {
+        "tag": "nanite-rigid-villa-hierarchy-20261114",
+        "scalar": false,
+        "package": "9b482188e0d73f9af69162636befdcd7599525f2946dbeaad58c6d7b5750763f",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room",
+            "on": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room-turn",
+            "on": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 606,
+            "other": 1
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 606,
+            "other": 1
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 0,
+            "other": 606
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "entries": 606,
+            "batched": 606,
+            "other": 1
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 0,
+            "other": 606
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 0,
+            "other": 308
+          },
+          {
+            "label": "room",
+            "value": 1,
+            "entries": 308,
+            "batched": 308,
+            "other": 1
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 0,
+            "other": 308
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 0,
+            "other": 237
+          },
+          {
+            "label": "room-turn",
+            "value": 1,
+            "entries": 237,
+            "batched": 237,
+            "other": 1
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 0,
+            "other": 237
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 0,
+            "other": 625
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "entries": 625,
+            "batched": 625,
+            "other": 1
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 0,
+            "other": 625
+          }
+        ]
+      },
+      {
+        "tag": "nanite-rigid-villa-occlusion-batch-20261114",
+        "scalar": false,
+        "hzb": "1",
+        "package": "9b482188e0d73f9af69162636befdcd7599525f2946dbeaad58c6d7b5750763f",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room",
+            "on": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room-turn",
+            "on": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 606,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 606,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 0,
+            "other": 606,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "entries": 606,
+            "batched": 606,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 0,
+            "other": 606,
+            "twoPhase": true
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 0,
+            "other": 308,
+            "twoPhase": true
+          },
+          {
+            "label": "room",
+            "value": 1,
+            "entries": 308,
+            "batched": 308,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 0,
+            "other": 308,
+            "twoPhase": true
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 0,
+            "other": 237,
+            "twoPhase": true
+          },
+          {
+            "label": "room-turn",
+            "value": 1,
+            "entries": 237,
+            "batched": 237,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 0,
+            "other": 237,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 0,
+            "other": 625,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "entries": 625,
+            "batched": 625,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 0,
+            "other": 625,
+            "twoPhase": true
+          }
+        ]
+      },
+      {
+        "tag": "nanite-rigid-villa-pack-batch-20261114",
+        "scalar": false,
+        "hzb": "1",
+        "package": "9b482188e0d73f9af69162636befdcd7599525f2946dbeaad58c6d7b5750763f",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room",
+            "on": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room-turn",
+            "on": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 606,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 606,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 0,
+            "other": 606,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "entries": 606,
+            "batched": 606,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 0,
+            "other": 606,
+            "twoPhase": true
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 0,
+            "other": 308,
+            "twoPhase": true
+          },
+          {
+            "label": "room",
+            "value": 1,
+            "entries": 308,
+            "batched": 308,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 0,
+            "other": 308,
+            "twoPhase": true
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 0,
+            "other": 237,
+            "twoPhase": true
+          },
+          {
+            "label": "room-turn",
+            "value": 1,
+            "entries": 237,
+            "batched": 237,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 0,
+            "other": 237,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 0,
+            "other": 625,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "entries": 625,
+            "batched": 625,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 0,
+            "other": 625,
+            "twoPhase": true
+          }
+        ]
+      },
+      {
+        "tag": "nanite-rigid-villa-micro-batch-20261114",
+        "scalar": false,
+        "hzb": "1",
+        "package": "9b482188e0d73f9af69162636befdcd7599525f2946dbeaad58c6d7b5750763f",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room",
+            "on": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room-turn",
+            "on": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 326,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 326,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 0,
+            "other": 326,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "entries": 606,
+            "batched": 326,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 0,
+            "other": 326,
+            "twoPhase": true
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 0,
+            "other": 136,
+            "twoPhase": true
+          },
+          {
+            "label": "room",
+            "value": 1,
+            "entries": 308,
+            "batched": 136,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 0,
+            "other": 136,
+            "twoPhase": true
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 0,
+            "other": 96,
+            "twoPhase": true
+          },
+          {
+            "label": "room-turn",
+            "value": 1,
+            "entries": 237,
+            "batched": 96,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 0,
+            "other": 96,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 0,
+            "other": 339,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "entries": 625,
+            "batched": 339,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 0,
+            "other": 339,
+            "twoPhase": true
+          }
+        ]
+      },
+      {
+        "tag": "nanite-rigid-villa-micro-batch-auto-20261114",
+        "scalar": false,
+        "hzb": "2",
+        "package": "9b482188e0d73f9af69162636befdcd7599525f2946dbeaad58c6d7b5750763f",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room",
+            "on": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room-turn",
+            "on": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 326,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 326,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 0,
+            "other": 326,
+            "twoPhase": false
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "entries": 606,
+            "batched": 326,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 0,
+            "other": 326,
+            "twoPhase": false
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 0,
+            "other": 136,
+            "twoPhase": false
+          },
+          {
+            "label": "room",
+            "value": 1,
+            "entries": 308,
+            "batched": 136,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 0,
+            "other": 136,
+            "twoPhase": false
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 0,
+            "other": 96,
+            "twoPhase": false
+          },
+          {
+            "label": "room-turn",
+            "value": 1,
+            "entries": 237,
+            "batched": 96,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 0,
+            "other": 96,
+            "twoPhase": false
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 0,
+            "other": 339,
+            "twoPhase": false
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "entries": 625,
+            "batched": 339,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 0,
+            "other": 339,
+            "twoPhase": false
+          }
+        ]
+      },
+      {
+        "tag": "nanite-rigid-villa-fixed-merge-20261114",
+        "scalar": false,
+        "hzb": "1",
+        "package": "9b482188e0d73f9af69162636befdcd7599525f2946dbeaad58c6d7b5750763f",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room",
+            "on": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room-turn",
+            "on": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 326,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 326,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 0,
+            "other": 326,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "entries": 606,
+            "batched": 326,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 0,
+            "other": 326,
+            "twoPhase": true
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 0,
+            "other": 136,
+            "twoPhase": true
+          },
+          {
+            "label": "room",
+            "value": 1,
+            "entries": 308,
+            "batched": 136,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 0,
+            "other": 136,
+            "twoPhase": true
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 0,
+            "other": 96,
+            "twoPhase": true
+          },
+          {
+            "label": "room-turn",
+            "value": 1,
+            "entries": 237,
+            "batched": 96,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 0,
+            "other": 96,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 0,
+            "other": 339,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "entries": 625,
+            "batched": 339,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 0,
+            "other": 339,
+            "twoPhase": true
+          }
+        ]
+      },
+      {
+        "tag": "nanite-rigid-villa-fixed-merge-auto-20261114",
+        "scalar": false,
+        "hzb": "2",
+        "package": "9b482188e0d73f9af69162636befdcd7599525f2946dbeaad58c6d7b5750763f",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room",
+            "on": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room-turn",
+            "on": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 326,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 326,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 0,
+            "other": 326,
+            "twoPhase": false
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "entries": 606,
+            "batched": 326,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 0,
+            "other": 326,
+            "twoPhase": false
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 0,
+            "other": 136,
+            "twoPhase": false
+          },
+          {
+            "label": "room",
+            "value": 1,
+            "entries": 308,
+            "batched": 136,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 0,
+            "other": 136,
+            "twoPhase": false
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 0,
+            "other": 96,
+            "twoPhase": false
+          },
+          {
+            "label": "room-turn",
+            "value": 1,
+            "entries": 237,
+            "batched": 96,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 0,
+            "other": 96,
+            "twoPhase": false
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 0,
+            "other": 339,
+            "twoPhase": false
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "entries": 625,
+            "batched": 339,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 0,
+            "other": 339,
+            "twoPhase": false
+          }
+        ]
+      },
+      {
+        "tag": "nanite-rigid-default-micro-batch-20261114",
+        "scalar": false,
+        "hzb": "1",
+        "package": "da062a3a65090c0379f255cf722b203df5b205f686b18530e0844f07bc16be8c",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "moved",
+            "on": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 8,
+            "batched": 8,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 8,
+            "batched": 8,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 8,
+            "batched": 0,
+            "other": 8,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "entries": 8,
+            "batched": 8,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 8,
+            "batched": 0,
+            "other": 8,
+            "twoPhase": true
+          },
+          {
+            "label": "moved",
+            "value": 0,
+            "entries": 4,
+            "batched": 0,
+            "other": 4,
+            "twoPhase": true
+          },
+          {
+            "label": "moved",
+            "value": 1,
+            "entries": 4,
+            "batched": 4,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "moved",
+            "value": 0,
+            "entries": 4,
+            "batched": 0,
+            "other": 4,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 8,
+            "batched": 0,
+            "other": 8,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "entries": 8,
+            "batched": 8,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 8,
+            "batched": 0,
+            "other": 8,
+            "twoPhase": true
+          }
+        ]
+      },
+      {
+        "tag": "nanite-rigid-default-micro-batch-scalar-20261114",
+        "scalar": true,
+        "hzb": "1",
+        "package": "da062a3a65090c0379f255cf722b203df5b205f686b18530e0844f07bc16be8c",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "moved",
+            "on": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 8,
+            "batched": 16,
+            "other": 2,
+            "twoPhase": true
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 8,
+            "batched": 16,
+            "other": 2,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 8,
+            "batched": 0,
+            "other": 16,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "entries": 8,
+            "batched": 16,
+            "other": 2,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 8,
+            "batched": 0,
+            "other": 16,
+            "twoPhase": true
+          },
+          {
+            "label": "moved",
+            "value": 0,
+            "entries": 4,
+            "batched": 0,
+            "other": 8,
+            "twoPhase": true
+          },
+          {
+            "label": "moved",
+            "value": 1,
+            "entries": 4,
+            "batched": 8,
+            "other": 2,
+            "twoPhase": true
+          },
+          {
+            "label": "moved",
+            "value": 0,
+            "entries": 4,
+            "batched": 0,
+            "other": 8,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 8,
+            "batched": 0,
+            "other": 16,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "entries": 8,
+            "batched": 16,
+            "other": 2,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 8,
+            "batched": 0,
+            "other": 16,
+            "twoPhase": true
+          }
+        ]
+      },
+      {
+        "tag": "nanite-rigid-default-fixed-merge-20261114",
+        "scalar": false,
+        "hzb": "1",
+        "package": "da062a3a65090c0379f255cf722b203df5b205f686b18530e0844f07bc16be8c",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "moved",
+            "on": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 8,
+            "batched": 8,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 8,
+            "batched": 8,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 8,
+            "batched": 0,
+            "other": 8,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "entries": 8,
+            "batched": 8,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 8,
+            "batched": 0,
+            "other": 8,
+            "twoPhase": true
+          },
+          {
+            "label": "moved",
+            "value": 0,
+            "entries": 4,
+            "batched": 0,
+            "other": 4,
+            "twoPhase": true
+          },
+          {
+            "label": "moved",
+            "value": 1,
+            "entries": 4,
+            "batched": 4,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "moved",
+            "value": 0,
+            "entries": 4,
+            "batched": 0,
+            "other": 4,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 8,
+            "batched": 0,
+            "other": 8,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "entries": 8,
+            "batched": 8,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 8,
+            "batched": 0,
+            "other": 8,
+            "twoPhase": true
+          }
+        ]
+      },
+      {
+        "tag": "nanite-rigid-default-fixed-merge-scalar-20261114",
+        "scalar": true,
+        "hzb": "1",
+        "package": "da062a3a65090c0379f255cf722b203df5b205f686b18530e0844f07bc16be8c",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "moved",
+            "on": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 8,
+            "batched": 16,
+            "other": 2,
+            "twoPhase": true
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 8,
+            "batched": 16,
+            "other": 2,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 8,
+            "batched": 0,
+            "other": 16,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "entries": 8,
+            "batched": 16,
+            "other": 2,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 8,
+            "batched": 0,
+            "other": 16,
+            "twoPhase": true
+          },
+          {
+            "label": "moved",
+            "value": 0,
+            "entries": 4,
+            "batched": 0,
+            "other": 8,
+            "twoPhase": true
+          },
+          {
+            "label": "moved",
+            "value": 1,
+            "entries": 4,
+            "batched": 8,
+            "other": 2,
+            "twoPhase": true
+          },
+          {
+            "label": "moved",
+            "value": 0,
+            "entries": 4,
+            "batched": 0,
+            "other": 8,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 8,
+            "batched": 0,
+            "other": 16,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "entries": 8,
+            "batched": 16,
+            "other": 2,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 8,
+            "batched": 0,
+            "other": 16,
+            "twoPhase": true
+          }
+        ]
+      },
+      {
+        "tag": "nanite-rigid-villa-shade-auto-20261114",
+        "scalar": false,
+        "hzb": "2",
+        "package": "9b482188e0d73f9af69162636befdcd7599525f2946dbeaad58c6d7b5750763f",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room",
+            "on": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room-turn",
+            "on": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 149,
+            "other": 0,
+            "twoPhase": false
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 149,
+            "other": 0,
+            "twoPhase": false
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 0,
+            "other": 149,
+            "twoPhase": false
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "entries": 606,
+            "batched": 149,
+            "other": 0,
+            "twoPhase": false
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 0,
+            "other": 149,
+            "twoPhase": false
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 0,
+            "other": 94,
+            "twoPhase": false
+          },
+          {
+            "label": "room",
+            "value": 1,
+            "entries": 308,
+            "batched": 94,
+            "other": 0,
+            "twoPhase": false
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 0,
+            "other": 94,
+            "twoPhase": false
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 0,
+            "other": 81,
+            "twoPhase": false
+          },
+          {
+            "label": "room-turn",
+            "value": 1,
+            "entries": 237,
+            "batched": 81,
+            "other": 0,
+            "twoPhase": false
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 0,
+            "other": 81,
+            "twoPhase": false
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 0,
+            "other": 154,
+            "twoPhase": false
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "entries": 625,
+            "batched": 154,
+            "other": 0,
+            "twoPhase": false
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 0,
+            "other": 154,
+            "twoPhase": false
+          }
+        ]
+      },
+      {
+        "tag": "nanite-rigid-villa-programmable-auto-20261114",
+        "scalar": false,
+        "hzb": "2",
+        "package": "9b482188e0d73f9af69162636befdcd7599525f2946dbeaad58c6d7b5750763f",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room",
+            "on": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room-turn",
+            "on": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 365,
+            "other": 62,
+            "twoPhase": false
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 365,
+            "other": 62,
+            "twoPhase": false
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 0,
+            "other": 387,
+            "twoPhase": false
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "entries": 606,
+            "batched": 365,
+            "other": 62,
+            "twoPhase": false
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 0,
+            "other": 387,
+            "twoPhase": false
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 0,
+            "other": 229,
+            "twoPhase": false
+          },
+          {
+            "label": "room",
+            "value": 1,
+            "entries": 308,
+            "batched": 209,
+            "other": 47,
+            "twoPhase": false
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 0,
+            "other": 229,
+            "twoPhase": false
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 0,
+            "other": 200,
+            "twoPhase": false
+          },
+          {
+            "label": "room-turn",
+            "value": 1,
+            "entries": 237,
+            "batched": 188,
+            "other": 36,
+            "twoPhase": false
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 0,
+            "other": 200,
+            "twoPhase": false
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 0,
+            "other": 393,
+            "twoPhase": false
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "entries": 625,
+            "batched": 370,
+            "other": 64,
+            "twoPhase": false
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 0,
+            "other": 393,
+            "twoPhase": false
+          }
+        ]
+      },
+      {
+        "tag": "nanite-rigid-villa-hzb-mode-20261114",
+        "scalar": false,
+        "package": "9b482188e0d73f9af69162636befdcd7599525f2946dbeaad58c6d7b5750763f",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room",
+            "on": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room-turn",
+            "on": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 0,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 0,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 1,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "entries": 606,
+            "batched": 0,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 1,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 1,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "room",
+            "value": 1,
+            "entries": 308,
+            "batched": 0,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 1,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 1,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "room-turn",
+            "value": 1,
+            "entries": 237,
+            "batched": 0,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 1,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 1,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "entries": 625,
+            "batched": 0,
+            "other": 1,
+            "twoPhase": false
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 1,
+            "other": 1,
+            "twoPhase": true
+          }
+        ]
+      },
+      {
+        "tag": "nanite-rigid-villa-hzb-auto-two-phase-20261114",
+        "scalar": false,
+        "package": "9b482188e0d73f9af69162636befdcd7599525f2946dbeaad58c6d7b5750763f",
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room",
+            "on": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room-turn",
+            "on": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 1,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "lifecycle",
+            "value": 1,
+            "entries": 606,
+            "batched": 1,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 1,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 1,
+            "entries": 606,
+            "batched": 1,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "spawn",
+            "value": 0,
+            "entries": 606,
+            "batched": 1,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 1,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "room",
+            "value": 1,
+            "entries": 308,
+            "batched": 1,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "room",
+            "value": 0,
+            "entries": 308,
+            "batched": 1,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 1,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "room-turn",
+            "value": 1,
+            "entries": 237,
+            "batched": 1,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "room-turn",
+            "value": 0,
+            "entries": 237,
+            "batched": 1,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 1,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 1,
+            "entries": 625,
+            "batched": 1,
+            "other": 1,
+            "twoPhase": true
+          },
+          {
+            "label": "portrait",
+            "value": 0,
+            "entries": 625,
+            "batched": 1,
+            "other": 1,
+            "twoPhase": true
+          }
+        ]
+      }
+    ],
+    "fixtures": [
+      {
+        "kind": "programmable",
+        "file": "browser.json",
+        "scalar": false,
+        "tests": 52,
+        "paths": {
+          "programmablePrepareDispatches": 21464,
+          "programmablePrepareBatches": 21464,
+          "programmableDraws": 21464,
+          "shadeBinDispatches": 68610,
+          "binnedMaterialDraws": 35819,
+          "legacyMaterialDraws": 0
+        },
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-programmable-20261114\\browser.json",
+          "sha256": "e912eace1bbb78711bcac3c7bfcd36b98f138d3397db2af5be109e8009fa2c3b"
+        }
+      },
+      {
+        "kind": "programmable",
+        "file": "browser-scalar.json",
+        "scalar": true,
+        "tests": 52,
+        "paths": {
+          "programmablePrepareDispatches": 42254,
+          "programmablePrepareBatches": 42254,
+          "programmableDraws": 42254,
+          "shadeBinDispatches": 67767,
+          "binnedMaterialDraws": 35377,
+          "legacyMaterialDraws": 0
+        },
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-programmable-20261114\\browser-scalar.json",
+          "sha256": "ca04ff6d38eac8638391e8eadf8571986fa5bf175e70fa77b458766a9915a3ae"
+        }
+      },
+      {
+        "kind": "wpo",
+        "file": "browser.json",
+        "scalar": false,
+        "tests": 36,
+        "paths": {
+          "programmablePrepareDispatches": 17957,
+          "programmablePrepareBatches": 31772,
+          "programmableDraws": 34295,
+          "shadeBinDispatches": 52464,
+          "binnedMaterialDraws": 35922,
+          "legacyMaterialDraws": 0
+        },
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-wpo-20261114\\browser.json",
+          "sha256": "781ec99d6b490805dd0d266837cc8c56d9268c70903706a748aa926a98b59ff8"
+        }
+      },
+      {
+        "kind": "wpo",
+        "file": "browser-scalar.json",
+        "scalar": true,
+        "tests": 36,
+        "paths": {
+          "programmablePrepareDispatches": 35270,
+          "programmablePrepareBatches": 62500,
+          "programmableDraws": 67446,
+          "shadeBinDispatches": 51504,
+          "binnedMaterialDraws": 35314,
+          "legacyMaterialDraws": 0
+        },
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-wpo-20261114\\browser-scalar.json",
+          "sha256": "c4253fb247eecbb2a2127173c9d2a7b3b3aeed9a3c1e312ce54fc4d61b641a8f"
+        }
+      },
+      {
+        "kind": "recovery",
+        "file": "packed.json",
+        "scalar": false,
+        "tests": 8,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-recovery-20261114\\packed.json",
+          "sha256": "e9c0e7ed563da90765c61db5345885c7c12b29afa8692fbc9444c25b42c75523"
+        }
+      },
+      {
+        "kind": "recovery",
+        "file": "scalar.json",
+        "scalar": true,
+        "tests": 8,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-recovery-20261114\\scalar.json",
+          "sha256": "6e3e459a96498888bd38c0eabbcd5c4350cdd64b3daae03bf69cc44eccb2ae75"
+        }
+      }
+    ],
+    "eligibility": {
+      "tests": 13,
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-eligibility-20261114\\report.json",
+        "sha256": "2bc6cb0a3c7fd6b8875d65c4bd117110d641e9b12d261d9b3722b4f08f135361"
+      }
+    },
+    "laps": {
+      "batchInstancesTour": {
+        "tag": "nanite-rigid-laps-batch-instances-20261114",
+        "folder": "nanite-rigid-villa-20261114",
+        "switch": "r.Nanite.WebBatchInstances",
+        "values": [
+          128,
+          4096,
+          4096,
+          128,
+          128,
+          4096,
+          4096,
+          128
+        ],
+        "still": false,
+        "foreground": [
+          "Clidex"
+        ],
+        "summary": {
+          "128": {
+            "laps": 4,
+            "fps": 108.53,
+            "fpsRange": [
+              106.1,
+              109.6
+            ],
+            "low1Fps": 37.3,
+            "frameMs": 9.216,
+            "rhiMs": 5.94,
+            "renderMs": 6.44
+          },
+          "4096": {
+            "laps": 4,
+            "fps": 109.6,
+            "fpsRange": [
+              108.7,
+              110.3
+            ],
+            "low1Fps": 36.3,
+            "frameMs": 9.125,
+            "rhiMs": 5.8,
+            "renderMs": 6.47
+          }
+        }
+      },
+      "batchInstancesStill": {
+        "tag": "nanite-rigid-laps-batch-instances-still-20261114",
+        "folder": "nanite-rigid-villa-20261114",
+        "switch": "r.Nanite.WebBatchInstances",
+        "values": [
+          128,
+          4096,
+          4096,
+          128,
+          128,
+          4096,
+          4096,
+          128
+        ],
+        "still": true,
+        "foreground": [
+          "Clidex"
+        ],
+        "summary": {
+          "128": {
+            "laps": 4,
+            "fps": 102.09,
+            "fpsRange": [
+              99.8,
+              103.5
+            ],
+            "low1Fps": 43.5,
+            "frameMs": 9.797,
+            "rhiMs": 6.92,
+            "renderMs": 7.17
+          },
+          "4096": {
+            "laps": 4,
+            "fps": 101.99,
+            "fpsRange": [
+              100.8,
+              104.1
+            ],
+            "low1Fps": 42.4,
+            "frameMs": 9.806,
+            "rhiMs": 6.93,
+            "renderMs": 7.22
+          }
+        }
+      },
+      "naniteTour": {
+        "tag": "nanite-rigid-laps-onoff-20261114",
+        "folder": "nanite-rigid-villa-20261114",
+        "switch": "r.Nanite",
+        "values": [
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1
+        ],
+        "still": false,
+        "foreground": [
+          "Clidex"
+        ],
+        "summary": {
+          "0": {
+            "laps": 4,
+            "fps": 117.96,
+            "fpsRange": [
+              116.6,
+              119
+            ],
+            "low1Fps": 39.1,
+            "frameMs": 8.478,
+            "rhiMs": 5.48,
+            "renderMs": 5.11
+          },
+          "1": {
+            "laps": 4,
+            "fps": 108.43,
+            "fpsRange": [
+              106.3,
+              109.8
+            ],
+            "low1Fps": 37.9,
+            "frameMs": 9.224,
+            "rhiMs": 5.81,
+            "renderMs": 6.69
+          }
+        }
+      },
+      "naniteStill": {
+        "tag": "nanite-rigid-laps-onoff-still-20261114",
+        "folder": "nanite-rigid-villa-20261114",
+        "switch": "r.Nanite",
+        "values": [
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1
+        ],
+        "still": true,
+        "foreground": [
+          "Clidex"
+        ],
+        "summary": {
+          "0": {
+            "laps": 4,
+            "fps": 102.63,
+            "fpsRange": [
+              93.2,
+              107.2
+            ],
+            "low1Fps": 46.2,
+            "frameMs": 9.775,
+            "rhiMs": 6.92,
+            "renderMs": 6.28
+          },
+          "1": {
+            "laps": 4,
+            "fps": 100.84,
+            "fpsRange": [
+              94.8,
+              104
+            ],
+            "low1Fps": 44.8,
+            "frameMs": 9.931,
+            "rhiMs": 7.06,
+            "renderMs": 7.34
+          }
+        }
+      }
+    },
+    "firstTour": {
+      "onOff": {
+        "tag": "nanite-rigid-onoff-abba-20261114",
+        "runs": [
+          {
+            "index": 0,
+            "folder": "nanite-rigid-villa-20261114",
+            "nanite": 0,
+            "fps": 124.07,
+            "low1Fps": 46.65,
+            "over33Ms": 4,
+            "over50Ms": 1,
+            "maxMs": 56.3,
+            "rhiMs": 5.36,
+            "renderMs": 4.92,
+            "long": [
+              {
+                "second": 23.8,
+                "ms": 41
+              },
+              {
+                "second": 26.3,
+                "ms": 47
+              },
+              {
+                "second": 39,
+                "ms": 56
+              }
+            ]
+          },
+          {
+            "index": 1,
+            "folder": "nanite-rigid-villa-20261114",
+            "nanite": 1,
+            "fps": 114.84,
+            "low1Fps": 42.24,
+            "over33Ms": 4,
+            "over50Ms": 0,
+            "maxMs": 42.6,
+            "rhiMs": 5.71,
+            "renderMs": 6.43,
+            "long": [
+              {
+                "second": 34.1,
+                "ms": 40
+              },
+              {
+                "second": 54.7,
+                "ms": 43
+              }
+            ]
+          },
+          {
+            "index": 2,
+            "folder": "nanite-rigid-villa-20261114",
+            "nanite": 1,
+            "fps": 113.09,
+            "low1Fps": 43.69,
+            "over33Ms": 5,
+            "over50Ms": 0,
+            "maxMs": 41.5,
+            "rhiMs": 5.82,
+            "renderMs": 6.52,
+            "long": [
+              {
+                "second": 26.2,
+                "ms": 41
+              }
+            ]
+          },
+          {
+            "index": 3,
+            "folder": "nanite-rigid-villa-20261114",
+            "nanite": 0,
+            "fps": 123.76,
+            "low1Fps": 46.65,
+            "over33Ms": 5,
+            "over50Ms": 0,
+            "maxMs": 44.2,
+            "rhiMs": 5.4,
+            "renderMs": 4.99,
+            "long": [
+              {
+                "second": 39,
+                "ms": 44
+              }
+            ]
+          }
+        ]
+      },
+      "previousRuntimeAgainstThis": {
+        "tag": "nanite-rigid-oldnew-abba-b-20261114",
+        "runs": [
+          {
+            "index": 0,
+            "folder": "nanite-hzbauto5-villa-20261113",
+            "fps": 111.65,
+            "low1Fps": 37.67,
+            "over33Ms": 6,
+            "over50Ms": 2,
+            "maxMs": 84.4,
+            "rhiMs": 5.92,
+            "renderMs": 6.56,
+            "long": [
+              {
+                "second": 3.5,
+                "ms": 81
+              },
+              {
+                "second": 21.9,
+                "ms": 84
+              },
+              {
+                "second": 26.3,
+                "ms": 49
+              },
+              {
+                "second": 33.7,
+                "ms": 44
+              }
+            ]
+          },
+          {
+            "index": 1,
+            "folder": "nanite-rigid-villa-20261114",
+            "fps": 114.4,
+            "low1Fps": 40.02,
+            "over33Ms": 8,
+            "over50Ms": 3,
+            "maxMs": 79.3,
+            "rhiMs": 5.77,
+            "renderMs": 6.45,
+            "long": [
+              {
+                "second": 23.6,
+                "ms": 79
+              },
+              {
+                "second": 23.8,
+                "ms": 60
+              },
+              {
+                "second": 26.3,
+                "ms": 60
+              },
+              {
+                "second": 39.6,
+                "ms": 43
+              }
+            ]
+          },
+          {
+            "index": 2,
+            "folder": "nanite-rigid-villa-20261114",
+            "fps": 108.26,
+            "low1Fps": 33.32,
+            "over33Ms": 16,
+            "over50Ms": 3,
+            "maxMs": 79.6,
+            "rhiMs": 6.02,
+            "renderMs": 6.77,
+            "long": [
+              {
+                "second": 33,
+                "ms": 41
+              },
+              {
+                "second": 44.1,
+                "ms": 57
+              },
+              {
+                "second": 48.2,
+                "ms": 80
+              },
+              {
+                "second": 48.3,
+                "ms": 67
+              }
+            ]
+          },
+          {
+            "index": 3,
+            "folder": "nanite-hzbauto5-villa-20261113",
+            "fps": 112.33,
+            "low1Fps": 40.95,
+            "over33Ms": 5,
+            "over50Ms": 2,
+            "maxMs": 81.1,
+            "rhiMs": 5.9,
+            "renderMs": 6.54,
+            "long": [
+              {
+                "second": 1.5,
+                "ms": 81
+              },
+              {
+                "second": 23.6,
+                "ms": 51
+              },
+              {
+                "second": 26.2,
+                "ms": 43
+              },
+              {
+                "second": 27.1,
+                "ms": 44
+              }
+            ]
+          }
+        ]
+      },
+      "previousRuntimeOnOff": {
+        "tag": "nanite-hzbauto5-onoff-abba-b-20261114",
+        "runs": [
+          {
+            "index": 0,
+            "folder": "nanite-hzbauto5-villa-20261113",
+            "nanite": 0,
+            "fps": 136.28,
+            "low1Fps": 54.29,
+            "over33Ms": 2,
+            "over50Ms": 0,
+            "maxMs": 43.8,
+            "rhiMs": 4.91,
+            "renderMs": 4.41,
+            "long": [
+              {
+                "second": 27.4,
+                "ms": 44
+              }
+            ]
+          },
+          {
+            "index": 1,
+            "folder": "nanite-hzbauto5-villa-20261113",
+            "nanite": 1,
+            "fps": 125.79,
+            "low1Fps": 42.9,
+            "over33Ms": 8,
+            "over50Ms": 3,
+            "maxMs": 105.1,
+            "rhiMs": 5.32,
+            "renderMs": 5.86,
+            "long": [
+              {
+                "second": 1.5,
+                "ms": 80
+              },
+              {
+                "second": 6.9,
+                "ms": 55
+              },
+              {
+                "second": 7.1,
+                "ms": 105
+              },
+              {
+                "second": 17.9,
+                "ms": 40
+              },
+              {
+                "second": 26.3,
+                "ms": 45
+              },
+              {
+                "second": 28.5,
+                "ms": 49
+              },
+              {
+                "second": 31.5,
+                "ms": 42
+              }
+            ]
+          },
+          {
+            "index": 2,
+            "folder": "nanite-hzbauto5-villa-20261113",
+            "nanite": 1,
+            "fps": 126.36,
+            "low1Fps": 43.55,
+            "over33Ms": 8,
+            "over50Ms": 1,
+            "maxMs": 85.6,
+            "rhiMs": 5.29,
+            "renderMs": 5.84,
+            "long": [
+              {
+                "second": 0.2,
+                "ms": 40
+              },
+              {
+                "second": 0.3,
+                "ms": 45
+              },
+              {
+                "second": 0.4,
+                "ms": 41
+              },
+              {
+                "second": 3.4,
+                "ms": 86
+              },
+              {
+                "second": 26.2,
+                "ms": 42
+              }
+            ]
+          },
+          {
+            "index": 3,
+            "folder": "nanite-hzbauto5-villa-20261113",
+            "nanite": 0,
+            "fps": 135.1,
+            "low1Fps": 54.64,
+            "over33Ms": 2,
+            "over50Ms": 0,
+            "maxMs": 47.1,
+            "rhiMs": 4.95,
+            "renderMs": 4.45,
+            "long": [
+              {
+                "second": 26.2,
+                "ms": 47
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "stallTrace": {
+      "intervalsOver30Ms": 1,
+      "blocksOver8Ms": [
+        80.964
+      ],
+      "longFrames": [
+        {
+          "tourSeconds": 3.49,
+          "intervalMs": 93.6,
+          "gpuCommandMs": 90.2
+        }
+      ]
+    },
+    "calls": {
+      "previousRuntime": {
+        "total": 5551,
+        "drawIndirect": 154.1,
+        "dispatch": 136.4,
+        "writeBuffer": 72,
+        "drawValidationPasses": 22.3,
+        "nanitePipelinesCreated": 1
+      },
+      "batch128": {
+        "total": 5299,
+        "drawIndirect": 145.7,
+        "dispatch": 129,
+        "writeBuffer": 73.6,
+        "drawValidationPasses": 19.9,
+        "nanitePipelinesCreated": 1
+      },
+      "default": {
+        "total": 5209,
+        "drawIndirect": 121.9,
+        "dispatch": 123.5,
+        "writeBuffer": 63.2,
+        "drawValidationPasses": 14,
+        "nanitePipelinesCreated": 0
+      },
+      "naniteOff": {
+        "total": 6365,
+        "drawIndirect": 0,
+        "dispatch": 114.1,
+        "writeBuffer": 51.3,
+        "drawValidationPasses": 9.3,
+        "nanitePipelinesCreated": 0
+      }
+    },
+    "commandCosts": [
+      [
+        {
+          "name": "empty encoder (floor)",
+          "gpuProcessUs": 0,
+          "submitUs": 0
+        },
+        {
+          "name": "render pass + draw, one pass each",
+          "gpuProcessUs": 3.87,
+          "submitUs": 1.68
+        },
+        {
+          "name": "render pass + drawIndirect, one pass each, distinct buffers",
+          "gpuProcessUs": 9.83,
+          "submitUs": 4.94
+        },
+        {
+          "name": "render pass + drawIndirect, one pass each, shared buffer",
+          "gpuProcessUs": 9.78,
+          "submitUs": 4.93
+        },
+        {
+          "name": "render pass + drawIndexedIndirect, one pass each, shared buffer",
+          "gpuProcessUs": 10.21,
+          "submitUs": 5.03
+        },
+        {
+          "name": "render pass + drawIndexed, one pass each",
+          "gpuProcessUs": 3.99,
+          "submitUs": 1.72
+        },
+        {
+          "name": "one pass: draw",
+          "gpuProcessUs": 0.66,
+          "submitUs": 0.45
+        },
+        {
+          "name": "one pass: drawIndirect, shared buffer",
+          "gpuProcessUs": 0.93,
+          "submitUs": 0.65
+        },
+        {
+          "name": "one pass: drawIndirect, distinct buffers",
+          "gpuProcessUs": 5.32,
+          "submitUs": 2.96
+        },
+        {
+          "name": "one pass: setBindGroup + draw",
+          "gpuProcessUs": 0.75,
+          "submitUs": 0.45
+        },
+        {
+          "name": "one pass: setPipeline + setBindGroup + draw",
+          "gpuProcessUs": 1.06,
+          "submitUs": 0.67
+        },
+        {
+          "name": "compute pass + dispatch, one pass each",
+          "gpuProcessUs": 2.09,
+          "submitUs": 0.93
+        },
+        {
+          "name": "one compute pass: setBindGroup + dispatch",
+          "gpuProcessUs": 1.39,
+          "submitUs": 0.94
+        },
+        {
+          "name": "one compute pass: dispatchIndirect, shared buffer",
+          "gpuProcessUs": 15.13,
+          "submitUs": 4.7
+        },
+        {
+          "name": "alternating compute pass and render pass with draw",
+          "gpuProcessUs": 7.23,
+          "submitUs": 3.13
+        },
+        {
+          "name": "queue.writeBuffer 64 bytes",
+          "gpuProcessUs": 1.17,
+          "submitUs": 0.48
+        },
+        {
+          "name": "queue.writeBuffer 16 KiB",
+          "gpuProcessUs": 3.44,
+          "submitUs": 0.5
+        },
+        {
+          "name": "copyBufferToBuffer 256 bytes",
+          "gpuProcessUs": 0.62,
+          "submitUs": 0.53
+        },
+        {
+          "name": "clearBuffer 256 bytes",
+          "gpuProcessUs": 0.71,
+          "submitUs": 0.65
+        },
+        {
+          "name": "createBindGroup",
+          "gpuProcessUs": 0.99,
+          "submitUs": 0.04
+        },
+        {
+          "name": "createBuffer 256 bytes + destroy",
+          "gpuProcessUs": 4.65,
+          "submitUs": 0.84
+        }
+      ],
+      [
+        {
+          "name": "empty encoder (floor)",
+          "gpuProcessUs": 0,
+          "submitUs": 0
+        },
+        {
+          "name": "render pass + draw, one pass each",
+          "gpuProcessUs": 4.51,
+          "submitUs": 1.88
+        },
+        {
+          "name": "render pass + drawIndirect, one pass each, distinct buffers",
+          "gpuProcessUs": 10.05,
+          "submitUs": 5.05
+        },
+        {
+          "name": "render pass + drawIndirect, one pass each, shared buffer",
+          "gpuProcessUs": 9.71,
+          "submitUs": 4.87
+        },
+        {
+          "name": "render pass + drawIndexedIndirect, one pass each, shared buffer",
+          "gpuProcessUs": 11.26,
+          "submitUs": 5.52
+        },
+        {
+          "name": "render pass + drawIndexed, one pass each",
+          "gpuProcessUs": 4.26,
+          "submitUs": 1.8
+        },
+        {
+          "name": "one pass: draw",
+          "gpuProcessUs": 0.56,
+          "submitUs": 0.43
+        },
+        {
+          "name": "one pass: drawIndirect, shared buffer",
+          "gpuProcessUs": 0.96,
+          "submitUs": 0.66
+        },
+        {
+          "name": "one pass: drawIndirect, distinct buffers",
+          "gpuProcessUs": 5.31,
+          "submitUs": 2.97
+        },
+        {
+          "name": "one pass: setBindGroup + draw",
+          "gpuProcessUs": 0.85,
+          "submitUs": 0.54
+        },
+        {
+          "name": "one pass: setPipeline + setBindGroup + draw",
+          "gpuProcessUs": 1.01,
+          "submitUs": 0.63
+        },
+        {
+          "name": "compute pass + dispatch, one pass each",
+          "gpuProcessUs": 2.05,
+          "submitUs": 0.91
+        },
+        {
+          "name": "one compute pass: setBindGroup + dispatch",
+          "gpuProcessUs": 1.38,
+          "submitUs": 0.91
+        },
+        {
+          "name": "one compute pass: dispatchIndirect, shared buffer",
+          "gpuProcessUs": 15.7,
+          "submitUs": 4.95
+        },
+        {
+          "name": "alternating compute pass and render pass with draw",
+          "gpuProcessUs": 6.97,
+          "submitUs": 3.07
+        },
+        {
+          "name": "queue.writeBuffer 64 bytes",
+          "gpuProcessUs": 1.02,
+          "submitUs": 0.46
+        },
+        {
+          "name": "queue.writeBuffer 16 KiB",
+          "gpuProcessUs": 3.24,
+          "submitUs": 0.5
+        },
+        {
+          "name": "copyBufferToBuffer 256 bytes",
+          "gpuProcessUs": 0.65,
+          "submitUs": 0.53
+        },
+        {
+          "name": "clearBuffer 256 bytes",
+          "gpuProcessUs": 0.62,
+          "submitUs": 0.57
+        },
+        {
+          "name": "createBindGroup",
+          "gpuProcessUs": 0.94,
+          "submitUs": 0.02
+        },
+        {
+          "name": "createBuffer 256 bytes + destroy",
+          "gpuProcessUs": 4.77,
+          "submitUs": 0.87
+        }
+      ]
+    ],
+    "profiles": [
+      {
+        "tag": "render-cpu-nanite-rigid-tour-on-20261114",
+        "thread": "render",
+        "nanite": 1,
+        "frames": 1850,
+        "sampledFps": 152.3
+      },
+      {
+        "tag": "render-cpu-nanite-rigid-tour-off-20261114",
+        "thread": "render",
+        "nanite": 0,
+        "frames": 1872,
+        "sampledFps": 154.2
+      },
+      {
+        "tag": "render-cpu-nanite-rigid-on-20261114",
+        "thread": "render",
+        "nanite": 1,
+        "frames": 1480,
+        "sampledFps": 121.4
+      },
+      {
+        "tag": "rhi-cpu-nanite-rigid-tour-on-a-20261114",
+        "thread": "rhi",
+        "nanite": 1,
+        "frames": 797,
+        "sampledFps": 65.1
+      },
+      {
+        "tag": "rhi-cpu-nanite-rigid-tour-off-a-20261114",
+        "thread": "rhi",
+        "nanite": 0,
+        "frames": 838,
+        "sampledFps": 68.6
+      },
+      {
+        "tag": "rhi-cpu-nanite-rigid-tour-off-b-20261114",
+        "thread": "rhi",
+        "nanite": 0,
+        "frames": 835,
+        "sampledFps": 68.2
+      },
+      {
+        "tag": "rhi-cpu-nanite-rigid-tour-on-b-20261114",
+        "thread": "rhi",
+        "nanite": 1,
+        "frames": 798,
+        "sampledFps": 65.2
+      }
+    ],
+    "records": [
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-batch-instances-20261114\\report.json",
+          "sha256": "9c29a51b1e256908ee93491fb6fb308a6db9ee96f128c23b7d926efd790b46b5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\0-report.json.gz",
+          "sha256": "d0890980ac375f6d2518df8fc81ce78bc65dbf3e8c9a0b130bbd0ef4585f4e58"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-batch-instances-20261114\\source.cjs",
+          "sha256": "7f8363c849892ff373e9a8c6c373f99cc0add4bf5a8de80679e8e6aa58ea1107"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\1-source.cjs.gz",
+          "sha256": "e87aa1de1d700f80e81bf4587fc89658ccecf2a899c670e4bddd0270cc08e6af"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-batch-instances-auto-20261114\\report.json",
+          "sha256": "4f1ffdd5fbcba24c454626921f6615afed3bb76ab6bbb362dd320bfefc1f5d11"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\2-report.json.gz",
+          "sha256": "c4fc65fe4386c43f745af0d8b9f577b9eca97dbbe56e10691247a21345309aeb"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-batch-instances-auto-20261114\\source.cjs",
+          "sha256": "7f8363c849892ff373e9a8c6c373f99cc0add4bf5a8de80679e8e6aa58ea1107"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\3-source.cjs.gz",
+          "sha256": "e87aa1de1d700f80e81bf4587fc89658ccecf2a899c670e4bddd0270cc08e6af"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-default-batch-instances-scalar-20261114\\report.json",
+          "sha256": "37d13f4f3c26bae427418a019bd854f57a0f2b7d98103f39b5acb68f85f5f158"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\4-report.json.gz",
+          "sha256": "a5f8e5c69528d143546a8812dd1d3e0098da77c3680acc9727d74970354514e5"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-default-batch-instances-scalar-20261114\\source.cjs",
+          "sha256": "7f8363c849892ff373e9a8c6c373f99cc0add4bf5a8de80679e8e6aa58ea1107"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\5-source.cjs.gz",
+          "sha256": "e87aa1de1d700f80e81bf4587fc89658ccecf2a899c670e4bddd0270cc08e6af"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-hierarchy-20261114\\report.json",
+          "sha256": "0a92518f7681abdb5783a8e89e54d2b9de477877052f427119aaebb2ed7b3af2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\6-report.json.gz",
+          "sha256": "b9f5218d1d88f667931351e1145846c4e5d93b0add2cce2e214f6cdbd1159fd4"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-hierarchy-20261114\\source.cjs",
+          "sha256": "7f8363c849892ff373e9a8c6c373f99cc0add4bf5a8de80679e8e6aa58ea1107"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\7-source.cjs.gz",
+          "sha256": "e87aa1de1d700f80e81bf4587fc89658ccecf2a899c670e4bddd0270cc08e6af"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-occlusion-batch-20261114\\report.json",
+          "sha256": "85776d61c40c863bfa6575946830dbb1d93be7c9814c9ba27eb3a5a4260188f1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\8-report.json.gz",
+          "sha256": "a11400bba3ee57588299a8e0b902cb6228d090fbaffe7c5a9b27e7ff38001ef0"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-occlusion-batch-20261114\\source.cjs",
+          "sha256": "7f8363c849892ff373e9a8c6c373f99cc0add4bf5a8de80679e8e6aa58ea1107"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\9-source.cjs.gz",
+          "sha256": "e87aa1de1d700f80e81bf4587fc89658ccecf2a899c670e4bddd0270cc08e6af"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-pack-batch-20261114\\report.json",
+          "sha256": "baed2ddb2d98f45cfaf5ab60bc34265eccb58a46bc38660058830c306eefaeea"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\10-report.json.gz",
+          "sha256": "8f04e2c0d506d270919035456354df82e892421ae7afc1fa57334996488956bb"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-pack-batch-20261114\\source.cjs",
+          "sha256": "7f8363c849892ff373e9a8c6c373f99cc0add4bf5a8de80679e8e6aa58ea1107"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\11-source.cjs.gz",
+          "sha256": "e87aa1de1d700f80e81bf4587fc89658ccecf2a899c670e4bddd0270cc08e6af"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-micro-batch-20261114\\report.json",
+          "sha256": "414a0ecbbe207bcf8e65644c10c52649a3ecbbe385ae10b1eac95bc6cf8d5448"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\12-report.json.gz",
+          "sha256": "d4170097eb27f72ee8d4ead9c653c191423a29b37ce282d8210d1cabd138f2c8"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-micro-batch-20261114\\source.cjs",
+          "sha256": "7f8363c849892ff373e9a8c6c373f99cc0add4bf5a8de80679e8e6aa58ea1107"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\13-source.cjs.gz",
+          "sha256": "e87aa1de1d700f80e81bf4587fc89658ccecf2a899c670e4bddd0270cc08e6af"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-micro-batch-auto-20261114\\report.json",
+          "sha256": "96ce484905b635b757c5239195ce89b528dca803b8761b7591b004c65817a299"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\14-report.json.gz",
+          "sha256": "bdc02537722d3f8bf5988e994ce6e26d41c729f232a2545b06a8cc4f80dbf075"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-micro-batch-auto-20261114\\source.cjs",
+          "sha256": "7f8363c849892ff373e9a8c6c373f99cc0add4bf5a8de80679e8e6aa58ea1107"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\15-source.cjs.gz",
+          "sha256": "e87aa1de1d700f80e81bf4587fc89658ccecf2a899c670e4bddd0270cc08e6af"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-fixed-merge-20261114\\report.json",
+          "sha256": "a3977911463197210fc58bb9fc34f9668e19c150020d0da590ec150b3ccc9d23"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\16-report.json.gz",
+          "sha256": "44b5cd7439cc9addfed5c063efa4864a4ac0b05b2b753bb362d1d61a41ca18e3"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-fixed-merge-20261114\\source.cjs",
+          "sha256": "7f8363c849892ff373e9a8c6c373f99cc0add4bf5a8de80679e8e6aa58ea1107"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\17-source.cjs.gz",
+          "sha256": "e87aa1de1d700f80e81bf4587fc89658ccecf2a899c670e4bddd0270cc08e6af"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-fixed-merge-auto-20261114\\report.json",
+          "sha256": "a23bccd03036c1a51f92aa8cb638c323e2568a9ae05626d1a20e7d8830580545"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\18-report.json.gz",
+          "sha256": "956b2ed0ad1446a3941c88579f754f050838d846b6ed01d3ab3716a4fb523b71"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-fixed-merge-auto-20261114\\source.cjs",
+          "sha256": "7f8363c849892ff373e9a8c6c373f99cc0add4bf5a8de80679e8e6aa58ea1107"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\19-source.cjs.gz",
+          "sha256": "e87aa1de1d700f80e81bf4587fc89658ccecf2a899c670e4bddd0270cc08e6af"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-default-micro-batch-20261114\\report.json",
+          "sha256": "90ba5b34fdd4cce5019c8aa339cb0301addbc59664feb20629dd29f60488bd60"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\20-report.json.gz",
+          "sha256": "50d1a981ac3580f61bb0a71fe401a51e25ae648eb7439c4eb70af337bf657fd6"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-default-micro-batch-20261114\\source.cjs",
+          "sha256": "7f8363c849892ff373e9a8c6c373f99cc0add4bf5a8de80679e8e6aa58ea1107"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\21-source.cjs.gz",
+          "sha256": "e87aa1de1d700f80e81bf4587fc89658ccecf2a899c670e4bddd0270cc08e6af"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-default-micro-batch-scalar-20261114\\report.json",
+          "sha256": "e0d4f2a29ecbb9959936ef70de57e6de15641016ef150e978788fef52aa9af97"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\22-report.json.gz",
+          "sha256": "c11cf6812ff4803b7beea0f1e2b4688348c3d24cbaee47cbc036180cc9273970"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-default-micro-batch-scalar-20261114\\source.cjs",
+          "sha256": "7f8363c849892ff373e9a8c6c373f99cc0add4bf5a8de80679e8e6aa58ea1107"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\23-source.cjs.gz",
+          "sha256": "e87aa1de1d700f80e81bf4587fc89658ccecf2a899c670e4bddd0270cc08e6af"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-default-fixed-merge-20261114\\report.json",
+          "sha256": "cbc3e0125fd6297405a1e1fc23dcf823b18438a07f8f509a9c27a495cfef341e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\24-report.json.gz",
+          "sha256": "18dbe0999e45306268045efe84fef56868b43be9054d256202af6027d6c0f8da"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-default-fixed-merge-20261114\\source.cjs",
+          "sha256": "7f8363c849892ff373e9a8c6c373f99cc0add4bf5a8de80679e8e6aa58ea1107"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\25-source.cjs.gz",
+          "sha256": "e87aa1de1d700f80e81bf4587fc89658ccecf2a899c670e4bddd0270cc08e6af"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-default-fixed-merge-scalar-20261114\\report.json",
+          "sha256": "fbc60b371cb4b4c666bbc70b7a6f819394c40453678442138fa71823fd28896a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\26-report.json.gz",
+          "sha256": "e861e0a80426c8cb0537e7b27f66fdf30930c820c4467e79e1aa4063855c1cec"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-default-fixed-merge-scalar-20261114\\source.cjs",
+          "sha256": "7f8363c849892ff373e9a8c6c373f99cc0add4bf5a8de80679e8e6aa58ea1107"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\27-source.cjs.gz",
+          "sha256": "e87aa1de1d700f80e81bf4587fc89658ccecf2a899c670e4bddd0270cc08e6af"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-shade-auto-20261114\\report.json",
+          "sha256": "b630d2d393f11186390120c3c07a8dcc21ec6c8d68a2737a44054db39ce8e571"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\28-report.json.gz",
+          "sha256": "eb47caf2136bdecd17a715e14ba11b4780f09130db7bc144ac00fa7eb2c74385"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-shade-auto-20261114\\source.cjs",
+          "sha256": "7f8363c849892ff373e9a8c6c373f99cc0add4bf5a8de80679e8e6aa58ea1107"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\29-source.cjs.gz",
+          "sha256": "e87aa1de1d700f80e81bf4587fc89658ccecf2a899c670e4bddd0270cc08e6af"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-programmable-auto-20261114\\report.json",
+          "sha256": "8361d8b2c3843c19a6f1918e5a06731e10578108781082dd2b70c18ae5ff3008"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\30-report.json.gz",
+          "sha256": "1d6b9974cdc28ad0f6d0032ca0339c48b6c490eba462f108f198c9fdfa5ee674"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-programmable-auto-20261114\\source.cjs",
+          "sha256": "7f8363c849892ff373e9a8c6c373f99cc0add4bf5a8de80679e8e6aa58ea1107"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\31-source.cjs.gz",
+          "sha256": "e87aa1de1d700f80e81bf4587fc89658ccecf2a899c670e4bddd0270cc08e6af"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-hzb-mode-20261114\\report.json",
+          "sha256": "42e69cfa1af0c600cc0f57c9d7e97d01c1ff20217ad382665f24568890e21d74"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\32-report.json.gz",
+          "sha256": "7311029878455ef0ebd9910dcdaef40a2cf419b3c144a938c0a00a7b593b4f8b"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-hzb-mode-20261114\\source.cjs",
+          "sha256": "7f8363c849892ff373e9a8c6c373f99cc0add4bf5a8de80679e8e6aa58ea1107"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\33-source.cjs.gz",
+          "sha256": "e87aa1de1d700f80e81bf4587fc89658ccecf2a899c670e4bddd0270cc08e6af"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-hzb-auto-two-phase-20261114\\report.json",
+          "sha256": "39331c27008842e78c5645073cccf1d0df3cd823f744d9b4dd746609a6e8dcbd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\34-report.json.gz",
+          "sha256": "c55ff0e3fbccfccf9e1b1a8e17865aa271a20cd67a8118886c61918c9893e9b0"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-villa-hzb-auto-two-phase-20261114\\source.cjs",
+          "sha256": "7f8363c849892ff373e9a8c6c373f99cc0add4bf5a8de80679e8e6aa58ea1107"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\35-source.cjs.gz",
+          "sha256": "e87aa1de1d700f80e81bf4587fc89658ccecf2a899c670e4bddd0270cc08e6af"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-programmable-20261114\\packed-source.cjs",
+          "sha256": "9bb7a42fba24a16cba4ae72a8b5f84018f9da586df4f60a6382c79f4393237e2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\36-packed-source.cjs.gz",
+          "sha256": "06cddf55371ad76127f7cce0def64ba08847feefcef1cbea973dd45532853019"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-programmable-20261114\\scalar-source.cjs",
+          "sha256": "9bb7a42fba24a16cba4ae72a8b5f84018f9da586df4f60a6382c79f4393237e2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\37-scalar-source.cjs.gz",
+          "sha256": "06cddf55371ad76127f7cce0def64ba08847feefcef1cbea973dd45532853019"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-wpo-20261114\\packed-source.cjs",
+          "sha256": "75ccd0da63ccaec61d4447e944aab0c56c59ad253acf5d1029b7d4f0c60939be"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\38-packed-source.cjs.gz",
+          "sha256": "c357d79e1ee13137dbc894778468ae66f8ee2b6c986608820ca869a9b337e836"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-wpo-20261114\\scalar-source.cjs",
+          "sha256": "75ccd0da63ccaec61d4447e944aab0c56c59ad253acf5d1029b7d4f0c60939be"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\39-scalar-source.cjs.gz",
+          "sha256": "c357d79e1ee13137dbc894778468ae66f8ee2b6c986608820ca869a9b337e836"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-recovery-20261114\\packed-source.cjs",
+          "sha256": "6855a942d044603c3713a49f901930ccec82a69919f8066e07ad5eedbb476df4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\40-packed-source.cjs.gz",
+          "sha256": "e38f7213a2edfe5ae034fc901fc7bddf54b4b60d80976f7ab91ec2b876df6b75"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-recovery-20261114\\scalar-source.cjs",
+          "sha256": "6855a942d044603c3713a49f901930ccec82a69919f8066e07ad5eedbb476df4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\41-scalar-source.cjs.gz",
+          "sha256": "e38f7213a2edfe5ae034fc901fc7bddf54b4b60d80976f7ab91ec2b876df6b75"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-eligibility-20261114\\report.json",
+          "sha256": "2bc6cb0a3c7fd6b8875d65c4bd117110d641e9b12d261d9b3722b4f08f135361"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\42-report.json.gz",
+          "sha256": "975fc6725b580fb8e7c1d7be929b281d6871514c89f2370123990f56a391a3fb"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-eligibility-20261114\\source.cjs",
+          "sha256": "59027d5853e70d09bd2979fd3ece882985adaf3425aad55f493807e74c96c752"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\43-source.cjs.gz",
+          "sha256": "ee13df68df6d2876a12ba8b222d9b439ba3f340b8bde993ce7fccae046c3e5ba"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-laps-batch-instances-20261114\\report.json",
+          "sha256": "12f7ee339f1bcecb3c204e852d4a66a4e304d15f546f574101de292ac09d7cfb"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\44-report.json.gz",
+          "sha256": "8ccf2011da8d6d3ef5d749dc35890bd21dcaf92788becda914f6d15a8f08d14b"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-laps-batch-instances-20261114\\source.cjs",
+          "sha256": "5176219dd00ddc2b3ceb524b895b82039988867fd9bb8c95bb3eb3d1b9c74716"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\45-source.cjs.gz",
+          "sha256": "ae43ba37063fa1ae87fa06fdc6b4494b9a2eaee92fe58a8d8907ee40feefd5d7"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-laps-batch-instances-still-20261114\\report.json",
+          "sha256": "8f384c30d17a04d27a9c35dddadb26ebbb4b275a64c563284df2a1ab1d3bd895"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\46-report.json.gz",
+          "sha256": "21f41ee75a36d84e5063e4e89047a4ee716f1b50c2f7287d9b6a979a582a8ced"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-laps-batch-instances-still-20261114\\source.cjs",
+          "sha256": "5176219dd00ddc2b3ceb524b895b82039988867fd9bb8c95bb3eb3d1b9c74716"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\47-source.cjs.gz",
+          "sha256": "ae43ba37063fa1ae87fa06fdc6b4494b9a2eaee92fe58a8d8907ee40feefd5d7"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-laps-onoff-20261114\\report.json",
+          "sha256": "b31f4210a7936849872d457241c827d6aa5e1abf1a30bbca5a66aef9a5dffb3e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\48-report.json.gz",
+          "sha256": "04bd9125a4a2a988c4e3f7a9847b8088eeee761adb75dcae17fa97014f19d989"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-laps-onoff-20261114\\source.cjs",
+          "sha256": "5176219dd00ddc2b3ceb524b895b82039988867fd9bb8c95bb3eb3d1b9c74716"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\49-source.cjs.gz",
+          "sha256": "ae43ba37063fa1ae87fa06fdc6b4494b9a2eaee92fe58a8d8907ee40feefd5d7"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-laps-onoff-still-20261114\\report.json",
+          "sha256": "9bbbdbdb78413fc8d313990abc75416796e8f0944ffa7fe8d4c421c7e9f3eed7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\50-report.json.gz",
+          "sha256": "373a46a900856b3825ee0571ad7aa0abe41c3d3dd372f801b8d49dd4702617fb"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-laps-onoff-still-20261114\\source.cjs",
+          "sha256": "5176219dd00ddc2b3ceb524b895b82039988867fd9bb8c95bb3eb3d1b9c74716"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\51-source.cjs.gz",
+          "sha256": "ae43ba37063fa1ae87fa06fdc6b4494b9a2eaee92fe58a8d8907ee40feefd5d7"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-onoff-abba-20261114\\report.json",
+          "sha256": "4a287f663c1d4d10d289d4dad36de06ec247acf46b785577e96f99ba5541d90b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\52-report.json.gz",
+          "sha256": "1428df03044708020b2d9548fc39d35148fc791b5e1a3362e9c79fe270d4ab4c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-onoff-abba-20261114\\source.cjs",
+          "sha256": "b2fe22da0cc406d7f5cf88ab83ddc4a5090bc33757812cd40104aeaca42bf517"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\53-source.cjs.gz",
+          "sha256": "1bde4f438ac68c28d506f82dd649f441359a26bda7a028e1d00b564b65d5cb8c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-oldnew-abba-b-20261114\\report.json",
+          "sha256": "8103cd9b4b2ae67f6503db980766e5505569bb9d79fdb8a94f670988b4c06a8a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\54-report.json.gz",
+          "sha256": "5793ec6fb273607cf730c00995aacaaeb0cbe81beae4e7fc939f383f80a19292"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-oldnew-abba-b-20261114\\source.cjs",
+          "sha256": "b2fe22da0cc406d7f5cf88ab83ddc4a5090bc33757812cd40104aeaca42bf517"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\55-source.cjs.gz",
+          "sha256": "1bde4f438ac68c28d506f82dd649f441359a26bda7a028e1d00b564b65d5cb8c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-onoff-abba-b-20261114\\report.json",
+          "sha256": "1601d8bb96781efb2908dec72d3eaf40bf9d4507442fda2dc1b5d0ce7bee65b2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\56-report.json.gz",
+          "sha256": "e3683dad3e83159a997bf463b06d6a9ddc31b41cd8f53ce735efd334e4765481"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-onoff-abba-b-20261114\\source.cjs",
+          "sha256": "b2fe22da0cc406d7f5cf88ab83ddc4a5090bc33757812cd40104aeaca42bf517"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\57-source.cjs.gz",
+          "sha256": "1bde4f438ac68c28d506f82dd649f441359a26bda7a028e1d00b564b65d5cb8c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-on-trace-b-20261114\\gpu-process.json",
+          "sha256": "8e4a9a6b8063808ad1c8eed41140f41aff7325209d131c69b9165b52d8be3288"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\58-gpu-process.json.gz",
+          "sha256": "eecb6f8500b1e0ee2357257f2afebaf370a23c1bd51768cb2f904023bba12090"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hzbauto5-on-trace-b-20261114\\report.json",
+          "sha256": "76fb689449467113ab7de39b84f5ace4c618b1ebc4fa0fb4e3937244cf3e51e1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\59-report.json.gz",
+          "sha256": "9a7c3d19ed4780716fee9691d8dd217b2e5eb159629ca9c2b7baecf125361985"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\webgpu-calls-hzbauto5-on-20261114.json",
+          "sha256": "9aeb0082e7796be1a4c49cadb34588646961bbbf3205b7c703bd75c088634ebb"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\60-webgpu-calls-hzbauto5-on-20261114.json.gz",
+          "sha256": "069cb83818632e7b6bebb1d6d7e360f0c4a556e9fefc42b708b892fe691d99dd"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\webgpu-calls-rigid-batch128-20261114.json",
+          "sha256": "b4d86a43538b34f3d522a0c5750f41cf70adac9ea80a2f1bb2aa99c30d1c53b7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\61-webgpu-calls-rigid-batch128-20261114.json.gz",
+          "sha256": "adfa591e6e3f64e5ae6bbe5d8f0a8e1032a94aa26273f77fe0dd2a56f8fdb77d"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\webgpu-calls-rigid-on-20261114.json",
+          "sha256": "62dd8cd86029ea6712661dd60fb3b9b3f339220d6ba42f5cea9fd09e17e5d3cf"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\62-webgpu-calls-rigid-on-20261114.json.gz",
+          "sha256": "abea7855c52ba4b3b58fd12a0f376679050f1a60c08b83c55af938b1eb90b059"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\webgpu-calls-hzbauto5-off-20261114.json",
+          "sha256": "1bd69ea26d2a77d3e2dccc719270d96e4f70ea38aefe129543149abe64393a97"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\63-webgpu-calls-hzbauto5-off-20261114.json.gz",
+          "sha256": "5b3a4b635c6bf8c1be5ae72fba3feb5d4b7029e0a123c3d56b4698ab15da12a6"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\webgpu-command-costs-idle-a-20261114.json",
+          "sha256": "4ada2aa18a0b966ddacca4c6aad046c42d45b8e93447b35b641dcc5915208857"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\64-webgpu-command-costs-idle-a-20261114.json.gz",
+          "sha256": "546919793de01a4f2bcf6e6c3e0123e10177ba32d4d61e7ec34f44d50f88c5b9"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\webgpu-command-costs-idle-b-20261114.json",
+          "sha256": "0af7741db316dcfa9d63e08109ed77a95dace8501546e1640f107813482704f1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\65-webgpu-command-costs-idle-b-20261114.json.gz",
+          "sha256": "d8309d5f88d70a1a80843bfd719eceac6837742a82bd2955f4d32b0676e76ef1"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\render-cpu-nanite-rigid-tour-on-20261114.json",
+          "sha256": "f75f8ad5983938968421dcb986afb1aba5959534c1b38cd9d065c55a14e1e8d4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\66-render-cpu-nanite-rigid-tour-on-20261114.json.gz",
+          "sha256": "c3b92f4de95fe0861fd85b4715f3a1415fc047cc8066d24fb2d2eee827a4dfae"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\render-cpu-nanite-rigid-tour-off-20261114.json",
+          "sha256": "d303cb95363a44ccdf04d31fd1af4ad599cad91f1dbc8f4723a0eedb1d0ad794"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\67-render-cpu-nanite-rigid-tour-off-20261114.json.gz",
+          "sha256": "a929a81b7d20ab1c30d535b012c3232e3c9dab2902f599141bfcd8c26d1fd6f1"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\render-cpu-nanite-rigid-on-20261114.json",
+          "sha256": "84a3984e83b08f16748a0176117e064ebccd038a6a3a75f3704f229134096156"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\68-render-cpu-nanite-rigid-on-20261114.json.gz",
+          "sha256": "ad60398d7927e983a082492f79fefe56dccf92f4ba291a1d580e78196569308d"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-cpu-nanite-rigid-tour-on-a-20261114.json",
+          "sha256": "6d513db404bb88d7da5f00c9a351a67fa652630f8302e51060297d495a9eec39"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\69-rhi-cpu-nanite-rigid-tour-on-a-20261114.json.gz",
+          "sha256": "51929cfd727a7242142f04ce0d5f7899db41eb572faa6d945f7b2bc58854600f"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-cpu-nanite-rigid-tour-off-a-20261114.json",
+          "sha256": "f953afae6ccf7e2eb664473917dc81c2933168fbc95d1439900aff522d9fe6d9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\70-rhi-cpu-nanite-rigid-tour-off-a-20261114.json.gz",
+          "sha256": "4ec3977d1cde6d22ad89f80aa2d5f4bf15485b7c3b0918cf376b8ff2d69296f4"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-cpu-nanite-rigid-tour-off-b-20261114.json",
+          "sha256": "9d5249dd5d135775e5ac51515f10578b1779c8f434b90ffce78c52c724daf219"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\71-rhi-cpu-nanite-rigid-tour-off-b-20261114.json.gz",
+          "sha256": "d2c31dad0808e34e05b10c7e64ce70e7a5306e0d337eac56902260559ec556dc"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-cpu-nanite-rigid-tour-on-b-20261114.json",
+          "sha256": "ba7d00ddcec39db0ccdb4bdacdff9853fd431d67e21b371771038eaf3f81e50e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\72-rhi-cpu-nanite-rigid-tour-on-b-20261114.json.gz",
+          "sha256": "e27094b48ca8d55ae2714344fdb00c270aa533e03a7f91e80ae732a61c21973f"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\calls.log",
+          "sha256": "764ad73ca3cb7b57ec85bcbd4325ea83915f1fc2515d962e4316ce9a2011d638"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\73-calls.log.gz",
+          "sha256": "b99f5a7582aa158ecfd4cccac5fb2fcb72c5d11b48bacfc6e9481e3ebceee2bc"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\chain-done.txt",
+          "sha256": "e6ba58384eaf7a36b93570962bc2d10ef9043640527c7d542c9d9fe0bd0234bb"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\74-chain-done.txt.gz",
+          "sha256": "2b8219d37a58c836e370b88e54d6432939a867738dbef9ea8b45b48378fa7b06"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\chain2-done.txt",
+          "sha256": "d579054890a04c78235488ba5044dd511e6f261980eff06714097bac74a25b6c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\75-chain2-done.txt.gz",
+          "sha256": "709e195520e56547557b3eff5846011e35d93a7892288c58c61e075d08bab97c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\correctness-done.txt",
+          "sha256": "9c0faa10b6a5292c3ae8b334e3c1cfecedbfd5fd22e7b40c1a62a2e86d4d0b56"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\76-correctness-done.txt.gz",
+          "sha256": "6275b6345df5c810878cfc9ed96f818d1d247d9e037fd951f74b0de4bd0773d5"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\correctness.log",
+          "sha256": "640c24d33a336cef7ada9ca6466265960240cf22b950b5afc448cdfdbe8662a6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\77-correctness.log.gz",
+          "sha256": "888e31a71e89dacffc0ebfe15347ab199120cdc421697006cacfe5a5af73eea3"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\engine-commit-message.txt",
+          "sha256": "3c7132fd2ebd26de8e272d25d75585eb1dcadd1c68fad159cdd22dd17e26aac3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\78-engine-commit-message.txt.gz",
+          "sha256": "51e7e90263b1bb9879689c98e5a0d909eada96f30a23725b0ce8eff49a7a5077"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\laps-done.txt",
+          "sha256": "660b69c97d0f96c5f33deb0a724ec38591345de5412d0cc926b42934ab8108cd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\79-laps-done.txt.gz",
+          "sha256": "d7cba76dea1c1aec69faf8681ec6e08182c6b5ba1a5dc21b398f061b24d5525e"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\laps.log",
+          "sha256": "20a335fd0b24bc72c4f2f1771f3ea234ac5576ee4057be5f31ef29fe95215831"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\80-laps.log.gz",
+          "sha256": "a6551e26b391b32f1d24292f44e95bf72af415e4731ae5df12aa498d9e61876f"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\nanite-hzbauto5-on-trace-b-20261114-done.txt",
+          "sha256": "47acd618a9d45e43b901feaf0edae12ffaa1764399fb271bebf55607e9e7d9a5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\81-nanite-hzbauto5-on-trace-b-20261114-done.txt.gz",
+          "sha256": "9d9119e68cec52ccb68481e0000b32028cc293386d0ecdd11804e33e8600bd08"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\nanite-hzbauto5-on-trace-b-20261114.log",
+          "sha256": "e3e61a8fe373ee77a38c8ee91e3eca6062f577eab50960434c408bdca23e0a37"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\82-nanite-hzbauto5-on-trace-b-20261114.log.gz",
+          "sha256": "a55efe584c631fb08b881bb2525694f922fcb3a1b09e0d0b8eab588a0a414254"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\perf-done.txt",
+          "sha256": "f2255842ebf9cc8591b311c0ff37d62bf6d4e029e8e351188c4e1f2c9a7ebb1c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\83-perf-done.txt.gz",
+          "sha256": "4a213375c9e7b64de2356d42093775128b9ed74aba4d81460d43e52a67321463"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\perf2-done.txt",
+          "sha256": "d9a65b27177f124191940560034c58f4a5f3486896f6c929b54610d4d17d46d0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\84-perf2-done.txt.gz",
+          "sha256": "203e7f034afa570d6013a236e13339a6b1675598332aa6457630a5d07e616c0e"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\pipeline-done.txt",
+          "sha256": "377f1a1f1553edbbdf08fdd5b585c8d493f0fed48f93b0be511af04da39a6c0e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\85-pipeline-done.txt.gz",
+          "sha256": "5207bc81727f3a4d40cb09cfc6aefd23e3d5c8cfa7e0439047f220f82a5a098b"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\pipeline-main.txt",
+          "sha256": "c9cea910c03cea6d5867fe3be763c4353e9a0eed30224eba37b347c1a332ba52"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\86-pipeline-main.txt.gz",
+          "sha256": "63c8bfcde173031cf822a52876220b402cb498fcf7273659c6ccffdaa4596c89"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\pipeline.log",
+          "sha256": "ad3e163f5eeb9c5d30a180b94ce288a09887e277d105e479826a730b7a2d2064"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\87-pipeline.log.gz",
+          "sha256": "8c4943ed51645a2938bd9e62de5727ccfa5006798b4427d7a206f1cbcd5aefe5"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\rhi-profile-done.txt",
+          "sha256": "47acd618a9d45e43b901feaf0edae12ffaa1764399fb271bebf55607e9e7d9a5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\88-rhi-profile-done.txt.gz",
+          "sha256": "9d9119e68cec52ccb68481e0000b32028cc293386d0ecdd11804e33e8600bd08"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\rhi-profile-no-thread.log",
+          "sha256": "7d1256a2e94e85f80fde17e88993a7414d1b23a72ca8300fd5c6e32fc4a99923"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\89-rhi-profile-no-thread.log.gz",
+          "sha256": "ccb0ad828a86913913b2dff57fbfca55b83fc95ee7fa3738399a476f6092e3d2"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\rhi-profile.log",
+          "sha256": "8a1abbc7bff4f4a0255c6ea7a7a36d3c6c2fa972f24714be2957c729c8944b2a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\90-rhi-profile.log.gz",
+          "sha256": "0714076cb046689f094c8479f721673346b4864215cd3532d9151134f0ac0c4e"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\run-chain.ps1",
+          "sha256": "aa666b6452f066ba67032fdd2695736fa836a089a105dbc20f3c8d28fb9309e2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\91-run-chain.ps1.gz",
+          "sha256": "fb24cc632be844b641b138a8266ccb5a12c56e6b4897fb8c64c87ff0e2754159"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\run-chain2.ps1",
+          "sha256": "47aa2b25a85fbaa96d2a04bb0f0fd6e8907a6bb31ad83315c681d3f657c5acc1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\92-run-chain2.ps1.gz",
+          "sha256": "515905f834d862437a4a8d9ba3b51b1185245e140056e28be6e0cde8dc870393"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\run-correctness.ps1",
+          "sha256": "7e1193c9896240d524e1521a22a7a8000f813333ad7a25557df8c999fa3dccf0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\93-run-correctness.ps1.gz",
+          "sha256": "dfb454823f06f60df298f7fdf998af8a015beab832682fe08a3bc10d151627d5"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\run-laps.ps1",
+          "sha256": "67f5946c2f54586c9f6440269576ebe05559d682f0c8fa992fc3fb009350670f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\94-run-laps.ps1.gz",
+          "sha256": "21fe4261dfc832839687ca40b84781ec992823d6d8768bc53bcfa40fb07bbfdf"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\run-pipeline.ps1",
+          "sha256": "3d3d505c13d55abd756fb941ccd1bd9a012cd631059bc32c1ce43bc12d7621bc"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\95-run-pipeline.ps1.gz",
+          "sha256": "b9b1e5d57c23601893afbc66008bec138182838af3671e851a75e99441d25a8b"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\run-rhi-profile.ps1",
+          "sha256": "e36072f1fde2a855196cd02588c8edf637c614847bc5ce8190c8ef739e130232"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\96-run-rhi-profile.ps1.gz",
+          "sha256": "3cf67ef9b9def60d298e6b6b6982f20efd4cb6a1be1cb233858bf189279afa51"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-rigid-batch-20261114\\run-trace.ps1",
+          "sha256": "9316b1fe5e1d02daa0b9b88bfd07b0404c18e0c62f4fd666bfe49f5471e81cf2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\97-run-trace.ps1.gz",
+          "sha256": "79e122e73fb19824091b944ebb981858832e7aea4dd44b5dc27495ac44117ae3"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-rigid-default-20261114\\package.json",
+          "sha256": "da062a3a65090c0379f255cf722b203df5b205f686b18530e0844f07bc16be8c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\98-package.json.gz",
+          "sha256": "4b800ad01824c8bfa81eb35b95171459c20571ec4415cc1c957f8c8a8b551c6f"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-rigid-default-content-20261114\\package.json",
+          "sha256": "6094ead82943524034e92ac16ef53b78a854092138ca824458b34dc401641f4d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\99-package.json.gz",
+          "sha256": "82bcc20427889e3ec7ef1bc06e5e7cf380e6707099fb271d7cf60fc85f5f26fa"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-rigid-villa-20261114\\package.json",
+          "sha256": "9b482188e0d73f9af69162636befdcd7599525f2946dbeaad58c6d7b5750763f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\100-package.json.gz",
+          "sha256": "fd4f59fb431d1d282eab9cc5021bb0a9da4ef05619e3229f9f5079c2dea86cae"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-rigid-villa-content-20261114\\package.json",
+          "sha256": "3b512eb1c60f11f88a1a4b27072d884832fc82d077ca48f6fd6815150386b380"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\101-package.json.gz",
+          "sha256": "f5165aa2b6f6660ef5229fa2dacd4c320a5a7db976f0aac4971ba0bbb3f59a44"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-rigid-regression-20261114\\package.json",
+          "sha256": "41fe933801053f8d89940fa56042dae94804698bdacfcf6c78f69473f14bb51e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\102-package.json.gz",
+          "sha256": "85c8a8d27c9bca64e583daaba2a87c5c1c2fb8389dda85aeacd7f163548f09ed"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-rigid-regression-content-20261114\\package.json",
+          "sha256": "15a8c2b174efab018af1a638448350acfb9d1eb3e1371992df7ecb5321be8ed6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\103-package.json.gz",
+          "sha256": "f2329999b2c3912700432a7541843df38461bacfa84f46641f20e72fa64fbcc7"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-rigid-batch.cjs",
+          "sha256": "dc5558821bd4138f1c19643ee1af4585f77020f36d38f3774c6ddb911dff1bb3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\104-collect-nanite-rigid-batch.cjs.gz",
+          "sha256": "63f44bc9875789f36f95bd23b852e9ce24e946bbe578efd5804cdcd8ae39b8d5"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-hierarchy-batch.cjs",
+          "sha256": "7f8363c849892ff373e9a8c6c373f99cc0add4bf5a8de80679e8e6aa58ea1107"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\105-probe-nanite-hierarchy-batch.cjs.gz",
+          "sha256": "e87aa1de1d700f80e81bf4587fc89658ccecf2a899c670e4bddd0270cc08e6af"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-switch-laps.cjs",
+          "sha256": "5176219dd00ddc2b3ceb524b895b82039988867fd9bb8c95bb3eb3d1b9c74716"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\106-probe-nanite-switch-laps.cjs.gz",
+          "sha256": "ae43ba37063fa1ae87fa06fdc6b4494b9a2eaee92fe58a8d8907ee40feefd5d7"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-off-regression.cjs",
+          "sha256": "b2fe22da0cc406d7f5cf88ab83ddc4a5090bc33757812cd40104aeaca42bf517"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\107-probe-nanite-off-regression.cjs.gz",
+          "sha256": "1bde4f438ac68c28d506f82dd649f441359a26bda7a028e1d00b564b65d5cb8c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\count-webgpu-calls.cjs",
+          "sha256": "992dcaa009d085ca2bdcb29691fc87031d09d4f12e9ad5e50138f151ee177a65"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\108-count-webgpu-calls.cjs.gz",
+          "sha256": "e80b4c4088eae2b5ad300b4bd5b9edc72a3a59cb4dc222d6321c388539614e27"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\bench-webgpu-command-costs.cjs",
+          "sha256": "bd5c2d41b3c9d767e74ab57dac38c1eaebdf557fab15c06912e172a392660590"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\109-bench-webgpu-command-costs.cjs.gz",
+          "sha256": "217bfaee39931c6e84fcf2b37f9de5a80b184b2fc3de3de6977f3bf73c41f1f8"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\profile-web-render-cpu.cjs",
+          "sha256": "7d709e00806b7b64c4e1ad5181b0a34f295f40daa5fc487161fbe76a41a27f8e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\110-profile-web-render-cpu.cjs.gz",
+          "sha256": "ae3993a3f4df32eaeba08ebbf7a23688af294c494e49d707939b45ecef9669d6"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\compare-render-cpu.cjs",
+          "sha256": "0df75a7548652e48f78ecff1ce312d47c98b1520d14e8a018969aa63b2e3ccfa"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\111-compare-render-cpu.cjs.gz",
+          "sha256": "49f1022cefa9aa356f55bdeba8328f5497afd6bebbc7df382fd3c9d0efaa148f"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\analyze-render-cpu-tree.cjs",
+          "sha256": "debcdaa5893c2b6b48cf1f185d1907fbea97b0fdd0706f01577b28c8233679b6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\112-analyze-render-cpu-tree.cjs.gz",
+          "sha256": "78dc2d44ec881a37605c7e655bb4c458f14532d890e15d4708fda0b902a6755f"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\analyze-gpu-process-trace.cjs",
+          "sha256": "7e654d4126bad7ef29fb29e5d8bd2cc1c92a9f3732c40dd2b02a61ddcdee7061"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\113-analyze-gpu-process-trace.cjs.gz",
+          "sha256": "de730ae502d6f96fc95ddf56349e8cf9914d147f8e35548849f175b83b71e7a3"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\package-nanite-shadow-guard.cjs",
+          "sha256": "bdbc2af438e22c7d4f0f4aa19fc00ccee2e969eddfdda99cf98b391108c258e6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-rigid-batch-20261114\\114-package-nanite-shadow-guard.cjs.gz",
+          "sha256": "f0b177e498dce95e9b3cb34d5ed8364bc074d0f2ddf151ab0c0999b641d5fdca"
+        }
+      }
+    ],
+    "referencedOnly": {
+      "$omitted": true,
+      "reason": "Large array",
+      "type": "array",
+      "entries": 287,
+      "bytes": 56119,
+      "sha256": "fd9348ab3ef942a49e9e969819a181aab09fa43493f357dbd3ad1cfcb5badc65"
+    },
+    "boundary": "Rigid instances form one batch per view; fixed and micro raster share one preparation. Exact frozen-clock comparisons across batch sizes, every batching switch, both occlusion modes and both visibility formats pass. The first-move pipeline stall is gone. Average frame rate gained about one percent; rows of different reports are not comparable because the machine state differed between batches. CPU profiles were taken on a busy machine and are used for on/off differences only. Full enabled performance acceptance stays open."
+  }
+}

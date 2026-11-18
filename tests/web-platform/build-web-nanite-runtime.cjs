@@ -1,6 +1,6 @@
 'use strict';
-// Link an isolated browser diagnostic from the existing threaded UE objects.
-// This does not replace the ordinary executable or claim a clean full rebuild.
+// Link an isolated browser diagnostic, or import a verified complete UE target.
+// Both modes preserve build provenance; neither claims a clean rebuild.
 const fs = require('node:fs'), path = require('node:path'), cp = require('node:child_process');
 const assert = require('node:assert/strict');
 const {audit} = require('./content-file-metadata.cjs');
@@ -10,6 +10,35 @@ const host = path.join(root, '.tools/ue58-web-build-host/Engine');
 const intermediate = path.join(root, 'tests/ue-web-smoke/Intermediate/Build/Web/wasm64/UEWebEngineThreads/Development');
 const output = path.join(__dirname, 'build/nanite-browser-runtime');
 fs.mkdirSync(output, {recursive: true});
+// Public RHI inline changes require all dependent objects to be rebuilt by UBT.
+// Import that verified target directly instead of mixing diagnostic replacements
+// with objects compiled against a previous reference-count protocol.
+if (process.argv.includes('--from-full-build')) {
+  const fullFile=path.join(__dirname,'results/web-engine-full-thread-build-results.json');
+  const full=JSON.parse(fs.readFileSync(fullFile,'utf8').replace(/^\uFEFF/,''));
+  const verify=i=>assert.equal(audit(i.file).sha256,i.sha256,i.file);
+  assert(full.pass&&full.buildSucceeded&&full.fullLinkVerified&&full.threads&&full.lowerMemory64);
+  const inputs=[...full.sourceFiles,...full.products,full.linkResponse,full.log,
+    ...full.objects.flatMap(o=>[o.object,o.response,o.definitions,o.source]),
+    ...full.platformCopies.flatMap(c=>[c.source,c.copied])];
+  inputs.forEach(verify);
+  for(const file of ['Public/RHIResources.h','Private/RHIResources.cpp']) {
+    for(const base of [path.join(root,'reference-engine/Engine'),host]) {
+      const f=path.join(base,'Source/Runtime/RHI',file);
+      assert(full.sourceFiles.some(i=>path.resolve(i.file)===f),'full build must audit '+f);
+    }
+  }
+  const products=full.products.filter(p=>/UEWebEngineThreads\.(js|wasm)$/.test(p.file)).map(p=>{
+    const dest=path.join(output,path.basename(p.file));fs.copyFileSync(p.file,dest);return audit(dest);
+  });
+  assert.equal(products.length,2);
+  const report={date:new Date().toISOString(),pass:true,incrementalDiagnostic:false,fullTargetBuild:true,fullRebuild:false,
+    fullEngineBuild:audit(fullFile),sources:[audit(__filename),audit(fullFile),...full.sourceFiles],
+    linkInputs:[full.linkResponse,...full.objects.flatMap(o=>[o.object,o.response,o.definitions,o.source])],
+    compiled:[],products,log:full.log};
+  fs.writeFileSync(path.join(output,'build.json'),JSON.stringify(report,null,2)+'\n');
+  console.log(JSON.stringify({pass:true,fullTargetBuild:true,output}));process.exit(0);
+}
 const previous = fs.existsSync(path.join(output, 'build.json')) ? JSON.parse(fs.readFileSync(path.join(output, 'build.json'), 'utf8')) : null;
 const sdk = unix(path.join(root, '.tools/emsdk'));
 const execute = (response, log) => {
@@ -25,13 +54,25 @@ const execute = (response, log) => {
 };
 const engineFiles = ['Private/Nanite/NaniteStreamingPageUploader.cpp',
   'Private/Rendering/NaniteStreamingManager.cpp', 'Public/Rendering/NaniteStreamingManager.h',
-  'Private/Rendering/NaniteResources.cpp', 'Private/Nanite/NaniteWebHierarchy.cpp',
-  'Public/Rendering/NaniteWebHierarchy.h', 'Private/StaticMeshSceneProxy.cpp',
+  'Private/Rendering/NaniteResources.cpp', 'Private/Nanite/NaniteWebInstance.cpp', 'Public/Rendering/NaniteWebInstance.h', 'Private/Nanite/NaniteWebHierarchy.cpp',
+  'Public/Rendering/NaniteWebHierarchy.h', 'Private/StaticMeshSceneProxy.cpp', 'Public/StaticMeshSceneProxy.h',
+  'Private/InstancedStaticMesh.cpp',
   'Private/Nanite/NaniteWebScene.cpp', 'Public/Rendering/NaniteWebScene.h',
   'Private/Nanite/NaniteWebRaster.cpp', 'Public/Rendering/NaniteWebRaster.h',
+  'Private/Nanite/NaniteWebHZB.cpp', 'Public/Rendering/NaniteWebHZB.h',
   'Private/Nanite/NaniteWebDepth.cpp', 'Public/Rendering/NaniteWebDepth.h',
   'Private/Nanite/NaniteWebGBuffer.cpp', 'Public/Rendering/NaniteWebGBuffer.h'];
 const engineDependencies = [];
+const lifetimeDependencies=['Public/RHIResources.h','Private/RHIResources.cpp'].flatMap(file=>[
+  path.join(root,'reference-engine/Engine/Source/Runtime/RHI',file),path.join(host,'Source/Runtime/RHI',file)]);
+for(let i=0;i<lifetimeDependencies.length;i+=2)
+  assert.equal(audit(lifetimeDependencies[i]).sha256,audit(lifetimeDependencies[i+1]).sha256,'prepare the RHI overlay and run a full target build');
+const fullStamp=JSON.parse(fs.readFileSync(path.join(__dirname,'results/web-engine-full-thread-build-results.json'),'utf8').replace(/^\uFEFF/,''));
+assert(fullStamp.pass&&fullStamp.fullLinkVerified,'a successful full UBT target build is required');
+for(const file of lifetimeDependencies) {
+  const built=fullStamp.sourceFiles.find(i=>path.resolve(i.file)===file);
+  assert(built&&built.sha256===audit(file).sha256,'RHI inline changes require a full UBT target build before diagnostic relinking: '+file);
+}
 for (const file of engineFiles) {
   const source = path.join(root, 'reference-engine/Engine/Source/Runtime/Engine', file);
   const overlay = path.join(host, 'Source/Runtime/Engine', file);
@@ -45,16 +86,16 @@ for (const file of engineFiles) {
   engineDependencies.push(source, overlay);
 }
 const engine = path.join(intermediate, 'Engine');
-const tasks = engineFiles.filter(f => f.endsWith('.cpp') && !/NaniteWeb(Hierarchy|Scene|Raster|Depth|GBuffer)\.cpp$/.test(f)).map((file, i) => {
+const tasks = engineFiles.filter(f => f.endsWith('.cpp') && !/NaniteWeb(Instance|Hierarchy|Scene|Raster|HZB|Depth|GBuffer)\.cpp$/.test(f)).map((file, i) => {
   const unity = fs.readdirSync(engine).filter(n => /^Module\.Engine\.\d+\.cpp$/.test(n))
     .filter(n => fs.readFileSync(path.join(engine, n), 'utf8').includes('Runtime/Engine/' + file));
   assert.equal(unity.length, 1);
-  return [path.join(engine, unity[0] + '.o.rsp'), null, file.endsWith('StaticMeshSceneProxy.cpp') ? 'EngineNaniteProxy' : i ? 'EngineNaniteStreaming' : 'EngineNanite'];
+  return [path.join(engine, unity[0] + '.o.rsp'), null, file.endsWith('InstancedStaticMesh.cpp') ? 'EngineNaniteInstances' : file.endsWith('StaticMeshSceneProxy.cpp') ? 'EngineNaniteProxy' : i ? 'EngineNaniteStreaming' : 'EngineNanite'];
 });
 for (let i = tasks.length - 1; i >= 0; --i) if (tasks.findIndex(t => t[0] === tasks[i][0]) !== i) tasks.splice(i, 1);
 // A subsequent full UBT build can include the new source in an Engine unity.
 // Compile that unity when present; avoid linking a second shader registration.
-for (const kind of ['Hierarchy', 'Scene', 'Raster', 'Depth', 'GBuffer']) {
+for (const kind of ['Instance', 'Hierarchy', 'Scene', 'Raster', 'HZB', 'Depth', 'GBuffer']) {
 const hierarchyUnity = fs.readdirSync(engine).filter(n => /^Module\.Engine\.\d+\.cpp$/.test(n))
   .filter(n => fs.readFileSync(path.join(engine, n), 'utf8').includes(`Private/Nanite/NaniteWeb${kind}.cpp`));
 assert(hierarchyUnity.length <= 1);
@@ -81,8 +122,11 @@ tasks.push(
   [path.join(intermediate, 'UEWebEngine/UEWebEngine.cpp.o.rsp'), null, 'EngineNaniteMain'],
   ...fs.readdirSync(path.join(intermediate, 'WebGPURHI')).filter(n => n.endsWith('.cpp.o.rsp'))
     .map(n => [path.join(intermediate, 'WebGPURHI', n), null, n.replace('.cpp.o.rsp', '')]),
-  ...['WebNaniteUploaderTest', 'WebNaniteResourcesTest', 'WebNaniteSceneTest', 'WebNaniteSceneCullTest', 'WebNaniteGBufferTest'].map(name => [path.join(intermediate, 'UEWebEngine/UEWebEngine.cpp.o.rsp'),
-    path.join(root, 'tests/ue-web-smoke/Source/UEWebEngine/Private', name + '.cpp'), name]),
+  ...['WebNaniteUploaderTest', 'WebNaniteResourcesTest', 'WebNaniteSceneTest', 'WebNaniteSceneCullTest', 'WebNaniteGBufferTest', 'WebNaniteHZBTest', 'WebNaniteInstancesTest', 'WebNaniteViewsTest'].map(name => {
+    const ownResponse=path.join(intermediate,'UEWebEngine',name+'.cpp.o.rsp');
+    return fs.existsSync(ownResponse)?[ownResponse,null,name]:[path.join(intermediate, 'UEWebEngine/UEWebEngine.cpp.o.rsp'),
+      path.join(root, 'tests/ue-web-smoke/Source/UEWebEngine/Private', name + '.cpp'), name];
+  }),
 );
 // RHI resource layouts are shared by all six translation units. Mixing an
 // updated DynamicRHI with cached transitions/viewport code corrupts field reads.
@@ -102,7 +146,7 @@ for (const [response, override] of tasks) if (!override && response.includes('We
   const lines = fs.readFileSync(response, 'utf8').split(/\r?\n/);
   visitRHI(lines[lines.indexOf('-c') + 1].replaceAll('"', ''));
 }
-const sources = [__filename, ...engineDependencies,
+const sources = [__filename, ...engineDependencies, ...lifetimeDependencies,
   path.join(root, 'tests/ue-web-smoke/Source/UEWebEngine/UEWebEngine.Build.cs'),
   ...['WebGPUDynamicRHI.cpp', 'WebGPUDynamicRHI.h'].map(n => path.join(root,
     'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private', n))].map(audit);
@@ -121,10 +165,10 @@ for (const [original, override, name] of tasks) {
   fs.writeFileSync(response, lines.join('\n'));
   const dependencies = name.startsWith('EngineNanite') ? [...engineDependencies,
     path.join(host, 'Source/Runtime/Engine/Private/Nanite/NaniteStreamingPageUploader.h'),
-    path.join(host, 'Source/Runtime/RenderCore/Public/WebShaderPlatform.h')] : !override ? [...rhiDependencies].sort() :
+    path.join(host, 'Source/Runtime/RenderCore/Public/WebShaderPlatform.h')] : !override&&!name.startsWith('WebNanite') ? [...rhiDependencies].sort() :
     [...engineDependencies, path.join(host, 'Source/Runtime/Engine/Private/Nanite/NaniteStreamingPageUploader.h'),
       path.join(root, 'tests/ue-web-smoke/Source/UEWebEngine/Private/WebNaniteHierarchyTest.h')];
-  const inputs = [original, response, input, ...dependencies].map(audit);
+  const inputs = [original, response, input, ...dependencies, ...lifetimeDependencies].map(audit);
   const checkpoint = path.join(output, name + '.verified.json');
   const cached = fs.existsSync(checkpoint) ? JSON.parse(fs.readFileSync(checkpoint, 'utf8')) :
     previous?.compiled.find(c => c.object.file === path.join(output, name + '.o'));

@@ -1,0 +1,456 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-local-occlusion-20261110.json",
+    "bytes": 19915367,
+    "sha256": "d3a3f009a9dc12da9f97f9338f4403f3b661fc5e1d742812d6b9aa40a53b2973",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-10T03:03:44.725Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-local-occlusion-evidence.cjs",
+      "sha256": "7324dc686f3c7029b63962c1d5c7cbfaeb08720a31a9eccce54c2d0b86ce78a8"
+    },
+    "profile": "desktop-accepted-20261107",
+    "verifier": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-nanite-scene-hzb.cjs",
+      "sha256": "87ac62a9d9ce384c02c299cf0797a28c237881cc75837f0bc6b44b152a53d116"
+    },
+    "packages": {
+      "nanite-browser": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\package.json",
+        "sha256": "d8643fc4065067c1b1687dc44d19ff042ba27086dddd6a249fc2cc60167964f7"
+      },
+      "nanite-default-scene": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-default-scene\\package.json",
+        "sha256": "11c6ad30287c0c80f160f3a1fdd9bec941295469d335fab94a63d6203571d2ec"
+      },
+      "nanite-full-scene": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-full-scene\\package.json",
+        "sha256": "0592eb58da37eecb44975c5ad0323dd1d059c5b4a9ce1d95d1487ca374be24d9"
+      }
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "359e90efdf8e6257a9ac40d7d7075ec33f6b27e473ca439f0f5acd660fe390c9"
+    },
+    "images": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-occlusion-20261110-packed-4.png",
+        "sha256": "a99d8a232a14705849bc5113d5af96702a9877a72525ba5d9de50b2f9f6c4621"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-occlusion-20261110-packed-5.png",
+        "sha256": "c97ded8cd5bb463a9b266304364b2d17b6d99753ab81ef8f7a5cbd0883982ff1"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-occlusion-20261110-packed-6.png",
+        "sha256": "5c82be9d0977b0f84439c5431884f04c95aafb780e469768dc7e68e801d602a0"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-occlusion-20261110-packed-7.png",
+        "sha256": "7ec93dd42e4097055c78f0c375cfed23b3819d02df279dac42ab71836e55944b"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-occlusion-20261110-packed-8.png",
+        "sha256": "1fb90e17b7024166ead12c5cf99fcdb576f6aed20fecdc52b57e9d06ab3fac91"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-occlusion-20261110-packed-9.png",
+        "sha256": "e40623e314de4e2c3990d37e6b946e56eb632a50f5366bab457446a2665b87e8"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-occlusion-20261110-scalar-4.png",
+        "sha256": "53feb54e8b924a1105e259ede0e5ac1f91b6a0a9736b7e84011b2671c9791c9c"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-occlusion-20261110-scalar-5.png",
+        "sha256": "18131de6a7a2441c8817b909dc6a0009a282045f34a780fa7cad3a0cb53a3b03"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-occlusion-20261110-scalar-6.png",
+        "sha256": "f6b93a1321264e0a9ab54b272ae66517ef6ffe618fa679951b95974631aeb40a"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-occlusion-20261110-scalar-7.png",
+        "sha256": "60f3def98a1b966919d4dd805da58cbc2c1b370bc729be4dcd36ad945d2ee70e"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-occlusion-20261110-scalar-8.png",
+        "sha256": "e482baed35b3ae36910c8db1b5f37098a7688af74655c88358c77eebed0bd43e"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-occlusion-20261110-scalar-9.png",
+        "sha256": "0ca847c325a306c38b05a385873227feccb8cb5cee699f60d1f255647b811e05"
+      }
+    ],
+    "historicalEvidence": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-runtime-profile-20261110.json",
+      "sha256": "d2e86757e1945a464797ffb32786e016387a5d8889c8c310e655571e61b5c50e"
+    },
+    "comparisons": [
+      {
+        "scalar": false,
+        "step": 5,
+        "entries": 395,
+        "comparison": {
+          "compared": 13624,
+          "before": 0,
+          "after": 395,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0.003921598196029663
+        },
+        "before": {
+          "frames": 120,
+          "milliseconds": 6208.685000002384,
+          "fps": 19.3277642528094,
+          "runtime": {
+            "heapBytes": 1521156096,
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "renderThread": true,
+            "rhiThread": true
+          }
+        },
+        "after": {
+          "frames": 122,
+          "milliseconds": 4370.995000004768,
+          "fps": 27.911265055180092,
+          "runtime": {
+            "heapBytes": 1521156096,
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "renderThread": true,
+            "rhiThread": true
+          }
+        }
+      },
+      {
+        "scalar": false,
+        "step": 7,
+        "entries": 326,
+        "comparison": {
+          "compared": 14377,
+          "before": 0,
+          "after": 326,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0.003921598196029663
+        },
+        "before": {
+          "frames": 120,
+          "milliseconds": 5358.789999961853,
+          "fps": 22.393114863776006,
+          "runtime": {
+            "heapBytes": 1521156096,
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "renderThread": true,
+            "rhiThread": true
+          }
+        },
+        "after": {
+          "frames": 122,
+          "milliseconds": 3880.7699999809265,
+          "fps": 31.437060171203036,
+          "runtime": {
+            "heapBytes": 1521156096,
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "renderThread": true,
+            "rhiThread": true
+          }
+        }
+      },
+      {
+        "scalar": false,
+        "step": 9,
+        "entries": 377,
+        "comparison": {
+          "compared": 13918,
+          "before": 0,
+          "after": 377,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0.003921598196029663
+        },
+        "before": {
+          "frames": 121,
+          "milliseconds": 6110.925000011921,
+          "fps": 19.800603018326026,
+          "runtime": {
+            "heapBytes": 1521156096,
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "renderThread": true,
+            "rhiThread": true
+          }
+        },
+        "after": {
+          "frames": 122,
+          "milliseconds": 4124.790000021458,
+          "fps": 29.577263327191286,
+          "runtime": {
+            "heapBytes": 1521156096,
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "renderThread": true,
+            "rhiThread": true
+          }
+        }
+      },
+      {
+        "scalar": true,
+        "step": 5,
+        "entries": 395,
+        "comparison": {
+          "compared": 13624,
+          "before": 0,
+          "after": 395,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0
+        },
+        "before": {
+          "frames": 120,
+          "milliseconds": 8411.200000047684,
+          "fps": 14.266692029593841,
+          "runtime": {
+            "heapBytes": 1521156096,
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "renderThread": true,
+            "rhiThread": true
+          }
+        },
+        "after": {
+          "frames": 120,
+          "milliseconds": 6662.09500002861,
+          "fps": 18.012351970286325,
+          "runtime": {
+            "heapBytes": 1521156096,
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "renderThread": true,
+            "rhiThread": true
+          }
+        }
+      },
+      {
+        "scalar": true,
+        "step": 7,
+        "entries": 326,
+        "comparison": {
+          "compared": 14377,
+          "before": 0,
+          "after": 326,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0.003921598196029663
+        },
+        "before": {
+          "frames": 121,
+          "milliseconds": 7292.435000002384,
+          "fps": 16.592537334917683,
+          "runtime": {
+            "heapBytes": 1521156096,
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "renderThread": true,
+            "rhiThread": true
+          }
+        },
+        "after": {
+          "frames": 120,
+          "milliseconds": 5968.485000014305,
+          "fps": 20.105604688578826,
+          "runtime": {
+            "heapBytes": 1521156096,
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "renderThread": true,
+            "rhiThread": true
+          }
+        }
+      },
+      {
+        "scalar": true,
+        "step": 9,
+        "entries": 377,
+        "comparison": {
+          "compared": 13918,
+          "before": 0,
+          "after": 377,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0.003921598196029663
+        },
+        "before": {
+          "frames": 121,
+          "milliseconds": 7882.299999952316,
+          "fps": 15.35084937146924,
+          "runtime": {
+            "heapBytes": 1521156096,
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "renderThread": true,
+            "rhiThread": true
+          }
+        },
+        "after": {
+          "frames": 121,
+          "milliseconds": 6444.455000042915,
+          "fps": 18.775831315323675,
+          "runtime": {
+            "heapBytes": 1521156096,
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "renderThread": true,
+            "rhiThread": true
+          }
+        }
+      }
+    ],
+    "kernelCases": [
+      {
+        "local": false,
+        "cases": 22
+      },
+      {
+        "local": true,
+        "cases": 22
+      }
+    ],
+    "runs": [
+      {
+        "scalar": false,
+        "frames": 2716,
+        "steps": 9
+      },
+      {
+        "scalar": true,
+        "frames": 2529,
+        "steps": 9
+      }
+    ],
+    "regressions": [
+      {
+        "suite": "scene-hzb-local",
+        "mode": "packed",
+        "frames": 2434,
+        "steps": 9
+      },
+      {
+        "suite": "scene-hzb-legacy",
+        "mode": "packed",
+        "frames": 2191,
+        "steps": 9
+      },
+      {
+        "suite": "automatic",
+        "mode": "packed",
+        "frames": 4770,
+        "steps": 8
+      },
+      {
+        "suite": "programmable",
+        "mode": "packed",
+        "frames": 22150,
+        "steps": 52
+      },
+      {
+        "suite": "streaming-budget",
+        "mode": "packed",
+        "frames": 12684,
+        "steps": 45
+      },
+      {
+        "suite": "scene-hzb-local",
+        "mode": "scalar",
+        "frames": 2272,
+        "steps": 9
+      },
+      {
+        "suite": "scene-hzb-legacy",
+        "mode": "scalar",
+        "frames": 2294,
+        "steps": 9
+      },
+      {
+        "suite": "automatic",
+        "mode": "scalar",
+        "frames": 4682,
+        "steps": 8
+      },
+      {
+        "suite": "programmable",
+        "mode": "scalar",
+        "frames": 21975,
+        "steps": 52
+      },
+      {
+        "suite": "streaming-budget",
+        "mode": "scalar",
+        "frames": 12756,
+        "steps": 45
+      }
+    ],
+    "cpu": {
+      "file": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-local-occlusion.json",
+        "sha256": "fe9f7f2460cd16595624587989e2aff029d691e26990ccff2c10b0a222c08d66"
+      },
+      "samples": [
+        {
+          "baseline": {
+            "fps": 21.505159665257047,
+            "durationMs": 5022.050600000002
+          },
+          "callsPerFrame": {
+            "createBuffer": 6,
+            "writeBuffer": 375.1015625,
+            "submit": 11.7109375,
+            "createBindGroup": 9,
+            "draw": 50,
+            "drawIndexed": 895.125
+          },
+          "rhiMsPerFrame": 26.230260729789734
+        },
+        {
+          "baseline": {
+            "fps": 29.451416426073795,
+            "durationMs": 5025.225200000001
+          },
+          "callsPerFrame": {
+            "createBuffer": 6,
+            "writeBuffer": 378,
+            "submit": 11.703225806451613,
+            "createBindGroup": 10.858064516129032,
+            "draw": 65,
+            "drawIndexed": 788.7354838709678
+          },
+          "rhiMsPerFrame": 22.758108569729714
+        }
+      ]
+    },
+    "payloadEncoding": "gzip-base64-json",
+    "payload": {
+      "$omitted": true,
+      "reason": "Full diagnostic data is retained in the original report",
+      "type": "string",
+      "bytes": 19902580,
+      "sha256": "4b732669236963f25ff51b1d46bc5907c22a7912fbc94da74be8f4037d2996d1"
+    },
+    "boundary": "HZB lists up to 16384 clusters initialize and cull in one workgroup; larger lists retain separate clears and parallel dispatch. Kernel guards, actual two-pass occlusion recovery, paired full-scene GBuffer/depth, default scene, masked/PDO and five page budgets are verified for both device atomic paths. Full performance, native full-scene acceptance and remaining compatibility requirements stay open."
+  }
+}

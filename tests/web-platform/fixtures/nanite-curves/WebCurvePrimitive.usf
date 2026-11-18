@@ -1,0 +1,21 @@
+#include "/WebCurveProbe/WebCurveFeatures.ush"
+#include "/Engine/Private/Common.ush"
+#include "/Engine/Private/Nanite/NaniteDataDecode.ush"
+#include "/WebCurveProbe/engine-draft/Shaders/Private/Nanite/WebNaniteCurves.ush"
+StructuredBuffer<uint4> InstallInfo;
+RWStructuredBuffer<uint4> PrimitiveResults;
+uint ClusterCount;
+[numthreads(64,1,1)]
+void MainCS(uint3 Group:SV_GroupID,uint Lane:SV_GroupIndex)
+{
+ const uint I=Group.x;if(I>=ClusterCount)return;
+ const uint Key=InstallInfo[I].x;
+ FCluster C=GetCluster(Key>>NANITE_MAX_CLUSTERS_PER_PAGE_BITS,Key&NANITE_MAX_CLUSTERS_PER_PAGE_MASK);
+ for(uint V=Lane;V<259u;V+=64u){
+  const uint Primitive=V==258u?0xffffffffu:V;
+  const bool Valid=WebNaniteValidPrimitive(C,Primitive);
+  const uint ID=Valid?PackVisPixelX(I,Primitive):0u;
+  PrimitiveResults[I*259u+V]=uint4(Valid,Valid?WebNanitePrimitiveMaterial(C,Primitive):0xffffffffu,
+   ID,WebNaniteRasterTriangleCount(C));
+ }
+}

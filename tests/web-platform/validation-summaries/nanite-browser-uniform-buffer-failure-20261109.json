@@ -1,0 +1,53 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-browser-uniform-buffer-failure-20261109.json",
+    "bytes": 3867,
+    "sha256": "36926137ec88f495fc963222fb1ac58ab01bfb83bcaff687b0e15a6c295b92ca",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "date": "2026-11-09T03:29:25.661Z",
+    "pass": false,
+    "stage": "scene cull/raster before GBuffer activation",
+    "completedSceneCullSteps": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "errors": [
+      "Assertion failed: (OldPacked & DeletingBit) == 0 [File:G:/UE_HTML/ue_html/.tools/ue58-web-build-host/Engine/Source/Runtime/RHI/Public\\RHIResources.h] [Line: 171] \n\n",
+      {
+        "$omitted": true,
+        "reason": "Large text",
+        "type": "string",
+        "bytes": 2351,
+        "sha256": "7653ec65d95f82c71cb2afe58258b52483e4ca666acf61ebd2774f573eee32b1"
+      }
+    ],
+    "failure": "worker.evaluate: Target page, context or browser has been closed\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-web-nanite-uploader.cjs:322:40",
+    "runtime": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\UEWebEngineThreads.js",
+        "sha256": "993c76461336ad063ee1b6ac94b70897c9c26879e1bdd2b0310b277e6079d6cf"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\UEWebEngineThreads.wasm",
+        "sha256": "649b47e8d6869ea8a1fa73ed57206ddd355b6ff2008a368b2b876cdb9b7f277d"
+      }
+    ],
+    "rawReport": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\failure-uniform-buffer-20261109-113044.json",
+      "sha256": "4921d474db47c13241aab3d14113bebf8daefbc431771446385e3c51516038ca"
+    },
+    "status": "The unchanged-build rerun passed all 26 GBuffer states, resource/depth regressions, cleanup and default-disabled checks. Root cause of this earlier assertion remains unconfirmed; the failed run is retained separately and not counted as passing."
+  }
+}

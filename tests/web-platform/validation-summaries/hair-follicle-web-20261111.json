@@ -1,0 +1,647 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/hair-follicle-web-20261111.json",
+    "bytes": 27825,
+    "sha256": "8b27463e7029147af0d9dd79e27e6c1d1b7d2dbe3eead5c07211e1a979dafd8b",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-11T01:17:05.647Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-hair-follicle-web-evidence.cjs",
+      "sha256": "7361157c2281f212b930374af032a4b8a2ffd3f5ace569165495a0bf46198343"
+    },
+    "verified": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\verified.json",
+      "sha256": "03fdd1033fd10885d5b94da0164cab03713a2760859765ed381da31f4073f158"
+    },
+    "report": {
+      "pass": true,
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-hair-follicle-web.cjs",
+        "sha256": "1c9ac99f9fba7e557ee17492a8c42ecd414a6b165d9fd9243e7c5b795f1f443e"
+      },
+      "shader": {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\HairStrands\\HairStrandsFollicleMask.usf",
+        "sha256": "098c9b71707129faccb9b632f3a06f748269486666a2abd71cad28b5e9db812e"
+      },
+      "originalInput": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-follicle-infinity\\conversion\\input.spv",
+        "sha256": "84dbc762c05007d116b2e011a1ee8e922761f7e8e9b573a1a40cb31328696413"
+      },
+      "originalFailure": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\old-tint.log",
+        "sha256": "abb8a6a0426be6b4f71d471c08fca1f13a7b12269511931e11d95739f3b082ba"
+      },
+      "commonDeclarations": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-follicle-infinity\\conversion\\preprocessed.hlsl",
+        "sha256": "59aa67d149704b9bba07e0e4383f7493b3bd032be57c28844086ed75dbac28ca"
+      },
+      "variants": [
+        {
+          "uv": 0,
+          "stages": [
+            {
+              "stage": "vertex",
+              "files": [
+                {
+                  "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-MainVS.hlsl",
+                  "sha256": "1698021420f150dbe6287946e0994c0b3943040f6b4eab9c30d27f1a0d524dca"
+                },
+                {
+                  "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-MainVS.spv",
+                  "sha256": "9717246b30eb489b097d322b7c978f99b4e9e0d7c9dd6dc5798b65cd1e249ad4"
+                },
+                {
+                  "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-MainVS.wgsl",
+                  "sha256": "fd2683ff689dd8d635951dfb481d334ae7b3049fe7cd13932928aac69f879461"
+                }
+              ]
+            },
+            {
+              "stage": "fragment",
+              "files": [
+                {
+                  "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-MainPS.hlsl",
+                  "sha256": "1698021420f150dbe6287946e0994c0b3943040f6b4eab9c30d27f1a0d524dca"
+                },
+                {
+                  "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-MainPS.spv",
+                  "sha256": "9d1b16185f9d20dc2ea19129f91ce12a92320197b18ffe5982b29ab6bbcfbad6"
+                },
+                {
+                  "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-MainPS.wgsl",
+                  "sha256": "c9ac2c59612d0cbc89ffded3281f7cef900856231059298c645ca2973a318a49"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "uv": 1,
+          "stages": [
+            {
+              "stage": "vertex",
+              "files": [
+                {
+                  "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv1-MainVS.hlsl",
+                  "sha256": "4108d1cfde2d91b7b8aefeac5903371ccc980396e60cb64dee11f90be8819a35"
+                },
+                {
+                  "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv1-MainVS.spv",
+                  "sha256": "6d4522bf8566f4f41a1d32960a239cd86457cd4f3b18eb0cbc32ca46c45cf6ce"
+                },
+                {
+                  "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv1-MainVS.wgsl",
+                  "sha256": "c38a459e7048f8ba298e97fcb1ef130d38b762c3b3567700f34de4e1f86c972f"
+                }
+              ]
+            },
+            {
+              "stage": "fragment",
+              "files": [
+                {
+                  "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv1-MainPS.hlsl",
+                  "sha256": "4108d1cfde2d91b7b8aefeac5903371ccc980396e60cb64dee11f90be8819a35"
+                },
+                {
+                  "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv1-MainPS.spv",
+                  "sha256": "9d1b16185f9d20dc2ea19129f91ce12a92320197b18ffe5982b29ab6bbcfbad6"
+                },
+                {
+                  "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv1-MainPS.wgsl",
+                  "sha256": "c9ac2c59612d0cbc89ffded3281f7cef900856231059298c645ca2973a318a49"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "results": [
+        {
+          "uv": 0,
+          "channel": 0,
+          "reject": false,
+          "coverage": 28,
+          "maxError": 2.5198583486485404e-7,
+          "readback": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-channel0-valid.json",
+            "sha256": "0fbd1fd59ea5f762ca652bc81ac126a3c5bd2b5c9f945ef4c64d298317cc1d08"
+          }
+        },
+        {
+          "uv": 0,
+          "channel": 0,
+          "reject": true,
+          "coverage": 0,
+          "maxError": 0,
+          "readback": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-channel0-rejected.json",
+            "sha256": "1086db361da936b02475aa9e097a25018a96c56175910e8e8eb4bc513920d847"
+          }
+        },
+        {
+          "uv": 0,
+          "channel": 1,
+          "reject": false,
+          "coverage": 28,
+          "maxError": 2.5198583486485404e-7,
+          "readback": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-channel1-valid.json",
+            "sha256": "4be81d20c47e4163c463bfc83bfb0931d2b6475cf6f94caff76158ded055e41b"
+          }
+        },
+        {
+          "uv": 0,
+          "channel": 1,
+          "reject": true,
+          "coverage": 0,
+          "maxError": 0,
+          "readback": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-channel1-rejected.json",
+            "sha256": "1086db361da936b02475aa9e097a25018a96c56175910e8e8eb4bc513920d847"
+          }
+        },
+        {
+          "uv": 0,
+          "channel": 2,
+          "reject": false,
+          "coverage": 28,
+          "maxError": 2.5198583486485404e-7,
+          "readback": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-channel2-valid.json",
+            "sha256": "1a9f5dc0ac42adf0aebec4e5db376497d9a368aadfa0fca04b7a2f84a5cbe967"
+          }
+        },
+        {
+          "uv": 0,
+          "channel": 2,
+          "reject": true,
+          "coverage": 0,
+          "maxError": 0,
+          "readback": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-channel2-rejected.json",
+            "sha256": "1086db361da936b02475aa9e097a25018a96c56175910e8e8eb4bc513920d847"
+          }
+        },
+        {
+          "uv": 0,
+          "channel": 3,
+          "reject": false,
+          "coverage": 28,
+          "maxError": 2.5198583486485404e-7,
+          "readback": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-channel3-valid.json",
+            "sha256": "67747f644bf1408dac5ca1f010bb87cd36c76c75799ae9ca3a4c7fab11806a87"
+          }
+        },
+        {
+          "uv": 0,
+          "channel": 3,
+          "reject": true,
+          "coverage": 0,
+          "maxError": 0,
+          "readback": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-channel3-rejected.json",
+            "sha256": "1086db361da936b02475aa9e097a25018a96c56175910e8e8eb4bc513920d847"
+          }
+        },
+        {
+          "uv": 1,
+          "channel": 0,
+          "reject": false,
+          "coverage": 336,
+          "maxError": 9.194385599542443e-7,
+          "readback": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv1-channel0-valid.json",
+            "sha256": "00c8a9a1931683f599f9d08def47170adc62a115cecdbfecbc0496685400c5bb"
+          }
+        },
+        {
+          "uv": 1,
+          "channel": 1,
+          "reject": false,
+          "coverage": 336,
+          "maxError": 9.194385599542443e-7,
+          "readback": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv1-channel1-valid.json",
+            "sha256": "58b39d7f5bd0a649e4447b4581059ff080aba62777e9eb599221a9bbe0619b7f"
+          }
+        },
+        {
+          "uv": 1,
+          "channel": 2,
+          "reject": false,
+          "coverage": 336,
+          "maxError": 9.194385599542443e-7,
+          "readback": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv1-channel2-valid.json",
+            "sha256": "1364db38d834c39cdb714b9ff7c819ac670c10275078d6d429e2a91d9e94bcf8"
+          }
+        },
+        {
+          "uv": 1,
+          "channel": 3,
+          "reject": false,
+          "coverage": 336,
+          "maxError": 9.194385599542443e-7,
+          "readback": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv1-channel3-valid.json",
+            "sha256": "c01b1c5c44762834a84866f75cdd214b144f913199334e157a69aebb2f0dc6b9"
+          }
+        }
+      ],
+      "boundary": "Actual follicle VS/PS bodies and retained production common declarations, explicit test resource layout. Both UV permutations and all four channels checked against analytic radial masks. Full UE global-shader Cook remains a separate requirement."
+    },
+    "files": [
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\old-tint.log",
+          "sha256": "abb8a6a0426be6b4f71d471c08fca1f13a7b12269511931e11d95739f3b082ba"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\old-tint.log.gz",
+          "sha256": "55f45e8c34b8a00c3050d7f7d3607489a92624f6f6e4c98f043a838105cc191c"
+        },
+        "encoding": "gzip-file",
+        "bytes": 540
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-channel0-rejected.json",
+          "sha256": "1086db361da936b02475aa9e097a25018a96c56175910e8e8eb4bc513920d847"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv0-channel0-rejected.json.gz",
+          "sha256": "607a1b8863dcc146804aca4ff6aa337a4a893fbcadde859dcb786f2070adcd69"
+        },
+        "encoding": "gzip-file",
+        "bytes": 32793
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-channel0-valid.json",
+          "sha256": "0fbd1fd59ea5f762ca652bc81ac126a3c5bd2b5c9f945ef4c64d298317cc1d08"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv0-channel0-valid.json.gz",
+          "sha256": "ef556f5e7f4e68a87253d8b0435d734752b4427d7cb45e6debfdaf49818090e5"
+        },
+        "encoding": "gzip-file",
+        "bytes": 33282
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-channel1-rejected.json",
+          "sha256": "1086db361da936b02475aa9e097a25018a96c56175910e8e8eb4bc513920d847"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv0-channel1-rejected.json.gz",
+          "sha256": "607a1b8863dcc146804aca4ff6aa337a4a893fbcadde859dcb786f2070adcd69"
+        },
+        "encoding": "gzip-file",
+        "bytes": 32793
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-channel1-valid.json",
+          "sha256": "4be81d20c47e4163c463bfc83bfb0931d2b6475cf6f94caff76158ded055e41b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv0-channel1-valid.json.gz",
+          "sha256": "e64393bdfe2f80aa811d10f8a07a289ab5f5bee55d2795949c6ef523e62e4b70"
+        },
+        "encoding": "gzip-file",
+        "bytes": 33282
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-channel2-rejected.json",
+          "sha256": "1086db361da936b02475aa9e097a25018a96c56175910e8e8eb4bc513920d847"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv0-channel2-rejected.json.gz",
+          "sha256": "607a1b8863dcc146804aca4ff6aa337a4a893fbcadde859dcb786f2070adcd69"
+        },
+        "encoding": "gzip-file",
+        "bytes": 32793
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-channel2-valid.json",
+          "sha256": "1a9f5dc0ac42adf0aebec4e5db376497d9a368aadfa0fca04b7a2f84a5cbe967"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv0-channel2-valid.json.gz",
+          "sha256": "00a6be931bb9e7d6f6fd79b983e50ecdd1df1c905d9af174033baf5810536817"
+        },
+        "encoding": "gzip-file",
+        "bytes": 33282
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-channel3-rejected.json",
+          "sha256": "1086db361da936b02475aa9e097a25018a96c56175910e8e8eb4bc513920d847"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv0-channel3-rejected.json.gz",
+          "sha256": "607a1b8863dcc146804aca4ff6aa337a4a893fbcadde859dcb786f2070adcd69"
+        },
+        "encoding": "gzip-file",
+        "bytes": 32793
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-channel3-valid.json",
+          "sha256": "67747f644bf1408dac5ca1f010bb87cd36c76c75799ae9ca3a4c7fab11806a87"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv0-channel3-valid.json.gz",
+          "sha256": "ed461e55272119b48203c015f47e89d8dbc24e2fae3f8eddbc04db56668a2616"
+        },
+        "encoding": "gzip-file",
+        "bytes": 33282
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-MainPS.hlsl",
+          "sha256": "1698021420f150dbe6287946e0994c0b3943040f6b4eab9c30d27f1a0d524dca"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv0-MainPS.hlsl.gz",
+          "sha256": "75ffc40aa6535366bb8279adfc8ef9618342c18ba5f25e76309964f597d453d6"
+        },
+        "encoding": "gzip-file",
+        "bytes": 76899
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-MainPS.spv",
+          "sha256": "9d1b16185f9d20dc2ea19129f91ce12a92320197b18ffe5982b29ab6bbcfbad6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv0-MainPS.spv.gz",
+          "sha256": "a6a5b249dd58c896c471d2cf15eab071c19c9548b8c3333a7f74a52411da6b54"
+        },
+        "encoding": "gzip-file",
+        "bytes": 2016
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-MainPS.wgsl",
+          "sha256": "c9ac2c59612d0cbc89ffded3281f7cef900856231059298c645ca2973a318a49"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv0-MainPS.wgsl.gz",
+          "sha256": "b0f244cae8dca8b74afc139dffdd0a3f665b229b63bcab65a3124aa46dc499f5"
+        },
+        "encoding": "gzip-file",
+        "bytes": 1288
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-MainVS.hlsl",
+          "sha256": "1698021420f150dbe6287946e0994c0b3943040f6b4eab9c30d27f1a0d524dca"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv0-MainVS.hlsl.gz",
+          "sha256": "75ffc40aa6535366bb8279adfc8ef9618342c18ba5f25e76309964f597d453d6"
+        },
+        "encoding": "gzip-file",
+        "bytes": 76899
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-MainVS.spv",
+          "sha256": "9717246b30eb489b097d322b7c978f99b4e9e0d7c9dd6dc5798b65cd1e249ad4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv0-MainVS.spv.gz",
+          "sha256": "362860a89eaaed43e85bcff41fbf98b8522500b2b197179c2e855e48cc04bdd4"
+        },
+        "encoding": "gzip-file",
+        "bytes": 2764
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv0-MainVS.wgsl",
+          "sha256": "fd2683ff689dd8d635951dfb481d334ae7b3049fe7cd13932928aac69f879461"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv0-MainVS.wgsl.gz",
+          "sha256": "bb861f7657b19b527f93b27e8b53eb3e4bf2366324c5e04841229dace6d727bf"
+        },
+        "encoding": "gzip-file",
+        "bytes": 2149
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv1-channel0-valid.json",
+          "sha256": "00c8a9a1931683f599f9d08def47170adc62a115cecdbfecbc0496685400c5bb"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv1-channel0-valid.json.gz",
+          "sha256": "97a345114315c19cc61a5fbdd6988ff6f45c5b10cddd0423cf489db6efc9584f"
+        },
+        "encoding": "gzip-file",
+        "bytes": 38673
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv1-channel1-valid.json",
+          "sha256": "58b39d7f5bd0a649e4447b4581059ff080aba62777e9eb599221a9bbe0619b7f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv1-channel1-valid.json.gz",
+          "sha256": "a57a0d0611fd2c0f935c2c3cd333daaac4fd57d94f8898a12a911142b12eec52"
+        },
+        "encoding": "gzip-file",
+        "bytes": 38673
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv1-channel2-valid.json",
+          "sha256": "1364db38d834c39cdb714b9ff7c819ac670c10275078d6d429e2a91d9e94bcf8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv1-channel2-valid.json.gz",
+          "sha256": "c86d6cbce412b5d64dd11a71068302c661b7782068f5b8bc95fe57571d18a206"
+        },
+        "encoding": "gzip-file",
+        "bytes": 38673
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv1-channel3-valid.json",
+          "sha256": "c01b1c5c44762834a84866f75cdd214b144f913199334e157a69aebb2f0dc6b9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv1-channel3-valid.json.gz",
+          "sha256": "567506ce5b7aa3fa9fd6014e447974d27204715c48d7c3f0291d7d7ca52031d1"
+        },
+        "encoding": "gzip-file",
+        "bytes": 38673
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv1-MainPS.hlsl",
+          "sha256": "4108d1cfde2d91b7b8aefeac5903371ccc980396e60cb64dee11f90be8819a35"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv1-MainPS.hlsl.gz",
+          "sha256": "8e3ca8671e2509489d93cd223d6f5e111d84affe02a2da089c10fc157c824b39"
+        },
+        "encoding": "gzip-file",
+        "bytes": 76899
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv1-MainPS.spv",
+          "sha256": "9d1b16185f9d20dc2ea19129f91ce12a92320197b18ffe5982b29ab6bbcfbad6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv1-MainPS.spv.gz",
+          "sha256": "a6a5b249dd58c896c471d2cf15eab071c19c9548b8c3333a7f74a52411da6b54"
+        },
+        "encoding": "gzip-file",
+        "bytes": 2016
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv1-MainPS.wgsl",
+          "sha256": "c9ac2c59612d0cbc89ffded3281f7cef900856231059298c645ca2973a318a49"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv1-MainPS.wgsl.gz",
+          "sha256": "b0f244cae8dca8b74afc139dffdd0a3f665b229b63bcab65a3124aa46dc499f5"
+        },
+        "encoding": "gzip-file",
+        "bytes": 1288
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv1-MainVS.hlsl",
+          "sha256": "4108d1cfde2d91b7b8aefeac5903371ccc980396e60cb64dee11f90be8819a35"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv1-MainVS.hlsl.gz",
+          "sha256": "8e3ca8671e2509489d93cd223d6f5e111d84affe02a2da089c10fc157c824b39"
+        },
+        "encoding": "gzip-file",
+        "bytes": 76899
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv1-MainVS.spv",
+          "sha256": "6d4522bf8566f4f41a1d32960a239cd86457cd4f3b18eb0cbc32ca46c45cf6ce"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv1-MainVS.spv.gz",
+          "sha256": "cb7b190edae5dd648a4effece14b5e601ea3427be86d007b6fb47e09a86dd2bf"
+        },
+        "encoding": "gzip-file",
+        "bytes": 2304
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\uv1-MainVS.wgsl",
+          "sha256": "c38a459e7048f8ba298e97fcb1ef130d38b762c3b3567700f34de4e1f86c972f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\uv1-MainVS.wgsl.gz",
+          "sha256": "d3adc1c5396730895fd7c478ad18874ff51b2f69c3732df8eb78daf2d314fac1"
+        },
+        "encoding": "gzip-file",
+        "bytes": 1534
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\follicle\\verified.json",
+          "sha256": "03fdd1033fd10885d5b94da0164cab03713a2760859765ed381da31f4073f158"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\follicle\\verified.json.gz",
+          "sha256": "ef685ef976fa2547c62f3f033c858af3adfea35721324570d952e88ea2ee1a2f"
+        },
+        "encoding": "gzip-file",
+        "bytes": 9051
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-follicle-infinity\\conversion\\failure.json",
+          "sha256": "dd946183fa3c708565e7aa7dacf5f2a35668c4321a0bc5c8493c781dd9353c65"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\failure-follicle-infinity\\conversion\\failure.json.gz",
+          "sha256": "a5f7c547715ad7a1dc7e90be1826cc452228a9eb724257377c0c60092411378d"
+        },
+        "encoding": "gzip-file",
+        "bytes": 871
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-follicle-infinity\\conversion\\input.json",
+          "sha256": "f05ec260f619f309b5ca2f3ad139822d094352de916609e1a2c2dece4e069b8e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\failure-follicle-infinity\\conversion\\input.json.gz",
+          "sha256": "ee6b8bce416a65f453a1f617c85d91917f976fedeea6c618978c4241b8608778"
+        },
+        "encoding": "gzip-file",
+        "bytes": 3063
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-follicle-infinity\\conversion\\input.spv",
+          "sha256": "84dbc762c05007d116b2e011a1ee8e922761f7e8e9b573a1a40cb31328696413"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\failure-follicle-infinity\\conversion\\input.spv.gz",
+          "sha256": "6e9e2757d39c98371522f55388814ec96f061733e4995751ed6e36b7cf43204d"
+        },
+        "encoding": "gzip-file",
+        "bytes": 2780
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-follicle-infinity\\conversion\\preprocessed.hlsl",
+          "sha256": "59aa67d149704b9bba07e0e4383f7493b3bd032be57c28844086ed75dbac28ca"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\failure-follicle-infinity\\conversion\\preprocessed.hlsl.gz",
+          "sha256": "f75e4351155aa2f86c8bd6ef4aed1d82ad68692a0779ce74ad0655e3207904a0"
+        },
+        "encoding": "gzip-file",
+        "bytes": 75158
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-follicle-infinity\\HairStrandsFollicleMask.usf",
+          "sha256": "494f5d1470f278dd81c46e44c605c2a90b9b3a114ee0c93d28cba9027f2e469f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\failure-follicle-infinity\\HairStrandsFollicleMask.usf.gz",
+          "sha256": "d18fe8947f397581909900252b844e8a8b9fca578c60e1190afdf7d3d6a4741c"
+        },
+        "encoding": "gzip-file",
+        "bytes": 5814
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-follicle-infinity\\web-project-nanite-streaming-desktop-cook-20261111-083040.log",
+          "sha256": "836490ed4d72d9643d33b23abb41b29e25ed553986aec89b3b8cf126da7d904f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\hair-follicle-web-20261111\\failure-follicle-infinity\\web-project-nanite-streaming-desktop-cook-20261111-083040.log.gz",
+          "sha256": "dcf195946609f89d4bf79499348683fe27bd5e57081f69c5ed20ddaa741fffd1"
+        },
+        "encoding": "gzip-file",
+        "bytes": 253508
+      }
+    ],
+    "boundary": "Hair follicle shader regression only. The original production Tint crash is reproduced and both actual VS/PS permutations are validated on WebGPU. Full UE Cook and Nanite Groom scene acceptance remain separate requirements."
+  }
+}

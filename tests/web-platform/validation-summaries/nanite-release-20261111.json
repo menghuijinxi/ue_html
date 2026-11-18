@@ -1,0 +1,721 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-release-20261111.json",
+    "bytes": 28753,
+    "sha256": "3899480611517039dcceb5a0c87f84b5ee3d9764b65e3841f0641cf6a3a11dbe",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-11T11:20:13.872Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-nanite-release.cjs",
+      "sha256": "10432c6242800238784cd9e2390fb5aa73aea98877908b4dbf89f780c4f18a06"
+    },
+    "manifest": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\manifest.json",
+      "sha256": "d1728d67286e28389d209ac16586a9203bc0e9cab20774dae2c1b07ebbe3aa4b"
+    },
+    "scenes": [
+      {
+        "scene": "default",
+        "errors": [],
+        "launcher": "Url                                      Scene   Ready\r\n---                                      -----   -----\r\nhttp://127.0.0.1:8766/default/index.html default  True",
+        "initial": {
+          "frames": 1090,
+          "ready": {
+            "nullRHI": false,
+            "webGPUSceneEnabled": true,
+            "skinningSceneEnabled": false,
+            "mobileGPUSceneSetting": 1,
+            "skinningSceneSetting": 0,
+            "shaderPlatform": 47,
+            "featureLevel": 3,
+            "shaderCount": 3158,
+            "activeGPUSceneEnabled": true
+          },
+          "isolated": true,
+          "camera": {
+            "x": 899.9990234375,
+            "y": -1399.99951171875,
+            "z": 649.4998779296875,
+            "pitch": -15,
+            "yaw": 120
+          },
+          "settings": {
+            "antiAliasing": 2,
+            "generateDistanceFields": 0,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 256,
+            "screenPercentage": 100,
+            "staticLighting": 0,
+            "shadowCacheMiB": 256,
+            "dbuffer": 0,
+            "ssrQuality": 3,
+            "volumetricFog": 0,
+            "virtualTextures": 0,
+            "virtualTexturePathActive": false,
+            "virtualShadowPathActive": false
+          },
+          "runtime": {
+            "heapBytes": 681705472,
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "renderThread": true,
+            "rhiThread": true
+          },
+          "psoExpected": true,
+          "psoReady": true
+        },
+        "moved": {
+          "frames": 1152,
+          "ready": {
+            "nullRHI": false,
+            "webGPUSceneEnabled": true,
+            "skinningSceneEnabled": false,
+            "mobileGPUSceneSetting": 1,
+            "skinningSceneSetting": 0,
+            "shaderPlatform": 47,
+            "featureLevel": 3,
+            "shaderCount": 3158,
+            "activeGPUSceneEnabled": true
+          },
+          "isolated": true,
+          "camera": {
+            "x": 823.5928884119307,
+            "y": -1267.6602038445023,
+            "z": 608.5539535759186,
+            "pitch": -15,
+            "yaw": 120
+          },
+          "settings": {
+            "antiAliasing": 2,
+            "generateDistanceFields": 0,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 256,
+            "screenPercentage": 100,
+            "staticLighting": 0,
+            "shadowCacheMiB": 256,
+            "dbuffer": 0,
+            "ssrQuality": 3,
+            "volumetricFog": 0,
+            "virtualTextures": 0,
+            "virtualTexturePathActive": false,
+            "virtualShadowPathActive": false
+          },
+          "runtime": {
+            "heapBytes": 681705472,
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "renderThread": true,
+            "rhiThread": true
+          },
+          "psoExpected": true,
+          "psoReady": true
+        },
+        "movement": 158.2029032583315,
+        "resized": {
+          "frames": 1243,
+          "ready": {
+            "nullRHI": false,
+            "webGPUSceneEnabled": true,
+            "skinningSceneEnabled": false,
+            "mobileGPUSceneSetting": 1,
+            "skinningSceneSetting": 0,
+            "shaderPlatform": 47,
+            "featureLevel": 3,
+            "shaderCount": 3158,
+            "activeGPUSceneEnabled": true
+          },
+          "isolated": true,
+          "camera": {
+            "x": 804.2863853491863,
+            "y": -1234.2203596233492,
+            "z": 598.2076297672554,
+            "pitch": -15,
+            "yaw": 120
+          },
+          "settings": {
+            "antiAliasing": 2,
+            "generateDistanceFields": 0,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 256,
+            "screenPercentage": 100,
+            "staticLighting": 0,
+            "shadowCacheMiB": 256,
+            "dbuffer": 0,
+            "ssrQuality": 3,
+            "volumetricFog": 0,
+            "virtualTextures": 0,
+            "virtualTexturePathActive": false,
+            "virtualShadowPathActive": false
+          },
+          "runtime": {
+            "heapBytes": 681705472,
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "renderThread": true,
+            "rhiThread": true
+          },
+          "psoExpected": true,
+          "psoReady": true
+        }
+      },
+      {
+        "scene": "villa",
+        "errors": [],
+        "launcher": "Url                                    Scene Ready\r\n---                                    ----- -----\r\nhttp://127.0.0.1:8766/villa/index.html villa  True",
+        "initial": {
+          "frames": 181,
+          "ready": {
+            "nullRHI": false,
+            "webGPUSceneEnabled": true,
+            "skinningSceneEnabled": false,
+            "mobileGPUSceneSetting": 1,
+            "skinningSceneSetting": 1,
+            "shaderPlatform": 47,
+            "featureLevel": 3,
+            "shaderCount": 4526,
+            "activeGPUSceneEnabled": true
+          },
+          "isolated": true,
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1,
+            "virtualTextures": 1,
+            "virtualTexturePathActive": true,
+            "virtualShadowPathActive": false
+          },
+          "runtime": {
+            "heapBytes": 1521221632,
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "renderThread": true,
+            "rhiThread": true
+          },
+          "psoExpected": true,
+          "psoReady": true
+        },
+        "moved": {
+          "frames": 242,
+          "ready": {
+            "nullRHI": false,
+            "webGPUSceneEnabled": true,
+            "skinningSceneEnabled": false,
+            "mobileGPUSceneSetting": 1,
+            "skinningSceneSetting": 1,
+            "shaderPlatform": 47,
+            "featureLevel": 3,
+            "shaderCount": 4526,
+            "activeGPUSceneEnabled": true
+          },
+          "isolated": true,
+          "camera": {
+            "x": 410.7372563471177,
+            "y": -339.87999730227426,
+            "z": 156.64842252116796,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1,
+            "virtualTextures": 1,
+            "virtualTexturePathActive": true,
+            "virtualShadowPathActive": false
+          },
+          "runtime": {
+            "heapBytes": 1521221632,
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "renderThread": true,
+            "rhiThread": true
+          },
+          "psoExpected": true,
+          "psoReady": true
+        },
+        "movement": 138.1790412262108,
+        "resized": {
+          "frames": 332,
+          "ready": {
+            "nullRHI": false,
+            "webGPUSceneEnabled": true,
+            "skinningSceneEnabled": false,
+            "mobileGPUSceneSetting": 1,
+            "skinningSceneSetting": 1,
+            "shaderPlatform": 47,
+            "featureLevel": 3,
+            "shaderCount": 4526,
+            "activeGPUSceneEnabled": true
+          },
+          "isolated": true,
+          "camera": {
+            "x": 410.7372563471177,
+            "y": -339.87999730227426,
+            "z": 156.6484215970836,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1,
+            "virtualTextures": 1,
+            "virtualTexturePathActive": true,
+            "virtualShadowPathActive": false
+          },
+          "runtime": {
+            "heapBytes": 1521221632,
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "renderThread": true,
+            "rhiThread": true
+          },
+          "psoExpected": true,
+          "psoReady": true
+        }
+      }
+    ],
+    "artifacts": [
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-nanite-release.cjs",
+          "sha256": "10432c6242800238784cd9e2390fb5aa73aea98877908b4dbf89f780c4f18a06"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\0-verify-nanite-release.cjs.gz",
+          "sha256": "cf1b005bb9bd34db3b82e9540820c52282d7a312cbfe7f83bcffec7e4c368d7b"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\manifest.json",
+          "sha256": "d1728d67286e28389d209ac16586a9203bc0e9cab20774dae2c1b07ebbe3aa4b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\1-manifest.json.gz",
+          "sha256": "04b77d18fcf5af7517bb7cd6b0cae9ad771a28fea20c8ea7e1ea64ee69bd4bd8"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\package-nanite-release.cjs",
+          "sha256": "0f13518a5571f7ea061f888ed3e0970c43f82a7ceb0b7cd7720d7bec30ab379f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\2-package-nanite-release.cjs.gz",
+          "sha256": "84f5dbda083e38e8f2e36e509e2b323d673a6a1b319b084970a70484ca4e8585"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\nanite-release-launcher.ps1",
+          "sha256": "d0185d0a887ce205271525f824f438eff51453f4461b08111221962678f9203b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\3-nanite-release-launcher.ps1.gz",
+          "sha256": "05d1ec6f683320ceadc3491a1fa9beb80563ffca99a403a9706279ffd85f7632"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\start.ps1",
+          "sha256": "41c147ce7227eb479732dd4dc4745d4922bf70cc3119421cabe5b733f0039e4d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\4-start.ps1.gz",
+          "sha256": "3802790dff9ab25453f794a267ce8b732855f36dae3924aa3cf37f57152353ca"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\serve.cjs",
+          "sha256": "b156a428092cfa67080da2be0551af60416f270bc4e4d9ce6d25c79ebefe24ee"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\5-serve.cjs.gz",
+          "sha256": "6e326e0b7f3aa6220a4b4b9370035b2ddf358c4e42ab14c73a52777c157627a4"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\index.html",
+          "sha256": "a5783a9660f34744f29ab9b3cfc9958990f96ee4cb088b9b1548eb3caea4b270"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\6-index.html.gz",
+          "sha256": "e1d85fbdfa9f231ee6fc568d2da71d225ec9d4185e58df5326a6fc19d7a49db7"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\测试说明.md",
+          "sha256": "ce5d866c6f5bfb79f94417d9f229cd0984d410db62090393671fca9d4a8d4a88"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\7-测试说明.md.gz",
+          "sha256": "c8440a8cc7727b94622be718729a1da834f38ab73476ca2ab5a264ab76ca71c0"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-release-20261111.json",
+          "sha256": "69e65eda507d1ee547d8b3925b963085c7ea3ebf194d5c7887f50bfbc771dee1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\8-nanite-release-20261111.json.gz",
+          "sha256": "f90280d07b8a91feebc5e121aa06eaa40da4bac8667e32cbff37321c03789bbc"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\chrome-testing.json",
+          "sha256": "1df5904c3bdec9635cec9a0f0123ef73aec33113c7ec82a41d5832ad20521d3c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\9-chrome-testing.json.gz",
+          "sha256": "07e9ddbee3c62c41b2de5a55bf72aae00139b90da692b49c2dbcafc51afd6dc3"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\nanite-core-lifecycle-20261111.json",
+          "sha256": "e63ab350ab04b83addc1319bb631173ce0914ec5eb6dc34beffbb1bc28d20c5e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\10-nanite-core-lifecycle-20261111.json.gz",
+          "sha256": "36a71ae57d67a45bf4bf78a915224901946a3f3b2ca08b45a58fa333aa2443e0"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\nanite-disocclusion-20261111.json",
+          "sha256": "3de6c9a2056c7ed41354242bbedfb5c79811f2a3e58fcbf8eed7756604a45e74"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\11-nanite-disocclusion-20261111.json.gz",
+          "sha256": "61843da11fb9c69688a950bf85183a09cd1c2c90cb360a82ee2ad0a257d50cf7"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\nanite-disocclusion-native-20261111.json",
+          "sha256": "d404f7c0c3072dc70a3e7b757b8e4958dd4fb71f42cfe996061adebb041453da"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\12-nanite-disocclusion-native-20261111.json.gz",
+          "sha256": "751e72cd88e1e76becb519ace13f266b9ac26c8fc655fe7f8d33b12634fbb563"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\probe-web-browser-lifecycle.cjs",
+          "sha256": "5c7e91341f99ab0513200948ac1ab2c5cab1ea6fccd176ae20d38a023874b277"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\13-probe-web-browser-lifecycle.cjs.gz",
+          "sha256": "d3e005ded3231d107ddf0b3807adf5c2d138ee962804bbc9600370069e7f2749"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\web-browser-lifecycle-chrome-nanite-final-default-results.json",
+          "sha256": "0971dbf457cee74772eccd16dc8e5e52337888d7e46df0828bf06952653e93b6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\14-web-browser-lifecycle-chrome-nanite-final-default-results.json.gz",
+          "sha256": "a5f60ef9a46d40aac3522ff30b8211f96c9607a6f2f9d1d70ce72bf157903717"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\web-browser-lifecycle-chrome-nanite-final-default.png",
+          "sha256": "4516562be79c66a72f5b074add9fca1e5410a3389ac987aab463fa024c15d7c0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\15-web-browser-lifecycle-chrome-nanite-final-default.png.gz",
+          "sha256": "13aac5b501bf50e6603c6285a8b92aa93f88201938724a4218ad3177a8b1430d"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\web-browser-lifecycle-chrome-nanite-final-villa-results.json",
+          "sha256": "662dc24c234c93ce8dcc17a4b7fb7a6f1a2bfbba688b222328665e627e859303"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\16-web-browser-lifecycle-chrome-nanite-final-villa-results.json.gz",
+          "sha256": "f6754984d55b8d80f2f9052d40f11d53556aae039716e47ab256e5d54d81dd39"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\web-browser-lifecycle-chrome-nanite-final-villa.png",
+          "sha256": "1fba89ba6eb05392910549142214ce65fc0d6f030f7ae9299cf3339325d83dfd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\17-web-browser-lifecycle-chrome-nanite-final-villa.png.gz",
+          "sha256": "d25c1d031142e44097aa7fa29bca0fd06afd368b489838356989d114d6815b67"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\web-browser-lifecycle-msedge-nanite-final-default-results.json",
+          "sha256": "17782ebaf5e808377c54717ac2d16f0879f6c3f8120df519e663cf91c802236c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\18-web-browser-lifecycle-msedge-nanite-final-default-results.json.gz",
+          "sha256": "411db10b7f8c3b506c15a8841bc36b11cd843a941fd003be32168ff38d3ab1cc"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\web-browser-lifecycle-msedge-nanite-final-default.png",
+          "sha256": "c441f5f8755b5405cdae94936ae73bdbfda1e95184308274171ae0f1d14b14fe"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\19-web-browser-lifecycle-msedge-nanite-final-default.png.gz",
+          "sha256": "7aac8d2b236747933b2b384bae834d1af425b9a1112289548891cedbce7ecb95"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\web-browser-lifecycle-msedge-nanite-final-villa-results.json",
+          "sha256": "0fbb92fa51ff5189d3729427687a408b224f3e161d5f4dde79022676f57e12f0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\20-web-browser-lifecycle-msedge-nanite-final-villa-results.json.gz",
+          "sha256": "5e1d1b3142dd605da52ecbee90d9aa7dfe84ca7ee5502c0addbad74d8f3da1bb"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\web-browser-lifecycle-msedge-nanite-final-villa.png",
+          "sha256": "495b5661de4f66bcd184ce831312af3a41a3be18fe54c49781b8b9f6e8f336e0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\21-web-browser-lifecycle-msedge-nanite-final-villa.png.gz",
+          "sha256": "db432b1c08e42120d245897175a2f3e5bab7147beaf21528aed0e2f2c0d41dbf"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\browser-before-executable\\probe-web-browser-lifecycle.cjs",
+          "sha256": "09dfe19157681896812a68b405e2a20d25839d17d5274e1ef92616e1abedebcd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\22-probe-web-browser-lifecycle.cjs.gz",
+          "sha256": "8226e735a06b720fff29badf3480cc5ba818ac21e46732eca6871c7469164b34"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\browser-before-executable\\web-browser-lifecycle-chrome-nanite-final-default-results.json",
+          "sha256": "7790ddcbd9bd916716af77d8bf29b7eddb6b965338a449c2d7d3781da1124757"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\23-web-browser-lifecycle-chrome-nanite-final-default-results.json.gz",
+          "sha256": "79bac960eb0e17667c60ca0fde36ff4bc2f019042b1a30e871d023b540a05276"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\browser-before-executable\\web-browser-lifecycle-msedge-nanite-final-default-results.json",
+          "sha256": "8268273b4b95cb2b9be3bfdeb9f69e9a7db0025ee7c99d0429b2d2764e529908"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\24-web-browser-lifecycle-msedge-nanite-final-default-results.json.gz",
+          "sha256": "16c26820c4fe9ae09f45782c901c12c05cbcae251d72f21fe7428102b3a5a879"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\browser-before-executable\\web-browser-lifecycle-msedge-nanite-final-default.png",
+          "sha256": "b83278f37db668f6e789584d352fa11ab24e58417b4ac5c0753dadb3d8b49694"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\25-web-browser-lifecycle-msedge-nanite-final-default.png.gz",
+          "sha256": "9aafa278d1e959031004be7f4e4add4a1272abf6086a321856ef49bb9671d9b8"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\browser-before-executable\\web-browser-lifecycle-msedge-nanite-final-villa-results.json",
+          "sha256": "11eb50f4205997a5f4029052d8360684b47ea6c34bd46cf6ee3a45b52bfac4cb"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\26-web-browser-lifecycle-msedge-nanite-final-villa-results.json.gz",
+          "sha256": "f4939a4adf89c2a62aa2a188e52e3452c1a4caaad90dabf2dfde18bebfed2f03"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\browser-before-executable\\web-browser-lifecycle-msedge-nanite-final-villa.png",
+          "sha256": "55fec88ddcb02b8e1e8af52e981c723bb75e471b6105f7b8196e68fcdf922add"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\27-web-browser-lifecycle-msedge-nanite-final-villa.png.gz",
+          "sha256": "6efe3259c87eea03d5bd2a391f15a6c629026aee6dc7cc9485b8fc0a555fed1c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "C:\\Users\\wap80\\.cache\\ue-html-build-archive\\nanite-core-browser-tools\\versions.json",
+          "sha256": "8555d2a54393a7450bc48ef6415428a9066c7100b7db373fee450f650b0b3993"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\28-versions.json.gz",
+          "sha256": "4dcef9b76602882001a40c9c5bf303094c84f4ab7e5c7446cdd397e0d9c37a73"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111.json",
+          "sha256": "c1b47f16eb71587030bdf8412af72e2af3859a22133c7d1fdbf0674e1f691c9c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\29-nanite-release-launcher-failure-20261111.json.gz",
+          "sha256": "ac2dda7a5f32bff02da73cf1b1361785c153eea7a7813c35259ab95b9531a063"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\release-first-failure.json",
+          "sha256": "ea5b223bba9799d8dd5956e844993ac842ca7d6bfa070ec8f3fbcdc73c0a476e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\30-release-first-failure.json.gz",
+          "sha256": "07abc48a054dfd826b381626ecdd3ef69eb9ef915d4f7d1d6550c19bb5f16a4c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-release-20261111-default.png",
+          "sha256": "8b9059ed21a9243855ee9b1e961913d087b90d1dec7e1dfaf6795523da7a2979"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\31-nanite-release-20261111-default.png.gz",
+          "sha256": "60d995ef5f9d3fda969102d1ad2a7f16250a5b89ab6c36565f97e1557489a726"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-release-20261111-villa.png",
+          "sha256": "2f688663de6bde67ff92cbcbdc3483ac4bf9017e95e87e5bf0e62b4bcfaf2c41"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-20261111\\32-nanite-release-20261111-villa.png.gz",
+          "sha256": "1bedd27b7ff21610892a64d7799e5fa6b00f41ced6a4f3dc2431ebb051710ff6"
+        },
+        "encoding": "gzip"
+      }
+    ],
+    "boundary": "Verifies every delivered file, the Windows PowerShell 5.1 launcher, local HTTP isolation/versioning, and normal rendering/input from both relocated scene URLs. No renderer, GPU, clock or project setting overrides.",
+    "filesVerified": 43,
+    "bytesVerified": 3993107478,
+    "prerequisiteFailure": {
+      "reason": "browserType.launchPersistentContext: Chromium distribution 'chrome' is not found at C:\\Users\\wap80\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe\nRun \"npx playwright install chrome\"\n    at async G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-browser-lifecycle.cjs:85:15",
+      "originalProbe": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\browser-before-executable\\probe-web-browser-lifecycle.cjs",
+        "sha256": "09dfe19157681896812a68b405e2a20d25839d17d5274e1ef92616e1abedebcd"
+      }
+    },
+    "launcherFailureEvidence": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111.json",
+      "sha256": "c1b47f16eb71587030bdf8412af72e2af3859a22133c7d1fdbf0674e1f691c9c"
+    }
+  }
+}

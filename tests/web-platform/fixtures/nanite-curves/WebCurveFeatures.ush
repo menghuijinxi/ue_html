@@ -1,0 +1,3 @@
+#pragma once
+#undef NANITE_CURVE_DATA
+#define NANITE_CURVE_DATA 1

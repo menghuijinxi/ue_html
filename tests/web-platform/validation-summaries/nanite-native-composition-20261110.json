@@ -1,0 +1,2845 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-native-composition-20261110.json",
+    "bytes": 1864006,
+    "sha256": "21d693ed997c88aab077399c4df1ac4804074219841ff53750fc5b9d466fdfe4",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-09T18:18:49.586Z",
+    "sources": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-composition-evidence.cjs",
+        "sha256": "1cda94a4292c72b2a9d2e48d032fcd81075a0df2f694ce3b6d6198e1fc5c24e5"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-composition\\browser.json",
+        "sha256": "d72086ee35da691bbcb5ca1cdfc7e236c0d128daa41012eedc3953eee2f3e941"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-composition\\browser-scalar.json",
+        "sha256": "994f26ec1fb072ab16c46a91e186b048a739dd6607590fa2ca4db683c46353c8"
+      }
+    ],
+    "package": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\package.json",
+      "sha256": "64cb679f5c2e31d655e142c6a1c0fcc0cc56647d41e9d767ba5c72fa40a5f8a5"
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "80e32d764b348fdd8261e7129f48f6c1b40925e283a1ca7fe101d0fd38618ca3"
+    },
+    "cook": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-nanite-composition-desktop-cook-results.json",
+      "sha256": "55f72c3a8991e79b5122929fbbe72f27ae0b0dceb97ee67c311b21eb4684a112"
+    },
+    "compilation": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-composition-shaders\\verified.json",
+      "sha256": "3a2d8918560f1811f1754b8bb4acdc1e235d08fad95617a0dc718f83a5d6ff82"
+    },
+    "stencilTransitions": {
+      "artifact": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-canvas-transitions.json",
+        "sha256": "eedb225778fba50fade81ab464d29553245bde3a4c97c1cb678f309bf5d46678"
+      },
+      "checks": [
+        {
+          "name": "canvas-backbuffer-accept-rdg-epilogue",
+          "pass": true
+        },
+        {
+          "name": "canvas-backbuffer-reject-partial-srv",
+          "pass": true
+        },
+        {
+          "name": "canvas-backbuffer-reject-uav",
+          "pass": true
+        },
+        {
+          "name": "canvas-backbuffer-reject-expired-frame",
+          "pass": true
+        },
+        {
+          "name": "canvas-backbuffer-reject-actual-srv",
+          "pass": true
+        },
+        {
+          "name": "canvas-backbuffer-restores-rtv",
+          "pass": true
+        },
+        {
+          "name": "canvas-backbuffer-restores-present",
+          "pass": true
+        },
+        {
+          "name": "canvas-backbuffer-preserves-clear",
+          "pass": true
+        },
+        {
+          "name": "stencil-metadata-accept",
+          "pass": true
+        },
+        {
+          "name": "stencil-metadata-reject-depth-raw",
+          "pass": true
+        },
+        {
+          "name": "stencil-metadata-reject-uav",
+          "pass": true
+        },
+        {
+          "name": "stencil-metadata-reject-extra-flags",
+          "pass": true
+        },
+        {
+          "name": "stencil-metadata-independent-access",
+          "pass": true
+        },
+        {
+          "name": "stencil-metadata-restores-write",
+          "pass": true
+        }
+      ]
+    },
+    "materials": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-materials\\browser.json",
+        "sha256": "c99d564c7891b86ee9cebf1f587bc10b50c8fce7c9d53694bac4016b5104b848"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-materials\\browser-scalar.json",
+        "sha256": "006bde5c6c0eaa67e09881c90f1f73f6915786397087a70696bc6d4e2293c712"
+      }
+    ],
+    "runs": [
+      {
+        "scalarVisibility": false,
+        "frames": 1313,
+        "shaderPrograms": 3,
+        "features": [
+          "atomic-vec2u-min-max",
+          "rg11b10ufloat-renderable",
+          "texture-formats-tier1",
+          "texture-compression-bc",
+          "clip-distances",
+          "texture-formats-tier2",
+          "core-features-and-limits",
+          "float32-filterable",
+          "subgroups"
+        ],
+        "steps": [
+          {
+            "step": 1,
+            "frame": 117,
+            "cameraCut": false,
+            "hasLightingChannels": false,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 194,
+                "1": 179,
+                "2": 191
+              },
+              "moving": {},
+              "cameraReconstructed": {},
+              "maxVelocityError": 0,
+              "maxVelocityDepthError": 0,
+              "occluded": 0,
+              "zeroVelocity": 564
+            }
+          },
+          {
+            "step": 2,
+            "frame": 194,
+            "cameraCut": false,
+            "hasLightingChannels": false,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -183.68015746954882,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -183.31370314186395,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 197,
+                "1": 179,
+                "2": 191
+              },
+              "moving": {
+                "0": 197
+              },
+              "cameraReconstructed": {},
+              "maxVelocityError": 0.0000014117842225692522,
+              "maxVelocityDepthError": 3.72529470812899e-9,
+              "occluded": 0,
+              "zeroVelocity": 370
+            }
+          },
+          {
+            "step": 3,
+            "frame": 313,
+            "cameraCut": false,
+            "hasLightingChannels": false,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 189,
+                "1": 178,
+                "2": 193
+              },
+              "moving": {},
+              "cameraReconstructed": {
+                "0": 189,
+                "1": 178,
+                "2": 193
+              },
+              "maxVelocityError": 0,
+              "maxVelocityDepthError": 0,
+              "occluded": 0,
+              "zeroVelocity": 560
+            }
+          },
+          {
+            "step": 4,
+            "frame": 485,
+            "cameraCut": false,
+            "hasLightingChannels": false,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "localToWorld": [
+                  -0.06726797863375387,
+                  0.6119494902302074,
+                  0.5108745838828922,
+                  0,
+                  -0.9806537693334606,
+                  0.3765156320437196,
+                  -0.580132884362535,
+                  0,
+                  0.5131540215910992,
+                  0.5062644870107423,
+                  -0.5388591831978293,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  -0.05529641532495742,
+                  0.6181220416156799,
+                  0.5048439839406563,
+                  0,
+                  -0.9622603805055705,
+                  0.39993369327778955,
+                  -0.5950697447278439,
+                  0,
+                  0.5341217292575214,
+                  0.4862780510948169,
+                  -0.5368869856481732,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 154,
+                "1": 178,
+                "2": 191
+              },
+              "moving": {
+                "0": 154
+              },
+              "cameraReconstructed": {},
+              "maxVelocityError": 0.000003164546113181531,
+              "maxVelocityDepthError": 4.055272617708994e-9,
+              "occluded": 0,
+              "zeroVelocity": 369
+            }
+          },
+          {
+            "step": 5,
+            "frame": 608,
+            "cameraCut": false,
+            "hasLightingChannels": false,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -164.8895634471595,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -163.8311298059666,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 192,
+                "1": 177,
+                "2": 191
+              },
+              "moving": {
+                "0": 192
+              },
+              "cameraReconstructed": {
+                "1": 177,
+                "2": 191
+              },
+              "maxVelocityError": 0.0000011677369667201232,
+              "maxVelocityDepthError": 3.725291901346406e-9,
+              "occluded": 0,
+              "zeroVelocity": 368
+            }
+          },
+          {
+            "step": 6,
+            "frame": 731,
+            "cameraCut": false,
+            "hasLightingChannels": true,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 192,
+                "1": 179,
+                "2": 192
+              },
+              "moving": {},
+              "cameraReconstructed": {},
+              "maxVelocityError": 0,
+              "maxVelocityDepthError": 0,
+              "occluded": 0,
+              "zeroVelocity": 563
+            }
+          },
+          {
+            "step": 7,
+            "frame": 921,
+            "cameraCut": false,
+            "hasLightingChannels": true,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -182.15966693552505,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -181.64167027567234,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 197,
+                "2": 190
+              },
+              "moving": {
+                "0": 197
+              },
+              "cameraReconstructed": {},
+              "maxVelocityError": 0.0000017221422959148597,
+              "maxVelocityDepthError": 3.7253069413989426e-9,
+              "occluded": 178,
+              "zeroVelocity": 190
+            }
+          },
+          {
+            "step": 8,
+            "frame": 1047,
+            "cameraCut": false,
+            "hasLightingChannels": true,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -165.56048919058068,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -164.50759989042294,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 56,
+                "1": 57,
+                "2": 54
+              },
+              "moving": {
+                "0": 56
+              },
+              "cameraReconstructed": {},
+              "maxVelocityError": 7.40430944527401e-7,
+              "maxVelocityDepthError": 5.960465188081798e-8,
+              "occluded": 0,
+              "zeroVelocity": 111
+            }
+          },
+          {
+            "step": 9,
+            "frame": 1167,
+            "cameraCut": true,
+            "hasLightingChannels": true,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -139.7832189654775,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 192,
+                "1": 179,
+                "2": 192
+              },
+              "moving": {
+                "0": 192
+              },
+              "cameraReconstructed": {},
+              "maxVelocityError": 0.000010546472935378526,
+              "maxVelocityDepthError": 3.72529097500407e-9,
+              "occluded": 0,
+              "zeroVelocity": 371
+            }
+          }
+        ],
+        "errors": []
+      },
+      {
+        "scalarVisibility": true,
+        "frames": 1130,
+        "shaderPrograms": 3,
+        "features": [
+          "rg11b10ufloat-renderable",
+          "texture-formats-tier1",
+          "texture-compression-bc",
+          "texture-formats-tier2",
+          "clip-distances",
+          "core-features-and-limits",
+          "float32-filterable",
+          "subgroups"
+        ],
+        "steps": [
+          {
+            "step": 1,
+            "frame": 111,
+            "cameraCut": false,
+            "hasLightingChannels": false,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 192,
+                "1": 178,
+                "2": 191
+              },
+              "moving": {},
+              "cameraReconstructed": {},
+              "maxVelocityError": 0,
+              "maxVelocityDepthError": 0,
+              "occluded": 0,
+              "zeroVelocity": 561
+            }
+          },
+          {
+            "step": 2,
+            "frame": 181,
+            "cameraCut": false,
+            "hasLightingChannels": false,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -173.2034720575986,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -172.27870375313395,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 192,
+                "1": 179,
+                "2": 192
+              },
+              "moving": {
+                "0": 192
+              },
+              "cameraReconstructed": {},
+              "maxVelocityError": 0.0000022780262664448374,
+              "maxVelocityDepthError": 3.725297837570141e-9,
+              "occluded": 0,
+              "zeroVelocity": 371
+            }
+          },
+          {
+            "step": 3,
+            "frame": 283,
+            "cameraCut": false,
+            "hasLightingChannels": false,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 197,
+                "1": 180,
+                "2": 187
+              },
+              "moving": {},
+              "cameraReconstructed": {
+                "0": 197,
+                "1": 180,
+                "2": 187
+              },
+              "maxVelocityError": 0,
+              "maxVelocityDepthError": 0,
+              "occluded": 0,
+              "zeroVelocity": 564
+            }
+          },
+          {
+            "step": 4,
+            "frame": 394,
+            "cameraCut": false,
+            "hasLightingChannels": false,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "localToWorld": [
+                  0.7603702360968143,
+                  -0.1736033999851558,
+                  -0.17804202754313142,
+                  0,
+                  -0.3504772264313558,
+                  -0.45409202077472877,
+                  -1.0540237902541418,
+                  0,
+                  -0.09575123398450253,
+                  -0.8098574946081868,
+                  0.3807394642237598,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  0.754975329843634,
+                  -0.188544431233313,
+                  -0.18564279888647015,
+                  0,
+                  -0.3715978047453704,
+                  -0.4597373788517033,
+                  -1.0442971866260038,
+                  0,
+                  -0.10457764249517726,
+                  -0.8038153776194483,
+                  0.3910810087343215,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 208,
+                "1": 179,
+                "2": 192
+              },
+              "moving": {
+                "0": 208
+              },
+              "cameraReconstructed": {},
+              "maxVelocityError": 0.0000022840891572653045,
+              "maxVelocityDepthError": 4.290483197888495e-9,
+              "occluded": 0,
+              "zeroVelocity": 371
+            }
+          },
+          {
+            "step": 5,
+            "frame": 510,
+            "cameraCut": false,
+            "hasLightingChannels": false,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -181.09809545642847,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -181.65511333350415,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 192,
+                "1": 180,
+                "2": 197
+              },
+              "moving": {
+                "0": 192
+              },
+              "cameraReconstructed": {
+                "1": 180,
+                "2": 197
+              },
+              "maxVelocityError": 8.684967401463095e-7,
+              "maxVelocityDepthError": 3.725291481543325e-9,
+              "occluded": 0,
+              "zeroVelocity": 377
+            }
+          },
+          {
+            "step": 6,
+            "frame": 638,
+            "cameraCut": false,
+            "hasLightingChannels": true,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 192,
+                "1": 179,
+                "2": 192
+              },
+              "moving": {},
+              "cameraReconstructed": {},
+              "maxVelocityError": 0,
+              "maxVelocityDepthError": 0,
+              "occluded": 0,
+              "zeroVelocity": 563
+            }
+          },
+          {
+            "step": 7,
+            "frame": 751,
+            "cameraCut": false,
+            "hasLightingChannels": true,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -158.3428688467711,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -157.2720953802665,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 191,
+                "2": 193
+              },
+              "moving": {
+                "0": 191
+              },
+              "cameraReconstructed": {},
+              "maxVelocityError": 0.0000024748777712694375,
+              "maxVelocityDepthError": 3.725293611783753e-9,
+              "occluded": 179,
+              "zeroVelocity": 193
+            }
+          },
+          {
+            "step": 8,
+            "frame": 871,
+            "cameraCut": false,
+            "hasLightingChannels": true,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -136.79524595067764,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -136.41680453636206,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 54,
+                "1": 57,
+                "2": 54
+              },
+              "moving": {
+                "0": 54
+              },
+              "cameraReconstructed": {},
+              "maxVelocityError": 0.0000011077381986695925,
+              "maxVelocityDepthError": 5.960463766996327e-8,
+              "occluded": 0,
+              "zeroVelocity": 111
+            }
+          },
+          {
+            "step": 9,
+            "frame": 994,
+            "cameraCut": true,
+            "hasLightingChannels": true,
+            "entries": [
+              {
+                "component": 0,
+                "instance": 2227,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  -140.1876404734159,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 1,
+                "instance": 2226,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  0,
+                  100000,
+                  1
+                ]
+              },
+              {
+                "component": 2,
+                "instance": 2225,
+                "localToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ],
+                "previousLocalToWorld": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  100400,
+                  160,
+                  100000,
+                  1
+                ]
+              }
+            ],
+            "validation": {
+              "counts": {
+                "0": 192,
+                "1": 179,
+                "2": 192
+              },
+              "moving": {
+                "0": 192
+              },
+              "cameraReconstructed": {},
+              "maxVelocityError": 0.000010341482653636325,
+              "maxVelocityDepthError": 3.72529097500407e-9,
+              "occluded": 0,
+              "zeroVelocity": 371
+            }
+          }
+        ],
+        "errors": []
+      }
+    ],
+    "failures": [
+      {
+        "artifact": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-composition\\failure-stencil-transition-20261110.json",
+          "sha256": "1855513ef30d9fb83a2a2aaac1dfeae966a2bdcf71af3d7cd872f68f8d1c7188"
+        },
+        "failure": {
+          "$omitted": true,
+          "reason": "Large text",
+          "type": "string",
+          "bytes": 4087,
+          "sha256": "51c43d3ce9539ab553b3d8c9293736a0a6304485618ef79c135cb595a392b3c3"
+        },
+        "errors": [
+          "Assertion failed: ValidateTransitionCreate(Info, Error) [File:G:/UE_HTML/ue_html/tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private\\WebGPUTransitions.cpp] [Line: 331] \nUnsupported transition range: flags=0x1 commit=0 mip=0 array=0 plane=1\n",
+          {
+            "$omitted": true,
+            "reason": "Large text",
+            "type": "string",
+            "bytes": 3494,
+            "sha256": "f412529aa9f6dd57b40dd57d8af8d9489c91591ab883dcb757c83d9bca5b2ffb"
+          }
+        ]
+      }
+    ],
+    "regression": {
+      "artifact": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\results.json",
+        "sha256": "a2618a35ccf3d28ddd9b56de021a0eb89cc9b484a702971f28beeda3d5ca2c74"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-web-nanite-uploader.cjs",
+        "sha256": "c907847624d47accc37988b616ea46c885e8853356914a71a91fd92c85a3c635"
+      },
+      "frames": 44687,
+      "errors": [],
+      "enabledPipelines": {
+        "sampleFrame": 44670,
+        "graphicsPipelines": 971,
+        "computePipelines": 1576,
+        "graphicsPipelineCreateMs": 54.60190773010254,
+        "computePipelineCreateMs": 44.88658905029297,
+        "textureReadbacks": 0,
+        "textureReadbacksReady": 0,
+        "textureReadbackMaps": 0,
+        "textureReadbackNotReady": 0,
+        "psoPrecaching": true,
+        "precachedGraphicsPipelines": 757,
+        "storageFormatPrecached": 9,
+        "storageFormatPrecachedUsed": 1,
+        "storageFormatPrecachedBinds": 44086,
+        "asyncPrecacheRequested": 2252,
+        "asyncPrecacheCompleted": 2252,
+        "asyncPrecacheFailed": 0,
+        "unsupportedPrecacheRequests": 0,
+        "precachedGraphicsUsed": 89,
+        "precachedGraphicsBinds": 429970,
+        "precacheConcurrency": 8,
+        "runtimeAsyncPSO": false,
+        "runtimeAsyncRequested": 0,
+        "runtimeAsyncCompleted": 0,
+        "runtimeAsyncFailed": 0
+      },
+      "disabledPipelines": {
+        "sampleFrame": 540,
+        "graphicsPipelines": 849,
+        "computePipelines": 1567,
+        "graphicsPipelineCreateMs": 56.676626205444336,
+        "computePipelineCreateMs": 44.65222358703613,
+        "textureReadbacks": 0,
+        "textureReadbacksReady": 0,
+        "textureReadbackMaps": 0,
+        "textureReadbackNotReady": 0,
+        "psoPrecaching": true,
+        "precachedGraphicsPipelines": 735,
+        "storageFormatPrecached": 9,
+        "storageFormatPrecachedUsed": 1,
+        "storageFormatPrecachedBinds": 277,
+        "asyncPrecacheRequested": 2230,
+        "asyncPrecacheCompleted": 2230,
+        "asyncPrecacheFailed": 0,
+        "unsupportedPrecacheRequests": 0,
+        "precachedGraphicsUsed": 70,
+        "precachedGraphicsBinds": 114985,
+        "precacheConcurrency": 8,
+        "runtimeAsyncPSO": false,
+        "runtimeAsyncRequested": 0,
+        "runtimeAsyncCompleted": 0,
+        "runtimeAsyncFailed": 0
+      },
+      "groups": {
+        "cases": 4,
+        "residency": 4,
+        "scene": 5,
+        "sceneCulling": 19,
+        "sceneDepth": 5,
+        "sceneGBuffer": 26,
+        "sceneLOD": 10,
+        "sceneHZB": 9,
+        "sceneInstances": 13,
+        "sceneMicroRepeats": 128,
+        "sceneViews": 10
+      }
+    },
+    "payloadEncoding": "gzip-base64-json",
+    "payloadSchema": "{composition: browser reports, materials: browser reports}",
+    "payload": {
+      "$omitted": true,
+      "reason": "Full diagnostic data is retained in the original report",
+      "type": "string",
+      "bytes": 1792392,
+      "sha256": "9d38d5e51e4f256367109e297e4662e29853df58c17c84f3547a8202de0fc70e"
+    },
+    "boundary": "Resident rigid opaque native velocity XYZ, real GPUScene history, shading masks, stencil flags and native lighting-channel consumer. Both atomic capabilities, ordinary occlusion, orthographic/mirrored transforms and exact camera-cut frame verified. Deforming geometry, streaming and whole-scene acceptance remain open."
+  }
+}

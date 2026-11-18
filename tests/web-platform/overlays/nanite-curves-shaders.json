@@ -1,0 +1,93 @@
+[
+  {
+    "relative": "Shaders/Private/HairStrands/HairStrandsFollicleMask.usf",
+    "hunks": [
+      {
+        "before": "\tOutPosition = float4(POSITIVE_INFINITY, POSITIVE_INFINITY, POSITIVE_INFINITY, 1);",
+        "after": "#if COMPILER_WEBGPU\n\t// All three vertices of a rejected root take this path. A finite point\n\t// outside the clip volume preserves rejection without a WGSL inf constant.\n\tOutPosition = float4(2, 2, 2, 1);\n#else\n\tOutPosition = float4(POSITIVE_INFINITY, POSITIVE_INFINITY, POSITIVE_INFINITY, 1);\n#endif"
+      }
+    ]
+  },
+  {
+    "relative": "Shaders/Private/Nanite/NaniteDataDecode.ush",
+    "hunks": [
+      {
+        "before": "\n\tCluster.NumCurves\t\t\t= BitFieldExtractU32(ClusterData[6].z, 8, 0);\n\tCluster.NumPointsPerCurve\t= BitFieldExtractU32(ClusterData[6].z, 8, 8);\n\n\tCluster.bVoxel\t\t\t\t=\t(ClusterType == NANITE_CLUSTER_TYPE_TRIANGLES || ClusterType == NANITE_CLUSTER_TYPE_CURVES) ? false :\n\t\t\t\t\t\t\t\t\tClusterType == NANITE_CLUSTER_TYPE_VOXELS ? true :\n",
+        "after": "\n\tCluster.NumCurves\t\t\t= BitFieldExtractU32(ClusterData[6].z, 8, 0);\n\tCluster.NumPointsPerCurve\t= BitFieldExtractU32(ClusterData[6].z, 8, 8);\n\t// An existing curve with a zero eight-bit count occupies all 256 vertices.\n\tif (Cluster.NumCurves > 0 && Cluster.NumPointsPerCurve == 0)\n\t\tCluster.NumPointsPerCurve = 256;\n\n\tCluster.bVoxel\t\t\t\t=\t(ClusterType == NANITE_CLUSTER_TYPE_TRIANGLES || ClusterType == NANITE_CLUSTER_TYPE_CURVES) ? false :\n\t\t\t\t\t\t\t\t\tClusterType == NANITE_CLUSTER_TYPE_VOXELS ? true :\n"
+      }
+    ]
+  },
+  {
+    "relative": "Shaders/Private/Nanite/NaniteRasterizer.usf",
+    "hunks": [
+      {
+        "before": "FTransformedCurvePoint WaveReadAdjacentLane(FTransformedCurvePoint In)\n{\n\tFTransformedCurvePoint Out;\n\t#if NANITE_MATERIAL_INCLUDES && USE_SEGMENT_TRIANGLE\n\t// Triangle based geometry - Used for primary & shadow views\n\t{\n\t\t#if COMPILER_SUPPORTS_WAVE_READCROSSLANE\n\t\tOut.ClipPointLeft \t= WaveReadCrossLane(In.ClipPointLeft, WaveGetLaneIndex()+1);\n\t\tOut.ClipPointRight \t= WaveReadCrossLane(In.ClipPointRight, WaveGetLaneIndex()+1);\n\t\t#else\n\t\tOut.ClipPointLeft \t= WaveReadLaneAt(In.ClipPointLeft, WaveGetLaneIndex()+1);\n\t\tOut.ClipPointRight \t= WaveReadLaneAt(In.ClipPointRight, WaveGetLaneIndex()+1);\n\t\t#endif\n\t}\n\t#else\n\t// Line based geometry - Used by tiled rasterizer for primary views\n\t{\n\t\t#if COMPILER_SUPPORTS_WAVE_READCROSSLANE\n\t\tOut.WorldRadius \t= WaveReadCrossLane(In.WorldRadius, WaveGetLaneIndex()+1);\n\t\tOut.RadiusInPixel \t= WaveReadCrossLane(In.RadiusInPixel, WaveGetLaneIndex()+1);\n\t\tOut.ClipPoint \t\t= WaveReadCrossLane(In.ClipPoint, WaveGetLaneIndex()+1);\n\t\t#else\n\t\tOut.WorldRadius\t\t= WaveReadLaneAt(In.WorldRadius, WaveGetLaneIndex()+1);\n\t\tOut.RadiusInPixel \t= WaveReadLaneAt(In.RadiusInPixel, WaveGetLaneIndex()+1);\n\t\tOut.ClipPoint \t\t= WaveReadLaneAt(In.ClipPoint, WaveGetLaneIndex()+1);\n\t\t#endif\n\t}\n\t#endif\n",
+        "after": "FTransformedCurvePoint WaveReadAdjacentLane(FTransformedCurvePoint In)\n{\n\tFTransformedCurvePoint Out;\n\t// Keep the shuffle lane in range. A segment crossing the wave boundary\n\t// explicitly fetches and transforms its next point below.\n\tconst uint AdjacentLane = min(WaveGetLaneIndex() + 1, WaveGetLaneCount() - 1);\n\t#if NANITE_MATERIAL_INCLUDES && USE_SEGMENT_TRIANGLE\n\t// Triangle based geometry - Used for primary & shadow views\n\t{\n\t\t#if COMPILER_SUPPORTS_WAVE_READCROSSLANE\n\t\tOut.ClipPointLeft \t= WaveReadCrossLane(In.ClipPointLeft, AdjacentLane);\n\t\tOut.ClipPointRight \t= WaveReadCrossLane(In.ClipPointRight, AdjacentLane);\n\t\t#else\n\t\tOut.ClipPointLeft \t= WaveReadLaneAt(In.ClipPointLeft, AdjacentLane);\n\t\tOut.ClipPointRight \t= WaveReadLaneAt(In.ClipPointRight, AdjacentLane);\n\t\t#endif\n\t}\n\t#else\n\t// Line based geometry - Used by tiled rasterizer for primary views\n\t{\n\t\t#if COMPILER_SUPPORTS_WAVE_READCROSSLANE\n\t\tOut.WorldRadius \t= WaveReadCrossLane(In.WorldRadius, AdjacentLane);\n\t\tOut.RadiusInPixel \t= WaveReadCrossLane(In.RadiusInPixel, AdjacentLane);\n\t\tOut.ClipPoint \t\t= WaveReadCrossLane(In.ClipPoint, AdjacentLane);\n\t\t#else\n\t\tOut.WorldRadius\t\t= WaveReadLaneAt(In.WorldRadius, AdjacentLane);\n\t\tOut.RadiusInPixel \t= WaveReadLaneAt(In.RadiusInPixel, AdjacentLane);\n\t\tOut.ClipPoint \t\t= WaveReadLaneAt(In.ClipPoint, AdjacentLane);\n\t\t#endif\n\t}\n\t#endif\n"
+      },
+      {
+        "before": "\t}\n\t#endif\n\n\t// Note: WAVE SIZE needs to be >= GlobalMaxNumPointPerCurve (=32)\n\t// Among a cluster, part of the curves are persitent, part of the curves are faded as a cluster transition to its parent\n\tconst float TransitionFactor = ComputeClusterLODTransition(NaniteView, InstanceData, InstanceDynamicData, Cluster);\n\tconst uint AdaptiveCurveCount = uint(TransitionFactor * (Cluster.NumCurves - Cluster.CurveFadingIndex));\n",
+        "after": "\t}\n\t#endif\n\n\t// Curve lengths need not divide the wave size. The last lane fetches\n\t// its adjacent endpoint explicitly when the segment continues.\n\t// Among a cluster, part of the curves are persitent, part of the curves are faded as a cluster transition to its parent\n\tconst float TransitionFactor = ComputeClusterLODTransition(NaniteView, InstanceData, InstanceDynamicData, Cluster);\n\tconst uint AdaptiveCurveCount = uint(TransitionFactor * (Cluster.NumCurves - Cluster.CurveFadingIndex));\n"
+      },
+      {
+        "before": "\n\t\t// Cull the curve if it is faded\n\t\tconst bool bCull = CurveIt >= VisibleCurveCount;\n\t\tif (bCull)\n\t\t{\n\t\t\tcontinue;\n\t\t}\n\n\t\tFTransformedCurvePoint TransformedCurvePoint0 = (FTransformedCurvePoint)0;\n\n\t\t// Load and transform points in register\n\t\t{\n\t\t\tconst uint PointIndex0 = PointIt;\n\t\t\tif (PointIt < NumPoints)\n\t\t\t{\n\t\t\t\t#if NANITE_MATERIAL_INCLUDES\n\t\t\t\tconst FNaniteTransformedVert Point0 = FetchTransformedNaniteVertex(PrimitiveData, InstanceData, GetInstanceViewData(InstanceData.InstanceId, NaniteView.SceneRendererPrimaryViewId), MaterialShader.VertTransforms, Cluster, VisibleCluster, PointIndex0, bEvaluateWPO );\n",
+        "after": "\n\t\t// Cull the curve if it is faded\n\t\tconst bool bCull = CurveIt >= VisibleCurveCount;\n\n\t\tconst bool bFetchAdjacentPoint = WaveGetLaneIndex() + 1 == WaveGetLaneCount() &&\n\t\t\tPointIt + 1 < NumPoints && PointIt % NumPointPerCurve + 1 < NumPointPerCurve;\n\t\tFTransformedCurvePoint TransformedCurvePoints[2];\n\t\tTransformedCurvePoints[0] = (FTransformedCurvePoint)0;\n\t\tTransformedCurvePoints[1] = (FTransformedCurvePoint)0;\n\n\t\t// Reuse the exact vertex/material transform for a cross-wave endpoint.\n\t\tUNROLL\n\t\tfor (uint Endpoint = 0; Endpoint < 2; ++Endpoint)\n\t\t{\n\t\t\tconst uint PointIndex0 = PointIt + Endpoint;\n\t\t\tif (!bCull && PointIndex0 < NumPoints && (Endpoint == 0 || bFetchAdjacentPoint))\n\t\t\t{\n\t\t\t\t#if NANITE_MATERIAL_INCLUDES\n\t\t\t\tconst FNaniteTransformedVert Point0 = FetchTransformedNaniteVertex(PrimitiveData, InstanceData, GetInstanceViewData(InstanceData.InstanceId, NaniteView.SceneRendererPrimaryViewId), MaterialShader.VertTransforms, Cluster, VisibleCluster, PointIndex0, bEvaluateWPO );\n"
+      },
+      {
+        "before": "\t\t\t\tfloat4 Point0Clip_Right = 0;\n\t\t\t\tBuildSegmentTrianglePoints(Raster, NaniteView, Point0_PointWorld, N0, Radius0_World, Point0Clip_Left, Point0Clip_Right);\n\n\t\t\t\tTransformedCurvePoint0.ClipPointLeft \t= Point0Clip_Left.xyz;\n\t\t\t\tTransformedCurvePoint0.ClipPointRight \t= Point0Clip_Right.xyz;\n\t\t\t\t#else\n\t\t\t\tTransformedCurvePoint0.WorldRadius \t= Radius0_World;\n\t\t\t\tTransformedCurvePoint0.RadiusInPixel= RadiusInPixel0;\n\t\t\t\tTransformedCurvePoint0.ClipPoint \t= mul(float4(Point0_PointWorld, 1), VertTransforms_TranslatedWorldToClip);\n\t\t\t\t#endif\n\t\t\t}\n\t\t}\n",
+        "after": "\t\t\t\tfloat4 Point0Clip_Right = 0;\n\t\t\t\tBuildSegmentTrianglePoints(Raster, NaniteView, Point0_PointWorld, N0, Radius0_World, Point0Clip_Left, Point0Clip_Right);\n\n\t\t\t\tTransformedCurvePoints[Endpoint].ClipPointLeft \t= Point0Clip_Left.xyz;\n\t\t\t\tTransformedCurvePoints[Endpoint].ClipPointRight \t= Point0Clip_Right.xyz;\n\t\t\t\t#else\n\t\t\t\tTransformedCurvePoints[Endpoint].WorldRadius \t= Radius0_World;\n\t\t\t\tTransformedCurvePoints[Endpoint].RadiusInPixel= RadiusInPixel0;\n\t\t\t\tTransformedCurvePoints[Endpoint].ClipPoint \t= mul(float4(Point0_PointWorld, 1), VertTransforms_TranslatedWorldToClip);\n\t\t\t\t#endif\n\t\t\t}\n\t\t}\n"
+      },
+      {
+        "before": "\t\t{\n\n\t\t\t// When using triangle based geometry, use adjacent lane data for fetching clip position.\n\t\t\tFTransformedCurvePoint TransformedCurvePoint1 = WaveReadAdjacentLane(TransformedCurvePoint0);\n\n\t\t\t// Simple curve rasterizer using DDA\n\t\t\t// * 1 thread == 1 segments\n\t\t\t// * Wave work is unbalanced and write are scattered\n\t\t\t// * Large segment won't be displayed correctly due to max number DDA steps\n\t\t\tif (CurveIt < Cluster.NumCurves && (PointIt % NumPointPerCurve) < NumPointPerCurve-1)\n\t\t\t{\t\t\t\t\n\t\t\t\t{\n\t\t\t\t\t// Rasterize subdivided segments\n",
+        "after": "\t\t{\n\n\t\t\t// When using triangle based geometry, use adjacent lane data for fetching clip position.\n\t\t\tFTransformedCurvePoint TransformedCurvePoint0 = TransformedCurvePoints[0];\n\t\t\tFTransformedCurvePoint TransformedCurvePoint1 = WaveReadAdjacentLane(TransformedCurvePoint0);\n\t\t\tif (bFetchAdjacentPoint)\n\t\t\t\tTransformedCurvePoint1 = TransformedCurvePoints[1];\n\n\t\t\t// Simple curve rasterizer using DDA\n\t\t\t// * 1 thread == 1 segments\n\t\t\t// * Wave work is unbalanced and write are scattered\n\t\t\t// * Large segment won't be displayed correctly due to max number DDA steps\n\t\t\tif (!bCull && CurveIt < Cluster.NumCurves && (PointIt % NumPointPerCurve) < NumPointPerCurve-1)\n\t\t\t{\t\t\t\t\n\t\t\t\t{\n\t\t\t\t\t// Rasterize subdivided segments\n"
+      },
+      {
+        "before": "\t\t\t\t\t\t#if VIRTUAL_TEXTURE_TARGET\n\t\t\t\t\t\tvTranslation = Raster.vTranslation.xy;\n\t\t\t\t\t\t#endif\n\t\t\t\t\t\tconst uint SourceVertIndex = min(CurveIt*NumPointPerCurve + PointIt, NANITE_MAX_CLUSTER_TRIANGLES /*127u*/);\n\t\t\t\t\t\tconst uint SourcePixelValue = PackVisPixelX(ClusterRef.VisibleIndex, SourceVertIndex);\n\t\t\t\t\t\t#if NANITE_MATERIAL_INCLUDES\n\t\t\t\t\t\t\t#if !USE_SEGMENT_TRIANGLE\n",
+        "after": "\t\t\t\t\t\t#if VIRTUAL_TEXTURE_TARGET\n\t\t\t\t\t\tvTranslation = Raster.vTranslation.xy;\n\t\t\t\t\t\t#endif\n\t\t\t\t\t\t// PointIt is already the global first point of this segment.\n\t\t\t\t\t\t// Curve clusters have up to 256 points; the visibility ID has\n\t\t\t\t\t\t// eight index bits and DecodeSegmentIndices expects this index.\n\t\t\t\t\t\tconst uint SourceVertIndex = PointIt;\n\t\t\t\t\t\tconst uint SourcePixelValue = PackVisPixelX(ClusterRef.VisibleIndex, SourceVertIndex);\n\t\t\t\t\t\t#if NANITE_MATERIAL_INCLUDES\n\t\t\t\t\t\t\t#if !USE_SEGMENT_TRIANGLE\n"
+      }
+    ],
+    "installedVersionDifferences": [
+      {
+        "before": "\t\t\tconst uint BrickLane\t\t= BrickLaneData & 0x1Fu;",
+        "after": "\t\t\tconst uint BrickLane\t\t= min( BrickLaneData & 0xFFu, 31u ); // Workaround. Not just &0x1F, because that ends up triggering a codegen bug on a specific platform."
+      }
+    ]
+  },
+  {
+    "relative": "Shaders/Private/Nanite/NaniteVisualize.usf",
+    "hunks": [
+      {
+        "before": "Result = IntToColor(GetRelativeMaterialIndex(Cluster, TriIndex));",
+        "after": "Result = IntToColor(GetRelativeMaterialIndexFromVisIndex(Cluster, TriIndex));"
+      },
+      {
+        "before": "FeedbackResults.MaterialIndex\t\t\t= GetRelativeMaterialIndex(Cluster, TriIndex);",
+        "after": "FeedbackResults.MaterialIndex\t\t\t= GetRelativeMaterialIndexFromVisIndex(Cluster, TriIndex);"
+      }
+    ]
+  },
+  {
+    "relative": "Shaders/Private/Nanite/NaniteAttributeDecode.ush",
+    "hunks": [
+      {
+        "before": "struct FNaniteMaterialPrimitiveData",
+        "after": "// Visibility stores a curve segment's first point, while curve material\n// ranges count whole curves. Raster binning already uses curve indices and\n// must continue calling GetRelativeMaterialIndex without this conversion.\nuint GetRelativeMaterialIndexFromVisIndex(FCluster InCluster, uint InVisIndex)\n{\n\tconst uint PrimitiveIndex = InCluster.bCurve ? InVisIndex / max(InCluster.NumPointsPerCurve, 1u) : InVisIndex;\n\treturn GetRelativeMaterialIndex(InCluster, PrimitiveIndex);\n}\n\nstruct FNaniteMaterialPrimitiveData"
+      },
+      {
+        "before": "float4 GetMaterialUVDensities(\n\tFCluster InCluster,\n\tuint InPrimitiveIndex,\n\tuint InTriIndex)\n{\n\tconst uint RelativeMaterialIndex = GetRelativeMaterialIndex(InCluster, InTriIndex);\n\treturn LoadMaterialUVDensities(RelativeMaterialIndex, InPrimitiveIndex);\n}",
+        "after": "float4 GetMaterialUVDensities(\n\tFCluster InCluster,\n\tuint InPrimitiveIndex,\n\tuint InTriIndex)\n{\n\tconst uint RelativeMaterialIndex = GetRelativeMaterialIndexFromVisIndex(InCluster, InTriIndex);\n\treturn LoadMaterialUVDensities(RelativeMaterialIndex, InPrimitiveIndex);\n}"
+      },
+      {
+        "before": "uint GetMaterialShadingBin(\n\tFCluster InCluster,\t\n\tuint InPrimitiveIndex,\n\tuint InMeshPassIndex,\n\tuint InTriIndex)\n{\n\tconst uint RelativeMaterialIndex = GetRelativeMaterialIndex(InCluster, InTriIndex);\n\treturn GetMaterialShadingBinFromIndex(RelativeMaterialIndex, InPrimitiveIndex, InMeshPassIndex, InCluster.bVoxel, InCluster.bCurve);\n}",
+        "after": "uint GetMaterialShadingBin(\n\tFCluster InCluster,\t\n\tuint InPrimitiveIndex,\n\tuint InMeshPassIndex,\n\tuint InTriIndex)\n{\n\tconst uint RelativeMaterialIndex = GetRelativeMaterialIndexFromVisIndex(InCluster, InTriIndex);\n\treturn GetMaterialShadingBinFromIndex(RelativeMaterialIndex, InPrimitiveIndex, InMeshPassIndex, InCluster.bVoxel, InCluster.bCurve);\n}"
+      },
+      {
+        "before": "uint GetMaterialRasterBinAndFlags(\n\tTRasterBinMetaBufferType RasterBinMeta,\n\tFNaniteView NaniteView,\n\tFCluster InCluster,\n\tuint InPrimitiveIndex,\n\tuint InMeshPassIndex,\n\tuint InTriIndex,\n\tuint InRegularSlotCount,\n\tbool bFallbackRasterBin,\n\tout FNaniteMaterialFlags MaterialFlags)\n{\n\treturn GetMaterialRasterBinAndFlagsFromIndex(\n\t\tRasterBinMeta,\n\t\tNaniteView,\n\t\tGetRelativeMaterialIndex(InCluster, InTriIndex),\n\t\tInPrimitiveIndex,\n\t\tInMeshPassIndex,\n\t\tInRegularSlotCount,\n\t\tbFallbackRasterBin,\n\t\tMaterialFlags\n\t);\n}",
+        "after": "uint GetMaterialRasterBinAndFlags(\n\tTRasterBinMetaBufferType RasterBinMeta,\n\tFNaniteView NaniteView,\n\tFCluster InCluster,\n\tuint InPrimitiveIndex,\n\tuint InMeshPassIndex,\n\tuint InTriIndex,\n\tuint InRegularSlotCount,\n\tbool bFallbackRasterBin,\n\tout FNaniteMaterialFlags MaterialFlags)\n{\n\treturn GetMaterialRasterBinAndFlagsFromIndex(\n\t\tRasterBinMeta,\n\t\tNaniteView,\n\t\tGetRelativeMaterialIndexFromVisIndex(InCluster, InTriIndex),\n\t\tInPrimitiveIndex,\n\t\tInMeshPassIndex,\n\t\tInRegularSlotCount,\n\t\tbFallbackRasterBin,\n\t\tMaterialFlags\n\t);\n}"
+      },
+      {
+        "before": "uint GetMaterialHitProxyId(\n\tFCluster InCluster,\n\tuint InPrimitiveIndex,\n\tuint InTriIndex,\n\tByteAddressBuffer InMaterialHitProxyTable)\n{\n\tconst uint RelativeMaterialIndex = GetRelativeMaterialIndex(InCluster, InTriIndex);\n\tconst uint MaterialHitProxyId = LoadMaterialHitProxyId(InPrimitiveIndex, RelativeMaterialIndex, InMaterialHitProxyTable);\n\treturn MaterialHitProxyId;\n}",
+        "after": "uint GetMaterialHitProxyId(\n\tFCluster InCluster,\n\tuint InPrimitiveIndex,\n\tuint InTriIndex,\n\tByteAddressBuffer InMaterialHitProxyTable)\n{\n\tconst uint RelativeMaterialIndex = GetRelativeMaterialIndexFromVisIndex(InCluster, InTriIndex);\n\tconst uint MaterialHitProxyId = LoadMaterialHitProxyId(InPrimitiveIndex, RelativeMaterialIndex, InMaterialHitProxyTable);\n\treturn MaterialHitProxyId;\n}"
+      }
+    ]
+  }
+]

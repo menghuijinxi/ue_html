@@ -16,6 +16,7 @@
 #include "Serialization/JsonSerializer.h"
 #include "StaticMeshAttributes.h"
 #include "StaticMeshResources.h"
+#include "Rendering/NaniteResources.h"
 #include "UObject/Package.h"
 #include "UObject/SavePackage.h"
 
@@ -32,6 +33,7 @@ int32 UWebDefaultSamplesCommandlet::Main(const FString& Params)
     FString Output;
     if (!FParse::Value(*Params, TEXT("Output="), Output))
         return 1;
+    const bool NaniteSamples = FParse::Param(*Params, TEXT("NaniteSamples"));
     // Dense geometry avoids the coarse shadow terminator of Engine/BasicShapes/Sphere.
     UE::Geometry::FSphereGenerator Generator;
     Generator.Radius = 50;
@@ -47,6 +49,11 @@ int32 UWebDefaultSamplesCommandlet::Main(const FString& Params)
     auto* Sphere = NewObject<UStaticMesh>(SpherePackage, TEXT("SM_TestSphere"), RF_Public | RF_Standalone);
     Sphere->GetStaticMaterials().Add(FStaticMaterial());
     Sphere->SetNumSourceModels(1);
+    Sphere->NaniteSettings.bEnabled = NaniteSamples;
+    Sphere->NaniteSettings.TargetMinimumResidencyInKB = 32;
+    Sphere->NaniteSettings.FallbackTarget = ENaniteFallbackTarget::PercentTriangles;
+    Sphere->NaniteSettings.FallbackPercentTriangles = 1.0f;
+    Sphere->NaniteSettings.FallbackRelativeError = 0.0f;
     auto& Build = Sphere->GetSourceModel(0).BuildSettings;
     Build.bRecomputeNormals = false;
     Build.bRecomputeTangents = true;
@@ -73,6 +80,11 @@ int32 UWebDefaultSamplesCommandlet::Main(const FString& Params)
             auto* Material = NewObject<UMaterial>(Package, *Name, RF_Public | RF_Standalone);
             Material->SetShadingModel(MSM_DefaultLit);
             Material->BlendMode = BLEND_Opaque;
+            if (NaniteSamples)
+            {
+                Material->SetMaterialUsage(MATUSAGE_Nanite);
+                Material->SetMaterialUsage(MATUSAGE_InstancedStaticMeshes);
+            }
             Material->FloatPrecisionMode = EMaterialFloatPrecisionMode::MFPM_Full;
             auto* Base = NewObject<UMaterialExpressionConstant3Vector>(Material);
             Base->Constant = FLinearColor(0.5f, 0.5f, 0.5f);
@@ -113,6 +125,15 @@ int32 UWebDefaultSamplesCommandlet::Main(const FString& Params)
     Manifest->SetStringField(TEXT("meshPackage"), SpherePackage->GetName());
     Manifest->SetStringField(TEXT("mesh"), Sphere->GetPathName());
     Manifest->SetNumberField(TEXT("meshTriangles"), Sphere->GetRenderData()->LODResources[0].GetNumTriangles());
+    Manifest->SetBoolField(TEXT("nanite"), NaniteSamples);
+    if (NaniteSamples)
+    {
+        const auto* Resource = Sphere->GetRenderData()->NaniteResourcesPtr.Get();
+        if (!Resource || !Resource->NumClusters || !Resource->NumRootPages) return 1;
+        Manifest->SetNumberField(TEXT("naniteClusters"), Resource->NumClusters);
+        Manifest->SetNumberField(TEXT("naniteRootPages"), Resource->NumRootPages);
+        Manifest->SetNumberField(TEXT("nanitePages"), Resource->PageStreamingStates.Num());
+    }
     FString JSON;
     FJsonSerializer::Serialize(Manifest, TJsonWriterFactory<>::Create(&JSON));
     return FFileHelper::SaveStringToFile(JSON, *Output) ? 0 : 1;

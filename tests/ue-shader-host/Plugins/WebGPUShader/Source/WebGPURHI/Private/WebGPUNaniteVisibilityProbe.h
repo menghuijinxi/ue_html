@@ -32,6 +32,42 @@ inline bool RunWebGPUNaniteVisibilityProbe(IDynamicRHIModule& Module, const FStr
             };
             const bool Supported = wgpuDeviceHasFeature(RHI.Device, WGPUFeatureName_AtomicVec2uMinMax) != 0;
             Record(TEXT("packed-atomic-device-feature"), Supported);
+            for (const EPixelFormat Format : {PF_R8_UINT, PF_R16_UINT})
+            {
+                const uint32 Stride = GPixelFormats[Format].BlockBytes;
+                uint32 Words[128];
+                for (uint32 Index = 0; Index < UE_ARRAY_COUNT(Words); ++Index) Words[Index] = 0x98765432u ^ Index;
+                auto Buffer = WebGPUProbe::Buffer(RHI, Cmd,
+                    FRHIBufferCreateDesc::Create(TEXT("NaniteSkeletalTypedResource"), sizeof(Words), Stride, BUF_ShaderResource)
+                        .SetInitialState(ERHIAccess::SRVCompute), Words, sizeof(Words));
+                auto Initializer = FRHIViewDesc::CreateBufferSRV().SetType(FRHIViewDesc::EBufferType::Typed).SetFormat(Format);
+                FRHIViewDesc Desc;
+                Desc.Common.ViewType = FRHIViewDesc::EViewType::BufferSRV;
+                Desc.Buffer.SRV.BufferType = FRHIViewDesc::EBufferType::Typed;
+                Desc.Buffer.SRV.Format = Format;
+                FString Error;
+                Record(*FString::Printf(TEXT("skeletal-uint%u-view-valid"), Stride * 8), RHI.ValidateBufferSRV(Buffer, Desc, Error));
+                auto View = Cmd.CreateShaderResourceView(Buffer, Initializer);
+                const auto Info = View->GetDesc().Buffer.SRV.GetViewInfo(Buffer);
+                Record(*FString::Printf(TEXT("skeletal-uint%u-view-range"), Stride * 8),
+                    Info.StrideInBytes == Stride && Info.NumElements == sizeof(Words) / Stride && Info.SizeInBytes == sizeof(Words));
+                auto Bad = Desc; Bad.Buffer.SRV.NumElements = sizeof(Words) / Stride + 1;
+                Record(*FString::Printf(TEXT("skeletal-uint%u-reject-overrun"), Stride * 8), !RHI.ValidateBufferSRV(Buffer, Bad, Error));
+                Bad = Desc; Bad.Buffer.SRV.OffsetInBytes = Stride; Bad.Buffer.SRV.NumElements = 1;
+                Record(*FString::Printf(TEXT("skeletal-uint%u-reject-unaligned"), Stride * 8), !RHI.ValidateBufferSRV(Buffer, Bad, Error));
+                FJsonObject Binding; Binding.SetBoolField(TEXT("readOnlyStorage"), true);
+                Binding.SetNumberField(TEXT("storageElementFormat"), Format);
+                FWebGPUStorageContract Native;
+                Native.ReadOnlyValid = Native.ReadOnly = Native.FormatValid = true; Native.Format = Format;
+                Record(*FString::Printf(TEXT("skeletal-uint%u-reject-undecoded-binding"), Stride * 8),
+                    !RHI.ValidateStorageSRVBinding(View, Binding, ERHIAccess::SRVCompute, Error) &&
+                    !RHI.ValidateStorageSRVBinding(View, Native, ERHIAccess::SRVCompute, Error));
+                Cmd.Transition(FRHITransitionInfo(Buffer, ERHIAccess::SRVCompute, ERHIAccess::CopySrc));
+                Cmd.ImmediateFlush(EImmediateFlushType::FlushRHIThread);
+                const auto Bytes = RHI.ReadBuffer(Buffer, sizeof(Words));
+                Record(*FString::Printf(TEXT("skeletal-uint%u-bytes-preserved"), Stride * 8),
+                    Bytes.Num() == sizeof(Words) && FMemory::Memcmp(Bytes.GetData(), Words, sizeof(Words)) == 0);
+            }
             if (Supported)
             {
                 auto Shader = RHICreateComputeShader(FRHICreateShaderDesc(WebGPUProbe::Packet(Directory, TEXT("compute"))));

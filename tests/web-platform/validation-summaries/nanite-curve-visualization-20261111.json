@@ -1,0 +1,295 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-curve-visualization-20261111.json",
+    "bytes": 13039,
+    "sha256": "5700694643889abfb4988251043f0b024db935ceb1234585d5bd33417b711177",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-11T02:49:59.005Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-curve-visualization-evidence.cjs",
+      "sha256": "ce4ecb098bf56efc9b628b1f1c0fc0ce5af06e6fe403cf79afd301f68f4d3d7d"
+    },
+    "proof": {
+      "pass": true,
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-nanite-curve-material-visualization.cjs",
+        "sha256": "d568438b43bf6d064d005e6922f4c1e83679e0f355bf8ea51202376e51900473"
+      },
+      "inputs": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\NaniteVisualize.usf",
+          "sha256": "0d927a69e273c5fde83be9febe570d9c93a6c2a2744229175014a03f13692ab4"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-visualization\\original-NaniteVisualize.usf",
+          "sha256": "058f721b2c9cf704b9440886f795adf16fa5f1b7eb56d793fb3eca61d4ee9edc"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-index\\verified.json",
+          "sha256": "dfc1a30d12bd643db1fa07781536a4a6733111e7d39d6fcd8856be0a7d9b4d09"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-index\\cases.bin",
+          "sha256": "3560870f91a87ae029cfe7c03d37bbdbd3fdbdf9b831f71418d65c0212ed59f1"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-index\\tables.bin",
+          "sha256": "04a6fb4d9f89a5adde02be56b11b61af062406c1b56e1d2045028be92668dc73"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-index\\current.hlsl",
+          "sha256": "7915b0f954e13d3d219a30b63ad2d4ba1869f21d85c36bbedad45859a543d378"
+        }
+      ],
+      "results": [
+        {
+          "name": "old",
+          "failures": [
+            86501,
+            86501
+          ],
+          "cases": 116288,
+          "readback": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-visualization\\old-readback.bin",
+            "sha256": "716a7529ae216d5db43fc146b7ca59f3deda87b16311120d2de653d4e3c38953"
+          },
+          "files": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-visualization\\old.hlsl",
+              "sha256": "a4b0aee369b5f3aa1ba5d377dbde08905d89e52319b62f785bd6f7be6ade860a"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-visualization\\old.spv",
+              "sha256": "d57d87880883b1d4ba6fe72238e6d49bb3a48823090722c8bba40c8e45eaf211"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-visualization\\old.wgsl",
+              "sha256": "e873f2789c4ba02f6fa50587c62542216f16f6e797bc64e49669c8c5179851e6"
+            }
+          ]
+        },
+        {
+          "name": "current",
+          "failures": [
+            0,
+            0
+          ],
+          "cases": 116288,
+          "readback": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-visualization\\current-readback.bin",
+            "sha256": "682d69540b8bd94c962f66c6e790a15c9e3c8a6ffdc65421a978c74b89ffb690"
+          },
+          "files": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-visualization\\current.hlsl",
+              "sha256": "531cf93872e6b94f37df719a56196761d19422620362d6b3fa695750c934512d"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-visualization\\current.spv",
+              "sha256": "a5d2af6fc393997e471cece888a0c8048aeca9f9a215693a4645ff124f753409"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-visualization\\current.wgsl",
+              "sha256": "3faf532223392a6f7024381260eed42e0f0529ca9b7025f45c0d52492c346ca8"
+            }
+          ]
+        }
+      ]
+    },
+    "files": [
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-curve-visualization-evidence.cjs",
+          "sha256": "ce4ecb098bf56efc9b628b1f1c0fc0ce5af06e6fe403cf79afd301f68f4d3d7d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-curve-visualization-20261111\\0-collect-nanite-curve-visualization-evidence.cjs.gz",
+          "sha256": "3663c260c4e7828a6172d6b25431e65e2d34560be6e34c9ac488108b01720c57"
+        },
+        "bytes": 1781
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-visualization\\verified.json",
+          "sha256": "cc74d5f93269179bde8f56a2b95691fd58436e9e5f7080e4b7c757b7f3c4b30c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-curve-visualization-20261111\\1-verified.json.gz",
+          "sha256": "72a8c5ce9a8e9b0183937e2a2e5d1ec34e38e2be3e346fa0f7a2d9a2787a5248"
+        },
+        "bytes": 3677
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-nanite-curve-material-visualization.cjs",
+          "sha256": "d568438b43bf6d064d005e6922f4c1e83679e0f355bf8ea51202376e51900473"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-curve-visualization-20261111\\2-verify-nanite-curve-material-visualization.cjs.gz",
+          "sha256": "17a2f20bbb6fdfd91c7a9370b6673ac4e2acb35345646b6ea0d6040ee875abca"
+        },
+        "bytes": 5246
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\NaniteVisualize.usf",
+          "sha256": "0d927a69e273c5fde83be9febe570d9c93a6c2a2744229175014a03f13692ab4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-curve-visualization-20261111\\3-NaniteVisualize.usf.gz",
+          "sha256": "364852f4d9ef21224c25bbc7b0f8cefea99a08b8d2ccbd5199e48fa06b1f65d4"
+        },
+        "bytes": 37850
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-visualization\\original-NaniteVisualize.usf",
+          "sha256": "058f721b2c9cf704b9440886f795adf16fa5f1b7eb56d793fb3eca61d4ee9edc"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-curve-visualization-20261111\\4-original-NaniteVisualize.usf.gz",
+          "sha256": "04f8ff53a7303717d3b5b5e41ed0ccd1b8975a8656caa0837f25ed0ca95b26e2"
+        },
+        "bytes": 36783
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-index\\verified.json",
+          "sha256": "dfc1a30d12bd643db1fa07781536a4a6733111e7d39d6fcd8856be0a7d9b4d09"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-curve-visualization-20261111\\5-verified.json.gz",
+          "sha256": "4513926625f947e2266628d9924c3d38f91c90d26e8582c4d47e99973a413481"
+        },
+        "bytes": 3493
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-index\\cases.bin",
+          "sha256": "3560870f91a87ae029cfe7c03d37bbdbd3fdbdf9b831f71418d65c0212ed59f1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-curve-visualization-20261111\\6-cases.bin.gz",
+          "sha256": "21dafef73c59f9509d49f74ca36f035ebbcd38a4bcc78bb633cddd1977b0d242"
+        },
+        "bytes": 5581824
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-index\\tables.bin",
+          "sha256": "04a6fb4d9f89a5adde02be56b11b61af062406c1b56e1d2045028be92668dc73"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-curve-visualization-20261111\\7-tables.bin.gz",
+          "sha256": "352490cbdf8f12ffbbd3f2feed9dc21f06dff187d494dcce091fef838945f624"
+        },
+        "bytes": 46344
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-index\\current.hlsl",
+          "sha256": "7915b0f954e13d3d219a30b63ad2d4ba1869f21d85c36bbedad45859a543d378"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-curve-visualization-20261111\\8-current.hlsl.gz",
+          "sha256": "ca67d0ede8440543564f027153075c8c19a020a900812d16ecb404591433fffc"
+        },
+        "bytes": 5680
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-visualization\\old-readback.bin",
+          "sha256": "716a7529ae216d5db43fc146b7ca59f3deda87b16311120d2de653d4e3c38953"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-curve-visualization-20261111\\9-old-readback.bin.gz",
+          "sha256": "2fd26a70a203f6bf17b28a71b9e110f774e899e5c2d84783a8b38d07469c69dd"
+        },
+        "bytes": 930304
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-visualization\\old.hlsl",
+          "sha256": "a4b0aee369b5f3aa1ba5d377dbde08905d89e52319b62f785bd6f7be6ade860a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-curve-visualization-20261111\\10-old.hlsl.gz",
+          "sha256": "ab0cec6696f4fde26d700503ea75f6bd051542dc7b8d7b0c5807599821528c86"
+        },
+        "bytes": 5374
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-visualization\\old.spv",
+          "sha256": "d57d87880883b1d4ba6fe72238e6d49bb3a48823090722c8bba40c8e45eaf211"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-curve-visualization-20261111\\11-old.spv.gz",
+          "sha256": "89f0acc6846f181220aceaf735875bc21b0b51935c84600c4e8a9e08d0f91271"
+        },
+        "bytes": 3604
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-visualization\\old.wgsl",
+          "sha256": "e873f2789c4ba02f6fa50587c62542216f16f6e797bc64e49669c8c5179851e6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-curve-visualization-20261111\\12-old.wgsl.gz",
+          "sha256": "57a973ca27bc5f2a656bd59a207b2b21180ff940d67112f57155136e70e394b7"
+        },
+        "bytes": 3714
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-visualization\\current-readback.bin",
+          "sha256": "682d69540b8bd94c962f66c6e790a15c9e3c8a6ffdc65421a978c74b89ffb690"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-curve-visualization-20261111\\13-current-readback.bin.gz",
+          "sha256": "7d07a169242725fab02173c5c74b1981b771848aa6aae83f747fa1000afc7e36"
+        },
+        "bytes": 930304
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-visualization\\current.hlsl",
+          "sha256": "531cf93872e6b94f37df719a56196761d19422620362d6b3fa695750c934512d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-curve-visualization-20261111\\14-current.hlsl.gz",
+          "sha256": "5719f6d79a646275d7dc780f0e6d8ba6e61bd3bc40faa538ac1a025639c37fae"
+        },
+        "bytes": 5398
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-visualization\\current.spv",
+          "sha256": "a5d2af6fc393997e471cece888a0c8048aeca9f9a215693a4645ff124f753409"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-curve-visualization-20261111\\15-current.spv.gz",
+          "sha256": "f9ef1dd197e3dd54bef7e345e5d223b25cc441ba46be7bb7361abbeb908ab7e3"
+        },
+        "bytes": 3976
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-visualization\\current.wgsl",
+          "sha256": "3faf532223392a6f7024381260eed42e0f0529ca9b7025f45c0d52492c346ca8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-curve-visualization-20261111\\16-current.wgsl.gz",
+          "sha256": "e2afd2bfca72380fcf9fb0010d186e120e9d82c0c82248494cb665b5d55485e0"
+        },
+        "bytes": 4078
+      }
+    ],
+    "boundary": "Production material-index expressions used by Nanite visualization color and GPU feedback verified on the GPU. Full debug-view rendering and complete browser curve acceptance remain separate checks."
+  }
+}

@@ -34,6 +34,16 @@ int32 RunWebManualVertexFetchProbe(const FString& Params);
 int32 RunWebNaniteVisibilityProbe(const FString& Params);
 int32 RunWebNaniteAssetProbe(const FString& Params);
 int32 RunWebNaniteHierarchyProbe(const FString& Params);
+int32 RunWebNaniteMaterialProbe(const FString& Params);
+int32 RunWebNaniteProgrammableProbe(const FString& Params);
+int32 RunWebNaniteAssemblyProbe(const FString&, const FString&);
+int32 RunWebNaniteSkinningProbe(const FString&, const FString&);
+int32 RunWebNaniteSkinningWeldProbe(const FString&);
+int32 RunWebNaniteSkinningMaterials(const FString&);
+int32 RunWebNaniteSkinningBasePass(const FString&);
+int32 RunWebNaniteStreamingProbe(const FString& Params);
+int32 RunWebNaniteSidednessProbe(const FString& Params);
+int32 RunWebNaniteSceneAssets(const FString& Params);
 int32 RunWebShaderMetadataProbe(const FString& Params);
 int32 RunWebLumenShaderProbe(const FString& Params);
 
@@ -140,6 +150,38 @@ int32 UWebShaderProbeCommandlet::Main(const FString &Params)
 {
     if (FParse::Param(*Params, TEXT("WebNaniteHierarchyProbe")))
         return RunWebNaniteHierarchyProbe(Params);
+    if (FParse::Param(*Params, TEXT("WebNaniteStreamingProbe")))
+        return RunWebNaniteStreamingProbe(Params);
+    if (FParse::Param(*Params, TEXT("WebNaniteSidednessProbe")))
+        return RunWebNaniteSidednessProbe(Params);
+    if (FParse::Param(*Params, TEXT("WebNaniteSceneAssets")))
+        return RunWebNaniteSceneAssets(Params);
+    if (FParse::Param(*Params, TEXT("WebNaniteMaterialProbe")))
+        return RunWebNaniteMaterialProbe(Params);
+    if (FParse::Param(*Params, TEXT("WebNaniteSkinningWeld")))
+    {
+        FString Output; if (!FParse::Value(*Params, TEXT("Output="), Output)) return 1;
+        return RunWebNaniteSkinningWeldProbe(Output);
+    }
+    if (FParse::Param(*Params, TEXT("WebNaniteSkinningBasePass"))) return RunWebNaniteSkinningBasePass(Params);
+    if (FParse::Param(*Params, TEXT("WebNaniteSkinningMaterials"))) return RunWebNaniteSkinningMaterials(Params);
+    if (FParse::Param(*Params, TEXT("WebNaniteAssemblyProbe")))
+    {
+        FString Output, Fixture;
+        if (!FParse::Value(*Params, TEXT("Output="), Output) || !FParse::Value(*Params, TEXT("FixtureDirectory="), Fixture)) return 1;
+        return RunWebNaniteAssemblyProbe(Output, Fixture);
+    }
+    if (FParse::Param(*Params, TEXT("WebNaniteSkinningProbe")))
+    {
+        FString SkinningOutput, SkinningFixture;
+        if (!FParse::Value(*Params, TEXT("Output="), SkinningOutput) ||
+            !FParse::Value(*Params, TEXT("FixtureDirectory="), SkinningFixture)) return 1;
+        IFileManager::Get().MakeDirectory(*SkinningOutput, true);
+        IFileManager::Get().MakeDirectory(*SkinningFixture, true);
+        return RunWebNaniteSkinningProbe(SkinningOutput, SkinningFixture);
+    }
+    if (FParse::Param(*Params, TEXT("WebNaniteProgrammableProbe")))
+        return RunWebNaniteProgrammableProbe(Params);
     if (FParse::Param(*Params, TEXT("WebNaniteAssetProbe")))
         return RunWebNaniteAssetProbe(Params);
     if (FParse::Param(*Params, TEXT("WebNaniteVisibilityProbe")))

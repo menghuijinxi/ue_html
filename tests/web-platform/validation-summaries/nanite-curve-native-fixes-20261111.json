@@ -1,0 +1,223 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-curve-native-fixes-20261111.json",
+    "bytes": 846120,
+    "sha256": "70d59c225e5d3c15a63958269e93fcf650dc56a58cbbd2b391f1aa26368641ff",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-11T03:24:39.396Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-curve-native-fixes.cjs",
+      "sha256": "12b0978bdf127d1213faf5f04b9f93f30b512b7609491f0f4240ddfb818342ae"
+    },
+    "build": {
+      "date": "2026-11-11T11:06:39.0339800+08:00",
+      "pass": true,
+      "nativeModuleOnly": true,
+      "fullSourceEngineBuild": false,
+      "maxParallelActions": 4,
+      "hostProcessorAffinity": 983040,
+      "compilerVersion": "",
+      "disableHostOptimization": false,
+      "nativeModuleLoadVerified": false,
+      "completeUEScene": false,
+      "hostPreparation": {
+        "sha256": "22384077375a6298b26736f6f92a39566c7e46c5cd2ffd6307a3dc2980d0f7cb",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\native-nanitebuilder-host-results.json"
+      },
+      "actions": {
+        "sha256": "7533a5ea8350f1e17e1fc4d83d49041ad7e1c30758790d96f497e37c30fcce7e",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\native-nanitebuilder-actions-20261111-110639.json"
+      },
+      "actionCount": 3,
+      "exitCode": 0,
+      "installedInputsUnmodified": true,
+      "installedInputs": [
+        {
+          "file": "D:\\UE_5.8\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\Cluster.cpp",
+          "sha256": "15056cdf3d30f2884d88f9f3ef771743b8fa689ba7cea7c0af8fec9dad28f434"
+        },
+        {
+          "file": "D:\\UE_5.8\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\NaniteBuilder.cpp",
+          "sha256": "f5c91894430327015a9e33a2cc8cb4cbd11d4218cf17b700a1676517b02177fd"
+        },
+        {
+          "file": "D:\\UE_5.8\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\Cluster.cpp",
+          "sha256": "15056cdf3d30f2884d88f9f3ef771743b8fa689ba7cea7c0af8fec9dad28f434"
+        },
+        {
+          "file": "D:\\UE_5.8\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\Cluster.h",
+          "sha256": "79e5cbc24a8daa23bf2290d4e492869474203b2b3324cb6a326bf80ff4f83ea8"
+        },
+        {
+          "file": "D:\\UE_5.8\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\ClusterDAG.cpp",
+          "sha256": "f149210c02c05a87d6c64181496016bf3b6a6580cf24d8c84af0984c076aec72"
+        },
+        {
+          "file": "D:\\UE_5.8\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\Encode\\NaniteEncode.cpp",
+          "sha256": "560bfdb750e8d75fdad65f1bda2e8a23772935e2b89e29310c9be7e8ab5331a4"
+        },
+        {
+          "file": "D:\\UE_5.8\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\Encode\\NaniteEncodeMaterial.cpp",
+          "sha256": "48f1e94dd3c643ca8df8e88111b3ad561685d0b8c8201d49b8f28543790d4634"
+        },
+        {
+          "file": "D:\\UE_5.8\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\NaniteBuilder.cpp",
+          "sha256": "f5c91894430327015a9e33a2cc8cb4cbd11d4218cf17b700a1676517b02177fd"
+        },
+        {
+          "file": "D:\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor-NaniteBuilder.dll",
+          "sha256": "71b44667b158acece4bf0befb444fa3602def5b061e9dc29f1c29e65983d1e34"
+        },
+        {
+          "file": "D:\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor-NaniteBuilder.pdb",
+          "sha256": "52ae581547294082b395bdbeb8374cfcff8479a2d592b13bb8c5b50e27844369"
+        }
+      ],
+      "sourceFiles": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\Cluster.cpp",
+          "sha256": "0e9f7aa16f717583783b3be66ebe0ecbd7287c61f7b19f751d23b18fd26d3dd9"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\NaniteBuilder.cpp",
+          "sha256": "2270ce6e316bb6621e13ce3e47e8036b0d4ccbbcc6523119f75b6ce059dcaef5"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\overlays\\nanite-curves-builder.json",
+          "sha256": "93f447981d9342033553aa99b2487b34a0550365e6ed90b28a8db2d39842e15f"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\Cluster.cpp",
+          "sha256": "0e9f7aa16f717583783b3be66ebe0ecbd7287c61f7b19f751d23b18fd26d3dd9"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\Cluster.cpp",
+          "sha256": "e2cf64a924c5037f6db194fe574dc11dbb0a39fcd84aa21640da14b4c06078c8"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\Cluster.h",
+          "sha256": "8c48fa3ca0936ceb420e3b5df22e82148531e23261aeb84c9610bdd0c9e06f8a"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\Cluster.h",
+          "sha256": "94ef27ce57cfc0e314dc28439bda8592d9f179b39b7024b17b390d03fc89a9a2"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\ClusterDAG.cpp",
+          "sha256": "4706bad5ebff01a0bd20fe892c70cea81e6b8244099d8a34aa7b0c70bf19a135"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\ClusterDAG.cpp",
+          "sha256": "f78c86566fec2abdcb91f899f1802921b343a4d2505ed3488144bc8066edfaac"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\Encode\\NaniteEncode.cpp",
+          "sha256": "d019835fa9465d99f99cae6d9ab4f4ff4297122050f785428c0bced1a053b514"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\Encode\\NaniteEncode.cpp",
+          "sha256": "d019835fa9465d99f99cae6d9ab4f4ff4297122050f785428c0bced1a053b514"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\Encode\\NaniteEncodeMaterial.cpp",
+          "sha256": "bd2d6751209f9afd089de855bbe3adae66e418cda53b84f1b4eb9b8dd7fbf595"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\Encode\\NaniteEncodeMaterial.cpp",
+          "sha256": "9aefc5a5510d669383d770605910973b3aedd255c0e3a9d9b8564b4c475bf978"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\NaniteBuilder.cpp",
+          "sha256": "2270ce6e316bb6621e13ce3e47e8036b0d4ccbbcc6523119f75b6ce059dcaef5"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\NaniteBuilder.cpp",
+          "sha256": "7768be5863bb856f19c711edbeb6ce77f3e077b04fce7cc2510f5726c735a23c"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\NaniteSkinningWeld.h",
+          "sha256": "d187a2d1d73f5ea6ea8c5e518f51949e9266397d509cb955c677b4e24b78d45a"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Developer\\NaniteBuilder\\Private\\NaniteSkinningWeld.h",
+          "sha256": "d187a2d1d73f5ea6ea8c5e518f51949e9266397d509cb955c677b4e24b78d45a"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\prepare-native-nanite-builder-host.cjs",
+          "sha256": "2806da703e86a8392b423ef2ea9b32fec9ef70a09819e2e1ac3fcd71c7dd80c3"
+        },
+        {
+          "sha256": "18e9b632f1b655c2bed05a3c992ea3b2d83c379c52cf2a9c7498ec7f209f31ee",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build-native-rendercore.ps1"
+        },
+        {
+          "sha256": "e1e1aa973fd160251c56b31b66d87aac6576c383be46ee0b25a6ccde05183867",
+          "file": "D:\\UE_5.8\\Engine\\Source\\Programs\\UnrealBuildTool\\Configuration\\UEBuildTarget.cs"
+        },
+        {
+          "sha256": "ad90ba865c1de9a777bcab586b978605b05fede5a84fe363dee23fca1ea98911",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\prepare-native-ubt.cjs"
+        },
+        {
+          "sha256": "3cbb0a12c97fa7da8b0edd68bf573428fcefa0e3455228f443986d69eb868702",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\native-ubt\\build\\UEBuildTarget.cs"
+        },
+        {
+          "sha256": "1130ee080c8a7c52b213454d38feb8dda897718a4fd26939babc4f7f44d7e4b6",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\native-ubt\\UnrealBuildTool.Native.csproj"
+        }
+      ],
+      "products": [
+        {
+          "sha256": "7303d64dcd0e1ebe5a8b986805d3e701b35875cc63ec3fe687b675ce1d005b8c",
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Binaries\\Win64\\UnrealEditor-NaniteBuilder.dll"
+        },
+        {
+          "sha256": "469b2f8392be8800e99207fbeceec7173cf3074daf3543752c8a3c92d981ad6d",
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Binaries\\Win64\\UnrealEditor-NaniteBuilder.pdb"
+        }
+      ],
+      "ubt": {
+        "sha256": "a86a35337493cdce55cba6902ec1c13d1aa45bfc872c41a9377db41144e4c6f6",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Binaries\\DotNET\\UnrealBuildTool\\UnrealBuildTool.dll"
+      },
+      "log": {
+        "$omitted": true,
+        "reason": "Full diagnostic data is retained in the original report",
+        "type": "object",
+        "bytes": 179,
+        "sha256": "ac1cbc08f6b38471a35383fac4a9f886d0fbf201debcc63dd8c9c81930e421c2"
+      },
+      "boundary": "Isolated native NaniteBuilder module build using installed 5.8 source with audited target Web overlays. Other native modules remain precompiled dependencies. Module loading, Cook completion, WASM loading and rendering require separate verification."
+    },
+    "native": {
+      "$omitted": true,
+      "reason": "Detailed section exceeds the summary budget",
+      "type": "object",
+      "bytes": 45772,
+      "sha256": "6c9593b489435978683460c2ecd56fee1a94cfd93d8f5833d9a13a0420bdd7b1"
+    },
+    "gpu": {
+      "$omitted": true,
+      "reason": "Detailed section exceeds the summary budget",
+      "type": "object",
+      "bytes": 142201,
+      "sha256": "1788bb2649e1f18f125c1cd4f9546bb012b28d4dc508745a8ec73439210c991b"
+    },
+    "segmentChecks": 1101248,
+    "files": {
+      "$omitted": true,
+      "reason": "Large array",
+      "type": "array",
+      "entries": 998,
+      "bytes": 441511,
+      "sha256": "94bc1d4cd895380308c0525e4238e00988aebcdb766107fe8e11f8527fd02b0a"
+    },
+    "boundary": "Native curve Builder and decoder/raster fixes: preserve all leaves and material order, contain decoded radii, encode 256 points, finish long-curve hierarchies, fetch wave-boundary endpoints and encode segment visibility IDs. 29 direct Builder fixtures and four real Groom inputs pass GPU decoding and independent bounds checks, plus 720 GPU wave configurations and 1101248 CPU checks of encoded segment IDs. Browser component, streaming and complete Nanite acceptance remain open."
+  }
+}

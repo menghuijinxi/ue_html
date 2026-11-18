@@ -1,0 +1,297 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/villa-nanite-off-delivery-20261111.json",
+    "bytes": 12799,
+    "sha256": "86abdc7245479683505a0230672964f15cf1a546cfd97c822c8be70621d400e0",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-11T14:27:27.089Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-villa-off-delivery-evidence.cjs",
+      "sha256": "8e7ff7297095ec80093dc2e84ba2dd4ab39834585a6bc523ae2f49955550b7d4"
+    },
+    "url": "http://127.0.0.1:8765/build/villa-nanite-off-20261111/index.html",
+    "package": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-nanite-off-20261111-package.json",
+      "sha256": "dbe62910dc9847df18a00d8d928e8e803310206762c4671785e672290cfff4f7"
+    },
+    "verification": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-nanite-off-20261111\\report.json",
+      "sha256": "14257ef59ef4ad7f2d3c48f3f705fa55d581ffbad532c5514bbc7809162acd84"
+    },
+    "additionalFileBytes": 758693,
+    "runs": [
+      {
+        "run": 0,
+        "fps": 120.10217677652872,
+        "nanite": {
+          "enabled": false,
+          "registered": 0,
+          "entries": 0,
+          "assets": 2180,
+          "report": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-nanite-off-20261111\\run-0-nanite.json",
+            "sha256": "12bebb430e08ce4005d283460651b1daa8aa94f7e6d6de7f87fdbd9e1faf4d83"
+          }
+        },
+        "movementCm": 89.24153349161601
+      },
+      {
+        "run": 1,
+        "fps": 117.18078235186192,
+        "nanite": {
+          "enabled": false,
+          "registered": 0,
+          "entries": 0,
+          "assets": 2180,
+          "report": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-nanite-off-20261111\\run-1-nanite.json",
+            "sha256": "782e96489ef6c9fa27db33dc279021058d7d78c66532d93ff99f14d7f8861254"
+          }
+        },
+        "movementCm": 90.27320185702537
+      }
+    ],
+    "cleanup": {
+      "plan": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\cleanup-test-cache-20261111.json",
+        "sha256": "66b9f20a3b805909f495fd55a15e1d288a1a1289c720283757d3d079c9b1e9ae"
+      },
+      "preview": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cleanup-test-cache-20261111-preview.txt",
+        "sha256": "5a614153bda119daaefb87d8ac89cc83e4a6672ee600084a4d0db5c90340cd1a"
+      },
+      "deletionExecuted": false,
+      "directories": 191,
+      "logicalGiB": 281.9437286769971,
+      "skippedLinks": 4
+    },
+    "artifacts": [
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-nanite-off-20261111\\run-0-nanite.json",
+          "sha256": "12bebb430e08ce4005d283460651b1daa8aa94f7e6d6de7f87fdbd9e1faf4d83"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-nanite-off-delivery-20261111\\0-run-0-nanite.json.gz",
+          "sha256": "da1e26f34c785820755613907b5346ef33e541ae930832cb3dff4281a2585403"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-nanite-off-20261111\\run-0.png",
+          "sha256": "a7480b3c707ea6f71dd08673c33e4eed4a2959a3708289a2da0f5ebc3a3634bb"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-nanite-off-delivery-20261111\\1-run-0.png.gz",
+          "sha256": "18544165be0e2d4676e6978d22ef82517d54d3596b526e21c05f190fe3ea84b3"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-nanite-off-20261111\\run-1-nanite.json",
+          "sha256": "782e96489ef6c9fa27db33dc279021058d7d78c66532d93ff99f14d7f8861254"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-nanite-off-delivery-20261111\\2-run-1-nanite.json.gz",
+          "sha256": "89940cfd0e47409a1d5b2252af7cbfecb924e7849a4ab85b4e149c5f89bd6d85"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-nanite-off-20261111\\run-1.png",
+          "sha256": "434c41617f5a9da308daa27a68aa85b69335780b75894f17c90241ca0f895abd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-nanite-off-delivery-20261111\\3-run-1.png.gz",
+          "sha256": "3d884f144b41dd721366b6ce0cfa2152870a7b006abf086a3b4e1ea6420437eb"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-nanite-off-20261111\\browser.log",
+          "sha256": "ff40f6f7531b62d48f4237c02892189a184f61af4013dc16e952b9c7d370a09c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-nanite-off-delivery-20261111\\4-browser.log.gz",
+          "sha256": "9d2ed597ca4d3a7126cf5182f851ab763cbd91b0e910795190c0962ec0d76fa1"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-nanite-off-20261111-package.json",
+          "sha256": "dbe62910dc9847df18a00d8d928e8e803310206762c4671785e672290cfff4f7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-nanite-off-delivery-20261111\\5-villa-nanite-off-20261111-package.json.gz",
+          "sha256": "226405ea4f54cd94fc89ba16b5e2ffd8f4f3608422ec44c41b02e28401875dcf"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\package-villa-nanite-off.cjs",
+          "sha256": "604430ff4286996beaefc3bdf410ee6b325499d9836865d374385499913032d8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-nanite-off-delivery-20261111\\6-package-villa-nanite-off.cjs.gz",
+          "sha256": "c9a5a4610d16bc4234e371c8c1dd915390fac59ebbc2b29ec7f6a4082ae670bd"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-core-scene\\package.json",
+          "sha256": "832e046c28df949c7ce26b0d47c5c5f43f0f64d09ad36e733d3a1174be6e7d55"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-nanite-off-delivery-20261111\\7-package.json.gz",
+          "sha256": "a044e2542b709be1a2d4074221612454aceb98ad547806984221b058fabfa11a"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-nanite-off-20261111\\report.json",
+          "sha256": "14257ef59ef4ad7f2d3c48f3f705fa55d581ffbad532c5514bbc7809162acd84"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-nanite-off-delivery-20261111\\8-report.json.gz",
+          "sha256": "0d34ac3bb2cdf3b9fde79b1961b06470521f268e8c5ec0e6d0c3ec81cf447904"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-villa-nanite-off.cjs",
+          "sha256": "452568f63e9b070d34928e59692ef1efae049d42bd0045a03c62d45d52f6cc0b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-nanite-off-delivery-20261111\\9-probe-villa-nanite-off.cjs.gz",
+          "sha256": "6f5c4e702c86411b075840fc43c588c6561d7c5aa870fbbda5c281e441dbab53"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-nanite-off-20261111\\index.html",
+          "sha256": "b330292be761e7b6d043f6e235cb575f89f270a16a02bce82412c17ef06ae4ad"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-nanite-off-delivery-20261111\\10-index.html.gz",
+          "sha256": "5b4cf6491e56e78ed1982d318aa35a964e984333023f1f1c27fdcfaf6546086c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-nanite-off-20261111\\config-files.json",
+          "sha256": "2b7db6a6b09da0528e2edb73d412a858127a1a73404ff28bddb6d9be48dc524e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-nanite-off-delivery-20261111\\11-config-files.json.gz",
+          "sha256": "d233866b0fb35f65bf36b6c9eb16c31129ba08eb2ae1efc00e17396c06b448b3"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-nanite-off-20261111\\asset-versions.json",
+          "sha256": "536328a35b3c773c2be8211bc9847a4dfdef5fc2e24ee91bcfe60ff50db4bdb8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-nanite-off-delivery-20261111\\12-asset-versions.json.gz",
+          "sha256": "7108d750c50424ecb855a9a1fbdc2c4521469fa272f4ef030f8aac3c68affc2d"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\cleanup-test-cache-20261111.json",
+          "sha256": "66b9f20a3b805909f495fd55a15e1d288a1a1289c720283757d3d079c9b1e9ae"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-nanite-off-delivery-20261111\\13-cleanup-test-cache-20261111.json.gz",
+          "sha256": "02bc1a2d94da35c8afd6369e0b3fb9b22d195fe09090b323380ba212ff97b0ce"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\create-test-cache-cleanup-plan.cjs",
+          "sha256": "643a936aa782bf03406798a0936682414c68ed252da247ad058c0f18e744eb7f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-nanite-off-delivery-20261111\\14-create-test-cache-cleanup-plan.cjs.gz",
+          "sha256": "e7975c3d5f752859411ba8d99327020a440b126a97873b395d13fd15ef30805c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\cleanup-test-cache-20261111.ps1",
+          "sha256": "e38da8b66e2e4c59a78881020dbad6d231ee23d94915e4bae464ab4490cc2f65"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-nanite-off-delivery-20261111\\15-cleanup-test-cache-20261111.ps1.gz",
+          "sha256": "dc679bfcae4c01f43ea449a124032fd4aa128db1a2a5386c69f5d083cc3c2c6d"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\清理旧测试缓存-20261111.bat",
+          "sha256": "ab4179200800972efe3f8b7081641713a13d962bdcafba9cecaecd77cff67663"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-nanite-off-delivery-20261111\\16-清理旧测试缓存-20261111.bat.gz",
+          "sha256": "90cdc5fc7b0e7170ad5f8946e02e5085611d25fc31e049cc7bbf8babfe3c93f5"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\清理旧测试缓存-20261111.txt",
+          "sha256": "dcb9127be8e2fa3bd938708c6535dad197c8b28a23d29b0538d9ca1ecc62b11c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-nanite-off-delivery-20261111\\17-清理旧测试缓存-20261111.txt.gz",
+          "sha256": "871145b14fbf0759a7bd9c03e0aafe43a7f6c0e7a5dd13fbf34a0b379894ddde"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cleanup-test-cache-20261111-preview.txt",
+          "sha256": "5a614153bda119daaefb87d8ac89cc83e4a6672ee600084a4d0db5c90340cd1a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-nanite-off-delivery-20261111\\18-cleanup-test-cache-20261111-preview.txt.gz",
+          "sha256": "4d355959df51514a22588161deb2a38bdb3f9266ceaa5874440643b83ff2e2a9"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-villa-off-delivery-evidence.cjs",
+          "sha256": "8e7ff7297095ec80093dc2e84ba2dd4ab39834585a6bc523ae2f49955550b7d4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-nanite-off-delivery-20261111\\19-collect-villa-off-delivery-evidence.cjs.gz",
+          "sha256": "1a47827252c4fa34e9d63c21ad1f6b3d47500446471f2008b7526dbe63e0b65b"
+        },
+        "encoding": "gzip"
+      }
+    ],
+    "boundary": "Requested current-version Nanite-off test package. Native Nanite is disabled from startup and remains disabled on reload. Startup, real input and resize pass; these checks do not close Nanite compatibility or performance work. Cleanup was previewed only. The user runs the fixed-list batch manually; logical size is not guaranteed physical recovery."
+  }
+}

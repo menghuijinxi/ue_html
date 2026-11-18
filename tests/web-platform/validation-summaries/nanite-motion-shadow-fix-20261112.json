@@ -1,0 +1,1543 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-motion-shadow-fix-20261112.json",
+    "bytes": 63483,
+    "sha256": "c63a5dc0d2944213ab01d67459e5aee2b18baa216deb8151f3ba8ee2b1d57207",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "date": "2026-11-11T16:16:52.473Z",
+    "pass": true,
+    "movementRegressionFixed": true,
+    "naniteFullPerformanceAccepted": false,
+    "comparison": {
+      "off": {
+        "frames": 14372,
+        "fps": 119.67842377551716,
+        "low1": 36.139679861933985,
+        "maxMs": 122.56499999761581,
+        "over33": 26,
+        "over50": 8,
+        "over100": 6
+      },
+      "candidate": {
+        "frames": 16524,
+        "fps": 137.63407901087973,
+        "low1": 53.50713482005386,
+        "maxMs": 39.07499998807907,
+        "over33": 4,
+        "over50": 0,
+        "over100": 0
+      },
+      "rollingLow": [
+        {
+          "mode": "candidate",
+          "low1": 41.77109438603341,
+          "maxMs": 39.07499998807907
+        },
+        {
+          "mode": "off",
+          "low1": 16.547843954810812,
+          "maxMs": 121.66000002622604
+        },
+        {
+          "mode": "off",
+          "low1": 16.732201125062428,
+          "maxMs": 122.56499999761581
+        },
+        {
+          "mode": "candidate",
+          "low1": 39.888312708656144,
+          "maxMs": 36.125
+        }
+      ]
+    },
+    "gpu": {
+      "before": [
+        {
+          "frame": 6869,
+          "elapsed": 36209.435000002384,
+          "passMs": 115.73657599999993,
+          "cubeMs": 112.26316800000001,
+          "cubePasses": 12,
+          "maxCubeMs": 37.6832
+        },
+        {
+          "frame": 6328,
+          "elapsed": 31571.37000000477,
+          "passMs": 113.57388799999993,
+          "cubeMs": 109.64172799999999,
+          "cubePasses": 12,
+          "maxCubeMs": 36.175872
+        },
+        {
+          "frame": 6191,
+          "elapsed": 30321.060000002384,
+          "passMs": 99.74579199999992,
+          "cubeMs": 96.206848,
+          "cubePasses": 12,
+          "maxCubeMs": 26.017792
+        },
+        {
+          "frame": 7205,
+          "elapsed": 39409.37999999523,
+          "passMs": 85.98323199999994,
+          "cubeMs": 82.444288,
+          "cubePasses": 18,
+          "maxCubeMs": 18.939904
+        },
+        {
+          "frame": 7202,
+          "elapsed": 39359.15000003576,
+          "passMs": 33.22675200000002,
+          "cubeMs": 29.622272,
+          "cubePasses": 18,
+          "maxCubeMs": 9.043968
+        },
+        {
+          "frame": 6530,
+          "elapsed": 33394.10000002384,
+          "passMs": 32.11264000000003,
+          "cubeMs": 28.114944,
+          "cubePasses": 12,
+          "maxCubeMs": 9.371648
+        },
+        {
+          "frame": 6223,
+          "elapsed": 30694.37000000477,
+          "passMs": 31.26067200000002,
+          "cubeMs": 27.656192,
+          "cubePasses": 12,
+          "maxCubeMs": 9.043968
+        },
+        {
+          "frame": 7003,
+          "elapsed": 37639.64500004053,
+          "passMs": 24.444928000000022,
+          "cubeMs": 20.709376,
+          "cubePasses": 18,
+          "maxCubeMs": 4.718592
+        }
+      ],
+      "legacy": [
+        {
+          "frame": 6041,
+          "elapsed": 30315.02999997139,
+          "passMs": 4.456447999999998,
+          "cubeMs": 0.720896,
+          "cubePasses": 12,
+          "maxCubeMs": 0.32768
+        },
+        {
+          "frame": 7140,
+          "elapsed": 39219.344999969006,
+          "passMs": 4.390911999999998,
+          "cubeMs": 0.39321599999999995,
+          "cubePasses": 12,
+          "maxCubeMs": 0.262144
+        },
+        {
+          "frame": 6954,
+          "elapsed": 37623.74000000954,
+          "passMs": 3.9976959999999995,
+          "cubeMs": 0.32767999999999997,
+          "cubePasses": 18,
+          "maxCubeMs": 0.065536
+        },
+        {
+          "frame": 7156,
+          "elapsed": 39358.81999999285,
+          "passMs": 3.8010879999999996,
+          "cubeMs": 0.32767999999999997,
+          "cubePasses": 18,
+          "maxCubeMs": 0.065536
+        },
+        {
+          "frame": 7286,
+          "elapsed": 40307.55000001192,
+          "passMs": 4.063231999999999,
+          "cubeMs": 0.32767999999999997,
+          "cubePasses": 18,
+          "maxCubeMs": 0.065536
+        },
+        {
+          "frame": 7293,
+          "elapsed": 40361.00499999523,
+          "passMs": 4.128767999999999,
+          "cubeMs": 0.32767999999999997,
+          "cubePasses": 18,
+          "maxCubeMs": 0.065536
+        },
+        {
+          "frame": 7321,
+          "elapsed": 40568.12999999523,
+          "passMs": 4.259839999999999,
+          "cubeMs": 0.32767999999999997,
+          "cubePasses": 18,
+          "maxCubeMs": 0.065536
+        },
+        {
+          "frame": 7333,
+          "elapsed": 40670.594999969006,
+          "passMs": 3.866623999999999,
+          "cubeMs": 0.32767999999999997,
+          "cubePasses": 18,
+          "maxCubeMs": 0.262144
+        }
+      ],
+      "after": [
+        {
+          "frame": 6108,
+          "elapsed": 30317.115000009537,
+          "passMs": 4.194303999999999,
+          "cubeMs": 0.65536,
+          "cubePasses": 12,
+          "maxCubeMs": 0.131072
+        },
+        {
+          "frame": 7283,
+          "elapsed": 40140.34000003338,
+          "passMs": 4.259839999999998,
+          "cubeMs": 0.45875199999999994,
+          "cubePasses": 18,
+          "maxCubeMs": 0.262144
+        },
+        {
+          "frame": 7266,
+          "elapsed": 40008.94999998808,
+          "passMs": 3.9321599999999988,
+          "cubeMs": 0.393216,
+          "cubePasses": 18,
+          "maxCubeMs": 0.262144
+        },
+        {
+          "frame": 6152,
+          "elapsed": 30672.814999997616,
+          "passMs": 4.063231999999999,
+          "cubeMs": 0.39321599999999995,
+          "cubePasses": 12,
+          "maxCubeMs": 0.262144
+        },
+        {
+          "frame": 6257,
+          "elapsed": 31567.490000009537,
+          "passMs": 3.8666240000000003,
+          "cubeMs": 0.39321599999999995,
+          "cubePasses": 12,
+          "maxCubeMs": 0.065536
+        },
+        {
+          "frame": 7188,
+          "elapsed": 39397.79500001669,
+          "passMs": 4.063232,
+          "cubeMs": 0.39321599999999995,
+          "cubePasses": 18,
+          "maxCubeMs": 0.065536
+        },
+        {
+          "frame": 6814,
+          "elapsed": 36358.48000001907,
+          "passMs": 3.997696,
+          "cubeMs": 0.32768,
+          "cubePasses": 6,
+          "maxCubeMs": 0.32768
+        },
+        {
+          "frame": 6376,
+          "elapsed": 32575.230000019073,
+          "passMs": 4.3253759999999986,
+          "cubeMs": 0.32767999999999997,
+          "cubePasses": 6,
+          "maxCubeMs": 0.262144
+        }
+      ]
+    },
+    "images": [
+      {
+        "view": 0,
+        "meanAbsoluteRGB": 0.6706286168981481,
+        "channelFractionOver8": 0.0008210358796296297,
+        "max": 92
+      },
+      {
+        "view": 1,
+        "meanAbsoluteRGB": 0.6005649594907407,
+        "channelFractionOver8": 0.0006058304398148148,
+        "max": 93
+      },
+      {
+        "view": 2,
+        "meanAbsoluteRGB": 0.6277329282407408,
+        "channelFractionOver8": 0.0014402488425925926,
+        "max": 45
+      },
+      {
+        "view": 3,
+        "meanAbsoluteRGB": 0.5996838831018518,
+        "channelFractionOver8": 0.0002763310185185185,
+        "max": 43
+      }
+    ],
+    "scene": {
+      "frames": 1967,
+      "tests": [
+        {
+          "step": 1,
+          "enabled": true,
+          "entries": 308,
+          "validation": {
+            "covered": 13625,
+            "suppressed": 2062,
+            "ordinaryFallback": 99,
+            "visible": 1904,
+            "shadingModels": {
+              "0": 292,
+              "1": 11751,
+              "2": 1582
+            }
+          }
+        },
+        {
+          "step": 2,
+          "enabled": false,
+          "entries": 0,
+          "validation": {
+            "covered": 0,
+            "suppressed": 0
+          }
+        },
+        {
+          "step": 3,
+          "enabled": true,
+          "entries": 308,
+          "validation": {
+            "covered": 13624,
+            "suppressed": 2062,
+            "ordinaryFallback": 99,
+            "visible": 1903,
+            "shadingModels": {
+              "0": 289,
+              "1": 11759,
+              "2": 1576
+            }
+          }
+        },
+        {
+          "step": 4,
+          "enabled": true,
+          "entries": 308,
+          "validation": {
+            "covered": 14377,
+            "suppressed": 2062,
+            "ordinaryFallback": 99,
+            "visible": 374,
+            "shadingModels": {
+              "1": 14377
+            }
+          }
+        },
+        {
+          "step": 5,
+          "enabled": true,
+          "entries": 316,
+          "validation": {
+            "covered": 13916,
+            "suppressed": 2062,
+            "ordinaryFallback": 99,
+            "visible": 2163,
+            "shadingModels": {
+              "0": 4994,
+              "1": 8922
+            }
+          }
+        },
+        {
+          "step": 6,
+          "enabled": true,
+          "entries": 308,
+          "validation": {
+            "covered": 13625,
+            "suppressed": 2062,
+            "ordinaryFallback": 99,
+            "visible": 1906,
+            "shadingModels": {
+              "0": 293,
+              "1": 11740,
+              "2": 1592
+            }
+          }
+        }
+      ]
+    },
+    "candidate": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-nanite-off-shadow-guard-20261111\\package.json",
+      "sha256": "b1d581c302df4d350280f2b92bec6f2d28c0149ea731e26525ad714d4974e517"
+    },
+    "naniteCandidate": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-shadow-guard-scene-20261112\\package.json",
+      "sha256": "99b59a12df0cb2e852107643c6173bc5a55963fce27ff3f73ead0cf5f97c8cf3"
+    },
+    "records": [
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-a\\0-off.png",
+          "sha256": "b359ff268f12d040171246b360f250e3761fb5b6ccaabf8df2ed66fbfb58080a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\0-0-off.png.gz",
+          "sha256": "017935cea9f16bee84023ab8660165c8aa20974d668bfa9274cf171aed69b26a"
+        },
+        "bytes": 3652898
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-a\\1-legacy.png",
+          "sha256": "fdb4fe0c17bcf2bdd8c15bde55a8b529cf05ec26a41040b5cb195ab96e1c5b98"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\1-1-legacy.png.gz",
+          "sha256": "7ff0cffa9b912a67b0575b2ab4938b2df80cbb70357514b97107f54037c0504d"
+        },
+        "bytes": 3643105
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-a\\analysis.json",
+          "sha256": "0a86d49b816e7e59c086ea9469c9b7e2b453fee4bfe0b57ebe3082a35c069d27"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\2-analysis.json.gz",
+          "sha256": "4befcfab874e5b5e45f5affe26d2b56d47b66ace3689fbfb03e0744bcee05111"
+        },
+        "bytes": 413880
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-a\\report.json",
+          "sha256": "8202fe25f7f2c81d1f4bb82e8b5789528ce39d54ade3c7cee45ce2dce9e9ca95"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\3-report.json.gz",
+          "sha256": "a8795de0694cf89877795a05816e7e5213f0fdaa87d35168dd4989ca566d3714"
+        },
+        "bytes": 9602127
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-a\\source.cjs",
+          "sha256": "504096a728bcc0641ece13c7d108720b99874f6ca9070c31a2c9bb837ae7763a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\4-source.cjs.gz",
+          "sha256": "64c6d1ca37ce802a003890457b76ded17325d13a7f372c70c480e578153e6180"
+        },
+        "bytes": 13166
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-b\\0-legacy.png",
+          "sha256": "6a3680500c88296962f52177c052fa7e700bb503d0ac3cd99a630140339f4dff"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\5-0-legacy.png.gz",
+          "sha256": "0dccfe82bf658182d806ecd557efdc843edd79ca2cea2ff5c283abf81c36e884"
+        },
+        "bytes": 3513487
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-b\\1-off.png",
+          "sha256": "dfcdbac332f20cd2a6884a20af10b2ae5a418c01ec2eef4ba12a96f6404a14f6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\6-1-off.png.gz",
+          "sha256": "f28938e42c4390a917b00193b2e03d09e2a832d82ecc82f3b9e34f58d16f97b1"
+        },
+        "bytes": 3514664
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-b\\analysis.json",
+          "sha256": "398eabf2a5783c9de30f943a8f9bc54e635a7a63ad92b43588c4b81664688683"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\7-analysis.json.gz",
+          "sha256": "fcf8a8b61d11ff74a7d00b5b4b5c9b917e9888d2fdc4d7da13baba95a7cbbeab"
+        },
+        "bytes": 350072
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-b\\report.json",
+          "sha256": "d3c7242c9795fb60737b7253b1798335c0c5bae00798653eb1174d0c2f781755"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\8-report.json.gz",
+          "sha256": "47b63b403b99e317ebd11b5c13b30dd240fd249e0d9fbf6311aa5045a84db3bc"
+        },
+        "bytes": 6927546
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-b\\source.cjs",
+          "sha256": "6cc670ed9687442ff85d7d88d2f1a34531e69777164e207950f6dce5cf8056e4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\9-source.cjs.gz",
+          "sha256": "8ea42547b0c4c89cfbf8e12373ce05e55d4fae9f2f369965afa15a233ad57644"
+        },
+        "bytes": 13836
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-isolate\\0-no-scene.png",
+          "sha256": "65d3706ddafed9e36ec29bd298b022281f6f3aeb735291b2b1b13b53ac50996a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\10-0-no-scene.png.gz",
+          "sha256": "1cb1953062473d111a66fd178f12af55bf1cedd3756bf135df3f075445866575"
+        },
+        "bytes": 3516929
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-isolate\\1-off.png",
+          "sha256": "bac19e6b21ce3acd9de1d9dc5d4e6ddafdbef43fc18f92a0c74610d2c765f5ec"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\11-1-off.png.gz",
+          "sha256": "25f6299b8e29e20bc8b3fed3d31d619de3e31a58c9e1d1dadef6af3ddd6d0cbf"
+        },
+        "bytes": 3515249
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-isolate\\analysis.json",
+          "sha256": "ab6c948fdcf4efca4f4bf0c287b620ac871c1b0ae92b7335800736bdeba71e7a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\12-analysis.json.gz",
+          "sha256": "30f3666f7f88acdd2c6e98c68de2938391f1f4b4880887f992e6875057d87274"
+        },
+        "bytes": 361817
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-isolate\\report.json",
+          "sha256": "a5d629b36e9d2b7331d4f7dcd52ebcec4ee8d898ea40a6d7bbc8e640c8021aab"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\13-report.json.gz",
+          "sha256": "8ec7a9bff63d028e6fdc7514507e4ec555d3e6589b9d55d61edc3b7ce195aaf4"
+        },
+        "bytes": 6842040
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-isolate\\source.cjs",
+          "sha256": "e594236bc3f518210b422708507fdc34400e82316c0ac847e25b1a751ebd1600"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\14-source.cjs.gz",
+          "sha256": "da650db74dac67672c6bdbca219560429b2315a5cce1b2a8a61ea7d56eef5531"
+        },
+        "bytes": 15826
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-trace\\0-off.png",
+          "sha256": "8a32519e09407765613fbf3447ebbcf558eabc6bb0197ba900166eb9684a1823"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\15-0-off.png.gz",
+          "sha256": "ad8a534a8096e574af8793f07343354ce1ab199eafe83635aba3914784dc16d5"
+        },
+        "bytes": 3518087
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-trace\\report.json",
+          "sha256": "139a067f37c253fe2bc2c5e1ad68673b05be3012156b0770a63a4e518a212fb3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\16-report.json.gz",
+          "sha256": "4f3beea9f0bcf50c4ea75c92bae78ad9a693be66daee8d16a72374cdab1c5391"
+        },
+        "bytes": 4806158
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-trace\\source.cjs",
+          "sha256": "e594236bc3f518210b422708507fdc34400e82316c0ac847e25b1a751ebd1600"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\17-source.cjs.gz",
+          "sha256": "da650db74dac67672c6bdbca219560429b2315a5cce1b2a8a61ea7d56eef5531"
+        },
+        "bytes": 15826
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-gpu\\0-off.png",
+          "sha256": "9f2d6f1cd68329444e41e20c5fe9d6639742bf3bcf5f046240cad7f805496879"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\18-0-off.png.gz",
+          "sha256": "85bf2f6c9709f1596f86503feb479b5e1428fbe7dd4ccdfb1820fd5689b35283"
+        },
+        "bytes": 3514843
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-gpu\\gpu-observer.cjs",
+          "sha256": "38cef1fac56280c34cc47bf3349fe00ad419461ab2b6a3d44fce2d1ba5af4075"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\19-gpu-observer.cjs.gz",
+          "sha256": "6bb395aedcafb18321b26dd84f8e1c29ff4396ff219c1b973454d7a4a0798692"
+        },
+        "bytes": 4979
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-gpu\\report.json",
+          "sha256": "ddde0c7a0d427d1ffb47d5fee263d74219f6465bbbe32d0924382aa039545a45"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\20-report.json.gz",
+          "sha256": "5ee2c601f95b62fdf3fc51d9abb5ccf8b43db4e3c1f918e86cc1e93374189b2d"
+        },
+        "bytes": 126483317
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-gpu\\source.cjs",
+          "sha256": "83412e18faf648bb9f8faad5393fa0e59f8426ab96acdc6eba1ea16d70c933e4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\21-source.cjs.gz",
+          "sha256": "349f4acdb37d28c5001fc9bbbf2e09b4c98ccf8655df12a92e92bab8c136f578"
+        },
+        "bytes": 16432
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-gpu-legacy\\0-legacy.png",
+          "sha256": "394a993ecd4d3e12df40fa8621d505f73cbc8ddb565cd04bd1f91209364f88bd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\22-0-legacy.png.gz",
+          "sha256": "d4e3bf1c24c39a3475dc3ea7b8fa5d13d108cf871408ab096fe274303f542576"
+        },
+        "bytes": 3516572
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-gpu-legacy\\gpu-observer.cjs",
+          "sha256": "38cef1fac56280c34cc47bf3349fe00ad419461ab2b6a3d44fce2d1ba5af4075"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\23-gpu-observer.cjs.gz",
+          "sha256": "6bb395aedcafb18321b26dd84f8e1c29ff4396ff219c1b973454d7a4a0798692"
+        },
+        "bytes": 4979
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-gpu-legacy\\report.json",
+          "sha256": "142cc9397401fd55a512e3ab0a46fdaf9ea284e4b9b7b1bec6a8be33330fac81"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\24-report.json.gz",
+          "sha256": "5eba5156a546220f9f9b4e20b66f9248a1a97fe543684690b302f7f155174224"
+        },
+        "bytes": 138860800
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-gpu-legacy\\source.cjs",
+          "sha256": "318d774a3acd17779d13f33c3a7934993fc2d46cbca999c8960965c69a639572"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\25-source.cjs.gz",
+          "sha256": "94e1d4891e5137ed18f2334b130d1fd76950e0937122274e74d2797c54fbb8b8"
+        },
+        "bytes": 17304
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-shadow-args\\gpu-observer.cjs",
+          "sha256": "b66838615d72aa1d3b2ab52987d86e4045df710010f2f9ce5c0f003feb226b0b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\26-gpu-observer.cjs.gz",
+          "sha256": "15af0d03f1088c7a989ef9051059f9c7dca4b25c194c50f8f1a4e243352765a8"
+        },
+        "bytes": 7215
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-shadow-args\\main_00001ff8_c869331a.wgsl",
+          "sha256": "d839dd65ef58c5694cdf4350138c43962725140c902a6b1a072caf94d58efabd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\27-main_00001ff8_c869331a.wgsl.gz",
+          "sha256": "895011514b08df2e371c07eda06e38043e6b88e338f889517bf80e0e3f0302e1"
+        },
+        "bytes": 5029
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-shadow-args\\main_000024cc_13bafd8b.wgsl",
+          "sha256": "80a995060ba953b87ee38f773c990c0381478c3787fe7fdc7780f9cf284506cd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\28-main_000024cc_13bafd8b.wgsl.gz",
+          "sha256": "267ada29eb893ffa9baf9bc9ff43b90f6c964ebea34680211c44c366f5db94dc"
+        },
+        "bytes": 21585
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-shadow-args\\main_000024cc_9814fd1b.wgsl",
+          "sha256": "3de0932d2e9151f008ff2b5758ff5f3299149605d2a5fef6424b8977219744b1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\29-main_000024cc_9814fd1b.wgsl.gz",
+          "sha256": "0b48c1e13efce85558e035ffb702b8b0f84e2f6bb14d6cef459ad591674e240d"
+        },
+        "bytes": 21585
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-shadow-args\\main_00003104_58072327.wgsl",
+          "sha256": "7abb52337e0d8694224a4676b483fc8e8632ea9cc3be4bd745c2674677bb35d3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\30-main_00003104_58072327.wgsl.gz",
+          "sha256": "b845ffae7a48c87d42351eec501d26715a7f2fa6b7f98a691a94487b7d77c63c"
+        },
+        "bytes": 17216
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-shadow-args\\main_000033b0_16c57eac.wgsl",
+          "sha256": "94399cc763400e470414d0120cb4826618fe85a3871a0754fe67e7608a4d84c4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\31-main_000033b0_16c57eac.wgsl.gz",
+          "sha256": "b7d4d2a9132953c03f797dd98972bfbac27469b16599ea15cd5c99d4cd9cff59"
+        },
+        "bytes": 15367
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-shadow-args\\main_00003a14_df50a060.wgsl",
+          "sha256": "bf2f63b5f40d4c07f0674dc2012075a7ccfe5938729e9971a5ae0ff297b9142c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\32-main_00003a14_df50a060.wgsl.gz",
+          "sha256": "3b2986ce4fad511f957783ed457371057376e9c1a02e7656ae1be5c69a254cd1"
+        },
+        "bytes": 16732
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-shadow-args\\main_00003b44_bc00d8d5.wgsl",
+          "sha256": "aed5b679f2e05634fdbb4daa989422d0f22bc371d4164446f52f2091dc59c518"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\33-main_00003b44_bc00d8d5.wgsl.gz",
+          "sha256": "64361de4fcb857d467d40b51e38b29b6ed923dd9c2c6b9af3968bed12a917e8b"
+        },
+        "bytes": 16954
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-shadow-args\\report.json",
+          "sha256": "a8ac9d5681982269e7213a672db2eddebed3c8b0268f07175bc69fdd8f536477"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\34-report.json.gz",
+          "sha256": "410c0eb994110c996297cde3099a8614dcf0c3d52e0c1b436bf382e43670f0f3"
+        },
+        "bytes": 4452001
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-shadow-args\\source.cjs",
+          "sha256": "318d774a3acd17779d13f33c3a7934993fc2d46cbca999c8960965c69a639572"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\35-source.cjs.gz",
+          "sha256": "94e1d4891e5137ed18f2334b130d1fd76950e0937122274e74d2797c54fbb8b8"
+        },
+        "bytes": 17304
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-shadow-point-only\\0-off.png",
+          "sha256": "64fcaaf27c5d42a60befe956e3d4bdfa3923f8748b1c2a605f73aa12ea77ca8f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\36-0-off.png.gz",
+          "sha256": "3225d177d6312c678f32670eb92e2338fd8a1fc34b2d03358dcbeb223406504c"
+        },
+        "bytes": 3513447
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-shadow-point-only\\point-diagnostic.cjs",
+          "sha256": "43694062c569808d2965a3111a189fc6770cde92f7306c2a24f0f5833027c2b9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\37-point-diagnostic.cjs.gz",
+          "sha256": "239f79d00cd83476aa3a4fae6f83a44de0e5129b9815bfd9c920621440019c08"
+        },
+        "bytes": 996
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-shadow-point-only\\report.json",
+          "sha256": "d7e02228072e17cf96eb5020a818010f7216e5566b8647acdfc3faffd0132535"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\38-report.json.gz",
+          "sha256": "ddb9e355ae5c793689955da3a835ec0e83e3947c0784dc8f5dffb2e1b27e75c3"
+        },
+        "bytes": 3703395
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-shadow-point-only\\source.cjs",
+          "sha256": "44602a569c89cfd13c4328c2b1c86b2c2e484a999a73672d0f9dbfeff30933e8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\39-source.cjs.gz",
+          "sha256": "cc12390d35e34ef931b472feda9ac8f1c2b861a51afe4c62d2230f64c5139ea4"
+        },
+        "bytes": 17983
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-fixed-abba\\0-candidate.png",
+          "sha256": "2811a31b82797aae007c2fa81e7da40def8e3485ccc95d14914cb9a4e8fa8973"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\40-0-candidate.png.gz",
+          "sha256": "590f2fb2165a503dda6e098674de67151fa6d25dc7a506eed46df61c2faf7b19"
+        },
+        "bytes": 3513579
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-fixed-abba\\1-off.png",
+          "sha256": "d4e576ae07039e7127602bd26217237c181471f4b11d8e49515b026b80e8acb5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\41-1-off.png.gz",
+          "sha256": "91a8117e74b73f38b279c38824bd9806338503e99425b050e0a5fef86a893335"
+        },
+        "bytes": 3513659
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-fixed-abba\\2-off.png",
+          "sha256": "ce015024b43eba93a2db82db85e0da5519c1adc1a77da1e088727c6fc572fca8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\42-2-off.png.gz",
+          "sha256": "b857cd2bbd9597623aacebf91b7b28e51c91c3c451c58f46205cc9ae02340322"
+        },
+        "bytes": 3514128
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-fixed-abba\\3-candidate.png",
+          "sha256": "f1f1b5af3368c77433c7471e61817776c15314d2a27f667e6c62724fb6e10275"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\43-3-candidate.png.gz",
+          "sha256": "6ddf202fc817f57c59a93e2d0b42aaa109c23688d68f324ab279e227491f880b"
+        },
+        "bytes": 3514641
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-fixed-abba\\analysis-source.cjs",
+          "sha256": "8e21c704b93b0456e726048ef1f232f753f9aa00a7db2431c78be653dc78e89e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\44-analysis-source.cjs.gz",
+          "sha256": "e43d9e7cb248c24f1c1d681c1a3143bd53628a8f80a4203fe2c414aa5fc97065"
+        },
+        "bytes": 3968
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-fixed-abba\\analysis.json",
+          "sha256": "db1b7d574d149af9705d835a163f371fb79a4339b519ed907ecf461169c9f9c0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\45-analysis.json.gz",
+          "sha256": "9f2fd5c2112b8e763d7237bd46017c2a0a2f3d23f370f163ef3ca5255c04bb59"
+        },
+        "bytes": 724358
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-fixed-abba\\report.json",
+          "sha256": "ec88e21f8fbd6921c5b10f7b6770d96b92bc06f8faddee1179882c524b8576dd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\46-report.json.gz",
+          "sha256": "9ddc0d68f896a53a89932dd9b449fe9970b19b815473f7b1d509083b663afe93"
+        },
+        "bytes": 14303414
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261111-fixed-abba\\source.cjs",
+          "sha256": "bf90aac92da4990b9125e3dd4d73ba1b7ff11583cb744f65e41cf38c3d4585f1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\47-source.cjs.gz",
+          "sha256": "34b57b0e80fd73eaa718a017e7014650960c8f40f9b1d6fb901e234b4d0e33d7"
+        },
+        "bytes": 18227
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261112-fixed-gpu\\0-candidate.png",
+          "sha256": "dfb8470c04b0dc760213c8e9b4e0cae1613ad45846786bcf138e5a04fd526658"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\48-0-candidate.png.gz",
+          "sha256": "f42ffb48d3298848e16e2ab132d2e37ec1e2849df20218d8a5ee5385d150a895"
+        },
+        "bytes": 3518081
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261112-fixed-gpu\\gpu-observer.cjs",
+          "sha256": "af47c4ffccd9f44ac250b7350467bf1606123a96b2d73439031d6a3591d96422"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\49-gpu-observer.cjs.gz",
+          "sha256": "9a1a6c4333a0e277d86024af8b6ba95519df67dfcb58587cd5c186a664e7173f"
+        },
+        "bytes": 7222
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261112-fixed-gpu\\report.json",
+          "sha256": "214b12e2b99ecebc5442c8a2128ab524ac9c8301ea8c5c0b756f1f88b6093399"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\50-report.json.gz",
+          "sha256": "902529790cec3e7ff13d28c0ef9a4ef752362e5340b2a04744010e657fa12d0b"
+        },
+        "bytes": 206920026
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-walk-turn-20261112-fixed-gpu\\source.cjs",
+          "sha256": "bf90aac92da4990b9125e3dd4d73ba1b7ff11583cb744f65e41cf38c3d4585f1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\51-source.cjs.gz",
+          "sha256": "34b57b0e80fd73eaa718a017e7014650960c8f40f9b1d6fb901e234b4d0e33d7"
+        },
+        "bytes": 18227
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-mode-20261111\\0-input.json",
+          "sha256": "3f876f65b68674334fbeacbea3ceb3b68969d9424ec54bd25259cba964948a10"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\52-0-input.json.gz",
+          "sha256": "e4c4f1140054199da4b4d79142ca52e5ec61b7ed084593be62de2de43e2988c3"
+        },
+        "bytes": 32589
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-mode-20261111\\0-shader.wgsl",
+          "sha256": "d839dd65ef58c5694cdf4350138c43962725140c902a6b1a072caf94d58efabd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\53-0-shader.wgsl.gz",
+          "sha256": "895011514b08df2e371c07eda06e38043e6b88e338f889517bf80e0e3f0302e1"
+        },
+        "bytes": 5029
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-mode-20261111\\1-input.json",
+          "sha256": "aac46ba24180d9a9715efeefe13cd53f7fe425c8da2fc36e46b5de7c6069bf09"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\54-1-input.json.gz",
+          "sha256": "b6fbb063180f95323c71645293d514b8363fc0e24aade6b0349bb59ac3269b49"
+        },
+        "bytes": 63051
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-mode-20261111\\1-shader.wgsl",
+          "sha256": "d4e859e90660f1cdec94e0c22be016344928cffa4c7546e10d74f046fe220e4d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\55-1-shader.wgsl.gz",
+          "sha256": "e883050aa25cf9a00c3aeb985515cebff014e21785d521106e50e6c93febc2fc"
+        },
+        "bytes": 11538
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-mode-20261111\\report.json",
+          "sha256": "320b6d8e02227967039190c474ae878edc34d9ac993744dd4cfd8c7d01e15d07"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\56-report.json.gz",
+          "sha256": "448b44277d7b3979f3d0a17283050cecb8308fbc2481b6d510ea946e55e82879"
+        },
+        "bytes": 4816
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-mode-20261111\\source.cjs",
+          "sha256": "33d9c2b76ddba79f323229e98e540d0bb9f93c9c69c1b1f64bbc682ab6ad896a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\57-source.cjs.gz",
+          "sha256": "5a248ef264f882006799a32ca1276e5dafb386e86a403a87d86c6a5a4b3ac96c"
+        },
+        "bytes": 7930
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-images-20261112\\report.json",
+          "sha256": "2a83f9a1ea55a169ab06dc5a861c528546ddf644e57094d781250f3825f5d5d8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\58-report.json.gz",
+          "sha256": "5b330645abde2834fe6f87acd56f27fe230369667852098eb32f53ae7f476db4"
+        },
+        "bytes": 1450
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-images-20261112\\source.cjs",
+          "sha256": "4753aa6b5f4bb1d413f7497a2f7b6bdbdd46dccc89ac21b7a75059a3e3dba6d2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\59-source.cjs.gz",
+          "sha256": "c83a9727a46805db0a20b623d2a3e109bfbe8a7627f1c1aa18c91c24004241a1"
+        },
+        "bytes": 4223
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-images-20261112-retry\\report.json",
+          "sha256": "693c03b228073f8fa932478d933f96eb1215856c4cf10ad8a42ae583f21ab185"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\60-report.json.gz",
+          "sha256": "800cce0aef717956b10de1050eb711b0bcc503b968c53ddc9684ec097ec3797a"
+        },
+        "bytes": 1274
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-images-20261112-retry\\source.cjs",
+          "sha256": "aa3623f1e555f33187b4d4abed9c77d53d1126585d820068c79664d9d15bf35c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\61-source.cjs.gz",
+          "sha256": "7bd28cf102dff148bd41cfe6ed60a0f2ce9f134c618124c32b836a66cfcfc979"
+        },
+        "bytes": 4245
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-images-20261112-final\\0-0.png",
+          "sha256": "614ec466f1886004b8b63d4feb817103964b836e42721a3935c4c561a84209be"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\62-0-0.png.gz",
+          "sha256": "1a7428653fd3af783391c1e53525d7a776a134f71a638739de5bef6271c93878"
+        },
+        "bytes": 1451035
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-images-20261112-final\\0-1.png",
+          "sha256": "da7221b2a765fd187a53799bb8d3ce8fd6a73be1e6c530789734816dedf5a6b6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\63-0-1.png.gz",
+          "sha256": "8eccb76218f670bc8f16146c1b2278e28f9fd6b562ccfb476f93c45e622164d0"
+        },
+        "bytes": 1480016
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-images-20261112-final\\0-2.png",
+          "sha256": "65ecce8d1caa1bf64174cec3c7ebabdca892abba28f6f7dfa312efb58e9d38f4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\64-0-2.png.gz",
+          "sha256": "6e5d454205a53efd3f4a4fd6a7196dba84552620a3266cf2d21c03f8c6001859"
+        },
+        "bytes": 1175572
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-images-20261112-final\\0-3.png",
+          "sha256": "ea75cad6a655939f5dc73618a314a3079faf57977c216841021580f7bec93be1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\65-0-3.png.gz",
+          "sha256": "31ff0cee6f8c59f05239a7823d42abbc61419e8dd2b6e99198cffcf80e247741"
+        },
+        "bytes": 1234295
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-images-20261112-final\\1-0.png",
+          "sha256": "1af7b684a09e73bc6525b20d463c6ac1c1c5feed6d02b8b6cb32fd41f7c24179"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\66-1-0.png.gz",
+          "sha256": "1123244f958bc9d9651812145b8dd8d10e40bc270f489501ff42c850267ffbc8"
+        },
+        "bytes": 1454752
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-images-20261112-final\\1-1.png",
+          "sha256": "b4d96f7c6ba3d39c6360bac6c5c48131dc5a3f85cf73b073a2886dbfa6e380c5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\67-1-1.png.gz",
+          "sha256": "6c485b91ae172d18c2c52b7db3cbde1a0de5ce827a7a6b6bd64ca1be36bdda3d"
+        },
+        "bytes": 1481962
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-images-20261112-final\\1-2.png",
+          "sha256": "d9a48b0f48db0540de9dcb7414e774c77eb66b07b4c4ebd2368c76ba621d0512"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\68-1-2.png.gz",
+          "sha256": "cf7ff55c95323eb9acc17d045d7fdb9e8444996e195892cbe03a54077f9feb50"
+        },
+        "bytes": 1173468
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-images-20261112-final\\1-3.png",
+          "sha256": "6837dc6ea82a01ccc1f19ecc5082c2dd00df15d5621189fcb71cf8b63fa08151"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\69-1-3.png.gz",
+          "sha256": "019a1cd363afd5f9c43354ed576ca48a8f62e012b0736f2908b5f9ff12dc72f1"
+        },
+        "bytes": 1235999
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-images-20261112-final\\comparison.png",
+          "sha256": "f68c6ba1aeba48bf6b12eeba09e2c9401ef311493aa2748da8787c7ed69b6c30"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\70-comparison.png.gz",
+          "sha256": "58f2891572812510d14036f1ef034313c0e50d4aaacb652369c8425e4afa357f"
+        },
+        "bytes": 3644834
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-images-20261112-final\\report.json",
+          "sha256": "ad7cf9074cc85d42be5f6c15dfa4c97d0f2902864c01967fe7e1fb97509057d4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\71-report.json.gz",
+          "sha256": "17285342efcad8a81c2618de8466945d32dba0973f7eb71990fcbba1ec6ca64b"
+        },
+        "bytes": 29574
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-images-20261112-final\\source.cjs",
+          "sha256": "dfa617733a3ad120a284fa2b37958558277abc84df624726cdd849753e9e39b9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\72-source.cjs.gz",
+          "sha256": "91e8d2b98284a153fa54c94e1c22974e316e220e1ae800099acba639352cfb0f"
+        },
+        "bytes": 4289
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-scene-20261112\\packed-1.png",
+          "sha256": "c9e8134bcb7d9ecc417f8578adfe12026fa77573584730f99cc0ae947e8bffeb"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\73-packed-1.png.gz",
+          "sha256": "2149d97b8c3f4f393b37357733def217566c713e802a5e6ef338e9dad215d778"
+        },
+        "bytes": 1505082
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-scene-20261112\\packed-2.png",
+          "sha256": "597a88a9018832bbaba2b8e596ffaead1751c1b4c6e5eb71c4db59d66bea76cd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\74-packed-2.png.gz",
+          "sha256": "00437121de375438ab041623215bbcdaece7036caca2fc44848b2d738b3b93e3"
+        },
+        "bytes": 1486187
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-scene-20261112\\packed-3.png",
+          "sha256": "f77f62ac7aca0413d6a334423cdacb59dfcc369bbc8874afc98eef12c4440e14"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\75-packed-3.png.gz",
+          "sha256": "d6b8c42820a3014a08fdca80c3a5e98e1ef1325b91bd587a988d32eba63b76a9"
+        },
+        "bytes": 1471168
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-scene-20261112\\packed-4.png",
+          "sha256": "8d97ff0b5bcbb0764c9fdccccecba7a0bf02c3db9842ce00bda30fd97b80cbbe"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\76-packed-4.png.gz",
+          "sha256": "5c60b4fff6c16225a4418db717d6ce39673a4421b8d68786b4b1ccc956041f99"
+        },
+        "bytes": 817974
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-scene-20261112\\packed-5.png",
+          "sha256": "f5696a4e085cfa937564e07a7c36084a6812b2d9266047dab7101d36d1bb1e2a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\77-packed-5.png.gz",
+          "sha256": "8b661928f8849d2052486190a2c2537fc05e10ccace012b5a464da3267ca0654"
+        },
+        "bytes": 1137818
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-scene-20261112\\packed-6.png",
+          "sha256": "04b07ee32b1f40fabb4f533e01011dba0b7780cdff0f71d185e8f0fc0b969ea0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\78-packed-6.png.gz",
+          "sha256": "36123705d369352db5448a3e59bd0d5893ccd5f33786557265ef6899c4209ced"
+        },
+        "bytes": 1503384
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-scene-20261112\\packed.json",
+          "sha256": "222635301a703e23c18bac1512e484e5f8a13ca0ed9aa542fc3f2a2698757fba"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\79-packed.json.gz",
+          "sha256": "bc58ba212a7c1dd3e6318786b18e2a398194b2be63552785be5ca5ac1d71038d"
+        },
+        "bytes": 38085538
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadow-scene-20261112\\source.cjs",
+          "sha256": "20bbc14aac2267cd021168756974590513e8174bfea479f45a261e8518352df8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\80-source.cjs.gz",
+          "sha256": "e715d5342020118bb825927120fdd43fd11f48a9eb5daae7c74f3cb829fc20dc"
+        },
+        "bytes": 21946
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\prepare-web-cook-shaders.cjs",
+          "sha256": "56b54a1e8e2c198152f780d1a6e3e9b7adf8dc693bbe459f54527129510c3f34"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\81-prepare-web-cook-shaders.cjs.gz",
+          "sha256": "3ac491b5a5d19a597079375ea98af31e8e50d8606a23eb0cde0fa381461ab47f"
+        },
+        "bytes": 48344
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-off-regression.cjs",
+          "sha256": "bf90aac92da4990b9125e3dd4d73ba1b7ff11583cb744f65e41cf38c3d4585f1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\82-probe-nanite-off-regression.cjs.gz",
+          "sha256": "34b57b0e80fd73eaa718a017e7014650960c8f40f9b1d6fb901e234b4d0e33d7"
+        },
+        "bytes": 18227
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\analyze-nanite-walk-turn.cjs",
+          "sha256": "8e21c704b93b0456e726048ef1f232f753f9aa00a7db2431c78be653dc78e89e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\83-analyze-nanite-walk-turn.cjs.gz",
+          "sha256": "e43d9e7cb248c24f1c1d681c1a3143bd53628a8f80a4203fe2c414aa5fc97065"
+        },
+        "bytes": 3968
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\observe-nanite-motion-gpu.cjs",
+          "sha256": "af47c4ffccd9f44ac250b7350467bf1606123a96b2d73439031d6a3591d96422"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\84-observe-nanite-motion-gpu.cjs.gz",
+          "sha256": "9a1a6c4333a0e277d86024af8b6ba95519df67dfcb58587cd5c186a664e7173f"
+        },
+        "bytes": 7222
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\diagnose-point-shadow-vsm.cjs",
+          "sha256": "43694062c569808d2965a3111a189fc6770cde92f7306c2a24f0f5833027c2b9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\85-diagnose-point-shadow-vsm.cjs.gz",
+          "sha256": "239f79d00cd83476aa3a4fae6f83a44de0e5129b9815bfd9c920621440019c08"
+        },
+        "bytes": 996
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-point-shadow-mode.cjs",
+          "sha256": "33d9c2b76ddba79f323229e98e540d0bb9f93c9c69c1b1f64bbc682ab6ad896a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\86-verify-point-shadow-mode.cjs.gz",
+          "sha256": "5a248ef264f882006799a32ca1276e5dafb386e86a403a87d86c6a5a4b3ac96c"
+        },
+        "bytes": 7930
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\package-nanite-shadow-guard.cjs",
+          "sha256": "32d8bb8430d2b360461d45446550ad541829d11176ce00f0b50898dcfb253e21"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\87-package-nanite-shadow-guard.cjs.gz",
+          "sha256": "d3166294cb2dd0c3b0537a2bb637a93ddba01b6eb7343bd4db9c1583c2570401"
+        },
+        "bytes": 4627
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\package-nanite-mode-variant.cjs",
+          "sha256": "e45f1e9f19dffa499de8cb1ff0b30c36f871f975a271326b3542c65dd062c926"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\88-package-nanite-mode-variant.cjs.gz",
+          "sha256": "90b7503a6cb1869fbc537cb951d01a15ac47dc404990e492b2308e5fe53aced0"
+        },
+        "bytes": 2426
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-point-shadow-images.cjs",
+          "sha256": "dfa617733a3ad120a284fa2b37958558277abc84df624726cdd849753e9e39b9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\89-probe-point-shadow-images.cjs.gz",
+          "sha256": "91e8d2b98284a153fa54c94e1c22974e316e220e1ae800099acba639352cfb0f"
+        },
+        "bytes": 4289
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-full-scene.cjs",
+          "sha256": "20bbc14aac2267cd021168756974590513e8174bfea479f45a261e8518352df8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\90-probe-nanite-full-scene.cjs.gz",
+          "sha256": "e715d5342020118bb825927120fdd43fd11f48a9eb5daae7c74f3cb829fc20dc"
+        },
+        "bytes": 21946
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-motion-fix.cjs",
+          "sha256": "4dc8b8da48ab7c44555810de7fc7086df03d5fcf2f37663faab6d934b076c167"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\91-collect-nanite-motion-fix.cjs.gz",
+          "sha256": "a9bdf5bc03ae5f2a9cd31a330d98d6b13447e2f6526f1310426243c322ce7c5f"
+        },
+        "bytes": 7908
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\ShadowDepthPixelShader.usf",
+          "sha256": "77d2012bd7b5a3d8f2c6b6fafba277f4921a9295c219217ed07523aa497474b2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\92-ShadowDepthPixelShader.usf.gz",
+          "sha256": "8adf235848b5e88684fea0d5747fe9d964d082a35d35bc08e12bdcf11d06a9ec"
+        },
+        "bytes": 4042
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-nanite-shadow-guard-desktop-cook-results.json",
+          "sha256": "83159c98ed7c5089ba3cd9cedcb4565ef5931f55c65d6a5f7a852f5f733f2f60"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\93-web-project-nanite-shadow-guard-desktop-cook-results.json.gz",
+          "sha256": "ddaebd6f8a0e8eabef3c060122688a0f00db58141a7435b8869193604a96d91b"
+        },
+        "bytes": 2116789
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-nanite-shadow-guard-desktop-cook-20261111-234723.log",
+          "sha256": "4637974d3270c6ce1420dc0f04ad95d31d012c4b2d8f82c8d487caf41afe96e4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\94-web-project-nanite-shadow-guard-desktop-cook-20261111-234723.log.gz",
+          "sha256": "c89bfb911a347c8bf9f9f0de5090302e5dc188b2a0fe22881b07d6deed178258"
+        },
+        "bytes": 278043
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-cook-shader-sources.json",
+          "sha256": "7088fc5778ee77834b6e4242c933dc3ab73acd8dd2af4f79423138ea9e5b062a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\95-web-cook-shader-sources.json.gz",
+          "sha256": "f42c2a3ed18b803e67c926d34e04b5039047aabadd93cfb36315532bfbfe4a33"
+        },
+        "bytes": 313329
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-nanite-shadow-guard-desktop-stage-results.json",
+          "sha256": "936d72df38a666b0ac39be4406e8cd128efaeff31658f5ac450d1fa789ced63c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\96-web-project-nanite-shadow-guard-desktop-stage-results.json.gz",
+          "sha256": "91452796cfcd636c15eab3b002165ef23ffeb373ee70e02189b2b2df01a573ae"
+        },
+        "bytes": 1295670
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-nanite-off-shadow-guard-20261111\\package.json",
+          "sha256": "b1d581c302df4d350280f2b92bec6f2d28c0149ea731e26525ad714d4974e517"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\97-package.json.gz",
+          "sha256": "d7557677fe4a80ed98309f5c1ef2bf8ca9dd8d0b7f6f46e0bb223440f4010989"
+        },
+        "bytes": 10635
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-nanite-off-shadow-guard-20261111\\config-files.json",
+          "sha256": "2b7db6a6b09da0528e2edb73d412a858127a1a73404ff28bddb6d9be48dc524e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\98-config-files.json.gz",
+          "sha256": "d233866b0fb35f65bf36b6c9eb16c31129ba08eb2ae1efc00e17396c06b448b3"
+        },
+        "bytes": 665011
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-nanite-off-shadow-guard-20261111\\index.html",
+          "sha256": "b330292be761e7b6d043f6e235cb575f89f270a16a02bce82412c17ef06ae4ad"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\99-index.html.gz",
+          "sha256": "5b4cf6491e56e78ed1982d318aa35a964e984333023f1f1c27fdcfaf6546086c"
+        },
+        "bytes": 92264
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-nanite-off-shadow-guard-20261111\\asset-versions.json",
+          "sha256": "c3f124cefcbfb219ab69456f1454ca078d0ad66d110fb2584d4b920a635b63f8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\100-asset-versions.json.gz",
+          "sha256": "fd7c5b70c69cd8ea9f4c50f74beb1fd4412a335c8e1fc3521d2d8cde4f2f82e3"
+        },
+        "bytes": 1418
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-shadow-guard-scene-20261112\\package.json",
+          "sha256": "99b59a12df0cb2e852107643c6173bc5a55963fce27ff3f73ead0cf5f97c8cf3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\101-package.json.gz",
+          "sha256": "f3463043e4be6000010e9f55ae2fba2368407315f894e662f3bf8c9b63862a72"
+        },
+        "bytes": 3102
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-shadow-guard-scene-20261112\\config-files.json",
+          "sha256": "106f3c0d03bab60e1f139d0d6b607dc7b6f0e2a539114e4e66f379c012b2b166"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\102-config-files.json.gz",
+          "sha256": "f7e5fb368debe5f447232e4fa1bbb0a49e06ec8590f30d72066b6d03df7205c9"
+        },
+        "bytes": 665011
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-shadow-guard-scene-20261112\\index.html",
+          "sha256": "4ba2e00db2fc3a03f244798ba1285d7988a7be9163d63f2e1b41581c9b30459e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\103-index.html.gz",
+          "sha256": "76aaf70ba94605e755eaff92f67d33383f7c5e76bda45a5406a85578209e4180"
+        },
+        "bytes": 92261
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-shadow-guard-scene-20261112\\asset-versions.json",
+          "sha256": "0b7c724bbe1dca52d1a526c704cf6e2401356c7c15fc43182784033b26c13ef1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-motion-shadow-fix-20261112\\104-asset-versions.json.gz",
+          "sha256": "5f931cbc85cd0d547067cb2cc0f56f9a41e184c542a307926446e731347b1b9f"
+        },
+        "bytes": 1418
+      }
+    ],
+    "traceLimitation": "The first Chrome trace exhausted its buffer at 22.9 seconds and does not cover the 30–37 second stalls. No absent CPU scope is used as evidence. GPU pass timestamps and the shader isolation/readback tests establish the diagnosis.",
+    "failedProbe": "The initial indirect-argument capture called getMappedRange twice for overlapping bytes. Its failure is retained, and its timings are excluded from acceptance. The corrected observer is exercised by fixed-gpu. Image collector attempts first referenced a not-yet-defined global, then incorrectly expected both mutually exclusive test clocks. Final images use fixed material-expression time and advancing render/streaming time.",
+    "boundary": "ABBA serial fresh visible Edge sessions, 2560x1440 DPR1, first 60-second interior camera movement and turning, no route warmup. Submission intervals include every measured stall; GPU diagnostic runs and frozen image checks are separate. Fixes the reproduced Nanite-off point-shadow regression. Nanite-on scene throughput and complete compatibility acceptance remain open."
+  }
+}

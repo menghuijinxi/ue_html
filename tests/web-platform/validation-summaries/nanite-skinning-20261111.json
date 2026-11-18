@@ -1,0 +1,50 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-skinning-20261111.json",
+    "bytes": 400515883,
+    "sha256": "deaf122615702c177a7b8efb899289dea039050fc46401c78297d1abe0f3e521",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-10T23:31:42.959Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-skinning-evidence.cjs",
+      "sha256": "3bcc261bcd1ed34d27e9f1a7b765bae89ff10669b007e7f35f7ea86e9dfa5a8e"
+    },
+    "package": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\package.json",
+      "sha256": "a92fdeae4b3eb2c406793290e95385f4552531104071205f57caef383015ee47"
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "1ecfa1ca3133f61183ed21d56c6b2fbd2350037f483384dcd5ee355d8b931961"
+    },
+    "summaries": {
+      "$omitted": true,
+      "reason": "Detailed section exceeds the summary budget",
+      "type": "array",
+      "entries": 32,
+      "bytes": 183306,
+      "sha256": "3070fe45e05e4430129646090eebd787c517efa893c5bb887da5dfe34fed0022"
+    },
+    "shaderChecks": 30,
+    "materialTileChecks": 14,
+    "rhiChecks": 38,
+    "weldChecks": 15,
+    "weldNearestQueries": 2048,
+    "oracleRejections": 15,
+    "budgetOracleRejections": 9,
+    "payloadEncoding": "gzip-base64-json-sections",
+    "payload": {
+      "$omitted": true,
+      "reason": "Full diagnostic data is retained in the original report",
+      "type": "object",
+      "bytes": 400207423,
+      "sha256": "c11dd9de2b6245c7d9e61e476037afaaec55fd12be295915e7fcaf7427acadbd"
+    },
+    "boundary": "Native skeletal component registration, bone bounds, material position/normal/velocity, resident and streamed resources are validated. UE 5.8 native skeletal Nanite omits vertex colors and ordinary skeletal proxies ignore the default animation-size threshold; those native semantics are retained. Instanced skeletal size policies, assemblies, curves, displacement, remaining material/view policies and complete-scene temporal reconstruction/performance remain open."
+  }
+}

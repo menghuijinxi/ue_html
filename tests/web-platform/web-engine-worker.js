@@ -89,13 +89,17 @@ const send = (type, values = {}) => postMessage({type, ...values});
 const fail = error => send('failure', {message: error?.stack || error?.message || String(error)});
 const rpcNames = new Set([
   'WebNaniteUploaderTest', 'WebNaniteResourcesTest', 'WebNaniteSceneTest', 'WebNaniteSceneCullTest',
-  'WebNaniteGBufferTest',
-  'WebTextureStreamingTestBudget', 'WebOcclusionTestMode', 'WebDefaultSamplesVisibility',
+  'WebNanitePrimitiveRecoveryTest', 'WebNaniteEligibilityTest', 'WebNaniteIdleStatusTest',
+  'WebNaniteGBufferTest', 'WebNaniteHZBTest', 'WebNaniteInstancesTest', 'WebNaniteViewsTest', 'WebNaniteMaterialsTest', 'WebNaniteProgrammableTest', 'WebNaniteCompositionTest', 'WebNaniteStreamingTest',
+  'WebRestoreCamera', 'WebNaniteSidednessTest', 'WebNaniteAutomaticSceneTest', 'WebNaniteInstanceDistanceTest', 'WebNaniteMaterialBoundsTest', 'WebNaniteRasterBatchTest', 'WebNaniteMaterialPassBatchTest', 'WebNanitePrimitiveVisibilityTest', 'WebNaniteMaterialBinsTest', 'WebNaniteHierarchyModeTest', 'WebNaniteHierarchyBatchTest', 'WebNaniteOcclusionBatchTest', 'WebNanitePackBatchTest', 'WebNaniteMicroBatchTest', 'WebNaniteFixedMergeTest', 'WebNaniteProgrammableMergeTest', 'WebNaniteShadeBinningTest', 'WebNaniteHZBModeTest', 'WebNaniteTestSwitch', 'WebNaniteOcclusionModeTest', 'WebTextureStreamingTestBudget', 'WebOcclusionTestMode', 'WebDefaultSamplesVisibility',
   'WebDefaultSceneTestMode', 'WebProjectLightingTestMode', 'WebProjectViewTest', 'WebMotionBenchmarkControl',
   'WebPlayerViewControl',
   'WebDefaultShadowControl', 'WebMaterialLabControl', 'WebMaterialLabShadowTest',
   'WebProjectWidgetTest', 'WebViewportLayoutTest', 'WebDefaultCloudTracingTestMode', 'WebDefaultCloudBudgetTestMode',
   'WebDefaultFogTestMode', 'WebThreadTestControl', 'WebDistanceFieldTest', 'WebDistanceFieldTestExposure',
+  'WebNaniteNativeCaptureTest', 'WebNaniteWPOTest', 'WebNaniteSplineTest', 'WebNaniteProgrammableDistanceTest',
+  'WebNaniteGPUInstancesTest', 'WebNaniteAssemblyStreamingTest', 'WebNaniteStaticAssemblyStreamingTest',
+  'WebNaniteAssemblyTest', 'WebNaniteStaticAssemblyTest', 'WebNaniteSkinningTest', 'WebNaniteSkinningStreamingTest',
   'WebLightingQualityTest', 'WebVisibilityTest', 'WebOptimizationTest', 'WebTextureReadbackTest', 'WebTraceStart', 'WebTraceStop', 'WebTraceExport', 'WebBindingCacheTest', 'WebBindingGroupTest'
 ]);
 // Emscripten's Worker setImmediate fallback sends a token to its parent. This
@@ -124,7 +128,7 @@ if (!globalThis.setImmediate) {
 // engine's many exported symbols on the RHI owner every 100 ms.
 const diagnosticStateKeys = [
   '__webEngineFrames', '__webEngineRuntime', '__webEngineGPUDeviceReady', '__webVSMAdaptiveSampling',
-  '__webDefaultCamera', '__webPlayerView', '__webDefaultCloudBudget', '__webDefaultFog', '__webDefaultSamples',
+  '__webDefaultCamera', '__webRecoveryCamera', '__webPlayerView', '__webDefaultCloudBudget', '__webDefaultFog', '__webDefaultSamples',
   '__webDefaultShadowCamera', '__webDefaultShadowControl', '__webRenderView',
   '__webTextureStreaming', '__webOcclusionRHI', '__webVisualTestClock', '__webGPUHandleDiagnostics',
   '__webThreadFrameTimes', '__webThreadIOProbe', '__webThreadStages',
@@ -157,8 +161,11 @@ function snapshot() {
   };
   send('state', {state});
 }
-addEventListener('error', event => fail(event.error || event.message));
-addEventListener('unhandledrejection', event => fail(event.reason));
+// The host owns failure/recovery and records the cause. Prevent the same error
+// from also escaping as an unhandled page exception during device teardown.
+// Without an actual device-lost notification the host still terminates as failed.
+addEventListener('error', event => { event.preventDefault(); fail(event.error || event.message); });
+addEventListener('unhandledrejection', event => { event.preventDefault(); fail(event.reason); });
 addEventListener('message', event => {
   const message = event.data;
   if (message.type === 'game-clock-visibility') {
@@ -220,7 +227,7 @@ async function start(message) {
     return adapter;
   };
   const assets = message.assets;
-  if (assets.reuseReplayScratch !== undefined) globalThis.__webReuseReplayScratch = !!assets.reuseReplayScratch;
+  globalThis.__webReuseReplayScratch = assets.reuseReplayScratch !== false;
   // Approved default; older hosts may omit the option. Explicit channel remains
   // available, and browsers without postTask use the MessageChannel fallback.
   const priorityRequested = !message.arguments.includes('-WebRHIWake=channel');
@@ -249,6 +256,12 @@ async function start(message) {
   }
   if (message.frameCounter) {
     frameCounter = new Uint32Array(message.frameCounter);
+    // The adopted prewarm device has instance methods. Its misses bypass the
+    // prototype observers below, so record at the cache's actual native call.
+    globalThis.__webRecordPipelineEvent = event => {
+      pipelineEvents.push(event);
+      if (pipelineEvents.length > 2048) pipelineEvents.splice(0, pipelineEvents.length - 2048);
+    };
     // Pipeline creation is rare; retain its timestamps for user-triggered stutter
     // exports without wrapping per-draw calls or waiting for GPU completion.
     for (const name of ['createRenderPipeline','createComputePipeline','createShaderModule',
@@ -305,7 +318,9 @@ async function start(message) {
     if (localFrameBudget) localGpuQueue = device.queue;
     device.addEventListener('uncapturederror', event => fail(event.error));
     device.lost.then(info => {
-      if (info.reason !== 'destroyed') fail(new Error('WebGPU device lost: ' + info.message));
+      // Recreate the entire engine resource graph on a fresh adapter/device.
+      // Intentional destruction (normal shutdown) must not start a new runtime.
+      if (info.reason !== 'destroyed') send('device-lost', {reason: info.reason, message: info.message});
     });
     return device;
   };

@@ -1,0 +1,704 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/villa-baseline-comparison-20261111.json",
+    "bytes": 27170,
+    "sha256": "95ae95cd5f069b1388a0902cf88b9db522c3af27bbb18d231de2f7718351fb3f",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "nanitePerformanceAccepted": false,
+    "date": "2026-11-11T14:08:45.998Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-villa-baseline-comparison.cjs",
+      "sha256": "26480b93d957df4019e2ee3f2d2023a7849ba087837d0fc88f9c2ec00ca6cffb"
+    },
+    "legacy": {
+      "url": "http://127.0.0.1:8765/build/villa-default-20261107/index.html",
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-legacy-baseline-20261111\\report.json",
+        "sha256": "1f37e1bfad39988e0f896af8094f66ab264f4258bdcf837e0af8220d15ead4ca"
+      },
+      "assets": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\asset-versions.json",
+          "sha256": "14b254b5ead06ea05eb306364459f7fca1266ffdaf7e12800bce5e1def63814e"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\config-files.json",
+          "sha256": "f59cbb29faf01d82ab6739c9de0c5bc41d56bcb5de9c6a5583768c505c61536a"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\content-files.json",
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\content.bin",
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\index.html",
+          "sha256": "fa4d27a0e08a3dbdc021d6b89a9e225c6493f3aad3d1c280bd7ec8b6bd84a036"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\UEWebEngineThreads.js",
+          "sha256": "809fe2c8f0955326ff0568f9d92eda879bea2294f0bcc22af44352ea7dda3dc8"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\UEWebEngineThreads.wasm",
+          "sha256": "3869b11682fbb95f84966e3d85c948882d128619cb12471c2794c4d84f67d62f"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\web-content-io.js",
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\web-content-worker.js",
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\web-engine-host.js",
+          "sha256": "05d6e43f4bd851bad2ac1cd2a6121b053da533729adfdd18fbcbfe36bbf6933f"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\web-engine-worker.js",
+          "sha256": "de70a32af05a8f1736fc807876db17d7159c4448cd7531139f63f14192ce1d5d"
+        }
+      ]
+    },
+    "current": {
+      "url": "http://127.0.0.1:8766/villa/index.html",
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fallback-baseline-20261111\\report.json",
+        "sha256": "05205d3145ca59df8c0671eb9617ab2a22777eaa50528a4622caeb28aaf8a356"
+      },
+      "manifest": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\manifest.json",
+        "sha256": "d1728d67286e28389d209ac16586a9203bc0e9cab20774dae2c1b07ebbe3aa4b"
+      }
+    },
+    "browserVersion": "157.0.4341.46",
+    "comparisons": [
+      {
+        "name": "spawn-720",
+        "legacyFPS": 121.9577389704979,
+        "currentFallbackFPS": 107.88512930847877,
+        "legacyRhiMs": 5.605511077355772,
+        "currentFallbackRhiMs": 6.765565055387992,
+        "camera": {
+          "x": 410.7359315721519,
+          "y": -478.05903852213453,
+          "z": 156.64842176437378,
+          "pitch": 0,
+          "yaw": 89.99945068359375
+        },
+        "internalResolution": [
+          1280,
+          720
+        ],
+        "outputResolution": [
+          1280,
+          720
+        ],
+        "matchingPublishedSettingKeys": [
+          "antiAliasing",
+          "generateDistanceFields",
+          "distanceFieldAO",
+          "distanceFieldShadows",
+          "gi",
+          "reflections",
+          "virtualShadows",
+          "texturePoolMiB",
+          "screenPercentage",
+          "staticLighting",
+          "shadowCacheMiB",
+          "dbuffer",
+          "ssrQuality",
+          "volumetricFog"
+        ],
+        "unavailableInLegacy": [
+          "virtualShadowPathActive",
+          "virtualTexturePathActive",
+          "virtualTextures"
+        ]
+      },
+      {
+        "name": "spawn-1440",
+        "legacyFPS": 118.6769543345929,
+        "currentFallbackFPS": 106.00874334961301,
+        "legacyRhiMs": 5.728570436176501,
+        "currentFallbackRhiMs": 6.616720207670753,
+        "camera": {
+          "x": 410.7359315721519,
+          "y": -478.05903852213453,
+          "z": 156.64842176437378,
+          "pitch": 0,
+          "yaw": 89.99945068359375
+        },
+        "internalResolution": [
+          1552,
+          873
+        ],
+        "outputResolution": [
+          2560,
+          1440
+        ],
+        "matchingPublishedSettingKeys": [
+          "antiAliasing",
+          "generateDistanceFields",
+          "distanceFieldAO",
+          "distanceFieldShadows",
+          "gi",
+          "reflections",
+          "virtualShadows",
+          "texturePoolMiB",
+          "screenPercentage",
+          "staticLighting",
+          "shadowCacheMiB",
+          "dbuffer",
+          "ssrQuality",
+          "volumetricFog"
+        ],
+        "unavailableInLegacy": [
+          "virtualShadowPathActive",
+          "virtualTexturePathActive",
+          "virtualTextures"
+        ]
+      },
+      {
+        "name": "room-1440",
+        "legacyFPS": 134.74901373034004,
+        "currentFallbackFPS": 91.03556829072367,
+        "legacyRhiMs": 4.9258172732976035,
+        "currentFallbackRhiMs": 7.794167795353909,
+        "camera": {
+          "x": -175,
+          "y": -80,
+          "z": 160,
+          "pitch": -5.0000000000000036,
+          "yaw": 50.00000000000001
+        },
+        "internalResolution": [
+          1552,
+          873
+        ],
+        "outputResolution": [
+          2560,
+          1440
+        ],
+        "matchingPublishedSettingKeys": [
+          "antiAliasing",
+          "generateDistanceFields",
+          "distanceFieldAO",
+          "distanceFieldShadows",
+          "gi",
+          "reflections",
+          "virtualShadows",
+          "texturePoolMiB",
+          "screenPercentage",
+          "staticLighting",
+          "shadowCacheMiB",
+          "dbuffer",
+          "ssrQuality",
+          "volumetricFog"
+        ],
+        "unavailableInLegacy": [
+          "virtualShadowPathActive",
+          "virtualTexturePathActive",
+          "virtualTextures"
+        ]
+      },
+      {
+        "name": "room-720",
+        "legacyFPS": 135.49536591373172,
+        "currentFallbackFPS": 95.88000901803973,
+        "legacyRhiMs": 4.925118571842811,
+        "currentFallbackRhiMs": 7.3235486172784485,
+        "camera": {
+          "x": -175,
+          "y": -80,
+          "z": 160,
+          "pitch": -5.0000000000000036,
+          "yaw": 50.00000000000001
+        },
+        "internalResolution": [
+          1280,
+          720
+        ],
+        "outputResolution": [
+          1280,
+          720
+        ],
+        "matchingPublishedSettingKeys": [
+          "antiAliasing",
+          "generateDistanceFields",
+          "distanceFieldAO",
+          "distanceFieldShadows",
+          "gi",
+          "reflections",
+          "virtualShadows",
+          "texturePoolMiB",
+          "screenPercentage",
+          "staticLighting",
+          "shadowCacheMiB",
+          "dbuffer",
+          "ssrQuality",
+          "volumetricFog"
+        ],
+        "unavailableInLegacy": [
+          "virtualShadowPathActive",
+          "virtualTexturePathActive",
+          "virtualTextures"
+        ]
+      },
+      {
+        "name": "wall-720",
+        "legacyFPS": 128.76600577427604,
+        "currentFallbackFPS": 109.69353525296391,
+        "legacyRhiMs": 5.274363371156017,
+        "currentFallbackRhiMs": 6.158286618208831,
+        "camera": {
+          "x": -175,
+          "y": -80,
+          "z": 160,
+          "pitch": -5.000000000000006,
+          "yaw": -130.00000000000003
+        },
+        "internalResolution": [
+          1280,
+          720
+        ],
+        "outputResolution": [
+          1280,
+          720
+        ],
+        "matchingPublishedSettingKeys": [
+          "antiAliasing",
+          "generateDistanceFields",
+          "distanceFieldAO",
+          "distanceFieldShadows",
+          "gi",
+          "reflections",
+          "virtualShadows",
+          "texturePoolMiB",
+          "screenPercentage",
+          "staticLighting",
+          "shadowCacheMiB",
+          "dbuffer",
+          "ssrQuality",
+          "volumetricFog"
+        ],
+        "unavailableInLegacy": [
+          "virtualShadowPathActive",
+          "virtualTexturePathActive",
+          "virtualTextures"
+        ]
+      },
+      {
+        "name": "wall-1440",
+        "legacyFPS": 124.99462952721915,
+        "currentFallbackFPS": 110.12902042159656,
+        "legacyRhiMs": 5.343272531632897,
+        "currentFallbackRhiMs": 5.946947453620485,
+        "camera": {
+          "x": -175,
+          "y": -80,
+          "z": 160,
+          "pitch": -5.000000000000006,
+          "yaw": -130.00000000000003
+        },
+        "internalResolution": [
+          1552,
+          873
+        ],
+        "outputResolution": [
+          2560,
+          1440
+        ],
+        "matchingPublishedSettingKeys": [
+          "antiAliasing",
+          "generateDistanceFields",
+          "distanceFieldAO",
+          "distanceFieldShadows",
+          "gi",
+          "reflections",
+          "virtualShadows",
+          "texturePoolMiB",
+          "screenPercentage",
+          "staticLighting",
+          "shadowCacheMiB",
+          "dbuffer",
+          "ssrQuality",
+          "volumetricFog"
+        ],
+        "unavailableInLegacy": [
+          "virtualShadowPathActive",
+          "virtualTexturePathActive",
+          "virtualTextures"
+        ]
+      }
+    ],
+    "historicalFixedViewFPS": [
+      126.37698170053343,
+      108.8513686594302
+    ],
+    "previousCurrentSpawn1440FallbackFPS": 54.85318280849257,
+    "artifacts": [
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fallback-baseline-20261111\\spawn-720.png",
+          "sha256": "23dac3c3d2852303721e34ef17cb6167fa8871b452e26948a1670b0ed8f73895"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\0-spawn-720.png.gz",
+          "sha256": "8959debb0194c8a110494f7e4b794ae0bb9ceca0b7802dce63ace7bc86e6cef9"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fallback-baseline-20261111\\spawn-1440.png",
+          "sha256": "27ff4a9771159a602d211c6952295c63ccacfe01f79b19c21d5b89ca505bb5aa"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\1-spawn-1440.png.gz",
+          "sha256": "95c110865ba32741767ae4a5520f97e4c2d5ad3ee9d9b7217e09fada7276af6c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fallback-baseline-20261111\\room-1440.png",
+          "sha256": "030f0314749de499751a72a15e8785e03c390dce238b14beabaef0180522abfe"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\2-room-1440.png.gz",
+          "sha256": "9b7dd5164f6a96b99e6b2ec2933ccc801473214102d82d71514993a57e12b295"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fallback-baseline-20261111\\room-720.png",
+          "sha256": "565f176416494abeead38501326beba1713de2136e1d58e90a544331e3ff6dfa"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\3-room-720.png.gz",
+          "sha256": "05c12145ebeb83066f0ea326e5488578ea4ee73166dd2810e1220ced6c4f7d4a"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fallback-baseline-20261111\\wall-720.png",
+          "sha256": "484940356f876bfaf1ce2468df688491d23e4b04f50e59235adf6fc65b0b49b9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\4-wall-720.png.gz",
+          "sha256": "57f8596b1161a9c0c8fb86afe68c1533163655e6e791a90cdb53d618508c19a3"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fallback-baseline-20261111\\wall-1440.png",
+          "sha256": "074ac94d881a61aabe36ff9f41d6724610c140f5d925c601378c294fd37b0702"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\5-wall-1440.png.gz",
+          "sha256": "c9ca631bc8823bd60f7b58c5ded7a17fe013380dd17bea5dc8d3e8a07389e02b"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fallback-baseline-20261111\\report.json",
+          "sha256": "05205d3145ca59df8c0671eb9617ab2a22777eaa50528a4622caeb28aaf8a356"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\6-report.json.gz",
+          "sha256": "55966579a92797321e5e3436e524f4ce6efacbc22c1640ad350b5ca5545ee172"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-fallback-baseline.cjs",
+          "sha256": "5494035c223e8cc76dd0b51265a8239dee718a408e8f88f2cae659badb75052e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\7-probe-nanite-fallback-baseline.cjs.gz",
+          "sha256": "e8a13cf34e37f8f5c2bdb1d60a76a4a3556f399e9888257eb7656ad8af5729b5"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fallback-baseline-20261111\\browser.log",
+          "sha256": "278d221c0c801ad00ef5152f146ef60dde4ae5ae471791a6ed0906bcc8b8a9b7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\8-browser.log.gz",
+          "sha256": "ff9a55991fa65252b960d19bef4b759c70fb026b2c7c267b735b4a5316bb112f"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-legacy-baseline-20261111\\spawn-720.png",
+          "sha256": "1bd4b72784cb256ec72632e8fa2f51a0796706791b99c310a24a938bb5e002f4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\9-spawn-720.png.gz",
+          "sha256": "baa63a838b2859febf8ff674e6f4a6e0c1da02a1f09d2a29b051f418ba4f86c4"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-legacy-baseline-20261111\\spawn-1440.png",
+          "sha256": "c83779fb96137d8afc4faa413fd0296c52d2dcc807c323871350b7efa59586e8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\10-spawn-1440.png.gz",
+          "sha256": "ebffb8cb3a7af4b94ac0d53b9bf7db665c82dc0626799e01962d39088265edd0"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-legacy-baseline-20261111\\room-1440.png",
+          "sha256": "fd6d2971393de8aeb6983da989ffd80805d43c835ebd38768716673fad396965"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\11-room-1440.png.gz",
+          "sha256": "8d82af001d6ca48bd9c33b9ace56dac0c501ace19a8984b2a4526b9f1a672269"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-legacy-baseline-20261111\\room-720.png",
+          "sha256": "706e301fddfc8a173aea149425922a3b38968b0c076e8bc2cdb55a69773e7508"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\12-room-720.png.gz",
+          "sha256": "19fb9feecdb4a9a4430174ffb0d41fe67cf64d61605df83bb0695f118f3a0190"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-legacy-baseline-20261111\\wall-720.png",
+          "sha256": "072d44f6365597c7266af4e171d0a14ef296fbcaafc45d135839b418201f4e70"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\13-wall-720.png.gz",
+          "sha256": "5982238e04e122391ed83b28b8b83fed804f51ccfb18e22a87da9a7709abe5bc"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-legacy-baseline-20261111\\wall-1440.png",
+          "sha256": "e61b8e1e5d1199f3c9243cce8585148c5ef85700a8ca2e449991853b39e24dd4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\14-wall-1440.png.gz",
+          "sha256": "d8b67a7b5e013bb54d5d46557897a2619b5b3acc8ea52db547ca58063bc49c04"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-legacy-baseline-20261111\\report.json",
+          "sha256": "1f37e1bfad39988e0f896af8094f66ab264f4258bdcf837e0af8220d15ead4ca"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\15-report.json.gz",
+          "sha256": "2b7d5030a5728ae1c389ab26d9c892c8b1ae0a218749c39f8fbe09c93c7f9f0a"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-villa-legacy-baseline.cjs",
+          "sha256": "7d25723f202ef6a88b39f4523a971c737c4e1b2e707f7a6d4517e05763cf6be4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\16-probe-villa-legacy-baseline.cjs.gz",
+          "sha256": "5b523a94d7ea54f91586746a99cf4cf19611112750e1b1e007324d5c83d7dd63"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-legacy-baseline-20261111\\browser.log",
+          "sha256": "8cf55c1f742a38f9caa9fcc2208e6b7ceaf0b41cf21b9397cb80b6c0bc8836aa"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\17-browser.log.gz",
+          "sha256": "c0fdf744d36361bdea7003385e06a09b07adedada57c085430d2e47cbcd7c247"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fallback-baseline-20261111\\nanite-1.json",
+          "sha256": "6a9c48a936f63e9855dbd676e6b7e9a7daf844e75240a94a960b03b0db8df942"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\18-nanite-1.json.gz",
+          "sha256": "a7c1c9073489c7c52f9c18e09276af087649229b717d0768662f5b0170e7856c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-fallback-baseline-20261111\\nanite-2.json",
+          "sha256": "c264ea125defc21aee939e8f136682f56b3a1735927852e63fb7fee4d8c370dd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\19-nanite-2.json.gz",
+          "sha256": "ed3aa2e391a65c7610f7303fb2efb9d21dced963c61094994a5b70ea0bb5f65c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\manifest.json",
+          "sha256": "d1728d67286e28389d209ac16586a9203bc0e9cab20774dae2c1b07ebbe3aa4b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\20-manifest.json.gz",
+          "sha256": "04b77d18fcf5af7517bb7cd6b0cae9ad771a28fea20c8ea7e1ea64ee69bd4bd8"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\villa\\index.html",
+          "sha256": "e74b9bdd320b90ba305ce780a1c60e8a74129e8cd94d17ac50e56c67203659a9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\21-index.html.gz",
+          "sha256": "3c0f8997ed8c7a8d4be212be05a609e372889cd38cdea54288e4c2a2ed63e950"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\index.html",
+          "sha256": "fa4d27a0e08a3dbdc021d6b89a9e225c6493f3aad3d1c280bd7ec8b6bd84a036"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\22-index.html.gz",
+          "sha256": "3c5f8a77f1518e1a9b41fea663fa1e85372edca5f285e91de10673f8e42b9f6e"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\villa\\config-files.json",
+          "sha256": "9023960472fa0e0365de882d6ef3e2b408c4d758d7ee3c6ad044fb856529ba0e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\23-config-files.json.gz",
+          "sha256": "1169ea5f9d77c8805d4e8b7edac34b1ab7a55d0ea2aa2833d392d26b0f675b4a"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\config-files.json",
+          "sha256": "f59cbb29faf01d82ab6739c9de0c5bc41d56bcb5de9c6a5583768c505c61536a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\24-config-files.json.gz",
+          "sha256": "76eb79ac1f9445695bef4768f5b5f63968587af5d84cbe1620094f209d459dea"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\villa\\asset-versions.json",
+          "sha256": "96bb73ad876eba139e7821493ff5780d4d78e360ba8ee2a7df49e811beb3e1dd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\25-asset-versions.json.gz",
+          "sha256": "a18c987816c003d60b7e29d48eccd271e533ece3256e6f562f259242a953565b"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\asset-versions.json",
+          "sha256": "14b254b5ead06ea05eb306364459f7fca1266ffdaf7e12800bce5e1def63814e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\26-asset-versions.json.gz",
+          "sha256": "60fd9df9cc25c9a469f01e8764669d1cd57f9c2111c39d2a31eabd436400e063"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111.json",
+          "sha256": "5faf35baa4d2719ea1135da56afffe2bbf20abaf3230222911243299091baed9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\27-nanite-raster-batch-20261111.json.gz",
+          "sha256": "3168ce8c824b6c43a99b4582d6a26e8a9b5d2cbdd81b19c353ce67f8731e517b"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\65-cpu-nanite-core-fallback-20261111.json.gz",
+          "sha256": "a2439715b12c2e882b698a0b6f0063f087ec63d81ad5280a79a5cf44b15094ba"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\28-65-cpu-nanite-core-fallback-20261111.json.gz.gz",
+          "sha256": "83c0ce64c99fcd34a9fd316287859f652b653a164318b81b98240c9b53b9a4a5"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111.json",
+          "sha256": "cca57b244398777a9ecee95bc1479fcb775e989d1e53bb5c18e13e7289801104"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\29-nanite-user-performance-20261111.json.gz",
+          "sha256": "c7efde8e0387845e6bd89ddb8a67a0e8591e73ce80b7d1da680955aa78f9bddc"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-legacy-baseline-20261111\\collector-missing-settings-field-failure.cjs",
+          "sha256": "986fc993357bcff36fa453ef4fb9bef13431443557c411bf9628a26bc09ce024"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\30-collector-missing-settings-field-failure.cjs.gz",
+          "sha256": "a5cd7c17d32579aade94467654cfd3e60ab12b0a5deee8322d4ce5a0c0f90185"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-villa-baseline-comparison.cjs",
+          "sha256": "26480b93d957df4019e2ee3f2d2023a7849ba087837d0fc88f9c2ec00ca6cffb"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\villa-baseline-comparison-20261111\\31-collect-villa-baseline-comparison.cjs.gz",
+          "sha256": "eea6909ace9feb2e2b347f3f71c419822794c9f17f536f102f82750cf0d748ea"
+        },
+        "encoding": "gzip"
+      }
+    ],
+    "boundary": "Diagnostic comparison, not a Nanite performance acceptance. The user-specified November 7 ordinary-mesh release and current Nanite-disabled release run serially in isolated Edge processes. Observed cameras, internal/output resolutions, AA and all 14 common published renderer settings match. The old runtime does not publish virtualTextures, virtualTexturePathActive or virtualShadowPathActive; no equality of those implementations is claimed. The initial collector incorrectly required those absent fields; its source is retained. Runtime and cooked geometry differ. This neither isolates a single regression nor explains the earlier 54.85 FPS sample; that raw evidence remains intact. Do not use that sample as the old-version baseline."
+  }
+}

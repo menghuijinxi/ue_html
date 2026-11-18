@@ -1,0 +1,359 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-disocclusion-20261111.json",
+    "bytes": 83749,
+    "sha256": "3de6c9a2056c7ed41354242bbedfb5c79811f2a3e58fcbf8eed7756604a45e74",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-11T10:23:38.311Z",
+    "packages": {
+      "nanite-core-scene": {
+        "package": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-core-scene\\package.json",
+          "sha256": "832e046c28df949c7ce26b0d47c5c5f43f0f64d09ad36e733d3a1174be6e7d55"
+        },
+        "runtime": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\build.json",
+          "sha256": "2104039d7345725eda8fec33274a5116638f5cd37d8ec3ec439f0a4a2b5df1ae"
+        }
+      },
+      "nanite-core-default": {
+        "package": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-core-default\\package.json",
+          "sha256": "8dfeaf84cc05c3dc90a4fbaa6ff461abf191f81f92a0ecf6302bb67dc930aa30"
+        },
+        "runtime": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\build.json",
+          "sha256": "2104039d7345725eda8fec33274a5116638f5cd37d8ec3ec439f0a4a2b5df1ae"
+        }
+      }
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "8f020ee6a4a6a2e7a81d2194a85abcf35661079bb1f5ab85051369883e14be87"
+    },
+    "runs": [
+      {
+        "suite": "villa",
+        "scalar": false,
+        "cases": 9,
+        "frames": 2922,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\packed.json",
+          "sha256": "ce538e13fb974b97c59020d72c45f0690bd709a42e3c9e9add1186c32d9d09b3"
+        }
+      },
+      {
+        "suite": "default",
+        "scalar": false,
+        "cases": 8,
+        "frames": 4900,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed.json",
+          "sha256": "fd97db00a5c47b269c7a532772b9da7c4b405eca35bb9230554b9eab45b28c41"
+        }
+      },
+      {
+        "suite": "recovery",
+        "scalar": false,
+        "cases": 8,
+        "frames": 8979,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-recovery\\packed.json",
+          "sha256": "dcb1604ee613a78b8131bc888a6b5b617dbb32d21c01c54e4b9c3acc71d70555"
+        }
+      },
+      {
+        "suite": "villa",
+        "scalar": true,
+        "cases": 9,
+        "frames": 2715,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\scalar.json",
+          "sha256": "a4e53a2f1c6beca4fd94148870a9f7ae1f82516205ef981a8522e2e2f0c8ac2d"
+        }
+      },
+      {
+        "suite": "default",
+        "scalar": true,
+        "cases": 8,
+        "frames": 4903,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar.json",
+          "sha256": "a9a98ef500e45f07e543dac70589caaf954607bc91637b720f4717416fcef6ee"
+        }
+      },
+      {
+        "suite": "recovery",
+        "scalar": true,
+        "cases": 8,
+        "frames": 9086,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-recovery\\scalar.json",
+          "sha256": "f115ec0f30bfcdf668409859ccf057e3649ad09173cb81995c96e375a62fad6d"
+        }
+      }
+    ],
+    "comparisons": [
+      {
+        "scalar": false,
+        "step": 5,
+        "before": 395,
+        "after": 308,
+        "comparison": {
+          "compared": 13624,
+          "removedClusters": 0,
+          "before": 395,
+          "after": 308,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0
+        }
+      },
+      {
+        "scalar": false,
+        "step": 7,
+        "before": 326,
+        "after": 42,
+        "comparison": {
+          "compared": 14377,
+          "removedClusters": 256,
+          "before": 326,
+          "after": 42,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0
+        }
+      },
+      {
+        "scalar": false,
+        "step": 9,
+        "before": 377,
+        "after": 316,
+        "comparison": {
+          "compared": 13918,
+          "removedClusters": 0,
+          "before": 377,
+          "after": 316,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0
+        }
+      },
+      {
+        "scalar": true,
+        "step": 5,
+        "before": 395,
+        "after": 308,
+        "comparison": {
+          "compared": 13624,
+          "removedClusters": 0,
+          "before": 395,
+          "after": 308,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0
+        }
+      },
+      {
+        "scalar": true,
+        "step": 7,
+        "before": 326,
+        "after": 308,
+        "comparison": {
+          "compared": 14377,
+          "removedClusters": 0,
+          "before": 326,
+          "after": 308,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0
+        }
+      },
+      {
+        "scalar": true,
+        "step": 9,
+        "before": 377,
+        "after": 316,
+        "comparison": {
+          "compared": 13918,
+          "removedClusters": 0,
+          "before": 377,
+          "after": 316,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0
+        }
+      }
+    ],
+    "profiles": [
+      {
+        "mode": 0,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-disocclusion-final-0-20261111.json",
+          "sha256": "e4184c7adfa65f8ebe8e2b8dba66e5e293263f113d908246b051991cca5e38ef"
+        },
+        "samples": [
+          {
+            "fps": 27.342350294944108,
+            "calls": {
+              "createBuffer": 6,
+              "writeBuffer": 377.8993902439024,
+              "submit": 11.996951219512194,
+              "beginRenderPass": 232,
+              "beginRenderPass:(unlabelled)": 232,
+              "createBindGroup": 9.353658536585366,
+              "draw": 50,
+              "beginComputePass": 136,
+              "beginComputePass:(unlabelled)": 136,
+              "dispatchWorkgroups": 2579,
+              "drawIndexed": 830.1280487804878,
+              "dispatchWorkgroupsIndirect": 8,
+              "drawIndirect": 1045,
+              "drawIndexedIndirect": 188
+            },
+            "rhiMs": 18.663849045590656
+          },
+          {
+            "fps": 33.304838750335456,
+            "calls": {
+              "createBuffer": 6,
+              "writeBuffer": 378.97236180904525,
+              "submit": 11.99748743718593,
+              "beginRenderPass": 271,
+              "beginRenderPass:(unlabelled)": 271,
+              "createBindGroup": 9.256281407035177,
+              "draw": 65,
+              "beginComputePass": 136,
+              "beginComputePass:(unlabelled)": 136,
+              "dispatchWorkgroups": 2304,
+              "drawIndexed": 838.5477386934673,
+              "dispatchWorkgroupsIndirect": 8,
+              "drawIndirect": 879,
+              "drawIndexedIndirect": 236
+            },
+            "rhiMs": 17.63261562615783
+          }
+        ]
+      },
+      {
+        "mode": 1,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-disocclusion-final-1-20261111.json",
+          "sha256": "74dc4438ad1639ba12b2260c1b886be4fbfb62296929350e2ecc530907b80047"
+        },
+        "samples": [
+          {
+            "fps": 57.6368039851597,
+            "calls": {
+              "createBuffer": 6.0018939393939394,
+              "writeBuffer": 293.12310606060606,
+              "submit": 11.988636363636363,
+              "beginRenderPass": 217.87878787878788,
+              "beginRenderPass:(unlabelled)": 217.87878787878788,
+              "createBindGroup": 200.6875,
+              "draw": 50,
+              "beginComputePass": 107.52272727272727,
+              "beginComputePass:(unlabelled)": 107.52272727272727,
+              "dispatchWorkgroups": 1611.2348484848485,
+              "drawIndexed": 761.7727272727273,
+              "dispatchWorkgroupsIndirect": 8,
+              "drawIndirect": 635.4583333333334,
+              "drawIndexedIndirect": 188
+            },
+            "rhiMs": 15.116609858744072
+          },
+          {
+            "fps": 91.00948195331759,
+            "calls": {
+              "createBuffer": 8.16736842105263,
+              "writeBuffer": 190.7357894736842,
+              "submit": 11.51578947368421,
+              "beginRenderPass": 247.96842105263158,
+              "beginRenderPass:(unlabelled)": 247.96842105263158,
+              "createBindGroup": 12.950526315789475,
+              "draw": 64.98,
+              "beginComputePass": 73.56842105263158,
+              "beginComputePass:(unlabelled)": 73.56842105263158,
+              "dispatchWorkgroups": 574.0757894736843,
+              "drawIndexed": 522.9421052631579,
+              "dispatchWorkgroupsIndirect": 8,
+              "drawIndirect": 211.57894736842104,
+              "drawIndexedIndirect": 236
+            },
+            "rhiMs": 8.482210259688529
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-disocclusion-evidence.cjs",
+        "sha256": "32aa893dd3cd5ae5c2dd8450ee6d94dd4e8b1b455c2baaf9bb4094b9ae4a4e97"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-full-scene.cjs",
+        "sha256": "e15c460703ae9b49b6f6cbb09a4171eb13632b6e9dd506fbee6203307ad2ce63"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-primitive-recovery.cjs",
+        "sha256": "8ca673f410d4f4de7f599bc806e87c4eeb02cd949d04165dd2ae8591dffcc0bc"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-automatic-scene.cjs",
+        "sha256": "6b95ec930e030e7fcb3b650cd683ec8005b20e52b036b619a7efc538a7cafa63"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\profile-web-cpu.cjs",
+        "sha256": "b7a841df3a543e0b714d0a86165c0892bb89553660e2d02a58c319031666a53f"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-engine-worker.js",
+        "sha256": "b2e72908b8fc23bd15dfe2251f413f82cdc8e7a58618408107cddf5e21492b8b"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\package-web-nanite-scene.cjs",
+        "sha256": "aa644bb28696d04b6fd8040cfd8d531ac36482bfee6d0b6b2de5ca6ca6baa54b"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\Private\\WebNaniteAutomaticSceneTest.cpp",
+        "sha256": "11af6dc3cc00c1be1419405e3a25bfcd863ced1cdf88f24a8ff52ff7336460b2"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteWebScene.cpp",
+        "sha256": "7e640feb1868faa256ee23277e7251dc1a49d8198680f4e1439b48df4a6a34a2"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Public\\Rendering\\NaniteWebScene.h",
+        "sha256": "15689638fbc9f4b1ca3b54230480efd071a54eb33fdb4468d8a6cef13ed63ea9"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\DeferredShadingRenderer.cpp",
+        "sha256": "61522ea2d050f3985fa01f87797f32d032da968f8a68f98fe84e31e968bcc8f6"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\RendererScene.cpp",
+        "sha256": "6b371dcfd9273ef6493077f7f4f43c083e37b9f1c8cba14bfe0084c3c630c0a3"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\SceneOcclusion.cpp",
+        "sha256": "bacdf7a2f9e668c2a9e6a87588bcb0e676358c79990f5f9d69714c6c7dec32b7"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\WebOcclusionHistory.h",
+        "sha256": "ef8d9a2eca333279549cf0fdf1a9634f94a874944a3c497df7d242b2473f4e6b"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\WebOcclusionBounds.h",
+        "sha256": "f6c057f3739062d6e81d0de6a21cd44993a0933a21492f8c075bbd358c32f918"
+      }
+    ],
+    "artifacts": {
+      "$omitted": true,
+      "reason": "Large array",
+      "type": "array",
+      "entries": 137,
+      "bytes": 59534,
+      "sha256": "d650cab3fd6a1674a1be9fc2e606648f4be2f3672207a2c0300ae3d78bb5acd6"
+    },
+    "boundary": "Changed occluder bounds invalidate overlapping previous primitive queries, including pending results, in ordinary Web Nanite scenes. The bounded change log restores visibility on overflow; orthographic and GPU compute changes stay conservative. Actual render-thread occluder state requires the target to be a candidate on every unoccluded frame. Stable scene depth and materials remain unchanged and real-time performance is measured. Native comparison and full-scene streaming/device recovery are separate final checks."
+  }
+}

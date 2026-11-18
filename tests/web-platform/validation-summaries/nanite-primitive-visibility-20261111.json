@@ -1,0 +1,1547 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-primitive-visibility-20261111.json",
+    "bytes": 68866,
+    "sha256": "293a66d159287093249789e4ea4e2d59795d4c77e1f9c7d53ee9a9431d3d0eac",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-11T08:45:18.359Z",
+    "packages": {
+      "nanite-core-scene": {
+        "package": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-core-scene\\package.json",
+          "sha256": "88c0e4065f9e5cdef48608e9d818d1a749b8993124f82fb4d2c6ebd2dc60187d"
+        },
+        "runtime": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\build.json",
+          "sha256": "3ba2f35bbc5a5e5baa3e2988c6cabc3e8f78fc65c2b364cbdb2724df6f03df5e"
+        }
+      },
+      "nanite-core-default": {
+        "package": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-core-default\\package.json",
+          "sha256": "bf0b26bc526a040db1a3abacb553c15c24e28bb45ab98a50f48e89e549faeeeb"
+        },
+        "runtime": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\build.json",
+          "sha256": "3ba2f35bbc5a5e5baa3e2988c6cabc3e8f78fc65c2b364cbdb2724df6f03df5e"
+        }
+      }
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "58df3f768856c6c9ee69137a5d6373a7253625dc79556f83caeefcb851685bef"
+    },
+    "runs": [
+      {
+        "suite": "villa",
+        "scalar": false,
+        "cases": 9,
+        "frames": 2905,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\packed.json",
+          "sha256": "4b84118e12ab88fe2d284ce3b16455eaeb38a8dbbedb7a3de97a3914eca8d158"
+        }
+      },
+      {
+        "suite": "default",
+        "scalar": false,
+        "cases": 8,
+        "frames": 4965,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed.json",
+          "sha256": "cad0a65216b458961b71437485b254470fa027a2ae629fb4fca8c832881cb09e"
+        }
+      },
+      {
+        "suite": "recovery",
+        "scalar": false,
+        "cases": 8,
+        "frames": 8617,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-recovery\\packed.json",
+          "sha256": "7ce57557f271029262af2859b1aad7e3712d311e0bbce45e71ea5ac90738471c"
+        }
+      },
+      {
+        "suite": "villa",
+        "scalar": true,
+        "cases": 9,
+        "frames": 2758,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\scalar.json",
+          "sha256": "27f9b22ee774b7b10d1430a57e4fa804e9a1cd58a487695911e770d58f6e501b"
+        }
+      },
+      {
+        "suite": "default",
+        "scalar": true,
+        "cases": 8,
+        "frames": 5027,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar.json",
+          "sha256": "da355503b365960e46d9976984bfb7e8266de08940d90a27231fc5e65b52fa1f"
+        }
+      },
+      {
+        "suite": "recovery",
+        "scalar": true,
+        "cases": 8,
+        "frames": 8804,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-recovery\\scalar.json",
+          "sha256": "7b94843a0df919647a975f537e36b5e29f18d41b907064f9b5de9e8489f29eee"
+        }
+      }
+    ],
+    "comparisons": [
+      {
+        "scalar": false,
+        "step": 5,
+        "before": 395,
+        "after": 308,
+        "comparison": {
+          "compared": 13624,
+          "removedClusters": 0,
+          "before": 395,
+          "after": 308,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0
+        }
+      },
+      {
+        "scalar": false,
+        "step": 7,
+        "before": 326,
+        "after": 308,
+        "comparison": {
+          "compared": 14377,
+          "removedClusters": 0,
+          "before": 326,
+          "after": 308,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0
+        }
+      },
+      {
+        "scalar": false,
+        "step": 9,
+        "before": 377,
+        "after": 316,
+        "comparison": {
+          "compared": 13918,
+          "removedClusters": 0,
+          "before": 377,
+          "after": 316,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0
+        }
+      },
+      {
+        "scalar": true,
+        "step": 5,
+        "before": 395,
+        "after": 308,
+        "comparison": {
+          "compared": 13624,
+          "removedClusters": 0,
+          "before": 395,
+          "after": 308,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0
+        }
+      },
+      {
+        "scalar": true,
+        "step": 7,
+        "before": 326,
+        "after": 308,
+        "comparison": {
+          "compared": 14377,
+          "removedClusters": 0,
+          "before": 326,
+          "after": 308,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0
+        }
+      },
+      {
+        "scalar": true,
+        "step": 9,
+        "before": 377,
+        "after": 316,
+        "comparison": {
+          "compared": 13918,
+          "removedClusters": 0,
+          "before": 377,
+          "after": 316,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0
+        }
+      }
+    ],
+    "profiles": [
+      {
+        "mode": 0,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-primitive-final-0-20261111.json",
+          "sha256": "0eb6106829752a6c1fb3aeaed48759aa89b12ea58b145f14c7097abd50fb17f8"
+        },
+        "samples": [
+          {
+            "fps": 27.24145148339249,
+            "calls": {
+              "createBuffer": 6,
+              "writeBuffer": 379,
+              "submit": 12,
+              "beginRenderPass": 232,
+              "beginRenderPass:(unlabelled)": 232,
+              "createBindGroup": 9.242990654205608,
+              "draw": 50,
+              "beginComputePass": 136,
+              "beginComputePass:(unlabelled)": 136,
+              "dispatchWorkgroups": 2579,
+              "drawIndexed": 848.9190031152648,
+              "dispatchWorkgroupsIndirect": 8,
+              "drawIndirect": 1045,
+              "drawIndexedIndirect": 188
+            },
+            "rhiMs": 19.56589125398535
+          },
+          {
+            "fps": 32.49750028430332,
+            "calls": {
+              "createBuffer": 6,
+              "writeBuffer": 378.0671834625323,
+              "submit": 12,
+              "beginRenderPass": 271,
+              "beginRenderPass:(unlabelled)": 271,
+              "createBindGroup": 9.790697674418604,
+              "draw": 65,
+              "beginComputePass": 136,
+              "beginComputePass:(unlabelled)": 136,
+              "dispatchWorkgroups": 2304,
+              "drawIndexed": 833.2583979328166,
+              "dispatchWorkgroupsIndirect": 8,
+              "drawIndirect": 879,
+              "drawIndexedIndirect": 236
+            },
+            "rhiMs": 18.225088908074746
+          }
+        ]
+      },
+      {
+        "mode": 1,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-primitive-final-1-20261111.json",
+          "sha256": "ab03b5e983960ef697b3779d9454b9b69a94514f7e59c82edc6bbbd54d50d698"
+        },
+        "samples": [
+          {
+            "fps": 62.921084674277566,
+            "calls": {
+              "createBuffer": 8.83710407239819,
+              "writeBuffer": 323.31447963800906,
+              "submit": 11.98868778280543,
+              "beginRenderPass": 222.4660633484163,
+              "beginRenderPass:(unlabelled)": 222.4660633484163,
+              "createBindGroup": 108.88461538461539,
+              "draw": 50,
+              "beginComputePass": 117.49095022624434,
+              "beginComputePass:(unlabelled)": 117.49095022624434,
+              "dispatchWorkgroups": 1912.4841628959275,
+              "drawIndexed": 847.3280542986425,
+              "dispatchWorkgroupsIndirect": 8,
+              "drawIndirect": 756.8846153846154,
+              "drawIndexedIndirect": 188
+            },
+            "rhiMs": 16.588800633115465
+          },
+          {
+            "fps": 88.50258529207436,
+            "calls": {
+              "createBuffer": 9.54406779661017,
+              "writeBuffer": 265.98135593220337,
+              "submit": 11.716949152542373,
+              "beginRenderPass": 258.335593220339,
+              "beginRenderPass:(unlabelled)": 258.335593220339,
+              "createBindGroup": 15.41864406779661,
+              "draw": 64.93559322033899,
+              "beginComputePass": 98.58983050847458,
+              "beginComputePass:(unlabelled)": 98.58983050847458,
+              "dispatchWorkgroups": 1297.6271186440679,
+              "drawIndexed": 664.0491525423729,
+              "dispatchWorkgroupsIndirect": 8,
+              "drawIndirect": 492.3694915254237,
+              "drawIndexedIndirect": 236
+            },
+            "rhiMs": 13.17147602469234
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-primitive-visibility-evidence.cjs",
+        "sha256": "39520a788a768eb191631732bffa354c353c24912a092a4aba241268fe605284"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-full-scene.cjs",
+        "sha256": "e15c460703ae9b49b6f6cbb09a4171eb13632b6e9dd506fbee6203307ad2ce63"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-primitive-recovery.cjs",
+        "sha256": "0900256eb9b7f8a3cc379a86d42b483f25e7f013e59c69300b92de1303be6d33"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-automatic-scene.cjs",
+        "sha256": "6b95ec930e030e7fcb3b650cd683ec8005b20e52b036b619a7efc538a7cafa63"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\profile-web-cpu.cjs",
+        "sha256": "b7a841df3a543e0b714d0a86165c0892bb89553660e2d02a58c319031666a53f"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-engine-worker.js",
+        "sha256": "b2e72908b8fc23bd15dfe2251f413f82cdc8e7a58618408107cddf5e21492b8b"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\package-web-nanite-scene.cjs",
+        "sha256": "aa644bb28696d04b6fd8040cfd8d531ac36482bfee6d0b6b2de5ca6ca6baa54b"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\Private\\WebNaniteAutomaticSceneTest.cpp",
+        "sha256": "14e17acf1b69f75e14fd3735b2f20da704af88e009f2c5cb116786204e630833"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteWebScene.cpp",
+        "sha256": "7e640feb1868faa256ee23277e7251dc1a49d8198680f4e1439b48df4a6a34a2"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Public\\Rendering\\NaniteWebScene.h",
+        "sha256": "15689638fbc9f4b1ca3b54230480efd071a54eb33fdb4468d8a6cef13ed63ea9"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\DeferredShadingRenderer.cpp",
+        "sha256": "61522ea2d050f3985fa01f87797f32d032da968f8a68f98fe84e31e968bcc8f6"
+      }
+    ],
+    "artifacts": [
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-core-scene\\package.json",
+          "sha256": "88c0e4065f9e5cdef48608e9d818d1a749b8993124f82fb4d2c6ebd2dc60187d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\0-package.json.gz",
+          "sha256": "55f2a92d3195239689f386722c2d15b4bd47f13d1213de83b90a4b031b185f8c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\build.json",
+          "sha256": "3ba2f35bbc5a5e5baa3e2988c6cabc3e8f78fc65c2b364cbdb2724df6f03df5e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\1-build.json.gz",
+          "sha256": "d2e990b769e75f826ffcee22fc73b71ff3784edf40662c4f613feff0bedbab4f"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261111-133141\\verified.json",
+          "sha256": "8231737b82bf35b58cc9cbf7cf5eff57701e7442b29da7d1ec29aa8606b833e4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\2-verified.json.gz",
+          "sha256": "10bb8c37265dfc8d4ea4c47f732b9ad48f22a2598706a1f26e340dcdb60ac1e8"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-streaming-shaders\\verified.json",
+          "sha256": "8e2781e574b88c9772cfc4d957ed7707cfb4fe8df2e6d3d600da7b562799f340"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\3-verified.json.gz",
+          "sha256": "19c73cd9095030c07f45620f9d744b9c04a5f798245d1c6aeac5cae84209a3f2"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-nanite-full-scene-desktop-stage-results.json",
+          "sha256": "7082c581f67f1b2caf34b1c58628cb2729bc8a7abef851893a1348eb6aaadfce"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\4-web-project-nanite-full-scene-desktop-stage-results.json.gz",
+          "sha256": "281f9a364bbdc407054f595c391ef845896b17003a4d0fb8c7b812048afd4cc2"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-nanite-full-scene-desktop-cook-results.json",
+          "sha256": "589adf394c2cda184f530c27b6ec0fc05871caf3cd21f73045749c23a5479473"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\5-web-project-nanite-full-scene-desktop-cook-results.json.gz",
+          "sha256": "3b8a2a4c3dcb23c8f3adc26df4f3dcd764a4f60e23ab098ac122882262ae52da"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "C:\\Users\\wap80\\.cache\\ue-html-build-archive\\nanite-core-cook\\web-project-nanite-full-scene-desktop-cook\\20261111-133154\\ShaderConversion\\inventory.json",
+          "sha256": "c5b683e44520ff4a2a459a096798505aaa0e3082a8bbd80e210cca7ebf593da0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\6-inventory.json.gz",
+          "sha256": "e84f689a2820fd177130676ca0f2c9b860d755c47f3ced65ad86d0d5c9d64d36"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-full-scene-conversion-verified.json",
+          "sha256": "75f300f75ff1104216527437ba712b02e9f4eee8936bdbc31b6755bdaba8e915"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\7-nanite-full-scene-conversion-verified.json.gz",
+          "sha256": "91ceddc1722ffc2e2e8ad3dc1f67d6521f5e8e246fa8d0af387a2ec4cc6b8fe2"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-core-default\\package.json",
+          "sha256": "bf0b26bc526a040db1a3abacb553c15c24e28bb45ab98a50f48e89e549faeeeb"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\8-package.json.gz",
+          "sha256": "127c5693f9241e97f17d7172ae94643480852561590b7ecc1c77e8c5126284d9"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-webgpu-sm5-default-stage-results.json",
+          "sha256": "1fc2c706bea05104ff2d439da56277cd43ccb597ee972492adfeb482fabc5c1c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\9-web-engine-webgpu-sm5-default-stage-results.json.gz",
+          "sha256": "ef93c4121efb476f1809998f72555cb82aa5b453e97e01ae95ef0f930b906a51"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-webgpu-sm5-default-cook-results.json",
+          "sha256": "53e986e0e2df6bd27ce67f5815713a40b4b6ebebffc9eb066bbf5473aa694319"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\10-web-engine-webgpu-sm5-default-cook-results.json.gz",
+          "sha256": "f1650493af80969be6f454c126c484e7c54d5c569544357865f4f3391f245aa4"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "C:\\Users\\wap80\\.cache\\ue-html-build-archive\\nanite-core-cook\\web-engine-webgpu-sm5-default-cook\\20261111-135540\\ShaderConversion\\inventory.json",
+          "sha256": "7b5ba6ab844fcc1cb1b9a8b74d3ad64a7872b47215d530ad8fe838790cee4caf"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\11-inventory.json.gz",
+          "sha256": "fcab48a20cdbba819552258fd61fefb5dd214d60a40c3012dfdb93adc753b891"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+          "sha256": "58df3f768856c6c9ee69137a5d6373a7253625dc79556f83caeefcb851685bef"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\12-web-engine-full-thread-build-results.json.gz",
+          "sha256": "da7afdbb449803806800846c6a34719f7dbfd252a48fb96ce3000c0245d34c1c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-20261111-163040.log",
+          "sha256": "8ec2aff05eadc2de2e9e06dbc5f98be6853658687567c9b92ef2ef736171eeab"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\13-web-engine-full-thread-20261111-163040.log.gz",
+          "sha256": "9b01df2008ebabde07721566b5c1011abd898c1c1c1259c18fa5715211a73e15"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\UEWebEngineThreads.js.rsp",
+          "sha256": "4ca52870a35ddf36c97cc804f3aca77fddf05b0414f9dac3dd2ed8a993a6e038"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\14-UEWebEngineThreads.js.rsp.gz",
+          "sha256": "d536de599c5d05fd468d1ea532929da7b282314ad2abc593a7cc75899082292d"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\packed-1.png",
+          "sha256": "11f4b2ea654aac6ce486c6ba06ea5c8b8fa1c194606f6025398e516162090ccc"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\15-packed-1.png.gz",
+          "sha256": "b47e42ddd196e59169cb288ca7d62aa831e30d30d5ea878c56e50a8b0b0e8d07"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\packed-2.png",
+          "sha256": "93e047301bf8d2939ea49a156fcc37435a8d2c0f531c3e87d7717fec606265a7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\16-packed-2.png.gz",
+          "sha256": "96c7b74ebd25a030bd6584a3c00d61a608b00a03c4906b4cf080a8b69ccf9ed1"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\packed-3.png",
+          "sha256": "cc09ad9ca053d226f2b8270381d3be9c66453408f2f76e7fd2a012f05dd1f0d7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\17-packed-3.png.gz",
+          "sha256": "8e04b363849fc7e24d9ceea1659e8205fe4197eca61f333f34bf201577863d0c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\packed-4.png",
+          "sha256": "41525a2b61c35cfb5c52072bbfe1d3d6b43e641e5fcdbfd8e56f95fe3448c9db"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\18-packed-4.png.gz",
+          "sha256": "ed99e16c5b6d37bd6cd837c51b775fe8313efa5c30287e7f4a9e31737feb340e"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\packed-5.png",
+          "sha256": "40b997e7e12190e43010054ae3568a7e75abd6e0a954af0fd0001126a1efb614"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\19-packed-5.png.gz",
+          "sha256": "68523b338316f2b7a4158af488967a296a609aa9ffe47996a3b1cefcdfa83498"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\packed-6.png",
+          "sha256": "4a84e560bd9e0832735f3dc33adfc2c5dd2dface47a443b24488227017fe2af4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\20-packed-6.png.gz",
+          "sha256": "585988ddf0fa8a92044f311c3ce7fd4fc212b9a407479bf6ad884572962155e5"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\packed-7.png",
+          "sha256": "7d5b4ffb312082152b8005be3ec593175aeb5fc465d95737f6e520ace5738b2b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\21-packed-7.png.gz",
+          "sha256": "d3dd2512f3deac5753db5637d023903d25ca6910f608461a08b62b00ec736e70"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\packed-8.png",
+          "sha256": "a6a00dd5347fe76566160871b20ac70d4bb5053050845614104d2c719747ba99"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\22-packed-8.png.gz",
+          "sha256": "7a35e7daf3c1ca5ea5f6cc2bed2ba75ec299cf12f06bdbab58e0c87dc9f983c6"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\packed-9.png",
+          "sha256": "f6a6940dc75aec031a89740a26fad247062dc65937e638e232b8d005782a7889"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\23-packed-9.png.gz",
+          "sha256": "9e6fc7e0d11f57caa2ec3c7f300ebc915f4bffc59affc591824acc144934e701"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\packed.json",
+          "sha256": "4b84118e12ab88fe2d284ce3b16455eaeb38a8dbbedb7a3de97a3914eca8d158"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\24-packed.json.gz",
+          "sha256": "ea77380e5c3bc1b2c91b304bce1223f4d692c0d0bf1fcfdd9035e72a8d8cf8a7"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-1.png",
+          "sha256": "c06326384699cbee0ff63a6d60535302893cf7a6e3a5417ba0772afbd5bcb55d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\25-packed-1.png.gz",
+          "sha256": "d03a5166cf4ceb6bd13cf40cea6bdaefb392d0beb6e35b4c478b2be10c31960c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-2.png",
+          "sha256": "5647fee874d9f10dd5895381fd0cbf84da2f33041a0f36ba7d5ab356c21b4caa"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\26-packed-2.png.gz",
+          "sha256": "9f0c2eb2537cc9531b3fe696786ccae29660b2b473366314c755cb2809c319ef"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-3.png",
+          "sha256": "61c46fc6c398b13bb153dc46b2e6d0145a2a6e17b645cb4e5addadc7c4522311"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\27-packed-3.png.gz",
+          "sha256": "c2ef7c5722c243c08948bf08f7b5e75b624e36789cfcb0531bf0ca05dd7dfb38"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-4.png",
+          "sha256": "2cf45879ee5bb853237ce89cf043897ce660d68946007ee168fbfed38c3910c2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\28-packed-4.png.gz",
+          "sha256": "1254c1c99ad73b5770516530505681fbc898556032c7e5d93755e4ca729d8df9"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-5.png",
+          "sha256": "bf0ba13f67df8ae2c433596087ab0fcf89ee1c7c1c53b4f5299a71f457146d0c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\29-packed-5.png.gz",
+          "sha256": "b7af2e3045cc57360d3e997fa50991b1221c714ff01fdcbb74445d50c579589a"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-6.png",
+          "sha256": "682c58118a227d25929e5729c499609cb260535dab25063f545bc931f12f7c98"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\30-packed-6.png.gz",
+          "sha256": "76f948d56aac8c002b2bc09c9f499531dae2ca8f695da4af78507f2190b75598"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-7.png",
+          "sha256": "b9ae8a2e38568d02de8ef10a29a67fd33c829e6549e227b6ea0b661b33bd3dd4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\31-packed-7.png.gz",
+          "sha256": "f82ccd7c6db86cfe2e151f1ce47b89b1a5c7c1d54ea3d0464e043614288c622b"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-8.png",
+          "sha256": "c7ac6d13bbacced687ef046520b27239afdaaecf77201de91aaf52a5d74ad815"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\32-packed-8.png.gz",
+          "sha256": "86a316ee24540641a0588e31a5bcfad71822619cb18facd801122b231f43f7a3"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed.json",
+          "sha256": "cad0a65216b458961b71437485b254470fa027a2ae629fb4fca8c832881cb09e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\33-packed.json.gz",
+          "sha256": "9b5452e030d3b62c1fe4cbe4620777c0d93feed178550635a670e2d3c5b7a909"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-recovery\\packed.json",
+          "sha256": "7ce57557f271029262af2859b1aad7e3712d311e0bbce45e71ea5ac90738471c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\34-packed.json.gz",
+          "sha256": "4c6f03049956551251d38c57f1cb07279fd4ab6f05cfd282a3daf6ce9a9f4c2f"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\scalar-1.png",
+          "sha256": "3322cf9bcabd578872d25649e369901103456f0f7596c7693c8b86018416054d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\35-scalar-1.png.gz",
+          "sha256": "13134dacd52adcb39a32453ad0f84076a9f35786d000cafddb72b749291350f8"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\scalar-2.png",
+          "sha256": "7c484ecf02f28ac7f0b21f2df345c213160fb4ebeef640ec2acf7facb305475a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\36-scalar-2.png.gz",
+          "sha256": "87715a6a8028a979d5052961ef94ff9e3afa84917a70a8e5ed15167f6d2cf4db"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\scalar-3.png",
+          "sha256": "9b2dc69cc48c0e4e08f8e2ab322d2654c292ccf2abe54d1eac15ed68fdc595eb"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\37-scalar-3.png.gz",
+          "sha256": "9905049ddbacf31071c79318286f5fc0b3e922810665a649c81121f7ff29cf2c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\scalar-4.png",
+          "sha256": "2d754eeeb1a8a598cfd30040a509dbe8c13f9801250065bbfb731b209eddd251"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\38-scalar-4.png.gz",
+          "sha256": "4c1ccd791184d7f2a38fa9c31ed218d1cab310306baac2fa5e08560b54df40b7"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\scalar-5.png",
+          "sha256": "7445e6c1b60e600f918878e35a3fec96e341ce97f407d50b89437b5870db2c68"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\39-scalar-5.png.gz",
+          "sha256": "259f0466851d700f5a6c3840de897ded0c5201bbe2f8c3b3e2f1adbb317cc53c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\scalar-6.png",
+          "sha256": "abd68d1dc44feb03641d28e93afa233390422e20cecdef541ed903ab0a3ddcde"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\40-scalar-6.png.gz",
+          "sha256": "937d51b583f24dd50adf7fcef13e8095e9bc85d4d99eb658fc7d9eaea5059e05"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\scalar-7.png",
+          "sha256": "9398d91ca5f6befd8f5c6389279140ff2ee2c9a0814e78f053d09656684b2181"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\41-scalar-7.png.gz",
+          "sha256": "1843629982116978da5dd1c48b2cb96d4e91fded9daf17a9039c10a63336d668"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\scalar-8.png",
+          "sha256": "742b2e5a6d34de8788bdbf8982378f1c905ee34769c8787d025a4d65b3c51960"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\42-scalar-8.png.gz",
+          "sha256": "8d4e5030d419050760281e124f3752a769c1e66f6dea8380efc79ff9d077a2b7"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\scalar-9.png",
+          "sha256": "b892bc44c75ccd448fde98fecf0f396fc7974d73178e80047598e2db47a99ad7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\43-scalar-9.png.gz",
+          "sha256": "70e40eecdd28868aa6d8b2e1d3b83a4f84efb0451bc3b5cdccd7fce46745be62"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-visibility\\scalar.json",
+          "sha256": "27f9b22ee774b7b10d1430a57e4fa804e9a1cd58a487695911e770d58f6e501b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\44-scalar.json.gz",
+          "sha256": "2ae0e829b16ce2e695c80f8af61ab9f6aa4eb8ee6466f7a617cf54627ddaf811"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-1.png",
+          "sha256": "ed4093adb055e490667a08def9189c5af59d44ea1853000bbfb99c5951626ac5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\45-scalar-1.png.gz",
+          "sha256": "43be2ff9d974de138baea0fd9b1060c915963a2ffca99f6fa541ab5e57976ff9"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-2.png",
+          "sha256": "5b5d47f51fd93c81f50e7692898a924e0b29ffcd15a34bfd4dbd0ebf18491980"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\46-scalar-2.png.gz",
+          "sha256": "994b1c8133f3ca7720e07d53abd21271eb768b30b623eeb6d5e39b9e3233e8be"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-3.png",
+          "sha256": "d3b5ca06adde174bbe9ba4f690882736ef0bb65ed3696ebc7e74a2b7d4f7338a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\47-scalar-3.png.gz",
+          "sha256": "752fe68827c5c75603fc7ae5554b0b4177056bfe29069812b04ee929408be686"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-4.png",
+          "sha256": "6d611b12158bdb7afda94846090fb76c84f5b0bfbc4b9ccc016df23495de7f5b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\48-scalar-4.png.gz",
+          "sha256": "0bf8ef8018e0ae1fa68751900cf4009455ba9ca44e58a65110b7ca785564c13d"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-5.png",
+          "sha256": "5771ffa267494e589691cb4684b49b4d94328fab17becec706853a962ae071fb"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\49-scalar-5.png.gz",
+          "sha256": "338ea2b81335f7381b017766fd81cd7a6cc82657e4664c7998daec1d7f7a6e1a"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-6.png",
+          "sha256": "721f13e5d5e13cef5521d5feabb928d1756e7ce94da895003cdd75a4d5bf0adb"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\50-scalar-6.png.gz",
+          "sha256": "d7ee43e0322942f48c297011ec568c7d895fb86148b8ab9f895f3a4377f12d9b"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-7.png",
+          "sha256": "84469bdf9a1ecd5ab240cafa54ff026b53e8907cadbd93cb0b5853a384bbb41b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\51-scalar-7.png.gz",
+          "sha256": "8259be18f6c4ac0dd6794a310514479163bd39c92e6d5d0068f35c8854a4c863"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-8.png",
+          "sha256": "f88c4085a357aacb105e40d570cf0789ac197a474ca77dc42387e6fda49cae0d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\52-scalar-8.png.gz",
+          "sha256": "b7c3bc821704f3110ae5303c4f2cb5fd59a9e023497efeba8b03e7aa3f3bac1c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar.json",
+          "sha256": "da355503b365960e46d9976984bfb7e8266de08940d90a27231fc5e65b52fa1f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\53-scalar.json.gz",
+          "sha256": "451052739989dcc7acaf36854786a7165b1330950f806e71858a6e20a25c175e"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-primitive-recovery\\scalar.json",
+          "sha256": "7b94843a0df919647a975f537e36b5e29f18d41b907064f9b5de9e8489f29eee"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\54-scalar.json.gz",
+          "sha256": "ad567bc8aea11bc7f527c6fce8dfc76f9d0c062f9fcd4bb5077e0401438095aa"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-primitive-final-0-20261111.json",
+          "sha256": "0eb6106829752a6c1fb3aeaed48759aa89b12ea58b145f14c7097abd50fb17f8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\55-cpu-nanite-primitive-final-0-20261111.json.gz",
+          "sha256": "b3863143598ab3517af9e4b7dbc9ae55dbef4d1197a04fb5c9b5b38094e9219e"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-primitive-final-0-20261111.log",
+          "sha256": "3f471236936ab460e832c529ea329fd4e306b1d5150fc36cd26c69f2a93fa806"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\56-cpu-nanite-primitive-final-0-20261111.log.gz",
+          "sha256": "8b93bee2a4a8360d52fc1f424115a33fe5c4ae18354ad7614d7874995bb69934"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-primitive-final-0-20261111-0.cpuprofile",
+          "sha256": "d70939baf30f617dc0efd829cbf07cdb6fb6b032b28b9b542a44dd8479b69472"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\57-cpu-nanite-primitive-final-0-20261111-0.cpuprofile.gz",
+          "sha256": "83ea1508866981f594e6482a0534abe80ce73197d009687091494a173a1c18e2"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-primitive-final-0-20261111-0.png",
+          "sha256": "27d562f356e86f0a75a3a45cecceda9a2f6e43f6c885dd0a5441f964d941e730"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\58-cpu-nanite-primitive-final-0-20261111-0.png.gz",
+          "sha256": "672ae97fc938a37265fa8a52caa8cc499038a9c0f35c0d47b9edb0b308988946"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-primitive-final-0-20261111-1.cpuprofile",
+          "sha256": "7394b32e6b0f592c78c3258555a65418d88f021b8832fecc6d8835c2d880bf7c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\59-cpu-nanite-primitive-final-0-20261111-1.cpuprofile.gz",
+          "sha256": "75fe32d76480e0b039f52823f8b041273bb726a2e1520a8e7344fa8f0dba5453"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-primitive-final-0-20261111-1.png",
+          "sha256": "8606eb4ddad8f74b38ae7ee78a783495a50d4e124d1493b3b2e490d1de562bb0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\60-cpu-nanite-primitive-final-0-20261111-1.png.gz",
+          "sha256": "860a01cef3295eb7bb308d24cba2c48e2de99eaad432b4bd7c42602c5bcbe870"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-primitive-final-1-20261111.json",
+          "sha256": "ab03b5e983960ef697b3779d9454b9b69a94514f7e59c82edc6bbbd54d50d698"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\61-cpu-nanite-primitive-final-1-20261111.json.gz",
+          "sha256": "c380eda5511579aa8dd22e250ce0a2ccdb0aa5653730819112b9864d549f2e94"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-primitive-final-1-20261111.log",
+          "sha256": "7dd3ba5296c7f803ed8f84b188943e231111f5e375e435c6110f1aeb380de78a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\62-cpu-nanite-primitive-final-1-20261111.log.gz",
+          "sha256": "1dc9f99771f8aae94cb0c2d754e27c7c471223db59359e5081d27ebc6d8d9e47"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-primitive-final-1-20261111-0.cpuprofile",
+          "sha256": "92a0adb5d2a7f4de93627f54963c38b8472473ede9bc83bda21f4db4f69652e9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\63-cpu-nanite-primitive-final-1-20261111-0.cpuprofile.gz",
+          "sha256": "1eeb1b147f0accdf4e96d85edb105b9ad0c939eb2c3cdad37142dced0349b1ac"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-primitive-final-1-20261111-0.png",
+          "sha256": "e8292fc013195afc6c97416b4040dca49d6fac72e3fbd69c12be4735c1814cb7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\64-cpu-nanite-primitive-final-1-20261111-0.png.gz",
+          "sha256": "06f34f9405dd2cd2581d031294b35d30f0ec9a0b20aa9492d3e6bdceb8afefe6"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-primitive-final-1-20261111-1.cpuprofile",
+          "sha256": "d81a7e930fe94d5707a814f0b98e1b8f677a7678bf802aba23c2f81d6589500f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\65-cpu-nanite-primitive-final-1-20261111-1.cpuprofile.gz",
+          "sha256": "c4ffae70227942acc9291f1663339016a1b934a500b0f89ceb2e719c6e0ae873"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-primitive-final-1-20261111-1.png",
+          "sha256": "9e6e3dd53cecb72765f12ad63214759a8cef9c2f31a46d220b251a390622ffda"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\66-cpu-nanite-primitive-final-1-20261111-1.png.gz",
+          "sha256": "b0baddd7db6a16060f9fe091d9179ed6bc1af954da1a3c72d62118b90d180744"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-primitive-visibility-evidence.cjs",
+          "sha256": "39520a788a768eb191631732bffa354c353c24912a092a4aba241268fe605284"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\67-collect-nanite-primitive-visibility-evidence.cjs.gz",
+          "sha256": "97042873a64a5b42bb0c0ab317ca23256a6bbd04d9aff8caceeab59971ab714a"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-full-scene.cjs",
+          "sha256": "e15c460703ae9b49b6f6cbb09a4171eb13632b6e9dd506fbee6203307ad2ce63"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\68-probe-nanite-full-scene.cjs.gz",
+          "sha256": "1190857d3570ec1213ae4942d6a7327ac3d2d56756433ba10c99c2930f9f8fe7"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-primitive-recovery.cjs",
+          "sha256": "0900256eb9b7f8a3cc379a86d42b483f25e7f013e59c69300b92de1303be6d33"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\69-probe-nanite-primitive-recovery.cjs.gz",
+          "sha256": "473c53d3e366b849dec4eb318501aa89e2f2e362d061ca17ea7cb1ea2b8d9128"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-automatic-scene.cjs",
+          "sha256": "6b95ec930e030e7fcb3b650cd683ec8005b20e52b036b619a7efc538a7cafa63"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\70-probe-nanite-automatic-scene.cjs.gz",
+          "sha256": "8c0f7ff93a1c9b3305eecc45966283a6741b065a1a09af979d8fe1f80ac2d2f7"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\profile-web-cpu.cjs",
+          "sha256": "b7a841df3a543e0b714d0a86165c0892bb89553660e2d02a58c319031666a53f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\71-profile-web-cpu.cjs.gz",
+          "sha256": "38578cc14abf5b9f13bace96e3c658fd62a1f59b129f78f702af1c4cb94a83d9"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-engine-worker.js",
+          "sha256": "b2e72908b8fc23bd15dfe2251f413f82cdc8e7a58618408107cddf5e21492b8b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\72-web-engine-worker.js.gz",
+          "sha256": "c133f668a482814f07b33ee65e86f5d6875c7a254e4b752841629412a87b683d"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\package-web-nanite-scene.cjs",
+          "sha256": "aa644bb28696d04b6fd8040cfd8d531ac36482bfee6d0b6b2de5ca6ca6baa54b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\73-package-web-nanite-scene.cjs.gz",
+          "sha256": "80e9f9d3898270bc211ca24d5d5ed01c6e95b479d275f39304a97c827517d03c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\Private\\WebNaniteAutomaticSceneTest.cpp",
+          "sha256": "14e17acf1b69f75e14fd3735b2f20da704af88e009f2c5cb116786204e630833"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\74-WebNaniteAutomaticSceneTest.cpp.gz",
+          "sha256": "40d7ddc810b702961ae45c55caac75280abc0c31aded4158facf0b638d291e53"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteWebScene.cpp",
+          "sha256": "7e640feb1868faa256ee23277e7251dc1a49d8198680f4e1439b48df4a6a34a2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\75-NaniteWebScene.cpp.gz",
+          "sha256": "da35afb97862c7bf7147fdee7ca4eb10268530d88776eff096b1e5627362d4b7"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Public\\Rendering\\NaniteWebScene.h",
+          "sha256": "15689638fbc9f4b1ca3b54230480efd071a54eb33fdb4468d8a6cef13ed63ea9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\76-NaniteWebScene.h.gz",
+          "sha256": "a1501a9af3d31d648fa24a4813d3942b31bc51aefb6148eda710b937d6fc2f80"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\DeferredShadingRenderer.cpp",
+          "sha256": "61522ea2d050f3985fa01f87797f32d032da968f8a68f98fe84e31e968bcc8f6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\77-DeferredShadingRenderer.cpp.gz",
+          "sha256": "25c0dfba61ee53dbce5f36cf292bd0dcc59b0a68b194d277f1a5dfecd45c21cf"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\primitive-visibility-build-console.log",
+          "sha256": "9ff9b8cc993397349c7c200b3c2abcfa03549392d96c07156345f0b33efd7c95"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\78-primitive-visibility-build-console.log.gz",
+          "sha256": "f230f1f71a6875fad58d01f14ea9229bb5b9d5774404975cd65903d25b6ff33d"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\primitive-visibility-runtime-import.log",
+          "sha256": "d239145de55850100c826dd9b9784a9d402d1f939ef883a6525e58edd09af32a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\79-primitive-visibility-runtime-import.log.gz",
+          "sha256": "e6172fe239927fe32ad4ebae4fe736d0566518089f96765ff1795620a8fca131"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\primitive-recovery-build-console.log",
+          "sha256": "ca409073f50aae083123a41e22d434eed53b9a635aca007b9d16e8a3954313ed"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\80-primitive-recovery-build-console.log.gz",
+          "sha256": "18a5a26a1c3b195118d1401842be67e4f1b6ae89452d0e2e0fa392271cfac895"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\primitive-recovery-runtime-import.log",
+          "sha256": "d239145de55850100c826dd9b9784a9d402d1f939ef883a6525e58edd09af32a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\81-primitive-recovery-runtime-import.log.gz",
+          "sha256": "e6172fe239927fe32ad4ebae4fe736d0566518089f96765ff1795620a8fca131"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\primitive-recovery-static-build-console.log",
+          "sha256": "0ff04e017ced5c987937f45701794720f73ee0f1663a6db2a7f9b871c5a54ca9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\82-primitive-recovery-static-build-console.log.gz",
+          "sha256": "1c1a615ac1ced3cb2cb37b179b3041215151962c4550980e2969df8828ee4ea8"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\primitive-recovery-static-runtime-import.log",
+          "sha256": "d239145de55850100c826dd9b9784a9d402d1f939ef883a6525e58edd09af32a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\83-primitive-recovery-static-runtime-import.log.gz",
+          "sha256": "e6172fe239927fe32ad4ebae4fe736d0566518089f96765ff1795620a8fca131"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\primitive-recovery-final-build-console.log",
+          "sha256": "751e9e308c01d660baadc46adb31ccb0f1311c1f8a536188f4d2a3f9bcd0d207"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\84-primitive-recovery-final-build-console.log.gz",
+          "sha256": "60240db45ae591ac2be70ab4a31b519726dfb80b634c2b5ffe9bb8d1187c5e0a"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\primitive-recovery-final-runtime-import.log",
+          "sha256": "d239145de55850100c826dd9b9784a9d402d1f939ef883a6525e58edd09af32a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\85-primitive-recovery-final-runtime-import.log.gz",
+          "sha256": "e6172fe239927fe32ad4ebae4fe736d0566518089f96765ff1795620a8fca131"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\primitive-recovery-conservative-query-failure.json",
+          "sha256": "d6c806034a4cbf4b436ff64676b5da7027066f82c62ed8848c505e094a3c325d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\86-primitive-recovery-conservative-query-failure.json.gz",
+          "sha256": "d4fccdbcf74e7e5126718f5a5b91d91df4102d14b29f7fa2cf277e75ad6092b5"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\primitive-recovery-conservative-query-probe.cjs",
+          "sha256": "a9b8b895ea899162e3ae14177ae7a94cf0c04264223a685792f2c7bd8308b074"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\87-primitive-recovery-conservative-query-probe.cjs.gz",
+          "sha256": "5f3beaa2bb308d5119d1a2f5b54c66aa537c01859d66b0e9bbe23728c30cf002"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\primitive-recovery-startup-failure.json",
+          "sha256": "7dca3672597711f672ecbff258fa2cc432362a9d0adbb3b91ab149faeaf1afcd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\88-primitive-recovery-startup-failure.json.gz",
+          "sha256": "1325ed16b53bce5ce7b8d4684b65971fdcfedc795192b60c5ec7648dfbd6b6d2"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\primitive-recovery-startup-probe.cjs",
+          "sha256": "67407528c29f4bc027723f3176b3fcdc61d0ffb068347d54b15ab252962a860e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\89-primitive-recovery-startup-probe.cjs.gz",
+          "sha256": "c4021ee0361e5ac8e8a0664921bb2a8cb9ce0d5eb875dbfa4e31743982d34d52"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\primitive-recovery-frozen-clock-failure.json",
+          "sha256": "8c9288a8942d4e1ed323f005e034cbb554ee29ad56b38690eee206b089e4437c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\90-primitive-recovery-frozen-clock-failure.json.gz",
+          "sha256": "15fb32a0a2f6406516aca6a04898c26c1bfd69681be71f5d93f14b59ab2a3c51"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\primitive-recovery-frozen-clock-probe.cjs",
+          "sha256": "4a52fc2745eb2dcf26e6e0bcd8618588d11fab370c1b4720e1b671e5f389a061"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\91-primitive-recovery-frozen-clock-probe.cjs.gz",
+          "sha256": "de2966d9b5dd04b4a1eaeb9ce76be0f322be84f878144a9158b505b1109dbcfa"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\primitive-recovery-movable-target-failure.json",
+          "sha256": "c9d0b0402f8db75b1684f26ca3731871195bf2f6fc20c0e25eb6d1487b0db450"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\92-primitive-recovery-movable-target-failure.json.gz",
+          "sha256": "52a67d609000f4b0e690838f857cd7d69c9721731b2a1cc6680010bd237f64cf"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\primitive-recovery-movable-target-probe.cjs",
+          "sha256": "c5189cfef2f260207b08f0db9c2b2b8da0e6b51eb47f97d8fde6bba5aac45d95"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\93-primitive-recovery-movable-target-probe.cjs.gz",
+          "sha256": "438ed882ab6feeb85ab041d1376e599494c3fb182198a5d1443d925668a09112"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\primitive-recovery-movable-target.cpp",
+          "sha256": "887517e6f84f3a3334b838e4cc942930867471da0184937708fdbd35e610ea93"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\94-primitive-recovery-movable-target.cpp.gz",
+          "sha256": "55281bdef9f4d2091414ccebf01a15759e238900ece85dd5fa00793f7ee41eb2"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\primitive-recovery-movable-build.json",
+          "sha256": "d4f01ef7d6874ea0fd6121166fc14c9e31a567cf42e3269a492125035e28b673"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\95-primitive-recovery-movable-build.json.gz",
+          "sha256": "195f3335f99e89b00f99127132ab82c851fb57695d3f659c8b2f736d8ac15b41"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\primitive-recovery-movable-package.json",
+          "sha256": "2a6ebf0fcbbda5fbe63746aabfce687502297e4b86d28772f690a39c1476b5a9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\96-primitive-recovery-movable-package.json.gz",
+          "sha256": "f51e9dc4077dd55a291037463c0584b35ddec608c3aca6e60ee12d849be4902f"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\primitive-recovery-cleanup-failure.json",
+          "sha256": "1c60f2cbbdf8725550ff20529e31fee224103de8393a7f48e85c7ed003ac5d5a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\97-primitive-recovery-cleanup-failure.json.gz",
+          "sha256": "d41a23b77346f30f469ce2fde658ec1cf262e13a9a3d810134e5a6870a92bfef"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\primitive-recovery-cleanup.cpp",
+          "sha256": "ea0aff74a32a2c6e3869fc32c19b21a9b54818eb0b1486ec223184f5a2ec4d70"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\98-primitive-recovery-cleanup.cpp.gz",
+          "sha256": "2fe8660b56ab292bb4450d1756e93c3fde815f241e56bf14e0fef6042ae00599"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\primitive-recovery-cleanup-build.json",
+          "sha256": "ac8d27ddae06554f81678bb7c6cef20116dd69d87bc6203ab1d6de94bbaa2a6f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\99-primitive-recovery-cleanup-build.json.gz",
+          "sha256": "4199abf77a6a72bc98803adeada55d6c4ec004e1c4a72684bd3727320b52627f"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\primitive-recovery-cleanup-package.json",
+          "sha256": "c9a315a735060aaee2a57b581a427c1349f4eb4ca64ed9935763119ac2066438"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\100-primitive-recovery-cleanup-package.json.gz",
+          "sha256": "8cf3dcff1fb5d8d400313130a4fdce308795a7b555e2c41b3191e3773f52fd24"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\visibility-first-build\\automatic-test.cpp",
+          "sha256": "113f109f4174b17721ceda33b80c213f6fad8d1432aed4c4f086e955eb3bc104"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\101-automatic-test.cpp.gz",
+          "sha256": "c4f75df80d5dc39d7007afd5cd88ca33d808c2ab0d142a91ece324e9c740154c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\visibility-first-build\\default-package.json",
+          "sha256": "84ff9b3029214a241e6697234c3aee8c1a9c13eb28c77162c37c125a3cb34f07"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\102-default-package.json.gz",
+          "sha256": "3394df98ba51535dca950165828c8b58790dd15f34a49ea41fe2bdea0ef8f8c0"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\visibility-first-build\\default-packed.json",
+          "sha256": "16a04bcbc4e6f33688a28a2352f21a90bef6a2d3d4bb73bc8f8da642d15ebcba"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\103-default-packed.json.gz",
+          "sha256": "1473bb75b888fda1d52bb26d6f04adea8e970c62f3b2e0882beb25e4f1209f3c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\visibility-first-build\\default-scalar.json",
+          "sha256": "b46067ddc9dc6e6152c839598acc92a438e10febec375101f335eb403bd851f5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\104-default-scalar.json.gz",
+          "sha256": "0511d34bc3137ef16ab0a125c7a3f6b60c789064f5449d0ee79a428e21d96e3a"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\visibility-first-build\\runtime-build.json",
+          "sha256": "aeb112be9e8c723c0397fa13ebb81b065cc245743c5c91fc1ff742ce8305fd33"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\105-runtime-build.json.gz",
+          "sha256": "e50420e732b662b5dde1079423ad0a5b5567cab8c43d03550e0fffc7aa6d9c75"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\visibility-first-build\\villa-package.json",
+          "sha256": "132e24d009a72542e79d785c01ca81c1b33749b96dc5eec9d4e84637cf907117"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\106-villa-package.json.gz",
+          "sha256": "0429a01320f00463887da8c9ff553acf1e3384c0f06bc2df49c84dd0473450bb"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\visibility-first-build\\villa-packed.json",
+          "sha256": "fc62a84ae97c728045d05a53fa048d268c488443871acf2da91142eec781de3c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\107-villa-packed.json.gz",
+          "sha256": "3f9c718d92ea2fde585463e9de3f1b31b704ba3fd8b4f55acece578c1d64114b"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\visibility-first-build\\villa-scalar.json",
+          "sha256": "77f6603fa00e84641a51a61c99dd9daf670a9fcaf207976f51ec8f0ff9c5ddd7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\108-villa-scalar.json.gz",
+          "sha256": "fe8184156a2984cb907c90dccffb548fe290b1ddfa8018866c76bfba7578cacf"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\visibility-first-build\\worker.js",
+          "sha256": "24650164b4400ed45a21996398d5228046df62189a1e420d0b6c5188b7ac3d21"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-primitive-visibility-20261111\\109-worker.js.gz",
+          "sha256": "5b6fb12e0f653840fe5d07ca7d7473e425fd1aa51b7444da901187a4d8fbcd5b"
+        },
+        "encoding": "gzip"
+      }
+    ],
+    "boundary": "Use completed current renderer primitive visibility only for ordinary rigid proxies, with a runtime baseline switch. Camera cuts, moved/hidden occluders and proxy recreation require bounded visibility recovery and unchanged final depth/materials. This evidence does not independently complete native visual comparison, full streaming/device recovery or all Nanite delivery requirements."
+  }
+}

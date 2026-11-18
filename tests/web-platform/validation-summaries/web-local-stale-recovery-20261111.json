@@ -1,0 +1,1186 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/web-local-stale-recovery-20261111.json",
+    "bytes": 55146,
+    "sha256": "cdec498321b79df6ee01d917c50731c1e84b6eec4dc0c8c5626291abce35839a",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-10T21:55:48.068Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-web-local-stale-evidence.cjs",
+      "sha256": "396ba454defa593d91e7188eef1188087c5c202b7f0598188347924108d38be1"
+    },
+    "baseline": {
+      "pass": true,
+      "baseline": true,
+      "stale": true,
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-recovery.cjs",
+        "sha256": "6b03396ef4831e3756a50a4c5961580c9d4fb20b7f373c477683e1057047d504"
+      },
+      "worker": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-opfs-invalid-state\\web-content-worker.js",
+        "sha256": "68162df4a825001e8ff88e939c14bdc85989aee42a1ce80bc1da9c41587befae"
+      },
+      "fixture": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\local-recovery-fixture.bin",
+        "sha256": "d00b32bd467de8aefd2f2a598a6b1b40c69d455eec94658d846ea68e62f8291b"
+      },
+      "cases": [
+        {
+          "scenario": "stale-lease",
+          "errors": [
+            "asset results/local-recovery-fixture.bin: InvalidStateError: Injected stale file snapshot",
+            "asset results/local-recovery-fixture.bin: InvalidStateError: Injected stale file snapshot"
+          ],
+          "valid": false,
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 0,
+            "downloads": 0,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "full",
+            "hashedBytes": 0,
+            "hashMs": 0,
+            "downloadMs": 0,
+            "diskReadMs": 0,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0,
+            "missingFileRetries": 0
+          }
+        },
+        {
+          "scenario": "stale-directory",
+          "errors": [
+            "asset results/local-recovery-fixture.bin: InvalidStateError: Injected stale directory handle",
+            "asset results/local-recovery-fixture.bin: InvalidStateError: Injected stale directory handle"
+          ],
+          "valid": false,
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 0,
+            "downloads": 0,
+            "persistentHits": 0,
+            "evictions": 0,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "full",
+            "hashedBytes": 0,
+            "hashMs": 0,
+            "downloadMs": 0,
+            "diskReadMs": 0,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0,
+            "missingFileRetries": 0
+          }
+        },
+        {
+          "scenario": "stale-write",
+          "errors": [
+            "asset results/local-recovery-fixture.bin: InvalidStateError: Injected stale writable handle",
+            "asset results/local-recovery-fixture.bin: InvalidStateError: Injected stale writable handle"
+          ],
+          "valid": false,
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 1048595,
+            "downloads": 0,
+            "persistentHits": 0,
+            "evictions": 0,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "full",
+            "hashedBytes": 1048595,
+            "hashMs": 0.7000000476837158,
+            "downloadMs": 0,
+            "diskReadMs": 0,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0,
+            "missingFileRetries": 0
+          }
+        },
+        {
+          "scenario": "stale-marker",
+          "errors": [
+            "asset results/local-recovery-fixture.bin: InvalidStateError: Injected stale writable handle",
+            "asset results/local-recovery-fixture.bin: InvalidStateError: Injected stale writable handle"
+          ],
+          "valid": false,
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 1048595,
+            "downloads": 0,
+            "persistentHits": 0,
+            "evictions": 0,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "full",
+            "hashedBytes": 1048595,
+            "hashMs": 0.699999988079071,
+            "downloadMs": 0,
+            "diskReadMs": 0,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0,
+            "missingFileRetries": 0
+          }
+        }
+      ]
+    },
+    "stale": {
+      "pass": true,
+      "baseline": false,
+      "stale": true,
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-recovery.cjs",
+        "sha256": "6b03396ef4831e3756a50a4c5961580c9d4fb20b7f373c477683e1057047d504"
+      },
+      "worker": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-content-worker.js",
+        "sha256": "2d9da80134a39f3218fc6560b05ea6a5a966912ee4e92306a47dd7cef7a313c3"
+      },
+      "fixture": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\local-recovery-fixture.bin",
+        "sha256": "d00b32bd467de8aefd2f2a598a6b1b40c69d455eec94658d846ea68e62f8291b"
+      },
+      "cases": [
+        {
+          "scenario": "stale-lease",
+          "errors": [
+            null,
+            null
+          ],
+          "valid": true,
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 0,
+            "downloads": 0,
+            "persistentHits": 2,
+            "evictions": 0,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "full",
+            "hashedBytes": 0,
+            "hashMs": 0,
+            "downloadMs": 0,
+            "diskReadMs": 0,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0,
+            "missingFileRetries": 0,
+            "staleHandleRetries": 1
+          }
+        },
+        {
+          "scenario": "stale-directory",
+          "errors": [
+            null,
+            null
+          ],
+          "valid": true,
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 1048595,
+            "downloads": 1,
+            "persistentHits": 0,
+            "evictions": 0,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "full",
+            "hashedBytes": 1048595,
+            "hashMs": 0.6000000238418579,
+            "downloadMs": 12.699999988079071,
+            "diskReadMs": 0,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0,
+            "missingFileRetries": 0,
+            "staleHandleRetries": 1
+          }
+        },
+        {
+          "scenario": "stale-write",
+          "errors": [
+            null,
+            null
+          ],
+          "valid": true,
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 2097190,
+            "downloads": 1,
+            "persistentHits": 0,
+            "evictions": 0,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "full",
+            "hashedBytes": 2097190,
+            "hashMs": 1.3000000715255737,
+            "downloadMs": 11.600000023841858,
+            "diskReadMs": 0,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0,
+            "missingFileRetries": 0,
+            "staleHandleRetries": 1
+          }
+        },
+        {
+          "scenario": "stale-marker",
+          "errors": [
+            null,
+            null
+          ],
+          "valid": true,
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 2097190,
+            "downloads": 1,
+            "persistentHits": 0,
+            "evictions": 0,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "full",
+            "hashedBytes": 2097190,
+            "hashMs": 1.300000011920929,
+            "downloadMs": 10.800000011920929,
+            "diskReadMs": 0,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0,
+            "missingFileRetries": 0,
+            "staleHandleRetries": 1
+          }
+        },
+        {
+          "scenario": "stale-repeated",
+          "errors": [
+            "asset results/local-recovery-fixture.bin: InvalidStateError: Injected stale file snapshot",
+            "asset results/local-recovery-fixture.bin: InvalidStateError: Injected stale file snapshot"
+          ],
+          "valid": false,
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 1048595,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "full",
+            "hashedBytes": 1048595,
+            "hashMs": 0.699999988079071,
+            "downloadMs": 11.400000035762787,
+            "diskReadMs": 0,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0,
+            "missingFileRetries": 0,
+            "staleHandleRetries": 1
+          }
+        }
+      ]
+    },
+    "recovery": {
+      "pass": true,
+      "baseline": false,
+      "stale": false,
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-recovery.cjs",
+        "sha256": "6b03396ef4831e3756a50a4c5961580c9d4fb20b7f373c477683e1057047d504"
+      },
+      "worker": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-content-worker.js",
+        "sha256": "2d9da80134a39f3218fc6560b05ea6a5a966912ee4e92306a47dd7cef7a313c3"
+      },
+      "fixture": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\local-recovery-fixture.bin",
+        "sha256": "d00b32bd467de8aefd2f2a598a6b1b40c69d455eec94658d846ea68e62f8291b"
+      },
+      "cases": [
+        {
+          "scenario": "file-lease",
+          "errors": [
+            null,
+            null
+          ],
+          "valid": true,
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 1048595,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "full",
+            "hashedBytes": 1048595,
+            "hashMs": 0.7000000476837158,
+            "downloadMs": 38.10000002384186,
+            "diskReadMs": 0,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0,
+            "missingFileRetries": 1,
+            "staleHandleRetries": 0
+          }
+        },
+        {
+          "scenario": "directory",
+          "errors": [
+            null,
+            null
+          ],
+          "valid": true,
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 1048595,
+            "downloads": 1,
+            "persistentHits": 0,
+            "evictions": 0,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "full",
+            "hashedBytes": 1048595,
+            "hashMs": 0.800000011920929,
+            "downloadMs": 11.599999964237213,
+            "diskReadMs": 0,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0,
+            "missingFileRetries": 1,
+            "staleHandleRetries": 0
+          }
+        },
+        {
+          "scenario": "repeated",
+          "errors": [
+            "asset results/local-recovery-fixture.bin: NotFoundError: A requested file or directory could not be found at the time an operation was processed.",
+            "asset results/local-recovery-fixture.bin: NotFoundError: A requested file or directory could not be found at the time an operation was processed."
+          ],
+          "valid": false,
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 1048595,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "full",
+            "hashedBytes": 1048595,
+            "hashMs": 0.699999988079071,
+            "downloadMs": 10.900000035762787,
+            "diskReadMs": 0,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0,
+            "missingFileRetries": 1,
+            "staleHandleRetries": 0
+          }
+        },
+        {
+          "scenario": "non-missing",
+          "errors": [
+            "asset results/local-recovery-fixture.bin: NotAllowedError: Injected permission failure",
+            "asset results/local-recovery-fixture.bin: NotAllowedError: Injected permission failure"
+          ],
+          "valid": false,
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 0,
+            "downloads": 0,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "full",
+            "hashedBytes": 0,
+            "hashMs": 0,
+            "downloadMs": 0,
+            "diskReadMs": 0,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0,
+            "missingFileRetries": 0,
+            "staleHandleRetries": 0
+          }
+        }
+      ]
+    },
+    "quota": {
+      "pass": true,
+      "date": "2026-11-10T21:54:10.956Z",
+      "browser": "Edge",
+      "sources": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-quota.cjs",
+          "sha256": "7014cc9d498aa04e4219343c39acb507a6dbd05ce53611a66900071ef7c5804a"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-content-worker.js",
+          "sha256": "2d9da80134a39f3218fc6560b05ea6a5a966912ee4e92306a47dd7cef7a313c3"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-content-io.js",
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\content-file-metadata.cjs",
+          "sha256": "ce0033046f2dbe880752330411f368c1da88df79f15d11aac71c44bd4e527949"
+        }
+      ],
+      "fixture": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\local-quota-fixture.bin",
+        "sha256": "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae"
+      },
+      "cases": [
+        {
+          "scenario": "create",
+          "firstErrors": [
+            null,
+            null
+          ],
+          "firstStats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 9437203,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 2,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 262163,
+            "hashMs": 0.4599999189376831,
+            "downloadMs": 60.6700000166893,
+            "diskReadMs": 0,
+            "quotaRetries": 1,
+            "quotaFailures": 0,
+            "reclaimedBytes": 2097152,
+            "missingFileRetries": 0,
+            "staleHandleRetries": 0
+          },
+          "namesAfterFirst": [
+            "keep-user-file.txt",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.json",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.bin"
+          ],
+          "names": [
+            "keep-user-file.txt",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.json",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.bin"
+          ],
+          "valid": true,
+          "ownLeasePreserved": true,
+          "otherLeasePreserved": true,
+          "sentinel": "untouched",
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 262144,
+            "peakMemoryBytes": 262144,
+            "memoryHits": 0,
+            "diskReads": 1,
+            "diskReadBytes": 262144,
+            "downloadedBytes": 9437203,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 2,
+            "activeReads": 1,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 262163,
+            "hashMs": 0.4599999189376831,
+            "downloadMs": 60.6700000166893,
+            "diskReadMs": 0.7049999833106995,
+            "quotaRetries": 1,
+            "quotaFailures": 0,
+            "reclaimedBytes": 2097152,
+            "missingFileRetries": 0,
+            "staleHandleRetries": 0
+          },
+          "requests": 2
+        },
+        {
+          "scenario": "write",
+          "firstErrors": [
+            null,
+            null
+          ],
+          "firstStats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 17825811,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 2,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 524307,
+            "hashMs": 0.5550000071525574,
+            "downloadMs": 58.39999997615814,
+            "diskReadMs": 0,
+            "quotaRetries": 1,
+            "quotaFailures": 0,
+            "reclaimedBytes": 2097152,
+            "missingFileRetries": 0,
+            "staleHandleRetries": 0
+          },
+          "namesAfterFirst": [
+            "keep-user-file.txt",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.json",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.bin"
+          ],
+          "names": [
+            "keep-user-file.txt",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.json",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.bin"
+          ],
+          "valid": true,
+          "ownLeasePreserved": true,
+          "otherLeasePreserved": true,
+          "sentinel": "untouched",
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 262144,
+            "peakMemoryBytes": 262144,
+            "memoryHits": 0,
+            "diskReads": 1,
+            "diskReadBytes": 262144,
+            "downloadedBytes": 17825811,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 2,
+            "activeReads": 1,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 524307,
+            "hashMs": 0.5550000071525574,
+            "downloadMs": 58.39999997615814,
+            "diskReadMs": 0.6949999928474426,
+            "quotaRetries": 1,
+            "quotaFailures": 0,
+            "reclaimedBytes": 2097152,
+            "missingFileRetries": 0,
+            "staleHandleRetries": 0
+          },
+          "requests": 2
+        },
+        {
+          "scenario": "close",
+          "firstErrors": [
+            null,
+            null
+          ],
+          "firstStats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 18874406,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 2,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 524326,
+            "hashMs": 0.6150000095367432,
+            "downloadMs": 45.27999997138977,
+            "diskReadMs": 0,
+            "quotaRetries": 1,
+            "quotaFailures": 0,
+            "reclaimedBytes": 2097152,
+            "missingFileRetries": 0,
+            "staleHandleRetries": 0
+          },
+          "namesAfterFirst": [
+            "keep-user-file.txt",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.json",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.bin"
+          ],
+          "names": [
+            "keep-user-file.txt",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.json",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.bin"
+          ],
+          "valid": true,
+          "ownLeasePreserved": true,
+          "otherLeasePreserved": true,
+          "sentinel": "untouched",
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 262144,
+            "peakMemoryBytes": 262144,
+            "memoryHits": 0,
+            "diskReads": 1,
+            "diskReadBytes": 262144,
+            "downloadedBytes": 18874406,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 2,
+            "activeReads": 1,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 524326,
+            "hashMs": 0.6150000095367432,
+            "downloadMs": 45.27999997138977,
+            "diskReadMs": 0.6700000166893005,
+            "quotaRetries": 1,
+            "quotaFailures": 0,
+            "reclaimedBytes": 2097152,
+            "missingFileRetries": 0,
+            "staleHandleRetries": 0
+          },
+          "requests": 2
+        },
+        {
+          "scenario": "marker",
+          "firstErrors": [
+            null,
+            null
+          ],
+          "firstStats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 18874406,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 2,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 524326,
+            "hashMs": 0.5900000333786011,
+            "downloadMs": 42.00999999046326,
+            "diskReadMs": 0,
+            "quotaRetries": 1,
+            "quotaFailures": 0,
+            "reclaimedBytes": 2097152,
+            "missingFileRetries": 0,
+            "staleHandleRetries": 0
+          },
+          "namesAfterFirst": [
+            "keep-user-file.txt",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.json",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.bin"
+          ],
+          "names": [
+            "keep-user-file.txt",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.json",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.bin"
+          ],
+          "valid": true,
+          "ownLeasePreserved": true,
+          "otherLeasePreserved": true,
+          "sentinel": "untouched",
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 262144,
+            "peakMemoryBytes": 262144,
+            "memoryHits": 0,
+            "diskReads": 1,
+            "diskReadBytes": 262144,
+            "downloadedBytes": 18874406,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 2,
+            "activeReads": 1,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 524326,
+            "hashMs": 0.5900000333786011,
+            "downloadMs": 42.00999999046326,
+            "diskReadMs": 0.7350000143051147,
+            "quotaRetries": 1,
+            "quotaFailures": 0,
+            "reclaimedBytes": 2097152,
+            "missingFileRetries": 0,
+            "staleHandleRetries": 0
+          },
+          "requests": 2
+        },
+        {
+          "scenario": "exhausted",
+          "firstErrors": [
+            "asset results/local-quota-fixture.bin: Error: Insufficient browser storage for results/local-quota-fixture.bin (9437203 bytes) after reclaiming unused content",
+            "asset results/local-quota-fixture.bin: Error: Insufficient browser storage for results/local-quota-fixture.bin (9437203 bytes) after reclaiming unused content"
+          ],
+          "firstStats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 0,
+            "downloads": 0,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 2,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 0,
+            "hashMs": 0,
+            "downloadMs": 0,
+            "diskReadMs": 0,
+            "quotaRetries": 1,
+            "quotaFailures": 1,
+            "reclaimedBytes": 2097152,
+            "missingFileRetries": 0,
+            "staleHandleRetries": 0
+          },
+          "namesAfterFirst": [
+            "keep-user-file.txt",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin"
+          ],
+          "names": [
+            "keep-user-file.txt",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.json",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.bin"
+          ],
+          "valid": true,
+          "ownLeasePreserved": true,
+          "otherLeasePreserved": true,
+          "sentinel": "untouched",
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 262144,
+            "peakMemoryBytes": 262144,
+            "memoryHits": 0,
+            "diskReads": 1,
+            "diskReadBytes": 262144,
+            "downloadedBytes": 9437203,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 2,
+            "activeReads": 1,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 262163,
+            "hashMs": 0.3750000596046448,
+            "downloadMs": 50.410000026226044,
+            "diskReadMs": 0.6050000190734863,
+            "quotaRetries": 1,
+            "quotaFailures": 1,
+            "reclaimedBytes": 2097152,
+            "missingFileRetries": 0,
+            "staleHandleRetries": 0
+          },
+          "requests": 3
+        },
+        {
+          "scenario": "non-quota",
+          "firstErrors": [
+            "asset results/local-quota-fixture.bin: NotReadableError: Injected storage allocation failure",
+            "asset results/local-quota-fixture.bin: NotReadableError: Injected storage allocation failure"
+          ],
+          "firstStats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 0,
+            "downloads": 0,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 0,
+            "hashMs": 0,
+            "downloadMs": 0,
+            "diskReadMs": 0,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0,
+            "missingFileRetries": 0,
+            "staleHandleRetries": 0
+          },
+          "namesAfterFirst": [
+            "keep-user-file.txt",
+            "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd.bin",
+            "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.json",
+            "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.bin",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin"
+          ],
+          "names": [
+            "keep-user-file.txt",
+            "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd.bin",
+            "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.json",
+            "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.bin",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.json",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.bin"
+          ],
+          "valid": true,
+          "ownLeasePreserved": true,
+          "otherLeasePreserved": true,
+          "sentinel": "untouched",
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 262144,
+            "peakMemoryBytes": 262144,
+            "memoryHits": 0,
+            "diskReads": 1,
+            "diskReadBytes": 262144,
+            "downloadedBytes": 9437203,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 0,
+            "activeReads": 1,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 262163,
+            "hashMs": 0.42500001192092896,
+            "downloadMs": 62.36500000953674,
+            "diskReadMs": 0.6949999928474426,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0,
+            "missingFileRetries": 0,
+            "staleHandleRetries": 0
+          },
+          "requests": 2
+        }
+      ]
+    },
+    "io": {
+      "date": "2026-11-10T21:54:13.757Z",
+      "pass": true,
+      "browsers": [
+        {
+          "browser": "Edge",
+          "cold": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 16515091,
+            "peakMemoryBytes": 16777216,
+            "memoryHits": 0,
+            "diskReads": 81,
+            "diskReadBytes": 20971539,
+            "downloadedBytes": 20971539,
+            "downloads": 1,
+            "persistentHits": 0,
+            "evictions": 17,
+            "diskEvictions": 0,
+            "activeReads": 1,
+            "peakActiveReads": 1,
+            "verification": "full",
+            "hashedBytes": 41943078,
+            "hashMs": 22.184999704360962,
+            "downloadMs": 115.28000003099442,
+            "diskReadMs": 42.33000057935715,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0,
+            "missingFileRetries": 0,
+            "staleHandleRetries": 0
+          },
+          "mountChecks": [
+            {
+              "shaderPlatform": "SP_WEBGPU_ES31",
+              "shaderCacheMounted": true,
+              "invalidEntriesRejected": 3
+            },
+            {
+              "shaderPlatform": "SP_WEBGPU_SM5",
+              "shaderCacheMounted": true,
+              "invalidEntriesRejected": 3
+            }
+          ],
+          "warm": {
+            "stats": {
+              "memoryLimit": 16777216,
+              "memoryBytes": 524288,
+              "peakMemoryBytes": 524288,
+              "memoryHits": 1,
+              "diskReads": 2,
+              "diskReadBytes": 524288,
+              "downloadedBytes": 0,
+              "downloads": 0,
+              "persistentHits": 1,
+              "evictions": 0,
+              "diskEvictions": 0,
+              "activeReads": 1,
+              "peakActiveReads": 1,
+              "verification": "sampled",
+              "hashedBytes": 0,
+              "hashMs": 0,
+              "downloadMs": 0,
+              "diskReadMs": 1.0400000214576721,
+              "quotaRetries": 0,
+              "quotaFailures": 0,
+              "reclaimedBytes": 0,
+              "missingFileRetries": 0,
+              "staleHandleRetries": 0
+            },
+            "callbacks": 0
+          },
+          "updated": {
+            "first": 1,
+            "stats": {
+              "memoryLimit": 16777216,
+              "memoryBytes": 786432,
+              "peakMemoryBytes": 786432,
+              "memoryHits": 1,
+              "diskReads": 3,
+              "diskReadBytes": 786432,
+              "downloadedBytes": 20971539,
+              "downloads": 1,
+              "persistentHits": 1,
+              "evictions": 0,
+              "diskEvictions": 0,
+              "activeReads": 1,
+              "peakActiveReads": 1,
+              "verification": "sampled",
+              "hashedBytes": 524307,
+              "hashMs": 0.5149999260902405,
+              "downloadMs": 136.9650000333786,
+              "diskReadMs": 1.4749999642372131,
+              "quotaRetries": 0,
+              "quotaFailures": 0,
+              "reclaimedBytes": 0,
+              "missingFileRetries": 0,
+              "staleHandleRetries": 0
+            }
+          },
+          "corruptRejected": true,
+          "networkPackRequests": 2
+        }
+      ],
+      "sourceFiles": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-io.cjs",
+          "sha256": "3c6b03df23a00298bf2b29a9d13f9df0f758c51d62b525c728ceff40bc992a86"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\content-file-metadata.cjs",
+          "sha256": "ce0033046f2dbe880752330411f368c1da88df79f15d11aac71c44bd4e527949"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-content-io.js",
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-content-worker.js",
+          "sha256": "2d9da80134a39f3218fc6560b05ea6a5a966912ee4e92306a47dd7cef7a313c3"
+        }
+      ]
+    },
+    "original": {
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-opfs-invalid-state\\browser.json",
+        "sha256": "3e053237c7319ddb67bd4f9cc48d04256985cfabb85d6ba30adead2f2e16b193"
+      },
+      "report": {
+        "pass": false,
+        "scalar": false,
+        "staticAssembly": false,
+        "assembly": true,
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-assembly.cjs",
+          "sha256": "4b7999eedabc85e209d2e0cf36466043f1ce7d1890634308e624b90474728b9a"
+        },
+        "geometry": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-skinning\\fixture\\skin-source-triangles.bin",
+          "sha256": "28e8b5ca03a551b62400b3c0ba42c929c4a35c8cb1643512a267378c37e0e304"
+        },
+        "package": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\package.json",
+          "sha256": "5760765c098b96bb00ff7aecf87bcf109532f6cad1b9578fd5043f5abc6ad3da"
+        },
+        "tests": [],
+        "errors": [],
+        "validationFailures": [],
+        "logs": {
+          "$omitted": true,
+          "reason": "Full diagnostic data is retained in the original report",
+          "type": "array",
+          "entries": 7,
+          "bytes": 289,
+          "sha256": "40c4f6bd25e6f4fba8ea5e16e0fc58b0935414b26df7d35a8e78c8279f5dd7c4"
+        },
+        "fixture": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\fixture\\fixtures.json",
+          "sha256": "82eec2180e33384473170209e9d441367d456cb0dc589665a56652d009441107"
+        },
+        "partSources": [],
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'Error: asset content.bin: InvalidStateError: An operation that depends on state cached in an interface object was made but the state had changed since it was read from disk.\\n' +\n+   '    at WebLocalContentIO.worker.onmessage (http://127.0.0.1:8765/build/nanite-browser/web-content-io.js?v=d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37:18:37)'\n- null\n\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-assembly.cjs:342:10"
+      },
+      "worker": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-opfs-invalid-state\\web-content-worker.js",
+        "sha256": "68162df4a825001e8ff88e939c14bdc85989aee42a1ce80bc1da9c41587befae"
+      },
+      "workerSource": {
+        "$omitted": true,
+        "reason": "Large text",
+        "type": "string",
+        "bytes": 13162,
+        "sha256": "68162df4a825001e8ff88e939c14bdc85989aee42a1ce80bc1da9c41587befae"
+      }
+    },
+    "boundary": "The observed startup InvalidStateError is retained. Opening an asset now refreshes OPFS handles once for either a missing or stale handle, revalidates the marker under an exclusive lock, and queues a shared lease before releasing it. Four stale-handle injection sites fail with the old worker and recover with complete byte validation after the fix. Repeated invalidation and permission failures still fail. The browser-side trigger of the original invalidation is not established; disk pressure was observed later during packaging. Existing active-file leases, quota recovery, corrupt-data rejection and bounded-memory IO regressions pass in Edge."
+  }
+}

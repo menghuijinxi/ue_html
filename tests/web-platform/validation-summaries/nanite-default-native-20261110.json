@@ -1,0 +1,824 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-default-native-20261110.json",
+    "bytes": 1883975,
+    "sha256": "4800de137f214c0dd0fa9c0f01aca2b9ece525df464e190f6f2935c7a5048e83",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-09T22:14:11.683Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-default-native-evidence.cjs",
+      "sha256": "9ce1a88715fb95ae1c975c8fb212226b0a2e0f2928f1c8a3a6b1f1fc67681786"
+    },
+    "package": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-default-scene\\package.json",
+      "sha256": "2af6767b7e46d262deea3389cb1efaba2cb47cc013e6a6f477878dacf22d97f5"
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "7cd8f8809a616eec27f648a339b304defa037dab20e5c969a8bed8a6673bdad7"
+    },
+    "cook": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-webgpu-sm5-default-cook-results.json",
+      "sha256": "90ea44865372088e7e265a0490b63203a7d3ff6d6fcea839f3a464a7758ea4ed"
+    },
+    "projection": {
+      "projectionX": 0.9774166510824777,
+      "projectionY": 1.7376296019244049,
+      "horizontalFOV": 91.30865119173063,
+      "x": 899.9990234375,
+      "y": -1399.99951171875,
+      "z": 649.4998779296875,
+      "width": 1280,
+      "height": 720
+    },
+    "requestedCamera": {
+      "x": 899.9990234375,
+      "y": -1399.99951171875,
+      "z": 649.4998779296875,
+      "pitch": -15,
+      "yaw": 120,
+      "fov": 75
+    },
+    "native": {
+      "source": {
+        "sha256": "a104f2829eaaa3f096b21bd5eeceae054c8c25fe4150511fe419c3c8e85d5e3e",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Source\\UEShaderHost\\Private\\WebNativeComparison.cpp"
+      },
+      "binary": {
+        "sha256": "fb648be0dcf6d70267434f98183608bfcf90df2f9679760d5e2c69eef53a4e99",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Binaries\\Win64\\UnrealEditor-UEShaderHost.dll"
+      },
+      "arguments": [
+        "G:\\UE_HTML\\ue_html/tests/ue-shader-host/UEShaderHost.uproject",
+        "/Engine/Maps/Templates/Template_Default",
+        "-WebNativeComparison=G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\native-input.json",
+        "-WebNativeNaniteComparison",
+        "-abslog=G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\native.log",
+        "-d3d12",
+        "-sm6",
+        "-RenderOffscreen",
+        "-NoSplash",
+        "-NoSound",
+        "-NoLoadingScreen",
+        "-unattended",
+        "-nop4",
+        "-windowed",
+        "-ResX=1280",
+        "-ResY=720",
+        "-ForceRes",
+        "-NoThrottleCPU",
+        "-corelimit=2",
+        "-ini:EditorPerProjectUserSettings:[/Script/UnrealEd.EditorPerformanceSettings]:bThrottleCPUWhenNotForeground=False",
+        "-ini:Engine:[SystemSettings]:r.pso.EnableAsyncCacheConsolidation=0",
+        "-ini:Engine:[SystemSettings]:r.TextureStreaming=1",
+        "-ini:Engine:[SystemSettings]:r.Streaming.PoolSize=256",
+        "-ini:Engine:[SystemSettings]:r.Streaming.MaxTempMemoryAllowed=32",
+        "-ini:Engine:[SystemSettings]:r.Shadow.MaxCSMResolution=4096",
+        "-ini:Engine:[SystemSettings]:r.NumBufferedOcclusionQueries=2",
+        "-ini:Engine:[SystemSettings]:r.ForwardShading=0",
+        "-ini:Engine:[SystemSettings]:r.DBuffer=0",
+        "-ini:Engine:[SystemSettings]:r.Substrate=0",
+        "-ini:Engine:[SystemSettings]:r.ScreenPercentage=100",
+        "-ini:Engine:[SystemSettings]:r.ScreenPercentage.Default.Desktop.Mode=0",
+        "-ini:Engine:[SystemSettings]:r.DynamicRes.OperationMode=0",
+        "-ini:Engine:[SystemSettings]:r.AntiAliasingMethod=2",
+        "-ini:Engine:[SystemSettings]:r.TemporalAA.Upsampling=0",
+        "-ini:Engine:[SystemSettings]:r.Histogram.UseAtomic=0",
+        "-ini:Engine:[SystemSettings]:r.SSS.Scale=0",
+        "-ini:Engine:[SystemSettings]:r.MotionBlurQuality=0",
+        "-ini:Engine:[SystemSettings]:r.TranslucencyLightingVolume=0",
+        "-ini:Engine:[SystemSettings]:r.HeterogeneousVolumes=0",
+        "-ini:Engine:[SystemSettings]:r.RayTracing=0",
+        "-ini:Engine:[SystemSettings]:r.DynamicGlobalIlluminationMethod=0",
+        "-ini:Engine:[SystemSettings]:r.ReflectionMethod=0",
+        "-ini:Engine:[SystemSettings]:r.Shadow.Virtual.Enable=0",
+        "-ini:Engine:[SystemSettings]:r.SupportSkyAtmosphere=1",
+        "-ini:Engine:[SystemSettings]:r.SupportSkyAtmosphereAffectsHeightFog=1",
+        "-ini:Engine:[SystemSettings]:r.VolumetricCloud.Support=1",
+        "-ini:Engine:[SystemSettings]:r.VolumetricCloud=1",
+        "-ini:Engine:[SystemSettings]:r.VolumetricRenderTarget=1",
+        "-ini:Engine:[SystemSettings]:r.VolumetricRenderTarget.Mode=0",
+        "-ini:Engine:[SystemSettings]:r.VolumetricRenderTarget.UpsamplingMode=4",
+        "-ini:Engine:[SystemSettings]:r.VolumetricRenderTarget.WebTracingDownsampleFactor=4",
+        "-ini:Engine:[SystemSettings]:r.VolumetricCloud.ViewRaySampleMaxCount=48",
+        "-ini:Engine:[SystemSettings]:r.VolumetricCloud.Shadow.ViewRaySampleMaxCount=4",
+        "-ini:Engine:[SystemSettings]:r.VolumetricCloud.DisableCompute=1",
+        "-ini:Engine:[SystemSettings]:r.VolumetricCloud.ShadowMap=0",
+        "-ini:Engine:[SystemSettings]:r.VolumetricCloud.SkyAO=0",
+        "-ini:Engine:[SystemSettings]:r.VolumetricCloud.Shadow.SampleAtmosphericLightShadowmap=0",
+        "-ini:Engine:[SystemSettings]:r.VolumetricCloud.HighQualityAerialPerspective=0",
+        "-ini:Engine:[SystemSettings]:r.SupportLocalFogVolumes=0",
+        "-ini:Engine:[SystemSettings]:r.VolumetricFog=0",
+        "-ini:Engine:[SystemSettings]:r.ContactShadows=0",
+        "-ini:Engine:[SystemSettings]:r.AllowStaticLighting=0",
+        "-ini:Engine:[SystemSettings]:r.VirtualTextures=0",
+        "-ini:Engine:[SystemSettings]:landscape.SupportGPUCulling=0",
+        "-ini:Engine:[SystemSettings]:r.GPUSkin.UseSceneExtension=0"
+      ],
+      "samples": [
+        {
+          "nanite": 8,
+          "projectionX": 0.9774165021594524,
+          "projectionY": 1.7376293501187072
+        },
+        {
+          "nanite": 0,
+          "projectionX": 0.9774165021594524,
+          "projectionY": 1.7376293501187072
+        }
+      ]
+    },
+    "runs": [
+      {
+        "scalar": false,
+        "frames": 4285,
+        "steps": 8,
+        "comparisons": [
+          {
+            "region": "whole-image",
+            "webNaniteToFallback": {
+              "samples": 921600,
+              "mean": 0.9815375434025332,
+              "p95": 3,
+              "p99": 7,
+              "max": 116.33333333333333
+            },
+            "nativeNaniteToFallback": {
+              "samples": 921600,
+              "mean": 0.2693449797457836,
+              "p95": 0.6666666666666666,
+              "p99": 5,
+              "max": 127.33333333333333
+            },
+            "naniteEffectDifference": {
+              "samples": 921600,
+              "mean": 1.090687210647521,
+              "p95": 3.3333333333333335,
+              "p99": 8.333333333333334,
+              "max": 130.33333333333334
+            },
+            "absolutePlatformDifference": {
+              "samples": 921600,
+              "mean": 1.6243225549761215,
+              "p95": 5.666666666666667,
+              "p99": 11.666666666666666,
+              "max": 115.66666666666667
+            }
+          },
+          {
+            "region": {
+              "material": "/Game/DefaultTemplateSamples/M_Default_0_0.M_Default_0_0",
+              "x": 427.57520551077687,
+              "y": 402.3973289291913,
+              "radius": 45.92968529496716
+            },
+            "webNaniteToFallback": {
+              "samples": 2808,
+              "mean": 2.5522317188983914,
+              "p95": 10,
+              "p99": 13.333333333333334,
+              "max": 15.666666666666666
+            },
+            "nativeNaniteToFallback": {
+              "samples": 2808,
+              "mean": 4.385683760683756,
+              "p95": 17.333333333333332,
+              "p99": 22.666666666666668,
+              "max": 27.333333333333332
+            },
+            "naniteEffectDifference": {
+              "samples": 2808,
+              "mean": 3.9227207977208023,
+              "p95": 14.666666666666666,
+              "p99": 21.333333333333332,
+              "max": 30.333333333333332
+            },
+            "absolutePlatformDifference": {
+              "samples": 2808,
+              "mean": 3.3935185185185173,
+              "p95": 9,
+              "p99": 13.666666666666666,
+              "max": 21.333333333333332
+            }
+          },
+          {
+            "region": {
+              "material": "/Game/DefaultTemplateSamples/M_Default_0_1.M_Default_0_1",
+              "x": 569.191735170259,
+              "y": 402.3973289291913,
+              "radius": 45.92968529496716
+            },
+            "webNaniteToFallback": {
+              "samples": 2804,
+              "mean": 2.1471707085116543,
+              "p95": 9,
+              "p99": 12.666666666666666,
+              "max": 15
+            },
+            "nativeNaniteToFallback": {
+              "samples": 2804,
+              "mean": 3.459700427960058,
+              "p95": 15.666666666666666,
+              "p99": 22,
+              "max": 26.333333333333332
+            },
+            "naniteEffectDifference": {
+              "samples": 2804,
+              "mean": 3.2609367570137975,
+              "p95": 14,
+              "p99": 20.333333333333332,
+              "max": 28.333333333333332
+            },
+            "absolutePlatformDifference": {
+              "samples": 2804,
+              "mean": 3.245363766048474,
+              "p95": 8.333333333333334,
+              "p99": 13,
+              "max": 19.333333333333332
+            }
+          },
+          {
+            "region": {
+              "material": "/Game/DefaultTemplateSamples/M_Default_0_2.M_Default_0_2",
+              "x": 710.808264829741,
+              "y": 402.3973289291913,
+              "radius": 45.92968529496717
+            },
+            "webNaniteToFallback": {
+              "samples": 2804,
+              "mean": 1.8080123632905414,
+              "p95": 8.333333333333334,
+              "p99": 12.666666666666666,
+              "max": 15
+            },
+            "nativeNaniteToFallback": {
+              "samples": 2804,
+              "mean": 2.911198288159771,
+              "p95": 15.666666666666666,
+              "p99": 22,
+              "max": 26.666666666666668
+            },
+            "naniteEffectDifference": {
+              "samples": 2804,
+              "mean": 2.5525439847836475,
+              "p95": 13,
+              "p99": 20.333333333333332,
+              "max": 29.666666666666668
+            },
+            "absolutePlatformDifference": {
+              "samples": 2804,
+              "mean": 3.1671421778411375,
+              "p95": 7.666666666666667,
+              "p99": 13.333333333333334,
+              "max": 20.666666666666668
+            }
+          },
+          {
+            "region": {
+              "material": "/Game/DefaultTemplateSamples/M_Default_0_3.M_Default_0_3",
+              "x": 852.4247944892232,
+              "y": 402.3973289291913,
+              "radius": 45.92968529496717
+            },
+            "webNaniteToFallback": {
+              "samples": 2808,
+              "mean": 1.3665716999050315,
+              "p95": 5.666666666666667,
+              "p99": 11.333333333333334,
+              "max": 15.333333333333334
+            },
+            "nativeNaniteToFallback": {
+              "samples": 2808,
+              "mean": 1.7004985754985742,
+              "p95": 10.666666666666666,
+              "p99": 16.666666666666668,
+              "max": 24.333333333333332
+            },
+            "naniteEffectDifference": {
+              "samples": 2808,
+              "mean": 1.7413342830009484,
+              "p95": 8.333333333333334,
+              "p99": 15.333333333333334,
+              "max": 23.666666666666668
+            },
+            "absolutePlatformDifference": {
+              "samples": 2808,
+              "mean": 2.849121557454844,
+              "p95": 5.666666666666667,
+              "p99": 10.666666666666666,
+              "max": 15.666666666666666
+            }
+          },
+          {
+            "region": {
+              "material": "/Game/DefaultTemplateSamples/M_Default_1_0.M_Default_1_0",
+              "x": 498.60594867604095,
+              "y": 332.1733607209551,
+              "radius": 30.571686772747903
+            },
+            "webNaniteToFallback": {
+              "samples": 1242,
+              "mean": 1.9092860976918895,
+              "p95": 7.333333333333333,
+              "p99": 11,
+              "max": 16.333333333333332
+            },
+            "nativeNaniteToFallback": {
+              "samples": 1242,
+              "mean": 3.4039184111647853,
+              "p95": 15.666666666666666,
+              "p99": 32.333333333333336,
+              "max": 94.66666666666667
+            },
+            "naniteEffectDifference": {
+              "samples": 1242,
+              "mean": 4.042673107890498,
+              "p95": 15.333333333333334,
+              "p99": 31.333333333333332,
+              "max": 95
+            },
+            "absolutePlatformDifference": {
+              "samples": 1242,
+              "mean": 2.8711755233494367,
+              "p95": 9,
+              "p99": 15,
+              "max": 27.666666666666668
+            }
+          },
+          {
+            "region": {
+              "material": "/Game/DefaultTemplateSamples/M_Default_1_1.M_Default_1_1",
+              "x": 592.8686495586803,
+              "y": 332.17336072095515,
+              "radius": 30.571686772747903
+            },
+            "webNaniteToFallback": {
+              "samples": 1239,
+              "mean": 1.0656443368307775,
+              "p95": 3,
+              "p99": 5,
+              "max": 8
+            },
+            "nativeNaniteToFallback": {
+              "samples": 1239,
+              "mean": 1.0056497175141224,
+              "p95": 4.666666666666667,
+              "p99": 9.333333333333334,
+              "max": 13.333333333333334
+            },
+            "naniteEffectDifference": {
+              "samples": 1239,
+              "mean": 1.2738767823513586,
+              "p95": 4,
+              "p99": 5.666666666666667,
+              "max": 7.333333333333333
+            },
+            "absolutePlatformDifference": {
+              "samples": 1239,
+              "mean": 2.1807909604519744,
+              "p95": 4.666666666666667,
+              "p99": 7.333333333333333,
+              "max": 10.333333333333334
+            }
+          },
+          {
+            "region": {
+              "material": "/Game/DefaultTemplateSamples/M_Default_1_2.M_Default_1_2",
+              "x": 687.1313504413198,
+              "y": 332.17336072095515,
+              "radius": 30.571686772747903
+            },
+            "webNaniteToFallback": {
+              "samples": 1239,
+              "mean": 0.8816249663707258,
+              "p95": 3,
+              "p99": 4,
+              "max": 5
+            },
+            "nativeNaniteToFallback": {
+              "samples": 1239,
+              "mean": 2.030938929244013,
+              "p95": 11.666666666666666,
+              "p99": 20.666666666666668,
+              "max": 24.666666666666668
+            },
+            "naniteEffectDifference": {
+              "samples": 1239,
+              "mean": 1.9036857680925454,
+              "p95": 9,
+              "p99": 17,
+              "max": 21
+            },
+            "absolutePlatformDifference": {
+              "samples": 1239,
+              "mean": 2.407048695184291,
+              "p95": 4.666666666666667,
+              "p99": 9.666666666666666,
+              "max": 12.666666666666666
+            }
+          },
+          {
+            "region": {
+              "material": "/Game/DefaultTemplateSamples/M_Default_1_3.M_Default_1_3",
+              "x": 781.3940513239592,
+              "y": 332.17336072095515,
+              "radius": 30.5716867727479
+            },
+            "webNaniteToFallback": {
+              "samples": 1242,
+              "mean": 0.6484165324745008,
+              "p95": 2,
+              "p99": 3,
+              "max": 3.6666666666666665
+            },
+            "nativeNaniteToFallback": {
+              "samples": 1242,
+              "mean": 1.2300053676865275,
+              "p95": 8,
+              "p99": 16,
+              "max": 19
+            },
+            "naniteEffectDifference": {
+              "samples": 1242,
+              "mean": 1.3647342995169067,
+              "p95": 7,
+              "p99": 14,
+              "max": 16.666666666666668
+            },
+            "absolutePlatformDifference": {
+              "samples": 1242,
+              "mean": 1.728931830381094,
+              "p95": 3,
+              "p99": 7.666666666666667,
+              "max": 9.666666666666666
+            }
+          }
+        ]
+      },
+      {
+        "scalar": true,
+        "frames": 4283,
+        "steps": 8,
+        "comparisons": [
+          {
+            "region": "whole-image",
+            "webNaniteToFallback": {
+              "samples": 921600,
+              "mean": 1.105475622106395,
+              "p95": 3.6666666666666665,
+              "p99": 8,
+              "max": 130
+            },
+            "nativeNaniteToFallback": {
+              "samples": 921600,
+              "mean": 0.2693449797457836,
+              "p95": 0.6666666666666666,
+              "p99": 5,
+              "max": 127.33333333333333
+            },
+            "naniteEffectDifference": {
+              "samples": 921600,
+              "mean": 1.2235568576385245,
+              "p95": 3.6666666666666665,
+              "p99": 9.666666666666666,
+              "max": 143.33333333333334
+            },
+            "absolutePlatformDifference": {
+              "samples": 921600,
+              "mean": 1.794581524883447,
+              "p95": 7,
+              "p99": 14.666666666666666,
+              "max": 75.33333333333333
+            }
+          },
+          {
+            "region": {
+              "material": "/Game/DefaultTemplateSamples/M_Default_0_0.M_Default_0_0",
+              "x": 427.57520551077687,
+              "y": 402.3973289291913,
+              "radius": 45.92968529496716
+            },
+            "webNaniteToFallback": {
+              "samples": 2808,
+              "mean": 2.446581196581204,
+              "p95": 9.333333333333334,
+              "p99": 13,
+              "max": 15.333333333333334
+            },
+            "nativeNaniteToFallback": {
+              "samples": 2808,
+              "mean": 4.385683760683756,
+              "p95": 17.333333333333332,
+              "p99": 22.666666666666668,
+              "max": 27.333333333333332
+            },
+            "naniteEffectDifference": {
+              "samples": 2808,
+              "mean": 4.398741690408356,
+              "p95": 16,
+              "p99": 23,
+              "max": 31.666666666666668
+            },
+            "absolutePlatformDifference": {
+              "samples": 2808,
+              "mean": 3.6994301994302123,
+              "p95": 9.333333333333334,
+              "p99": 14.333333333333334,
+              "max": 22
+            }
+          },
+          {
+            "region": {
+              "material": "/Game/DefaultTemplateSamples/M_Default_0_1.M_Default_0_1",
+              "x": 569.191735170259,
+              "y": 402.3973289291913,
+              "radius": 45.92968529496716
+            },
+            "webNaniteToFallback": {
+              "samples": 2804,
+              "mean": 2.0622919638611545,
+              "p95": 8.666666666666666,
+              "p99": 12,
+              "max": 15
+            },
+            "nativeNaniteToFallback": {
+              "samples": 2804,
+              "mean": 3.459700427960058,
+              "p95": 15.666666666666666,
+              "p99": 22,
+              "max": 26.333333333333332
+            },
+            "naniteEffectDifference": {
+              "samples": 2804,
+              "mean": 3.672253922967195,
+              "p95": 15.666666666666666,
+              "p99": 22.333333333333332,
+              "max": 31
+            },
+            "absolutePlatformDifference": {
+              "samples": 2804,
+              "mean": 3.6291012838801953,
+              "p95": 9,
+              "p99": 13.666666666666666,
+              "max": 21.333333333333332
+            }
+          },
+          {
+            "region": {
+              "material": "/Game/DefaultTemplateSamples/M_Default_0_2.M_Default_0_2",
+              "x": 710.808264829741,
+              "y": 402.3973289291913,
+              "radius": 45.92968529496717
+            },
+            "webNaniteToFallback": {
+              "samples": 2804,
+              "mean": 1.6241084165477895,
+              "p95": 7.333333333333333,
+              "p99": 11,
+              "max": 13.666666666666666
+            },
+            "nativeNaniteToFallback": {
+              "samples": 2804,
+              "mean": 2.911198288159771,
+              "p95": 15.666666666666666,
+              "p99": 22,
+              "max": 26.666666666666668
+            },
+            "naniteEffectDifference": {
+              "samples": 2804,
+              "mean": 2.9054921540656213,
+              "p95": 15,
+              "p99": 22,
+              "max": 30
+            },
+            "absolutePlatformDifference": {
+              "samples": 2804,
+              "mean": 3.5527817403709,
+              "p95": 8,
+              "p99": 13.666666666666666,
+              "max": 21.333333333333332
+            }
+          },
+          {
+            "region": {
+              "material": "/Game/DefaultTemplateSamples/M_Default_0_3.M_Default_0_3",
+              "x": 852.4247944892232,
+              "y": 402.3973289291913,
+              "radius": 45.92968529496717
+            },
+            "webNaniteToFallback": {
+              "samples": 2808,
+              "mean": 1.253679962013295,
+              "p95": 5.333333333333333,
+              "p99": 11,
+              "max": 12.666666666666666
+            },
+            "nativeNaniteToFallback": {
+              "samples": 2808,
+              "mean": 1.7004985754985742,
+              "p95": 10.666666666666666,
+              "p99": 16.666666666666668,
+              "max": 24.333333333333332
+            },
+            "naniteEffectDifference": {
+              "samples": 2808,
+              "mean": 1.968423551756884,
+              "p95": 10.333333333333334,
+              "p99": 17,
+              "max": 25.666666666666668
+            },
+            "absolutePlatformDifference": {
+              "samples": 2808,
+              "mean": 3.1942070275403522,
+              "p95": 6.333333333333333,
+              "p99": 10.333333333333334,
+              "max": 15.333333333333334
+            }
+          },
+          {
+            "region": {
+              "material": "/Game/DefaultTemplateSamples/M_Default_1_0.M_Default_1_0",
+              "x": 498.60594867604095,
+              "y": 332.1733607209551,
+              "radius": 30.571686772747903
+            },
+            "webNaniteToFallback": {
+              "samples": 1242,
+              "mean": 1.9951690821255983,
+              "p95": 7,
+              "p99": 13,
+              "max": 28
+            },
+            "nativeNaniteToFallback": {
+              "samples": 1242,
+              "mean": 3.4039184111647853,
+              "p95": 15.666666666666666,
+              "p99": 32.333333333333336,
+              "max": 94.66666666666667
+            },
+            "naniteEffectDifference": {
+              "samples": 1242,
+              "mean": 4.506441223832528,
+              "p95": 17,
+              "p99": 33.666666666666664,
+              "max": 95.66666666666667
+            },
+            "absolutePlatformDifference": {
+              "samples": 1242,
+              "mean": 3.167471819645728,
+              "p95": 12,
+              "p99": 20,
+              "max": 30
+            }
+          },
+          {
+            "region": {
+              "material": "/Game/DefaultTemplateSamples/M_Default_1_1.M_Default_1_1",
+              "x": 592.8686495586803,
+              "y": 332.17336072095515,
+              "radius": 30.571686772747903
+            },
+            "webNaniteToFallback": {
+              "samples": 1239,
+              "mean": 1.0182943233790696,
+              "p95": 2.6666666666666665,
+              "p99": 4,
+              "max": 5.333333333333333
+            },
+            "nativeNaniteToFallback": {
+              "samples": 1239,
+              "mean": 1.0056497175141224,
+              "p95": 4.666666666666667,
+              "p99": 9.333333333333334,
+              "max": 13.333333333333334
+            },
+            "naniteEffectDifference": {
+              "samples": 1239,
+              "mean": 1.6688189400053783,
+              "p95": 5,
+              "p99": 10.666666666666666,
+              "max": 13.333333333333334
+            },
+            "absolutePlatformDifference": {
+              "samples": 1239,
+              "mean": 2.693570083400597,
+              "p95": 6.333333333333333,
+              "p99": 9.333333333333334,
+              "max": 11.666666666666666
+            }
+          },
+          {
+            "region": {
+              "material": "/Game/DefaultTemplateSamples/M_Default_1_2.M_Default_1_2",
+              "x": 687.1313504413198,
+              "y": 332.17336072095515,
+              "radius": 30.571686772747903
+            },
+            "webNaniteToFallback": {
+              "samples": 1239,
+              "mean": 0.691417810061878,
+              "p95": 2,
+              "p99": 3.3333333333333335,
+              "max": 5
+            },
+            "nativeNaniteToFallback": {
+              "samples": 1239,
+              "mean": 2.030938929244013,
+              "p95": 11.666666666666666,
+              "p99": 20.666666666666668,
+              "max": 24.666666666666668
+            },
+            "naniteEffectDifference": {
+              "samples": 1239,
+              "mean": 2.5647027172450887,
+              "p95": 12,
+              "p99": 20.333333333333332,
+              "max": 24.666666666666668
+            },
+            "absolutePlatformDifference": {
+              "samples": 1239,
+              "mean": 2.9747107882701096,
+              "p95": 6.666666666666667,
+              "p99": 12,
+              "max": 14.666666666666666
+            }
+          },
+          {
+            "region": {
+              "material": "/Game/DefaultTemplateSamples/M_Default_1_3.M_Default_1_3",
+              "x": 781.3940513239592,
+              "y": 332.17336072095515,
+              "radius": 30.5716867727479
+            },
+            "webNaniteToFallback": {
+              "samples": 1242,
+              "mean": 0.6111111111111104,
+              "p95": 1.6666666666666667,
+              "p99": 2.3333333333333335,
+              "max": 4
+            },
+            "nativeNaniteToFallback": {
+              "samples": 1242,
+              "mean": 1.2300053676865275,
+              "p95": 8,
+              "p99": 16,
+              "max": 19
+            },
+            "naniteEffectDifference": {
+              "samples": 1242,
+              "mean": 1.7337627482555003,
+              "p95": 8.666666666666666,
+              "p99": 15,
+              "max": 19
+            },
+            "absolutePlatformDifference": {
+              "samples": 1242,
+              "mean": 2.0013419216317643,
+              "p95": 4,
+              "p99": 8.333333333333334,
+              "max": 11.666666666666666
+            }
+          }
+        ]
+      }
+    ],
+    "images": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-default-native-20261110-packed.png",
+        "sha256": "862f3d9e4295054442821dbbe67b07e07b3a858f5bb98391d16d65016699bb98"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-default-native-20261110-scalar.png",
+        "sha256": "5b6888cd46d72337bca90dad8d86c7ef6b563f02a949c396eee6d31079985902"
+      }
+    ],
+    "resolvedFailures": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\failure-projection-comparison.json",
+        "sha256": "53decec8dc8edb9f137a79be17eb8227f8051a90aa33d67d2445b3329965f077"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\failure-projection-native.json",
+        "sha256": "4579ecf5635c6cf4a1202b777e0e5205518bec73e05cba4bebc9c30e633d8d89"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\failure-uninitialized-projection.json",
+        "sha256": "cff5b68207bd32e7f463748ef1f7a2bc814ecc9c018bd94be1125d72f9f27aae"
+      }
+    ],
+    "payloadEncoding": "gzip-base64-json",
+    "payload": {
+      "$omitted": true,
+      "reason": "Full diagnostic data is retained in the original report",
+      "type": "string",
+      "bytes": 1856500,
+      "sha256": "101fcefff5eb0927be9db453fc012336d986cd1260332658a9f6f67260dbf62a"
+    },
+    "boundary": "Original default-template lights and sky, eight real materials, verified native SM6 Nanite proxies, matching effective projection. Nanite-induced changes are tested against thresholds; absolute platform shading and sky differences are explicitly recorded. This is not full-scene performance or remaining material/instance acceptance."
+  }
+}

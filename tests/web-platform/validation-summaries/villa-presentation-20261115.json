@@ -1,0 +1,84 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/villa-presentation-20261115.json",
+    "bytes": 2539,
+    "sha256": "d925ce7998544f042133ee687e861578517d0b3c6d1d0b1bc731881a77837b91",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "date": "2026-11-15T04:18:01.820Z",
+    "pass": true,
+    "url": "http://127.0.0.1:8765/build/villa-presentation-20261115/index.html",
+    "output": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-20261115",
+    "sourcePackage": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-project-settings-20261115\\asset-versions.json",
+      "sha256": "f1af44946cab8f344178d4a24a40250b8497e52002d9eafce8baf8faac827e33"
+    },
+    "packageReport": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-presentation-20261115-package.json",
+      "sha256": "6f6ea64acb8a1b2c3ffef4835eecf9448fd97dd11fd6900ee878d2e59891ea2a"
+    },
+    "browserReport": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-startup-presentation-20261115\\result.json",
+      "sha256": "58b2cb3aa819bafed22ced9f179d2d8f6220c388b7fb62c127bbf1c1dbe7598d"
+    },
+    "change": "仅通过入口页 CSS 隐藏左上角 web-performance-hud；场景、引擎和项目配置摘要保持一致。",
+    "screenshot": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-startup-presentation-20261115\\0-ours.png",
+      "sha256": "0e5ca731ff72bf4e1f03f3d1aa88fef4e1eb2055684f3fa0f2bf716023bcab9c"
+    },
+    "screenshotReviewed": true,
+    "performanceHUDVisible": false,
+    "browser": {
+      "pass": true,
+      "errors": [],
+      "startupMs": 47702,
+      "motionSeconds": 8,
+      "frames": [
+        32,
+        257
+      ],
+      "settings": {
+        "antiAliasing": 4,
+        "generateDistanceFields": 1,
+        "distanceFieldAO": 1,
+        "distanceFieldShadows": 1,
+        "gi": 1,
+        "reflections": 1,
+        "virtualShadows": 1,
+        "texturePoolMiB": 1000,
+        "screenPercentage": 0,
+        "staticLighting": 1,
+        "shadowCacheMiB": 256,
+        "dbuffer": 1,
+        "ssrQuality": 3,
+        "volumetricFog": 1,
+        "virtualTextures": 1,
+        "virtualTexturePathActive": true,
+        "virtualShadowPathActive": true
+      },
+      "prewarm": {
+        "mode": "active",
+        "start": 16.880000000004657,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "handoff": "complete",
+        "counts": {
+          "modules": 382,
+          "layouts": 495,
+          "ready": 320,
+          "hits": 347,
+          "misses": 9,
+          "pendingHits": 0,
+          "syncWhilePending": 0
+        },
+        "completed": 11046.73999999999,
+        "adoptedAt": 34252.630000000005
+      }
+    },
+    "boundary": "沿用已验证的原项目设置包，检查了首屏和短时移动；未新增长期稳定性或原生画质对照。"
+  }
+}

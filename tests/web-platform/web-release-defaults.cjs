@@ -4,6 +4,7 @@ const {spawnSync} = require('node:child_process');
 const {audit} = require('./content-file-metadata.cjs');
 const {writeVersions} = require('./asset-versions.cjs');
 const {resolveWebRenderSize} = require('./web-engine-host.js');
+const {installOptimizationContract, verifyOptimizationContract} = require('./web-optimization-contract.cjs');
 const {prepareRecordedPrewarm, installRecordedPrewarm, readPage, writePage, replaceFile,
   startupContext, coreFiles, runtimeFiles} = require('./web-pipeline-prewarm-package.cjs');
 
@@ -79,6 +80,18 @@ function matchingCapture(folder, resultsDirectory) {
 function finalizeDesktopRelease(folder, options = {}) {
   const page = readPage(folder);
   assert(page.assets.threads && page.assets.renderer === 'desktop', 'Desktop threaded release required');
+  delete page.assets.pipelineWarmup;
+  let optimizationBuild = options.optimizationBuild;
+  if (!optimizationBuild && !page.assets.optimizationContract) {
+    const file = path.join(__dirname, 'results/web-engine-full-thread-build-results.json');
+    if (fs.existsSync(file)) {
+      const build = JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
+      if (build.products?.some(item => item.file.endsWith('.wasm') && item.sha256 === page.assets.wasm.sha256))
+        optimizationBuild = build;
+    }
+  }
+  if (optimizationBuild) installOptimizationContract(folder, optimizationBuild, page);
+  const optimizationContract = verifyOptimizationContract(folder, page);
   assert([!!options.corpus, options.captureOnly, options.legacyPrecache, options.refresh].filter(Boolean).length <= 1);
   if (options.renderSize) {
     page.assets.fixedRenderSize = options.renderSize;
@@ -99,6 +112,9 @@ function finalizeDesktopRelease(folder, options = {}) {
   }
   writePage(folder, page);
   const report = {version: page.assets.releaseDefaults, releaseReady: false,
+    optimizationContract: optimizationContract ? {version:optimizationContract.version,
+      defaults:optimizationContract.defaults, explicitOverrides:optimizationContract.explicitOverrides,
+      runtime:optimizationContract.runtime} : null,
     renderSizing: page.assets.renderSizing, fixedRenderSize: size || null,
     cacheLock: 'shared-read-short-prepare', files: [...runtimeFiles]};
   if (options.captureOnly || options.legacyPrecache) {
@@ -115,6 +131,7 @@ function finalizeDesktopRelease(folder, options = {}) {
     report.releaseReady = true;
   }
   report.engineArguments = readPage(folder).args;
+  if (optimizationContract) report.files = [...new Set([...report.files, 'optimization-contract.json'])];
   report.runtime = runtimeFiles.map(name => audit(path.join(folder, name)));
   verifyDesktopRelease(folder, report);
   return report;
@@ -122,6 +139,7 @@ function finalizeDesktopRelease(folder, options = {}) {
 
 function verifyDesktopRelease(folder, report) {
   const {assets, args} = readPage(folder);
+  verifyOptimizationContract(folder, readPage(folder));
   for (const name of runtimeFiles) {
     const hash = audit(path.join(folder, name)).sha256;
     assert.equal(hash, audit(path.join(__dirname, name)).sha256, 'Stale release runtime: ' + name);

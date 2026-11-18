@@ -1,0 +1,292 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/niagara-finite-web-20261111.json",
+    "bytes": 13466,
+    "sha256": "0178c2169d0703678dab964c3e58f5cf4e671ea7f29a3b14825fa438779fe1a5",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-11T01:47:44.352Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-niagara-finite-web-evidence.cjs",
+      "sha256": "b377960d53fbbf29ab586fb1bffa08987d88a2ab1d0f5355c4b511538db6bec5"
+    },
+    "verified": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\niagara-finite\\verified.json",
+      "sha256": "6fc4245f88234194710bb2aa721bf55bcca2f0769005f9c40ac9f39e82160876"
+    },
+    "compiler": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Private\\WebGPUShaderFormat.cpp",
+      "sha256": "38c7cc46998c068cf079c4ca548ba47cee92cd1ad2aac0f77d85e8c8055a38bc"
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\niagara-finite-build.log",
+      "sha256": "5d35959686b3ca40f895f61ebaea36b03bd80ffab7a3464495fa7a1c29e366eb"
+    },
+    "report": {
+      "pass": true,
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-niagara-finite-web.cjs",
+        "sha256": "31d428b820ce3d73f494263b8330730a7a8b912ff6d37c5c9a82dc424e7a9eb1"
+      },
+      "helper": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Private\\WebGPUNiagaraFinite.h",
+        "sha256": "6f43085b28c8b12b060b9f009bbf58a589976f128d5df57d353fde96632ab833"
+      },
+      "input": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-niagara-isnan\\conversion\\input.spv",
+        "sha256": "ae2aa9d2449fc9d0fbe4176b0d557d6e580ba04b290a5b7b1d65fd02b1c1079f"
+      },
+      "oldFailure": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\niagara-finite\\old-tint.log",
+        "sha256": "705549db7bbbd57b257be0467be6de7206fe23bceec76ec1000aff3ccee198e1"
+      },
+      "productionInput": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-niagara-isnan\\conversion\\preprocessed.hlsl",
+        "sha256": "10f4df1f8ba091d63f6a749f597c8849d3bd37620fc013a4d805bcc11b7f9c7c"
+      },
+      "actual": {
+        "pass": false,
+        "files": [
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\niagara-finite\\production-niagara.hlsl",
+            "sha256": "c597b72523e0ff665a8c4c5d144bfde4dd5d2757713dc78a2093b5c09226af72"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\niagara-finite\\production-niagara.spv",
+            "sha256": "57effd2093006a3b4e07a5eb52728d39b1d4894d555b30362a57443909a47665"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\niagara-finite\\production-niagara-tint.log",
+            "sha256": "efb6cebad1a7b41ee271a62f11cb92e5197dde9f06dcc97e4b28f52786523f69"
+          }
+        ],
+        "error": "Failed to parse SPIR-V: unhandled SPIR-V instruction: OpMemoryBarrier (val = 225)\r\n"
+      },
+      "contract": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\niagara-finite\\classification.hlsl",
+          "sha256": "19ebe5518a2899121c0502a61b4a4fcb5736eaad14396284c22e6d86f003423a"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\niagara-finite\\classification.spv",
+          "sha256": "2246036d288437f31393cb71da650b5aac3ddaa91a8bfee7de07e832f5452a3f"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\niagara-finite\\classification.wgsl",
+          "sha256": "845b8653b965999c9ee37af7caa14be06db0622c298ff0d0fe09d64300b4bc33"
+        }
+      ],
+      "gpu": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\niagara-finite\\gpu.json",
+        "sha256": "1088cbd624b50632eda934d8d4a8151dede1d2983076f4d5228c5a0fe175478f"
+      },
+      "floatValues": 67584,
+      "vectorWidths": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "boundary": "Classification contract only. Scalar and vector classifiers checked against JavaScript Number.isFinite on raw float32 memory. The actual hair simulation shader advances past IsNan but still fails on OpMemoryBarrier; its full compilation and simulation are NOT verified."
+    },
+    "files": [
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\niagara-finite\\classification-tint.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\niagara-finite-web-20261111\\niagara-finite\\classification-tint.log.gz",
+          "sha256": "46b50c321b39e89a491b6727a01628c34245605a30beb3e7414c5e01cff90e6e"
+        },
+        "encoding": "gzip-file",
+        "bytes": 0
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\niagara-finite\\classification.hlsl",
+          "sha256": "19ebe5518a2899121c0502a61b4a4fcb5736eaad14396284c22e6d86f003423a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\niagara-finite-web-20261111\\niagara-finite\\classification.hlsl.gz",
+          "sha256": "a501c5cef47b07cbac03bc5de3e8a43525823f3b7d61b150f59bfee7e44c808a"
+        },
+        "encoding": "gzip-file",
+        "bytes": 925
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\niagara-finite\\classification.spv",
+          "sha256": "2246036d288437f31393cb71da650b5aac3ddaa91a8bfee7de07e832f5452a3f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\niagara-finite-web-20261111\\niagara-finite\\classification.spv.gz",
+          "sha256": "83085339f804f55ea41b8a2df3f4048541c8d47ddec84865a96a90f9b64fc06f"
+        },
+        "encoding": "gzip-file",
+        "bytes": 2112
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\niagara-finite\\classification.wgsl",
+          "sha256": "845b8653b965999c9ee37af7caa14be06db0622c298ff0d0fe09d64300b4bc33"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\niagara-finite-web-20261111\\niagara-finite\\classification.wgsl.gz",
+          "sha256": "2d11a0425b0ed9206389223d9103a20d0c946acb4baa791b259f7248793acd86"
+        },
+        "encoding": "gzip-file",
+        "bytes": 1200
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\niagara-finite\\gpu.json",
+          "sha256": "1088cbd624b50632eda934d8d4a8151dede1d2983076f4d5228c5a0fe175478f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\niagara-finite-web-20261111\\niagara-finite\\gpu.json.gz",
+          "sha256": "95f0d9668e90d2cffaf59c1e5378ee082c328a1da5ef2663d8e96b607e85ba07"
+        },
+        "encoding": "gzip-file",
+        "bytes": 1029983
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\niagara-finite\\old-tint.log",
+          "sha256": "705549db7bbbd57b257be0467be6de7206fe23bceec76ec1000aff3ccee198e1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\niagara-finite-web-20261111\\niagara-finite\\old-tint.log.gz",
+          "sha256": "d750b6033c6bd3d5aa126189553b2f4e81bfcbfeac647953c9faec43d06efcf4"
+        },
+        "encoding": "gzip-file",
+        "bytes": 91
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\niagara-finite\\production-niagara-tint.log",
+          "sha256": "efb6cebad1a7b41ee271a62f11cb92e5197dde9f06dcc97e4b28f52786523f69"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\niagara-finite-web-20261111\\niagara-finite\\production-niagara-tint.log.gz",
+          "sha256": "c8790982c87d6d18af042d5e6b699255706cf8c98558821fee30bb836aaf7bd5"
+        },
+        "encoding": "gzip-file",
+        "bytes": 83
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\niagara-finite\\production-niagara.hlsl",
+          "sha256": "c597b72523e0ff665a8c4c5d144bfde4dd5d2757713dc78a2093b5c09226af72"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\niagara-finite-web-20261111\\niagara-finite\\production-niagara.hlsl.gz",
+          "sha256": "611814d883d60718889059a229e4ccf6813370426c14268d9f38b6a9fc91d5b7"
+        },
+        "encoding": "gzip-file",
+        "bytes": 211351
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\niagara-finite\\production-niagara.spv",
+          "sha256": "57effd2093006a3b4e07a5eb52728d39b1d4894d555b30362a57443909a47665"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\niagara-finite-web-20261111\\niagara-finite\\production-niagara.spv.gz",
+          "sha256": "7b255b5b8de4e0a57ffbbcddd3ba32cf3ea58753b84033184960cf0bdc7de67b"
+        },
+        "encoding": "gzip-file",
+        "bytes": 206284
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\niagara-finite\\verified.json",
+          "sha256": "6fc4245f88234194710bb2aa721bf55bcca2f0769005f9c40ac9f39e82160876"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\niagara-finite-web-20261111\\niagara-finite\\verified.json.gz",
+          "sha256": "782fb492bf2b5f26bb3ff9445b489e8e2f0055968ade59f62b568d8af44ce826"
+        },
+        "encoding": "gzip-file",
+        "bytes": 3215
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-niagara-isnan\\conversion\\failure.json",
+          "sha256": "1772792e212ee133b8e87138d5c82af4588c34844a5b4a7782ee82d17f59e640"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\niagara-finite-web-20261111\\failure-niagara-isnan\\conversion\\failure.json.gz",
+          "sha256": "95b72224807d5c07285fac189feaacd0f1be3d8143081f8f68b50c3fc7ad9629"
+        },
+        "encoding": "gzip-file",
+        "bytes": 491
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-niagara-isnan\\conversion\\input.json",
+          "sha256": "9cd50b2c6e48486a25ae3e5aac448d4b9198c7f52dc6d21d0737f2da33c927dd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\niagara-finite-web-20261111\\failure-niagara-isnan\\conversion\\input.json.gz",
+          "sha256": "56e7d9931144021f4d433e839a5efed1cf74109389890b1c0cc88e1c61fa64d7"
+        },
+        "encoding": "gzip-file",
+        "bytes": 36999
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-niagara-isnan\\conversion\\input.spv",
+          "sha256": "ae2aa9d2449fc9d0fbe4176b0d557d6e580ba04b290a5b7b1d65fd02b1c1079f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\niagara-finite-web-20261111\\failure-niagara-isnan\\conversion\\input.spv.gz",
+          "sha256": "8d0abd90f17984fa3a992a82e661daaf0aabb4a2c82c8ea970122bab241770fd"
+        },
+        "encoding": "gzip-file",
+        "bytes": 189996
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-niagara-isnan\\conversion\\preprocessed.hlsl",
+          "sha256": "10f4df1f8ba091d63f6a749f597c8849d3bd37620fc013a4d805bcc11b7f9c7c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\niagara-finite-web-20261111\\failure-niagara-isnan\\conversion\\preprocessed.hlsl.gz",
+          "sha256": "9f6e5382756e17e165ea48babfd716129e6c3718b6dd474719eae8ae5ca32655"
+        },
+        "encoding": "gzip-file",
+        "bytes": 210832
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-niagara-isnan\\web-project-nanite-streaming-desktop-cook-20261111-091324.log",
+          "sha256": "d74de72a3b1f438ba7f0a9a41281e1f55f14a6a61827b6a7b9390eb7b00c931e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\niagara-finite-web-20261111\\failure-niagara-isnan\\web-project-nanite-streaming-desktop-cook-20261111-091324.log.gz",
+          "sha256": "2e6ca272db2c0a1ba6ceeb970b535d8048c4842abf6b8769b5d7787cda42a290"
+        },
+        "encoding": "gzip-file",
+        "bytes": 523999
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\niagara-finite-build.log",
+          "sha256": "5d35959686b3ca40f895f61ebaea36b03bd80ffab7a3464495fa7a1c29e366eb"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\niagara-finite-web-20261111\\niagara-finite-build.log.gz",
+          "sha256": "bbb66935e6ce04a91fe9b770bf05b88a6ac703c5319fed2fbdb2e3739dfb998a"
+        },
+        "encoding": "gzip-file",
+        "bytes": 2126
+      }
+    ],
+    "boundary": "Niagara finite-value classification only. Real simulation shader still fails on OpMemoryBarrier; no shader failure is ignored and simulation compatibility is not claimed."
+  }
+}

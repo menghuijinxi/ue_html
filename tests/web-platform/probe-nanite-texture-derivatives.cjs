@@ -1,0 +1,159 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),crypto=require('node:crypto');
+const {PNG}=require('pngjs');
+const {chromium}=require('playwright'),{audit}=require('./content-file-metadata.cjs');
+const scalar=process.argv.includes('--scalar-visibility'),mode=scalar?'scalar':'packed';
+const factor=Number(process.argv.find(a=>a.startsWith('--factor='))?.split('=')[1]||1);assert([.5,1,2].includes(factor));
+const implicit=process.argv.find(a=>a.startsWith('--implicit='))?.split('=')[1]||'unchanged';assert(['unchanged','fine','coarse','bias-minus-one','no-pom'].includes(implicit));
+const streaming=process.argv.includes('--streaming');
+const output=path.join(__dirname,'results/nanite-texture-derivatives',streaming?'streaming':implicit==='unchanged'?String(factor):implicit);fs.mkdirSync(output,{recursive:true});
+const report={pass:false,scalar,source:audit(__filename),package:audit(path.join(__dirname,'build/nanite-full-scene/package.json')),
+  views:[],errors:[],logs:[],configs:[],boundary:'Diagnostic only: material gradient investigation, not acceptance.'};
+const cameras=[[-175,-80,160,-5,230]];
+const save=()=>fs.writeFileSync(path.join(output,mode+'.json'),JSON.stringify(report,null,2));
+function observe(scalar,factor,implicit){
+  globalThis.__textureDescriptors=[];globalThis.__samplerDescriptors=[];
+  const createTexture=GPUDevice.prototype.createTexture,createSampler=GPUDevice.prototype.createSampler;
+  GPUDevice.prototype.createTexture=function(d){__textureDescriptors.push({...d});return createTexture.call(this,d);};
+  GPUDevice.prototype.createSampler=function(d){__samplerDescriptors.push({...d});return createSampler.call(this,d);};
+  const create=GPUDevice.prototype.createShaderModule;globalThis.__derivativeShaders=[];
+  GPUDevice.prototype.createShaderModule=function(d){
+    if(d.code.includes('WebNaniteMaterial_MemberCount')){
+      const original=d.code;let count=0,code=original,from=0;
+      while((from=code.indexOf('textureSampleGrad(',from))>=0){
+        const open=from+'textureSampleGrad'.length,args=[];let depth=1,start=open+1,end=start;
+        for(;depth&&end<code.length;end++){
+          const c=code[end];if(c==='('||c==='[')depth++;else if(c===')'||c===']')depth--;
+          if((c===','&&depth===1)||!depth){args.push(code.slice(start,end).trim());start=end+1;}
+        }
+        if(args[0].startsWith('Material_')&&args.length===5){
+          args[3]=`(${args[3]} * ${factor}.0)`;args[4]=`(${args[4]} * ${factor}.0)`;
+          // Decimal constants such as 0.5 are already complete WGSL floats.
+          args[3]=args[3].replace('0.5.0','0.5');args[4]=args[4].replace('0.5.0','0.5');
+          const replacement='textureSampleGrad('+args.join(', ')+')';
+          code=code.slice(0,from)+replacement+code.slice(end);from+=replacement.length;count++;
+        }else from=end;
+      }
+      if(implicit==='no-pom'&&code.includes('v_1557 = v_1537.xy'))code=code.replace('v_1557 = v_1537.xy','v_1557 = vec2<f32>(0.0)');
+      if(implicit!=='unchanged'&&implicit!=='no-pom'){
+        from=0;
+        while((from=code.indexOf('textureSampleBias(',from))>=0){
+          const open=from+'textureSampleBias'.length,args=[];let depth=1,start=open+1,end=start;
+          for(;depth&&end<code.length;end++){
+            const c=code[end];if(c==='('||c==='[')depth++;else if(c===')'||c===']')depth--;
+            if((c===','&&depth===1)||!depth){args.push(code.slice(start,end).trim());start=end+1;}
+          }
+          if(args[0].startsWith('Material_Texture2D_')&&args.length===4){
+            const suffix=implicit==='fine'?'Fine':'Coarse';
+            const replacement=implicit==='bias-minus-one'?`textureSampleBias(${args[0]}, ${args[1]}, ${args[2]}, (${args[3]} - 1.0))`:
+              `textureSampleGrad(${args[0]}, ${args[1]}, ${args[2]}, dpdx${suffix}(${args[2]}) * exp2(${args[3]}), dpdy${suffix}(${args[2]}) * exp2(${args[3]}))`;
+            code=code.slice(0,from)+replacement+code.slice(end);from+=replacement.length;count++;
+          }else from=end;
+        }
+      }
+      __derivativeShaders.push({code:original,modified:code,count});d={...d,code};
+    }
+    return create.call(this,d);
+  };
+  const request=GPUAdapter.prototype.requestDevice;globalThis.__nativeSceneGPU={errors:[]};
+  GPUAdapter.prototype.requestDevice=async function(d){
+    if(scalar)d={...d,requiredFeatures:[...(d?.requiredFeatures||[])].filter(f=>f!=='atomic-vec2u-min-max')};
+    const device=await request.call(this,d);__nativeSceneGPU.features=[...device.features];
+    device.addEventListener('uncapturederror',e=>__nativeSceneGPU.errors.push(e.error.message));return device;
+  };
+}
+(async()=>{let context,page;try{
+  for(const [index,camera] of cameras.entries()){
+    context=await chromium.launchPersistentContext(path.join(__dirname,'results/nanite-browser/profile'),{
+      channel:'msedge',headless:true,viewport:{width:1280,height:720}});
+    await context.route('**/web-engine-worker.js?*',async route=>{const r=await route.fetch();
+      await route.fulfill({response:r,body:`(${observe.toString()})(${scalar},${factor},${JSON.stringify(implicit)});\n`+await r.text()});});
+    await context.route('**/nanite-full-scene/index.html',async route=>{const r=await route.fetch();
+      await route.fulfill({response:r,body:(await r.text()).replace('arguments: [','arguments: ["-WebVisualTestClock",')});});
+    await context.route('**/config-files.json*',async route=>{
+      const r=await route.fetch(),files=await r.json();
+      const file=files.find(f=>f.path.endsWith('/UEWebEngine/Config/DefaultEngine.ini'));assert(file);
+      const text=Buffer.from(file.data,'base64').toString('utf8')+'\n[SystemSettings]\nr.Test.FreezeTemporalSequences=1\n'+(streaming?'r.Streaming.Boost=16\nr.Streaming.PoolSize=2000\n':'');
+      const data=Buffer.from(text);file.data=data.toString('base64');file.sha256=crypto.createHash('sha256').update(data).digest('hex');
+      report.configs.push({path:file.path,sha256:file.sha256,text});await route.fulfill({response:r,body:JSON.stringify(files)});
+    });
+    page=await context.newPage();page.on('pageerror',e=>report.errors.push(e.stack));
+    page.on('console',m=>{const line=m.text();if(/GPU validation:|Fatal error:|Assertion failed:|DeviceLost/.test(line))report.errors.push(line);
+      report.logs.push(line);if(report.logs.length>500)report.logs.shift();});
+    await page.goto('http://127.0.0.1:8765/build/nanite-full-scene/index.html');
+    await page.waitForFunction(()=>globalThis.__webEngineFailure||globalThis.__webEngineRecovery?.phase==='running',null,{timeout:180000});
+    assert.equal(await page.evaluate(()=>globalThis.__webEngineFailure||null),null);
+    const owner=page.workers().find(w=>w.url().includes('web-engine-worker.js'));assert(owner);
+    report.visualClock=await owner.evaluate(()=>globalThis.__webVisualTestClock);assert(report.visualClock.renderTimeFrozen);
+    assert.equal(await page.evaluate(c=>__webEngineRPC('WebProjectViewTest',...c),camera),1);
+    assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteMaterialBoundsTest',1,0,1)),1);
+    await page.addStyleTag({content:'body > :not(canvas) { visibility: hidden !important; } canvas, canvas * { visibility: visible !important; }'});
+    const view={camera,index,tests:[]};report.views.push(view);
+    for(const step of [1]){
+      assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteAutomaticSceneTest',s),step),1);
+      let t;const start=Date.now();
+      do{await page.waitForTimeout(250);assert.deepEqual(report.errors,[]);
+        assert.equal(await page.evaluate(()=>globalThis.__webEngineFailure||null),null);
+        await page.evaluate(()=>__webEngineRPC('WebNaniteAutomaticSceneTest',0));
+        t=await owner.evaluate(()=>globalThis.__webNaniteAutomaticSceneTest||null);
+      }while((!t||t.step!==step)&&Date.now()-start<120000);
+      assert(t&&t.step===step);view.tests.push(t);save();
+      assert(t.automatic&&t.rejected===0);assert.equal(t.enabled,step!==2);
+      const suppressed=t.batches.filter(b=>!b.material&&!b.depth&&!b.occluder).length;
+      assert(t.assets.length>2000&&t.batches.length>2000);
+      if(step===2){assert.equal(t.entries,0);assert.equal(suppressed,0);}
+      else{
+        assert(t.registered>1254&&t.materialComplete&&t.entries>0&&suppressed>1254);
+        assert.equal(t.cullStates.length,t.entries*4);
+        for(let i=0;i<t.entries;i++)assert.equal(t.cullStates[i*4+1],0);
+      }
+      const frame=await page.evaluate(()=>__webEngineFrames);
+      await page.waitForFunction(f=>__webEngineFrames>=f+600,frame,{timeout:120000});
+      t.rhi=await owner.evaluate(()=>globalThis.__webOptimizationRHI);
+      assert.equal(t.rhi.asyncPrecacheCompleted,t.rhi.asyncPrecacheRequested);assert.equal(t.rhi.asyncPrecacheFailed||0,0);
+      const previous=new Map(),stable=[0,0,0,0];t.captureChecks=[];
+      for(let round=0;round<8;round++){
+        const phases=[];
+        for(let phase=0;phase<4;phase++){
+          const serial=await owner.evaluate(()=>globalThis.__webNaniteNativeCapture?.serial||0);
+          assert.equal(await page.evaluate(p=>__webEngineRPC('WebNaniteNativeCaptureTest',p),phase),1);
+          let capture;const started=Date.now();
+          do {await page.waitForTimeout(50);assert.deepEqual(report.errors,[]);await page.evaluate(()=>__webEngineRPC('WebNaniteNativeCaptureTest',-1));
+            capture=await owner.evaluate(()=>globalThis.__webNaniteNativeCapture||null);
+          }while((!capture||capture.serial<=serial)&&Date.now()-started<30000);
+          assert(capture&&capture.serial===serial+1);assert.equal(capture.phase,phase);assert.equal(capture.width,1280);assert.equal(capture.height,720);
+          const bytes=Buffer.from(capture.rgba,'base64');assert.equal(bytes.length,1280*720*4);delete capture.rgba;
+          let difference=255;if(previous.has(phase)){let sum=0;const before=previous.get(phase);for(let i=0;i<bytes.length;i++)if(i%4!==3)sum+=Math.abs(bytes[i]-before[i]);difference=sum/(1280*720*3);}
+          previous.set(phase,bytes);stable[phase]=difference<.05?stable[phase]+1:0;
+          const file=path.join(output,`${mode}-${index}-${step}-round${round}-phase${phase}.png`);
+          fs.writeFileSync(file,PNG.sync.write({width:1280,height:720,data:bytes}));
+          phases.push({...capture,image:audit(file)});t.captureChecks.push({round,phase,frame:capture.frame,meanDifference:difference,stable:stable[phase],image:audit(file)});
+        }
+        if(stable.every(n=>n>=2)){t.phases=phases;break;}
+        const current=await page.evaluate(()=>__webEngineFrames);await page.waitForFunction(f=>__webEngineFrames>=f+120,current,{timeout:120000});
+      }
+      assert(t.phases,'Each AO phase must stabilize independently');
+      const file=path.join(output,`${mode}-${index}-${step}.png`);fs.copyFileSync(t.phases[0].image.file,file);t.image=audit(file);
+      t.captureWarmupFrames=await page.evaluate(()=>__webEngineFrames)-frame;
+      const before=await page.evaluate(()=>({time:performance.now(),frames:__webEngineFrames}));
+      await page.waitForFunction(f=>__webEngineFrames>=f+240,before.frames,{timeout:120000});
+      const after=await page.evaluate(()=>({time:performance.now(),frames:__webEngineFrames}));
+      t.performance={frames:after.frames-before.frames,milliseconds:after.time-before.time,
+        fps:(after.frames-before.frames)*1000/(after.time-before.time)};
+      console.log({index,step,entries:t.entries,suppressed,fps:t.performance.fps});save();
+    }
+    report.textureDescriptors=await owner.evaluate(()=>__textureDescriptors);report.samplerDescriptors=await owner.evaluate(()=>__samplerDescriptors);
+    report.streaming=await owner.evaluate(()=>globalThis.__webTextureStreaming);
+    report.shaders=await owner.evaluate(()=>__derivativeShaders.map(({code,modified,count},index)=>({index,code,modified,count})));
+    for(const sh of report.shaders){const file=path.join(output,'shader-'+sh.index+'.wgsl');fs.writeFileSync(file,sh.code);sh.source=audit(file);delete sh.code;delete sh.modified;}
+    view.gpu=await owner.evaluate(()=>__nativeSceneGPU);assert.deepEqual(view.gpu.errors,[]);
+    assert.equal(view.gpu.features.includes('atomic-vec2u-min-max'),!scalar);
+    view.frames=await page.evaluate(()=>__webEngineFrames);
+    assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteAutomaticSceneTest',-1)),1);
+    assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteNativeCaptureTest',-2)),1);
+    assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteMaterialBoundsTest',-1,0,1)),1);
+    await context.close();context=null;save();
+  }
+  assert.deepEqual(report.errors,[]);report.pass=true;
+}catch(e){report.failure=e.stack;console.error(e.stack);process.exitCode=1;}
+finally{await context?.close();save();}})();

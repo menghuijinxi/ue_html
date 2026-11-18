@@ -1,0 +1,885 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/web-local-recovery-20261110.json",
+    "bytes": 44875,
+    "sha256": "f8c9f1d7d40883d5b8fae79e6256e90e8de1bd08872fd51fe8ab92b983a0e16d",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-10T11:35:39.580Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-web-local-recovery-evidence.cjs",
+      "sha256": "170cd5b56896a404b26857f4c667bfea7db8ff024fd0db5e8870aa9a8c8920f4"
+    },
+    "baseline": {
+      "pass": true,
+      "baseline": true,
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-recovery.cjs",
+        "sha256": "85cfee7bd80f299c30ab5c84d7abd28aa917028b2c3140a9e2754e48b8f82a92"
+      },
+      "worker": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-gpu-instances\\failure-opfs-not-found\\web-content-worker.js",
+        "sha256": "20e8c5e7ae3e8e47bbef12a6bb73a30bbe0fbb233c9d90a7ad95dcab734dccf9"
+      },
+      "fixture": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\local-recovery-fixture.bin",
+        "sha256": "d00b32bd467de8aefd2f2a598a6b1b40c69d455eec94658d846ea68e62f8291b"
+      },
+      "cases": [
+        {
+          "scenario": "file-lease",
+          "errors": [
+            "A requested file or directory could not be found at the time an operation was processed.",
+            "A requested file or directory could not be found at the time an operation was processed."
+          ],
+          "valid": false,
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 0,
+            "downloads": 0,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "full",
+            "hashedBytes": 0,
+            "hashMs": 0,
+            "downloadMs": 0,
+            "diskReadMs": 0,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0
+          }
+        }
+      ]
+    },
+    "recovery": {
+      "pass": true,
+      "baseline": false,
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-recovery.cjs",
+        "sha256": "85cfee7bd80f299c30ab5c84d7abd28aa917028b2c3140a9e2754e48b8f82a92"
+      },
+      "worker": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-content-worker.js",
+        "sha256": "68162df4a825001e8ff88e939c14bdc85989aee42a1ce80bc1da9c41587befae"
+      },
+      "fixture": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\local-recovery-fixture.bin",
+        "sha256": "d00b32bd467de8aefd2f2a598a6b1b40c69d455eec94658d846ea68e62f8291b"
+      },
+      "cases": [
+        {
+          "scenario": "file-lease",
+          "errors": [
+            null,
+            null
+          ],
+          "valid": true,
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 1048595,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "full",
+            "hashedBytes": 1048595,
+            "hashMs": 0.6000000238418579,
+            "downloadMs": 11.599999964237213,
+            "diskReadMs": 0,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0,
+            "missingFileRetries": 1
+          }
+        },
+        {
+          "scenario": "directory",
+          "errors": [
+            null,
+            null
+          ],
+          "valid": true,
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 1048595,
+            "downloads": 1,
+            "persistentHits": 0,
+            "evictions": 0,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "full",
+            "hashedBytes": 1048595,
+            "hashMs": 0.699999988079071,
+            "downloadMs": 10.699999988079071,
+            "diskReadMs": 0,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0,
+            "missingFileRetries": 1
+          }
+        },
+        {
+          "scenario": "repeated",
+          "errors": [
+            "asset results/local-recovery-fixture.bin: NotFoundError: A requested file or directory could not be found at the time an operation was processed.",
+            "asset results/local-recovery-fixture.bin: NotFoundError: A requested file or directory could not be found at the time an operation was processed."
+          ],
+          "valid": false,
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 1048595,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "full",
+            "hashedBytes": 1048595,
+            "hashMs": 0.699999988079071,
+            "downloadMs": 10.800000011920929,
+            "diskReadMs": 0,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0,
+            "missingFileRetries": 1
+          }
+        },
+        {
+          "scenario": "non-missing",
+          "errors": [
+            "asset results/local-recovery-fixture.bin: NotAllowedError: Injected permission failure",
+            "asset results/local-recovery-fixture.bin: NotAllowedError: Injected permission failure"
+          ],
+          "valid": false,
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 0,
+            "downloads": 0,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "full",
+            "hashedBytes": 0,
+            "hashMs": 0,
+            "downloadMs": 0,
+            "diskReadMs": 0,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0,
+            "missingFileRetries": 0
+          }
+        }
+      ]
+    },
+    "quota": {
+      "pass": true,
+      "date": "2026-11-10T11:30:53.753Z",
+      "browser": "Edge",
+      "sources": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-quota.cjs",
+          "sha256": "7014cc9d498aa04e4219343c39acb507a6dbd05ce53611a66900071ef7c5804a"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-content-worker.js",
+          "sha256": "68162df4a825001e8ff88e939c14bdc85989aee42a1ce80bc1da9c41587befae"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-content-io.js",
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\content-file-metadata.cjs",
+          "sha256": "ce0033046f2dbe880752330411f368c1da88df79f15d11aac71c44bd4e527949"
+        }
+      ],
+      "fixture": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\local-quota-fixture.bin",
+        "sha256": "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae"
+      },
+      "cases": [
+        {
+          "scenario": "create",
+          "firstErrors": [
+            null,
+            null
+          ],
+          "firstStats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 9437203,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 2,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 262163,
+            "hashMs": 0.4050000309944153,
+            "downloadMs": 50.389999985694885,
+            "diskReadMs": 0,
+            "quotaRetries": 1,
+            "quotaFailures": 0,
+            "reclaimedBytes": 2097152,
+            "missingFileRetries": 0
+          },
+          "namesAfterFirst": [
+            "keep-user-file.txt",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.json",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.bin"
+          ],
+          "names": [
+            "keep-user-file.txt",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.json",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.bin"
+          ],
+          "valid": true,
+          "ownLeasePreserved": true,
+          "otherLeasePreserved": true,
+          "sentinel": "untouched",
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 262144,
+            "peakMemoryBytes": 262144,
+            "memoryHits": 0,
+            "diskReads": 1,
+            "diskReadBytes": 262144,
+            "downloadedBytes": 9437203,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 2,
+            "activeReads": 1,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 262163,
+            "hashMs": 0.4050000309944153,
+            "downloadMs": 50.389999985694885,
+            "diskReadMs": 0.9549999833106995,
+            "quotaRetries": 1,
+            "quotaFailures": 0,
+            "reclaimedBytes": 2097152,
+            "missingFileRetries": 0
+          },
+          "requests": 2
+        },
+        {
+          "scenario": "write",
+          "firstErrors": [
+            null,
+            null
+          ],
+          "firstStats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 17825811,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 2,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 524307,
+            "hashMs": 0.5749998688697815,
+            "downloadMs": 44.185000002384186,
+            "diskReadMs": 0,
+            "quotaRetries": 1,
+            "quotaFailures": 0,
+            "reclaimedBytes": 2097152,
+            "missingFileRetries": 0
+          },
+          "namesAfterFirst": [
+            "keep-user-file.txt",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.json",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.bin"
+          ],
+          "names": [
+            "keep-user-file.txt",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.json",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.bin"
+          ],
+          "valid": true,
+          "ownLeasePreserved": true,
+          "otherLeasePreserved": true,
+          "sentinel": "untouched",
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 262144,
+            "peakMemoryBytes": 262144,
+            "memoryHits": 0,
+            "diskReads": 1,
+            "diskReadBytes": 262144,
+            "downloadedBytes": 17825811,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 2,
+            "activeReads": 1,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 524307,
+            "hashMs": 0.5749998688697815,
+            "downloadMs": 44.185000002384186,
+            "diskReadMs": 0.6850000023841858,
+            "quotaRetries": 1,
+            "quotaFailures": 0,
+            "reclaimedBytes": 2097152,
+            "missingFileRetries": 0
+          },
+          "requests": 2
+        },
+        {
+          "scenario": "close",
+          "firstErrors": [
+            null,
+            null
+          ],
+          "firstStats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 18874406,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 2,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 524326,
+            "hashMs": 0.6350000500679016,
+            "downloadMs": 74.3299999833107,
+            "diskReadMs": 0,
+            "quotaRetries": 1,
+            "quotaFailures": 0,
+            "reclaimedBytes": 2097152,
+            "missingFileRetries": 0
+          },
+          "namesAfterFirst": [
+            "keep-user-file.txt",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.json",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.bin"
+          ],
+          "names": [
+            "keep-user-file.txt",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.json",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.bin"
+          ],
+          "valid": true,
+          "ownLeasePreserved": true,
+          "otherLeasePreserved": true,
+          "sentinel": "untouched",
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 262144,
+            "peakMemoryBytes": 262144,
+            "memoryHits": 0,
+            "diskReads": 1,
+            "diskReadBytes": 262144,
+            "downloadedBytes": 18874406,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 2,
+            "activeReads": 1,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 524326,
+            "hashMs": 0.6350000500679016,
+            "downloadMs": 74.3299999833107,
+            "diskReadMs": 0.7099999785423279,
+            "quotaRetries": 1,
+            "quotaFailures": 0,
+            "reclaimedBytes": 2097152,
+            "missingFileRetries": 0
+          },
+          "requests": 2
+        },
+        {
+          "scenario": "marker",
+          "firstErrors": [
+            null,
+            null
+          ],
+          "firstStats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 18874406,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 2,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 524326,
+            "hashMs": 0.5850000381469727,
+            "downloadMs": 49.5450000166893,
+            "diskReadMs": 0,
+            "quotaRetries": 1,
+            "quotaFailures": 0,
+            "reclaimedBytes": 2097152,
+            "missingFileRetries": 0
+          },
+          "namesAfterFirst": [
+            "keep-user-file.txt",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.json",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.bin"
+          ],
+          "names": [
+            "keep-user-file.txt",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.json",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.bin"
+          ],
+          "valid": true,
+          "ownLeasePreserved": true,
+          "otherLeasePreserved": true,
+          "sentinel": "untouched",
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 262144,
+            "peakMemoryBytes": 262144,
+            "memoryHits": 0,
+            "diskReads": 1,
+            "diskReadBytes": 262144,
+            "downloadedBytes": 18874406,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 2,
+            "activeReads": 1,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 524326,
+            "hashMs": 0.5850000381469727,
+            "downloadMs": 49.5450000166893,
+            "diskReadMs": 0.7249999642372131,
+            "quotaRetries": 1,
+            "quotaFailures": 0,
+            "reclaimedBytes": 2097152,
+            "missingFileRetries": 0
+          },
+          "requests": 2
+        },
+        {
+          "scenario": "exhausted",
+          "firstErrors": [
+            "asset results/local-quota-fixture.bin: Error: Insufficient browser storage for results/local-quota-fixture.bin (9437203 bytes) after reclaiming unused content",
+            "asset results/local-quota-fixture.bin: Error: Insufficient browser storage for results/local-quota-fixture.bin (9437203 bytes) after reclaiming unused content"
+          ],
+          "firstStats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 0,
+            "downloads": 0,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 2,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 0,
+            "hashMs": 0,
+            "downloadMs": 0,
+            "diskReadMs": 0,
+            "quotaRetries": 1,
+            "quotaFailures": 1,
+            "reclaimedBytes": 2097152,
+            "missingFileRetries": 0
+          },
+          "namesAfterFirst": [
+            "keep-user-file.txt",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin"
+          ],
+          "names": [
+            "keep-user-file.txt",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.json",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.bin"
+          ],
+          "valid": true,
+          "ownLeasePreserved": true,
+          "otherLeasePreserved": true,
+          "sentinel": "untouched",
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 262144,
+            "peakMemoryBytes": 262144,
+            "memoryHits": 0,
+            "diskReads": 1,
+            "diskReadBytes": 262144,
+            "downloadedBytes": 9437203,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 2,
+            "activeReads": 1,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 262163,
+            "hashMs": 0.38999998569488525,
+            "downloadMs": 43.330000042915344,
+            "diskReadMs": 0.675000011920929,
+            "quotaRetries": 1,
+            "quotaFailures": 1,
+            "reclaimedBytes": 2097152,
+            "missingFileRetries": 0
+          },
+          "requests": 3
+        },
+        {
+          "scenario": "non-quota",
+          "firstErrors": [
+            "asset results/local-quota-fixture.bin: NotReadableError: Injected storage allocation failure",
+            "asset results/local-quota-fixture.bin: NotReadableError: Injected storage allocation failure"
+          ],
+          "firstStats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 0,
+            "peakMemoryBytes": 0,
+            "memoryHits": 0,
+            "diskReads": 0,
+            "diskReadBytes": 0,
+            "downloadedBytes": 0,
+            "downloads": 0,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 0,
+            "hashMs": 0,
+            "downloadMs": 0,
+            "diskReadMs": 0,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0,
+            "missingFileRetries": 0
+          },
+          "namesAfterFirst": [
+            "keep-user-file.txt",
+            "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd.bin",
+            "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.json",
+            "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.bin",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin"
+          ],
+          "names": [
+            "keep-user-file.txt",
+            "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd.bin",
+            "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.json",
+            "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.bin",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bin",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bin",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.json",
+            "05de191e12cfdcf75958992078837ccf19379e2ae4dab9783555e7dd478deaae.bin"
+          ],
+          "valid": true,
+          "ownLeasePreserved": true,
+          "otherLeasePreserved": true,
+          "sentinel": "untouched",
+          "stats": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 262144,
+            "peakMemoryBytes": 262144,
+            "memoryHits": 0,
+            "diskReads": 1,
+            "diskReadBytes": 262144,
+            "downloadedBytes": 9437203,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 0,
+            "diskEvictions": 0,
+            "activeReads": 1,
+            "peakActiveReads": 2,
+            "verification": "sampled",
+            "hashedBytes": 262163,
+            "hashMs": 0.38999998569488525,
+            "downloadMs": 47.77500003576279,
+            "diskReadMs": 0.6700000166893005,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0,
+            "missingFileRetries": 0
+          },
+          "requests": 2
+        }
+      ]
+    },
+    "io": {
+      "date": "2026-11-10T11:33:06.147Z",
+      "pass": true,
+      "browsers": [
+        {
+          "browser": "Edge",
+          "cold": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 16515091,
+            "peakMemoryBytes": 16777216,
+            "memoryHits": 0,
+            "diskReads": 81,
+            "diskReadBytes": 20971539,
+            "downloadedBytes": 20971539,
+            "downloads": 1,
+            "persistentHits": 0,
+            "evictions": 17,
+            "diskEvictions": 0,
+            "activeReads": 1,
+            "peakActiveReads": 1,
+            "verification": "full",
+            "hashedBytes": 41943078,
+            "hashMs": 22.995000183582306,
+            "downloadMs": 130.00999999046326,
+            "diskReadMs": 40.01499992609024,
+            "quotaRetries": 0,
+            "quotaFailures": 0,
+            "reclaimedBytes": 0,
+            "missingFileRetries": 0
+          },
+          "mountChecks": [
+            {
+              "shaderPlatform": "SP_WEBGPU_ES31",
+              "shaderCacheMounted": true,
+              "invalidEntriesRejected": 3
+            },
+            {
+              "shaderPlatform": "SP_WEBGPU_SM5",
+              "shaderCacheMounted": true,
+              "invalidEntriesRejected": 3
+            }
+          ],
+          "warm": {
+            "stats": {
+              "memoryLimit": 16777216,
+              "memoryBytes": 524288,
+              "peakMemoryBytes": 524288,
+              "memoryHits": 1,
+              "diskReads": 2,
+              "diskReadBytes": 524288,
+              "downloadedBytes": 0,
+              "downloads": 0,
+              "persistentHits": 1,
+              "evictions": 0,
+              "diskEvictions": 0,
+              "activeReads": 1,
+              "peakActiveReads": 1,
+              "verification": "sampled",
+              "hashedBytes": 0,
+              "hashMs": 0,
+              "downloadMs": 0,
+              "diskReadMs": 1.0250000357627869,
+              "quotaRetries": 0,
+              "quotaFailures": 0,
+              "reclaimedBytes": 0,
+              "missingFileRetries": 0
+            },
+            "callbacks": 0
+          },
+          "updated": {
+            "first": 1,
+            "stats": {
+              "memoryLimit": 16777216,
+              "memoryBytes": 786432,
+              "peakMemoryBytes": 786432,
+              "memoryHits": 1,
+              "diskReads": 3,
+              "diskReadBytes": 786432,
+              "downloadedBytes": 20971539,
+              "downloads": 1,
+              "persistentHits": 1,
+              "evictions": 0,
+              "diskEvictions": 0,
+              "activeReads": 1,
+              "peakActiveReads": 1,
+              "verification": "sampled",
+              "hashedBytes": 524307,
+              "hashMs": 0.5100000500679016,
+              "downloadMs": 99.14499998092651,
+              "diskReadMs": 1.5050000548362732,
+              "quotaRetries": 0,
+              "quotaFailures": 0,
+              "reclaimedBytes": 0,
+              "missingFileRetries": 0
+            }
+          },
+          "corruptRejected": true,
+          "networkPackRequests": 2
+        }
+      ],
+      "sourceFiles": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-io.cjs",
+          "sha256": "3c6b03df23a00298bf2b29a9d13f9df0f758c51d62b525c728ceff40bc992a86"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\content-file-metadata.cjs",
+          "sha256": "ce0033046f2dbe880752330411f368c1da88df79f15d11aac71c44bd4e527949"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-content-io.js",
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-content-worker.js",
+          "sha256": "68162df4a825001e8ff88e939c14bdc85989aee42a1ce80bc1da9c41587befae"
+        }
+      ]
+    },
+    "original": {
+      "file": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-gpu-instances\\failure-opfs-not-found\\browser.json",
+        "sha256": "c288d62e7b66282c4e2fb393c38cb15e6c4a453dfc95db37c18cc6f246fd7e65"
+      },
+      "report": {
+        "pass": false,
+        "scalar": false,
+        "phaseStress": false,
+        "unboundedPhase": true,
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-gpu-instances.cjs",
+          "sha256": "6a4d0bacff64e192b294460f0d860e8d88390e801d36bd44a465b5b01a63034c"
+        },
+        "geometry": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-programmable\\wpo-source-triangles.bin",
+          "sha256": "c90bbdf7414d76732765c182b49a1d17de6a71fcdbb713c6146d81ee19e219fb"
+        },
+        "geometryReference": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\nanite-spline-reference.cjs",
+          "sha256": "0c573937f6426a8eade955601e105551d4e9b3b3c1f7f1a6f61173d92b85e0a9"
+        },
+        "package": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\package.json",
+          "sha256": "0a45468b68ff13dee2f04d5e490bc25051bee00d438bc0ae2014504e965beaaf"
+        },
+        "tests": [],
+        "errors": [],
+        "validationFailures": [],
+        "logs": {
+          "$omitted": true,
+          "reason": "Full diagnostic data is retained in the original report",
+          "type": "array",
+          "entries": 4,
+          "bytes": 207,
+          "sha256": "bcb8e8ecc9bc788b2647868cd3b250a7b9911267698f48fa7c21b1e857705691"
+        },
+        "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'Error: A requested file or directory could not be found at the time an operation was processed.\\n' +\n+   '    at WebLocalContentIO.worker.onmessage (http://127.0.0.1:8765/build/nanite-browser/web-content-io.js?v=d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37:18:37)'\n- null\n\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-gpu-instances.cjs:308:10\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at process.processImmediate (node:internal/timers:472:9)"
+      },
+      "worker": {
+        "file": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-gpu-instances\\failure-opfs-not-found\\web-content-worker.js",
+          "sha256": "20e8c5e7ae3e8e47bbef12a6bb73a30bbe0fbb233c9d90a7ad95dcab734dccf9"
+        },
+        "content": {
+          "$omitted": true,
+          "reason": "Full diagnostic data is retained in the original report",
+          "type": "string",
+          "bytes": 12352,
+          "sha256": "20e8c5e7ae3e8e47bbef12a6bb73a30bbe0fbb233c9d90a7ad95dcab734dccf9"
+        }
+      }
+    },
+    "boundary": "A single missing OPFS directory or file during asset opening is recovered with fresh handles, exclusive validation and one bounded retry. Persistent disappearance, permission failures and corrupt reads still fail. The original browser-side deletion/reclamation trigger is not established. Validation used Edge; Chrome is not installed on this host."
+  }
+}

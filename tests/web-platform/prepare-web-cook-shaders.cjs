@@ -13,7 +13,29 @@ const storageDeclaration = (before, format) => ({before, after: [
   '#endif', before,
 ].join('\n')});
 const overrides = new Map([
+  ['Private/SplineMeshSceneTexture.usf', [{
+    before: '\tSplineRotTextureOut[PixelPos] = Slice.Quat;',
+    after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '\t// Store the native signed-normalized 16-bit values in portable RGBA32F.',
+      '\tSplineRotTextureOut[PixelPos] = round(clamp(Slice.Quat, -1.0f, 1.0f) * 32767.0f) / 32767.0f;',
+      '#else', '\tSplineRotTextureOut[PixelPos] = Slice.Quat;', '#endif'].join('\n'),
+  }]],
+  ['Private/Common.ush', [{
+    before: '\tfloat4 DeviceZ = Texture.GatherRed(GlobalBilinearClampedSampler, UV);',
+    after: ['\t// Gather returns four texels without interpolation. WebGPU depth views',
+      '\t// require a non-filtering sampler even for this operation.',
+      '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '\tfloat4 DeviceZ = Texture.GatherRed(GlobalPointClampedSampler, UV);', '#else',
+      '\tfloat4 DeviceZ = Texture.GatherRed(GlobalBilinearClampedSampler, UV);', '#endif'].join('\n'),
+  }]],
+  ['Private/SceneTexturesCommon.ush', [{
+    before: '\treturn SceneTexturesStruct.SceneDepthTexture.GatherRed(GlobalBilinearClampedSampler, ScreenUV);',
+    after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '\treturn SceneTexturesStruct.SceneDepthTexture.GatherRed(GlobalPointClampedSampler, ScreenUV);', '#else',
+      '\treturn SceneTexturesStruct.SceneDepthTexture.GatherRed(GlobalBilinearClampedSampler, ScreenUV);', '#endif'].join('\n'),
+  }]],
   ...require('./web-nanite-shader-overrides.cjs'),
+  ...require('./web-nanite-curve-shader-overrides.cjs'),
   ...require('./web-tsr-shader-overrides.cjs'),
   ...require('./web-translucency-shader-overrides.cjs'),
   ...require('./web-lumen-shader-overrides.cjs'),
@@ -140,6 +162,16 @@ const overrides = new Map([
       '#endif',
     ].join('\n'),
   }]],
+  ['Private/ShadowDepthPixelShader.usf', [{
+    before: '#if SUPPORT_SHADOW_DEPTH_VSM\n\tuint2 vAddress = (uint2)SvPosition.xy;',
+    after: ['#if SUPPORT_SHADOW_DEPTH_VSM',
+      '\t#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU && SUPPORT_SHADOW_DEPTH_POINT',
+      '\t// The combined permutation also renders ordinary six-face point shadows.',
+      '\t// Keep material clipping above, but never access dummy VSM resources or',
+      '\t// perform atomic depth writes for a classic shadow map (VSM type is 1).',
+      '\tif (PassStruct.ShadowDepthType != 1u)', '\t{', '\t\treturn;', '\t}', '\t#endif', '',
+      '\tuint2 vAddress = (uint2)SvPosition.xy;'].join('\n'),
+  }]],
   ['Private/ShadowDepthCommon.ush', [{
     before: '#if SUPPORT_SHADOW_DEPTH_POINT\n\tuint LayerIndex : SV_RenderTargetArrayIndex;',
     after: '#if SUPPORT_SHADOW_DEPTH_POINT && !(defined(COMPILER_WEBGPU) && COMPILER_WEBGPU)\n\tuint LayerIndex : SV_RenderTargetArrayIndex;',
@@ -247,11 +279,20 @@ const overrides = new Map([
     ].join('\n'),
   }]],
   ...['GlobalDistanceFieldCompositeObjects', 'GlobalDistanceFieldHeightfields'].map(name =>
-    [`Private/DistanceField/${name}.usf`, ['RWPageAtlasTexture', 'RWCoverageAtlasTexture'].map(variable => ({
+    [`Private/DistanceField/${name}.usf`, [...['RWPageAtlasTexture', 'RWCoverageAtlasTexture'].map(variable => ({
       before: `RWTexture3D<UNORM float> ${variable};`,
-      after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU', '[[vk::image_format("r8")]]',
-        '#endif', `RWTexture3D<UNORM float> ${variable};`].join('\n'),
-    }))]),
+      after: (variable === 'RWPageAtlasTexture' ? ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+        '[[vk::image_format("r32f")]] RWTexture3D<float> RWPageAtlasTexture;', '#else',
+        'RWTexture3D<UNORM float> RWPageAtlasTexture;', '#endif'] :
+        ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU', '[[vk::image_format("r8")]]',
+          '#endif', `RWTexture3D<UNORM float> ${variable};`]).join('\n'),
+    })), ...[name === 'GlobalDistanceFieldCompositeObjects' ? ['\t\t','PageAtlasCoord'] : ['\t\t\t','PageAtlasCoordZ']].map(([indent,coord])=>({
+      before: `${indent}RWPageAtlasTexture[${coord}] = EncodeGlobalDistanceFieldPageDistance(MinDistance, InfluenceRadius);`,
+      after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+        `${indent}// Preserve the native R8 UNORM storage precision.`,
+        `${indent}RWPageAtlasTexture[${coord}] = round(saturate(EncodeGlobalDistanceFieldPageDistance(MinDistance, InfluenceRadius)) * 255.0f) / 255.0f;`,
+        '#else',`${indent}RWPageAtlasTexture[${coord}] = EncodeGlobalDistanceFieldPageDistance(MinDistance, InfluenceRadius);`,'#endif'].join('\n'),
+    }))]]),
   ['Private/DistanceField/GlobalDistanceFieldMip.usf', [{
     before: 'RWTexture3D<float> RWMipTexture;',
     after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
@@ -647,6 +688,9 @@ overrides.set('Private/StochasticLighting/StochasticLightingTileClassification.u
 
 function prepare() {
   const overrideFiles = [];
+  const preparedOverrides = new Map();
+  const curveVersions = new Map(require('./overlays/nanite-curves-shaders.json').map(r =>
+    [r.relative.slice('Shaders/'.length), r.installedVersionDifferences || []]));
   for (const [relative, replacements] of overrides) {
     const override = path.join(root, 'reference-engine/Engine/Shaders', relative);
     let expected = normalize(fs.readFileSync(path.join(stock, relative)));
@@ -654,8 +698,18 @@ function prepare() {
       assert.equal(expected.split(before).length - 1, count, `Unexpected native declarations: ${relative}`);
       expected = expected.replaceAll(before, after);
     }
-    assert.equal(normalize(fs.readFileSync(override)), expected,
+    let reference = normalize(fs.readFileSync(override));
+    // The reference branch also contains an unrelated native voxel workaround.
+    // Audit that exact version difference, but keep the installed native code
+    // in this 5.8.1 snapshot. Only declared feature patches reach Cook.
+    for (const {before, after} of curveVersions.get(relative) || []) {
+      assert.equal(reference.split(after).length - 1, 1, `Unexpected reference version: ${relative}`);
+      assert.equal(expected.split(before).length - 1, 1, `Unexpected installed version: ${relative}`);
+      reference = reference.replace(after, before);
+    }
+    assert.equal(reference, expected,
       `Only the declared WebGPU branches may differ: ${relative}`);
+    preparedOverrides.set(relative, Buffer.from(expected));
     overrideFiles.push(path.join(stock, relative), override);
   }
   fs.mkdirSync(output, {recursive: true});
@@ -677,7 +731,7 @@ function prepare() {
       } else if (entry.isFile()) {
         const overridden = overrides.has(name.replaceAll('\\', '/'));
         const source = overridden ? path.join(root, 'reference-engine/Engine/Shaders', name) : path.join(stock, name);
-        const bytes = fs.readFileSync(source);
+        const bytes = preparedOverrides.get(name.replaceAll('\\', '/')) || fs.readFileSync(source);
         const hash = sha(bytes);
         if (!fs.existsSync(destination) || sha(fs.readFileSync(destination)) !== hash) {
           fs.writeFileSync(destination, bytes);
@@ -692,8 +746,15 @@ function prepare() {
     'Private/VirtualShadowMaps/WebVirtualShadowDepth.ush',
     'Private/VirtualShadowMaps/WebVirtualShadowPoolSync.ush',
     'Private/VirtualShadowMaps/WebVirtualShadowPoolSync.usf',
-    'Private/Nanite/WebNaniteVisibility.usf', 'Private/Nanite/WebNaniteHierarchy.usf',
-    'Private/Nanite/WebNaniteRaster.usf', 'Private/Nanite/WebNaniteDepth.usf', 'Private/Nanite/WebNaniteGBuffer.usf']) {
+    'Private/Nanite/WebNaniteVisibility.usf', 'Private/Nanite/WebNaniteHierarchy.usf', 'Private/Nanite/WebNaniteLOD.ush', 'Private/Nanite/WebNaniteSpline.ush', 'Private/Nanite/WebNaniteScalarVisibility.ush',
+    'Private/Nanite/WebNanitePageOwnership.ush', 'Private/Nanite/WebNaniteFaceCulling.ush',
+    'Private/Nanite/WebNaniteHZB.ush', 'Private/Nanite/WebNaniteHZB.usf', 'Private/Nanite/WebNaniteOcclusion.usf',
+    'Private/Nanite/WebNaniteRaster.usf', 'Private/Nanite/WebNaniteMicroRaster.ush', 'Private/Nanite/WebNaniteDepth.usf', 'Private/Nanite/WebNaniteGBuffer.usf',
+    'Private/Nanite/WebNaniteVertexFactory.ush', 'Private/Nanite/WebNaniteMaterialTiles.usf', 'Private/Nanite/WebNaniteComposition.usf',
+    'Private/Nanite/WebNaniteProgrammableRaster.usf', 'Private/Nanite/WebNaniteInstanceData.ush',
+    'Private/Nanite/WebNaniteInstanceData.usf', 'Private/Nanite/WebNaniteGPUInstanceTest.usf',
+    'Private/Nanite/WebNaniteSkinning.ush', 'Private/Nanite/WebNaniteSkinningViewData.usf',
+    'Private/Nanite/WebNaniteFeatures.ush', 'Private/Nanite/WebNaniteAssembly.ush', 'Private/Nanite/WebNaniteAssemblyTransforms.usf']) {
     assert(!fs.existsSync(path.join(stock, relative)), 'Web-only shaders must not overwrite installed inputs');
     const source = path.join(root, 'reference-engine/Engine/Shaders', relative);
     const destination = path.join(output, relative);
@@ -708,6 +769,8 @@ function prepare() {
   const report = {date: new Date().toISOString(), pass: true, output,
     sourceFiles: [__filename, require.resolve('./web-tsr-shader-overrides.cjs'),
       require.resolve('./web-nanite-shader-overrides.cjs'),
+      require.resolve('./web-nanite-curve-shader-overrides.cjs'), require.resolve('./overlays/nanite-curves-shaders.json'),
+      ...require('./overlays/nanite-curves-shaders.json').map(r=>path.join(root,'reference-engine/Engine',r.relative)),
       require.resolve('./web-translucency-shader-overrides.cjs'),
       require.resolve('./web-lumen-shader-overrides.cjs'),
       require.resolve('./web-virtual-texture-shader-overrides.cjs'), ...overrideFiles].map(audit),

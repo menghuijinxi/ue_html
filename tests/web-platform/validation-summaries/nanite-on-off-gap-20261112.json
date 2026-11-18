@@ -1,0 +1,462 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-on-off-gap-20261112.json",
+    "bytes": 17946,
+    "sha256": "9150db2abb319bad01d300a8b7598c67257ee59e043bb3976178eb2a37cae12a",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "date": "2026-11-12T14:14:28.000Z",
+    "pass": true,
+    "naniteFullPerformanceAccepted": false,
+    "performance": {
+      "off": {
+        "frames": 16314,
+        "fps": 135.74835148005675,
+        "meanMs": 7.366571962731447,
+        "low1": 55.94577353535064,
+        "maxMs": 45.38499999977648,
+        "over50": 0,
+        "rhiMs": 4.938936803677188
+      },
+      "on": {
+        "frames": 9534,
+        "fps": 79.35655435072789,
+        "meanMs": 12.601353576673125,
+        "low1": 22.862586330048167,
+        "maxMs": 70.57499999925494,
+        "over50": 14,
+        "rhiMs": 9.273072655015259
+      },
+      "gap": {
+        "fpsLowerPercent": 41.54142316609537,
+        "low1LowerPercent": 59.13438158898293,
+        "extraMeanMs": 5.234781613941678
+      },
+      "runs": [
+        {
+          "index": 0,
+          "nanite": {
+            "enabled": 0,
+            "registered": 0,
+            "entries": 0,
+            "hierarchyBatch": true,
+            "occlusionBatch": true,
+            "packBatch": true,
+            "materialPrecache": true
+          },
+          "overall": {
+            "frames": 8121,
+            "fps": 135.1757584473617,
+            "low1": 57.626761305768255,
+            "maxMs": 38.244999999180436,
+            "over33Ms": 1,
+            "over50Ms": 0,
+            "over100Ms": 0
+          },
+          "rhiMs": 4.966884212547638,
+          "travelCm": 1985.8124957313391,
+          "turnDegrees": 269.37959130859406,
+          "lowestFPS5s": {
+            "endSeconds": 59.75,
+            "frames": 462,
+            "fps": 92.38327862654657,
+            "low1": 59.58765343942452,
+            "maxMs": 17.419999999925494,
+            "over33Ms": 0,
+            "over50Ms": 0,
+            "over100Ms": 0
+          }
+        },
+        {
+          "index": 1,
+          "nanite": {
+            "enabled": 1,
+            "registered": 2062,
+            "entries": 141,
+            "packDispatchBuffers": 2,
+            "hierarchyBatch": true,
+            "occlusionBatch": true,
+            "packBatch": true,
+            "materialPrecache": true
+          },
+          "overall": {
+            "frames": 4779,
+            "fps": 79.55351484540978,
+            "low1": 22.866561702799064,
+            "maxMs": 70.57499999925494,
+            "over33Ms": 69,
+            "over50Ms": 7,
+            "over100Ms": 0
+          },
+          "rhiMs": 9.25403842094321,
+          "travelCm": 1985.8188591430262,
+          "turnDegrees": 269.2186918945314,
+          "lowestFPS5s": {
+            "endSeconds": 60,
+            "frames": 152,
+            "fps": 30.376610010294335,
+            "low1": 15.675823960615928,
+            "maxMs": 70.57499999925494,
+            "over33Ms": 54,
+            "over50Ms": 4,
+            "over100Ms": 0
+          }
+        },
+        {
+          "index": 2,
+          "nanite": {
+            "enabled": 1,
+            "registered": 2062,
+            "entries": 140,
+            "packDispatchBuffers": 2,
+            "hierarchyBatch": true,
+            "occlusionBatch": true,
+            "packBatch": true,
+            "materialPrecache": true
+          },
+          "overall": {
+            "frames": 4755,
+            "fps": 79.15957996977933,
+            "low1": 22.861878531926457,
+            "maxMs": 63.975000001490116,
+            "over33Ms": 68,
+            "over50Ms": 7,
+            "over100Ms": 0
+          },
+          "rhiMs": 9.29219065248117,
+          "travelCm": 1983.5790126521326,
+          "turnDegrees": 268.9271518554691,
+          "lowestFPS5s": {
+            "endSeconds": 60,
+            "frames": 154,
+            "fps": 30.655367973900052,
+            "low1": 16.82227268895595,
+            "maxMs": 59.65000000037253,
+            "over33Ms": 52,
+            "over50Ms": 5,
+            "over100Ms": 0
+          }
+        },
+        {
+          "index": 3,
+          "nanite": {
+            "enabled": 0,
+            "registered": 0,
+            "entries": 0,
+            "hierarchyBatch": true,
+            "occlusionBatch": true,
+            "packBatch": true,
+            "materialPrecache": true
+          },
+          "overall": {
+            "frames": 8193,
+            "fps": 136.32071990917058,
+            "low1": 54.430438562906225,
+            "maxMs": 45.38499999977648,
+            "over33Ms": 2,
+            "over50Ms": 0,
+            "over100Ms": 0
+          },
+          "rhiMs": 4.911213544640916,
+          "travelCm": 1985.2414997218623,
+          "turnDegrees": 268.96420947265585,
+          "lowestFPS5s": {
+            "endSeconds": 59.25,
+            "frames": 458,
+            "fps": 91.53153441225554,
+            "low1": 39.904229848719844,
+            "maxMs": 36.505000000819564,
+            "over33Ms": 1,
+            "over50Ms": 0,
+            "over100Ms": 0
+          }
+        }
+      ]
+    },
+    "settings": {
+      "antiAliasing": 4,
+      "generateDistanceFields": 1,
+      "distanceFieldAO": 1,
+      "distanceFieldShadows": 1,
+      "gi": 0,
+      "reflections": 0,
+      "virtualShadows": 0,
+      "texturePoolMiB": 1000,
+      "screenPercentage": 0,
+      "staticLighting": 1,
+      "shadowCacheMiB": 256,
+      "dbuffer": 1,
+      "ssrQuality": 3,
+      "volumetricFog": 1,
+      "virtualTextures": 1,
+      "virtualTexturePathActive": true,
+      "virtualShadowPathActive": false
+    },
+    "records": [
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-on-off-gap-retry-20261112\\report.json",
+          "sha256": "a6fbb87345b5ea56ac7257f236803d67873ea2dd0075a70c64a5310e6194785b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\0-report.json.gz",
+          "sha256": "ab3156ab7580cde65efde5a72e2692e399820ca0ff409fd19eec35cbf1014fda"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-on-off-gap-retry-20261112\\source.cjs",
+          "sha256": "2ef597743a66266cfbf169f00a68dcc2cf6f0adecebaccd8c4789b8c1aa1b405"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\1-source.cjs.gz",
+          "sha256": "e67326cb774a5beb767d9c37f9665e565586df6dc642c7a2e11ba5210335de7c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-on-off-gap-retry-20261112\\analysis.json",
+          "sha256": "7216202a35ab5e94f5edf05f1284df7ef0c45032e4259462c33796f55c8e0442"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\2-analysis.json.gz",
+          "sha256": "3a270a2684c355b028aa96ff9955c7530a92254ba6afd3bfe0e52816db8ee182"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-on-off-gap-retry-20261112\\analysis-source.cjs",
+          "sha256": "37fe7ca0f27ddccff0e1279e52f418f9d276b3bbece56136b651a0ccab174595"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\3-analysis-source.cjs.gz",
+          "sha256": "86754a23445effb0bc9aa9325bceb20718da6ee038b8eafcc156d566940a3ad8"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-pack-villa-20261112\\index.html",
+          "sha256": "de7858d81a5a5634f5bda131f69b4ef422495109c750eba414a968c9e2f803ba"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\4-index.html.gz",
+          "sha256": "c764d83ffb8feb63cd0cd67aae00798f6ed92e8133126b736d8e2fd3e1dac44f"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-pack-villa-20261112\\asset-versions.json",
+          "sha256": "01fe1aab07365c0e075178d9119407d884a72a16acdb30597e3f828ea497e4b3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\5-asset-versions.json.gz",
+          "sha256": "28441cededf7d1d4ca8c3fca7be0d3686a3dae6935f0569a2b9920dcde83e8a7"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-pack-villa-20261112\\config-files.json",
+          "sha256": "106f3c0d03bab60e1f139d0d6b607dc7b6f0e2a539114e4e66f379c012b2b166"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\6-config-files.json.gz",
+          "sha256": "f7e5fb368debe5f447232e4fa1bbb0a49e06ec8590f30d72066b6d03df7205c9"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-on-off-gap-retry-20261112\\0-candidate.log",
+          "sha256": "569f1160d6a8b89c59f9aba943dd878f599fc59b56ab8fae812d10f9622d5e89"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\7-0-candidate.log.gz",
+          "sha256": "a7fc52497a1697c1b1742350cb72c77e8325a773621ac5b08354ad62c7059b22"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-on-off-gap-retry-20261112\\0-candidate.png",
+          "sha256": "a8d72d772c75c45937519a949e3e7a0c8870b55675321186d700ce61a25d401b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\8-0-candidate.png.gz",
+          "sha256": "24a3e74b74f65e08e4d89efa95385792ae3d3779d83b698f5618f8aae2b1d174"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-on-off-gap-retry-20261112\\1-candidate.log",
+          "sha256": "1cc7eed4c6434de6dba1e06121c02987043190d49472ff30f7bfd8a7bfab8394"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\9-1-candidate.log.gz",
+          "sha256": "735752d9ea1ea2b62a5150449b925f5e34567e0b178b2423944bcd948bd1f652"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-on-off-gap-retry-20261112\\1-candidate.png",
+          "sha256": "27e44ec60ccda7a0f9f13b42220b422321e2200d3f865a53f97cc5bfa716588f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\10-1-candidate.png.gz",
+          "sha256": "a87d83853e72c1b57a177c320d2e04ef67d997fba878de2f2d995a449d9afb5f"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-on-off-gap-retry-20261112\\2-candidate.log",
+          "sha256": "e7eeae165f10fdd9fed7a86580c89e964fbedd3079acebc13f4ea7c3751c4656"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\11-2-candidate.log.gz",
+          "sha256": "d9cef0360659a0ed49d78d50b9ab2e9e4a78ded3da099e86f472ade958fcfe0f"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-on-off-gap-retry-20261112\\2-candidate.png",
+          "sha256": "6235ccf3b9e07f1cee55207b28a4e3efd0a430fb89f65e5f79ec085c0a3091b1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\12-2-candidate.png.gz",
+          "sha256": "e5dd3a87e58c4fb4a9508fec67aee3a2ef75ca83e4572b0f4e547f117b7e1a21"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-on-off-gap-retry-20261112\\3-candidate.log",
+          "sha256": "d38eb752fa12d72262319f7724694b384549ed40babbdb511a6bf64021261d98"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\13-3-candidate.log.gz",
+          "sha256": "6e2eec77854bf1c3052daa5290a984711caa9591178d5894ee86537648c62bf4"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-on-off-gap-retry-20261112\\3-candidate.png",
+          "sha256": "34728f628e5813f65ed6a476aa7edbee6e9b28ca650863d70ce39c405d1568ba"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\14-3-candidate.png.gz",
+          "sha256": "616412900665ed8d719f3d4c22db760aa7809778a15450c77b7494db2c70ff7b"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-pack-villa-20261112\\package.json",
+          "sha256": "795d3a6297ed706468575351f6f4627adde42350b88dd009431a1608a252b3e1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\15-package.json.gz",
+          "sha256": "d40a05df1f6dfe690257f9a9d3023ab82267107972adeeec664909f12470424f"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-pack-villa-20261112\\content-files.json",
+          "sha256": "9c07a2a8ce9dfda5713dcacbdc5ff0c13dcfe866c6b4072f0b2f9d05d3a40a7c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\16-content-files.json.gz",
+          "sha256": "d52fde67a28240ad46e6423854ce67b21b76e1646deaee88ca50bc9865fdcb73"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-pack-villa-20261112\\runtime-build.json",
+          "sha256": "61ac8e39e91d815448c80f73d7d35de2f1e2f820b7d2a80cd0fd6688de47708d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\17-runtime-build.json.gz",
+          "sha256": "b6eff391ef1125500564e1fe0a0b5376a920effba6594dfcf4a947db7efe4d70"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-on-off-gap-20261112\\report.json",
+          "sha256": "4e25d88e71ade85284c47c1579810416c4af77852ef581f11d0b21bda843f9d1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\18-report.json.gz",
+          "sha256": "4b0a7dafd6db64ac26f56b226557a4e17c10d7304c2e6eb8e017a6f5649b2740"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-on-off-gap-20261112\\source.cjs",
+          "sha256": "2ef597743a66266cfbf169f00a68dcc2cf6f0adecebaccd8c4789b8c1aa1b405"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\19-source.cjs.gz",
+          "sha256": "e67326cb774a5beb767d9c37f9665e565586df6dc642c7a2e11ba5210335de7c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-pack-batch-20261112.json",
+          "sha256": "31f5b722112ca060f2336cc192f6523fbb56e4aea532ef05c16e40df85df8430"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\20-nanite-pack-batch-20261112.json.gz",
+          "sha256": "d43f1962e95e67fa9094d9e7639d2c05a0952e50f6848ea323127bc0000f0d26"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-on-off-gap.cjs",
+          "sha256": "1e4b9f689328b0807e4e3d0fa988a9a5074e64d19466c74f8abf2fc255e1cf5f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\21-collect-nanite-on-off-gap.cjs.gz",
+          "sha256": "f752c23980c68c3002e635369bc38c0dd4d40137029f6617e3d8d5d033d09e20"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteWebRaster.cpp",
+          "sha256": "b5e5573c316c9d6b06064a4d0d155e6c732c4077dec37baad38c3f93bd913ca0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\22-NaniteWebRaster.cpp.gz",
+          "sha256": "ac014e850266483e3413761932e2495220afda42b05d4b6280af5dadf55efdcd"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\WebNaniteRaster.usf",
+          "sha256": "e6107f517acf82797225e257f0141c6a28a73e2f0421d87a8886a21e55dea4dc"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\23-WebNaniteRaster.usf.gz",
+          "sha256": "091efb4a5e1ea3f90fb8ed89bb2c214b0fe6247761ae60ab3618dbf317274756"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteWebGBuffer.cpp",
+          "sha256": "73ed00f8b9758ed6b2022fc21e7c1165c1eed49e0a7836c42ce5bf854e4ba170"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\24-NaniteWebGBuffer.cpp.gz",
+          "sha256": "5fcd4727be5bf06064a9918e48fbdd812ed321a1a0b4fb63a3951078d71523ad"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\Nanite\\NaniteWebMaterialPass.cpp",
+          "sha256": "12753b84c23a968b57ce4b10472a1d023a725b26cecdd663414c120b8d539868"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-on-off-gap-20261112\\25-NaniteWebMaterialPass.cpp.gz",
+          "sha256": "dd0e26f895cf1b13c98e4a92807b071603250b666f70459936c84cc7d9b236e1"
+        }
+      }
+    ],
+    "boundary": "Current immutable converted Villa package, only startup r.Nanite changes. Serial fresh processes, normal time, first 60-second simultaneous translation/rotation, all stalls retained. Off uses cooked fallback geometry. Viewport submissions are not physical display timestamps; this is a scene-level cost comparison. RHI telemetry is asynchronous and does not establish exclusive stall causation. No claim of identical Nanite/fallback triangles or final performance acceptance."
+  }
+}

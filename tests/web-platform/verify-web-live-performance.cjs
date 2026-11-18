@@ -28,9 +28,12 @@ for(let i=0;i<198;++i){now+=1000/60;synthetic.add(now);}
 now+=100;synthetic.add(now);now+=200;synthetic.add(now);
 close(synthetic.read(now).low,1000/150);
 close(synthetic.read(now).p99Ms,1000/60); // Percentile and slowest-1% mean differ.
+assert.equal(synthetic.read(now).over100ms, 1, 'The 200 ms frame must remain visible; exactly 100 ms is not over 100 ms');
 for(let i=0;i<330;++i){now+=1000/60;synthetic.add(now);}
 close(synthetic.read(now).low,60); // Recovery takes five seconds, not thirty.
+assert.equal(synthetic.read(now).over100ms, 0, 'Expired long frames must leave the HUD count');
 report.syntheticIntervals = true;
+if (process.argv.includes('--unit-only')) {console.log(JSON.stringify({pass:true,syntheticIntervals:true,longFrameCounts:true}));process.exit(0);}
 let context;
 (async () => {
   try {

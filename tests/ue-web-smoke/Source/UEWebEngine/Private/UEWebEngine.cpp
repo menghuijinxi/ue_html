@@ -83,6 +83,7 @@ bool RenderScene = false;
 bool DefaultTemplate = false;
 bool DesktopRenderer = false;
 bool VisualTestClock = false;
+bool MaterialTestClock = false;
 bool MaterialMotionTest = false;
 bool ParallelDrawRecording = false;
 bool ImmediateWebGPUCalls = false;
@@ -100,7 +101,10 @@ bool ThreadingBenchmark = false;
 int32 CoreLimitTest = 0;
 int32 PSOPrecacheConcurrency = 0;
 bool WebNaniteResidentResources = false;
+bool WebNaniteScene = false;
 uint32 WebNaniteRootPages = 1024;
+uint32 WebNaniteStreamingPages = 0;
+bool WebNaniteStreamingPagesSpecified = false;
 FString ProjectMap;
 TWeakObjectPtr<APlayerController> TemplateController;
 
@@ -401,12 +405,14 @@ void EngineFrame(void*)
             }, Frames, ValidMeshes, double(ResidentDF), double(BulkDF), AO ? AO->GetInt() : -1);
         }
     }
-    if (VisualTestClock)
+    if (VisualTestClock || MaterialTestClock)
     {
         const auto* Frozen = IConsoleManager::Get().FindConsoleVariable(TEXT("r.RenderTimeFrozen"));
+        const auto* MaterialTime = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Test.OverrideTimeMaterialExpressions"));
         MAIN_THREAD_ASYNC_EM_ASM({
-            globalThis.__webVisualTestClock = ({renderTimeFrozen: !!$0, deltaSeconds: $1});
-        }, Frozen && Frozen->GetInt() != 0, FApp::GetDeltaTime());
+            globalThis.__webVisualTestClock = ({renderTimeFrozen: !!$0, deltaSeconds: $1,
+                materialTimeFrozen: $2 >= 0, materialTime: $2});
+        }, Frozen && Frozen->GetInt() != 0, FApp::GetDeltaTime(), MaterialTime ? MaterialTime->GetFloat() : -1.0f);
     }
     if (APlayerController* Controller = TemplateController.Get())
     {
@@ -438,6 +444,12 @@ void EngineFrame(void*)
         MAIN_THREAD_ASYNC_EM_ASM({
             globalThis.__webDefaultCamera = ({x: $0, y: $1, z: $2, pitch: $3, yaw: $4});
         }, Location.X, Location.Y, Location.Z, Rotation.Pitch, Rotation.Yaw);
+        const bool PawnTarget = Controller->GetPawn() && Controller->GetViewTarget() == Controller->GetPawn();
+        const FVector RestoreLocation = PawnTarget ? Controller->GetPawn()->GetActorLocation() : Location;
+        MAIN_THREAD_ASYNC_EM_ASM({
+            globalThis.__webRecoveryCamera = ({version: 1, args: [$0, $1, $2, $3, $4, $5, $6, $7]});
+        }, RestoreLocation.X, RestoreLocation.Y, RestoreLocation.Z, Rotation.Pitch, Rotation.Yaw,
+            Rotation.Roll, double(Controller->PlayerCameraManager->GetFOVAngle()), int(PawnTarget));
         if (PlayerViewPawn.IsValid() && Controller->GetPawn() == PlayerViewPawn.Get())
         {
             const FVector Position = PlayerViewPawn->GetActorLocation();
@@ -867,6 +879,38 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebProjectLightingTestMode(int Mode)
                 const bool Local = !Sky && !Light->IsA<UDirectionalLightComponent>();
                 Light->SetVisibility(Original && !(Mode == 1 && Sky) && !(Mode == 2 && Local));
             }
+    return 1;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebRestoreCamera(double X, double Y, double Z,
+    double Pitch, double Yaw, double Roll, double FOV, int PawnTarget)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    auto* Controller = TemplateController.Get();
+    if (!Controller || !FMath::IsFinite(X) || !FMath::IsFinite(Y) || !FMath::IsFinite(Z) ||
+        !FMath::IsFinite(Pitch) || !FMath::IsFinite(Yaw) || !FMath::IsFinite(Roll) ||
+        !FMath::IsFinite(FOV) || FOV <= 0 || FOV >= 180 || (PawnTarget != 0 && PawnTarget != 1)) return 0;
+    const FVector Location(X, Y, Z);
+    const FRotator Rotation(Pitch, Yaw, Roll);
+    if (PawnTarget)
+    {
+        APawn* Pawn = Controller->GetPawn();
+        if (!Pawn) return 0;
+        Pawn->SetActorLocation(Location, false, nullptr, ETeleportType::TeleportPhysics);
+        Controller->SetControlRotation(Rotation);
+        Controller->SetViewTarget(Pawn);
+        if (auto* Movement = Pawn->GetMovementComponent()) Movement->StopMovementImmediately();
+    }
+    else
+    {
+        auto* Camera = Controller->GetWorld()->SpawnActor<ACameraActor>();
+        if (!Camera) return 0;
+        Camera->SetActorLocationAndRotation(Location, Rotation);
+        Camera->GetCameraComponent()->SetFieldOfView(FOV);
+        Controller->SetViewTarget(Camera);
+    }
+    Controller->PlayerCameraManager->SetFOV(FOV);
+    Controller->FlushPressedKeys();
     return 1;
 }
 
@@ -1460,7 +1504,16 @@ int32 StartEngine()
 #else
         TEXT(" -onethread -norhithread -nosound");
 #endif
-    const FString CommandLine = FString(StartupMap()) + ThreadArguments +
+    FString NaniteArguments;
+    if (WebNaniteScene || WebNaniteResidentResources)
+    {
+        if (WebNaniteScene) NaniteArguments += TEXT(" -WebNaniteScene");
+        if (WebNaniteResidentResources) NaniteArguments += TEXT(" -WebNaniteResidentResources");
+        NaniteArguments += FString::Printf(TEXT(" -WebNaniteRootPages=%u"), WebNaniteRootPages);
+        if (WebNaniteStreamingPagesSpecified)
+            NaniteArguments += FString::Printf(TEXT(" -WebNaniteStreamingPages=%u"), WebNaniteStreamingPages);
+    }
+    const FString CommandLine = FString(StartupMap()) + ThreadArguments + NaniteArguments +
         (CoreLimitTest ? FString::Printf(TEXT(" -corelimit=%d"), CoreLimitTest) : FString()) +
         (ThreadingBenchmark ? TEXT(" -ini:Engine:[SystemSettings]:r.pso.EnableAsyncCacheConsolidation=0") : TEXT("")) +
         (ThreadingTest == 1 ? TEXT(" -norenderthread -norhithread") :
@@ -1560,6 +1613,16 @@ int32 StartEngine()
         check(Frozen);
         Frozen->Set(1, ECVF_SetByCode);
     }
+    if (MaterialTestClock)
+    {
+        // Freezing the whole view family also freezes LastRenderTime, so the
+        // texture streamer eventually treats visible primitives as hidden.
+        // Only material expressions need a fixed time for image comparisons.
+        check(!VisualTestClock);
+        auto* MaterialTime = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Test.OverrideTimeMaterialExpressions"));
+        check(MaterialTime);
+        MaterialTime->Set(0.0f, ECVF_SetByCode);
+    }
     UWorld* World = nullptr;
     for (const FWorldContext& Context : GEngine->GetWorldContexts())
         if (Context.WorldType == EWorldType::Game)
@@ -1645,6 +1708,7 @@ int main(int argc, char** argv)
         DefaultTemplate |= FCStringAnsi::Strcmp(argv[Index], "-WebDefaultTemplate") == 0;
         DesktopRenderer |= FCStringAnsi::Strcmp(argv[Index], "-WebDesktop") == 0;
         VisualTestClock |= FCStringAnsi::Strcmp(argv[Index], "-WebVisualTestClock") == 0;
+        MaterialTestClock |= FCStringAnsi::Strcmp(argv[Index], "-WebMaterialTestClock") == 0;
         MaterialMotionTest |= FCStringAnsi::Strcmp(argv[Index], "-WebMaterialLabMotionTest") == 0;
         ParallelDrawRecording |= FCStringAnsi::Strcmp(argv[Index], "-WebParallelDrawRecording") == 0;
         ImmediateWebGPUCalls |= FCStringAnsi::Strcmp(argv[Index], "-WebGPUImmediateCalls") == 0;
@@ -1677,10 +1741,13 @@ int main(int argc, char** argv)
         PSOPrecacheEnabled |= FCStringAnsi::Strcmp(argv[Index], "-WebPSOPrecache") == 0 ||
             FCStringAnsi::Strcmp(argv[Index], "-WebPSOPrecacheTest") == 0;
         WebNaniteResidentResources |= FCStringAnsi::Strcmp(argv[Index], "-WebNaniteResidentResources") == 0;
+        WebNaniteScene |= FCStringAnsi::Strcmp(argv[Index], "-WebNaniteScene") == 0;
         constexpr const ANSICHAR* NanitePagesOption = "-WebNaniteRootPages=";
-        if (FCStringAnsi::Strncmp(argv[Index], NanitePagesOption, FCStringAnsi::Strlen(NanitePagesOption)) == 0)
+        constexpr const ANSICHAR* NaniteStreamingPagesOption = "-WebNaniteStreamingPages=";
+        const bool StreamingPages = FCStringAnsi::Strncmp(argv[Index], NaniteStreamingPagesOption, FCStringAnsi::Strlen(NaniteStreamingPagesOption)) == 0;
+        if (StreamingPages || FCStringAnsi::Strncmp(argv[Index], NanitePagesOption, FCStringAnsi::Strlen(NanitePagesOption)) == 0)
         {
-            const ANSICHAR* Value = argv[Index] + FCStringAnsi::Strlen(NanitePagesOption);
+            const ANSICHAR* Value = argv[Index] + FCStringAnsi::Strlen(StreamingPages ? NaniteStreamingPagesOption : NanitePagesOption);
             uint64 Pages = 0;
             bool Valid = *Value != 0;
             for (; *Value && Valid; ++Value)
@@ -1688,12 +1755,13 @@ int main(int argc, char** argv)
                 Valid = *Value >= '0' && *Value <= '9';
                 if (Valid) { Pages = Pages * 10 + (*Value - '0'); Valid = Pages <= 131072; }
             }
-            if (!Valid || !Pages)
+            if (!Valid || (!StreamingPages && !Pages))
             {
                 std::printf("P3_ENGINE_PREINIT_FAILED Nanite root page budget must be between 1 and 131072\n");
                 return 1;
             }
-            WebNaniteRootPages = uint32(Pages);
+            if (StreamingPages) { WebNaniteStreamingPages = uint32(Pages); WebNaniteStreamingPagesSpecified = true; }
+            else WebNaniteRootPages = uint32(Pages);
         }
         RuntimeAsyncPSO |= FCStringAnsi::Strcmp(argv[Index], "-WebRuntimeAsyncPSO") == 0;
         StartupTrace |= FCStringAnsi::Strcmp(argv[Index], "-WebStartupTrace") == 0;

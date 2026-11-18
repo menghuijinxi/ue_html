@@ -1,0 +1,940 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-sidedness-20261110.json",
+    "bytes": 2872992,
+    "sha256": "fb9e08a5d665c62d0bac32866b14efdf68303595ebd3e5aac825232ffe5d017c",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-09T20:55:34.430Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-sidedness-evidence.cjs",
+      "sha256": "d6193bf932648b40ff5ca662f530326611012677b8a4bb3e3962dd8bee2025f3"
+    },
+    "package": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\package.json",
+      "sha256": "736948eb43a7ebf0b6a1ea05253e5eda1eff78661b86eea70a525637e3bf2917"
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "132d1fdd1216ab1b13f65d7f80ac475776f5bcae35f37ef0ec92f529e5bc78ac"
+    },
+    "cachedCook": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-nanite-streaming-desktop-cook-results.json",
+        "sha256": "dbc6da99c28f0e8faba8e1c93618bae9edb82af5aaa023f3be075934f1a0013b"
+      },
+      "inventory": {
+        "sha256": "bbd910b02a1c8f574808e14ba041b230c5a850a2d8ab282edf2964df7f80593b",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\web-project-nanite-streaming-desktop-cook\\20261110-043847\\ShaderConversion\\inventory.json"
+      },
+      "conversionFiles": [
+        "inventory.json"
+      ]
+    },
+    "resolvedFailures": {
+      "artifacts": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-sidedness\\failure-fixture-winding-20261110.json",
+          "sha256": "ee25e1a1076d62afd72a640bd5b7b6a87581331767e7da855523b8569ee7d54e"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-sidedness\\failure-fixture-winding-package-20261110.json",
+          "sha256": "27fdb640c9c5b51ac770051c3584b7fa3e5dbebd170643238be048222c0514a8"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-sidedness\\failure-cached-cook-inventory-20261110.json",
+          "sha256": "8ab8f04759cdbba36892d9f9a6264ad3fcff6f8f04a56ca49dfa22a4af646a2d"
+        }
+      ],
+      "fixture": "The generated plane and streaming sphere used the opposite triangle order to UE left-handed normals. Corrected source triangle winding; fixed-function GPU culling remains the independent reference.",
+      "cachedCook": "A complete shader-map cache hit ran no compiler jobs and skipped inventory recording. The shader-format module now records loaded shader types before engine shutdown; Cook rejects missing inventories while preserving its failure report."
+    },
+    "helper": {
+      "artifact": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-face-culling\\verified.json",
+        "sha256": "b911e7b1cdb3034af8157b38dbd57391aeca94dfc13be6214e53ed50a4198d90"
+      },
+      "pass": true,
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-nanite-face-culling.cjs",
+        "sha256": "01b08f823a0d76e71b9231900856247b978ddf17d90bfe72024f44de00e31ad2"
+      },
+      "sources": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\WebNaniteMicroRaster.ush",
+          "sha256": "44207b7171ff1039a4e841e99c907ad040964f2588dd6b12f591c226b5d65cca"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\WebNaniteFaceCulling.ush",
+          "sha256": "18a597023efbca8b8933f0de0ec3b39da67d45b93e0c7865f63a0207b0f45883"
+        }
+      ],
+      "tools": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\dxc-v1.9.2609\\bin\\x64\\dxc.exe",
+          "sha256": "aa7965b3763d9c710baaa5a28cedcc633449962a75d1391d161a85304a41b3e2"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\dawn-v20261009.190412\\bin\\tint.exe",
+          "sha256": "4ee682cf76942170f5fcb035c44d32d1888f8134d74756ff28c6773bed6c4536"
+        }
+      ],
+      "products": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-face-culling\\test.hlsl",
+          "sha256": "97b73d499fb004d9931a958a7adacdc030b1d053a77add981cc7e5eea45e5d2b"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-face-culling\\MainCS.spv",
+          "sha256": "fa668a6d712052a616ddf5bdca99168c10bf554b697ceb895c684d0f08d8ded3"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-face-culling\\MainCS.wgsl",
+          "sha256": "8531ffec34e22fbc8a156a71eec4c5d0309842e18eddcf5f533a2c36f47636eb"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-face-culling\\MainVS.spv",
+          "sha256": "a0874d440c018f85c0be5fe0cc402bba1c394fb73725e28460bea5bb006ef765"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-face-culling\\MainVS.wgsl",
+          "sha256": "0b65d0cef5fe37fa5dedd9e4a31fe03c3ac7f3d12cd9c27000af2a04b00edd00"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-face-culling\\MainPS.spv",
+          "sha256": "cad6b6ea9873d317c970dc717c3a67f35ca0b3bd2895cd13d634c518d2706d32"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-face-culling\\MainPS.wgsl",
+          "sha256": "0c25b2b4cc3669e3354c6311aaba241816c822e8b865c09115384e1e1a67c1f1"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-face-culling\\MainHybridVS.spv",
+          "sha256": "62e1930ebc41e85b7766cccf58c0c1110cfb6768e28e723751f6a47f74c1fca2"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-face-culling\\MainHybridVS.wgsl",
+          "sha256": "a013cfab26b3cfd6d07935ee73c8ba8f3d0504d07b8f0268a533162b33be9a70"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-face-culling\\MainCullPS.spv",
+          "sha256": "8ce124ef2a9bf144613263624fbb239d26c9c2cc20f0aaf28554352813d63279"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-face-culling\\MainCullPS.wgsl",
+          "sha256": "e8f53aeadb1b6ee9a639aaa28df0681abfa5dd1d97471deaa8d34299792b26b3"
+        }
+      ],
+      "triangles": 2048,
+      "computeTriangles": 328,
+      "computePixels": 4039,
+      "covered": 7715,
+      "maxDepthError": 1.1920928955078125e-7,
+      "failures": [],
+      "failureCount": 0
+    },
+    "asset": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-sidedness\\asset.json",
+        "sha256": "7edb6bf10db404d0e70473e2d22eb0f3d05759ca6111bfc03d17c8b1b78c6924"
+      },
+      "triangles": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-sidedness\\source-triangles.bin",
+        "sha256": "61a9a2b77747f7433b3d4e70fd7f11790fd6bfcfda27dbd342b5df0a8dd1a240"
+      },
+      "producer": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Source\\UEShaderHost\\Private\\WebNaniteSidednessProbe.cpp",
+        "sha256": "7ea14ce9838f86ce12ff373b7709c0e291f7119a58fc1cf46f081cbc688bf37a"
+      }
+    },
+    "runs": [
+      {
+        "artifact": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-sidedness\\browser.json",
+          "sha256": "14049fe08d2345e571168e527a1adc67d990eaf38d711518fbda305edd039f2a"
+        },
+        "scalarVisibility": false,
+        "frames": 8181,
+        "steps": [
+          {
+            "step": 1,
+            "validation": {
+              "scenario": 0,
+              "counts": {
+                "0": 450,
+                "1": 450
+              },
+              "covered": 900,
+              "maxColorError": 0.2598759168961067
+            }
+          },
+          {
+            "step": 2,
+            "validation": {
+              "scenario": 0,
+              "counts": {
+                "0": 450,
+                "1": 450
+              },
+              "covered": 900,
+              "maxColorError": 0.2598759168961067
+            },
+            "hardwareComparison": {
+              "covered": 900,
+              "maxDepthError": 3.725290298461914e-9,
+              "maxNormalError": 0
+            }
+          },
+          {
+            "step": 3,
+            "validation": {
+              "scenario": 1,
+              "counts": {
+                "1": 450
+              },
+              "covered": 450,
+              "maxColorError": 0.2598759168961067
+            }
+          },
+          {
+            "step": 4,
+            "validation": {
+              "scenario": 1,
+              "counts": {
+                "1": 450
+              },
+              "covered": 450,
+              "maxColorError": 0.2598759168961067
+            },
+            "hardwareComparison": {
+              "covered": 450,
+              "maxDepthError": 3.725290298461914e-9,
+              "maxNormalError": 0
+            }
+          },
+          {
+            "step": 5,
+            "validation": {
+              "scenario": 2,
+              "counts": {
+                "0": 450,
+                "1": 450
+              },
+              "covered": 900,
+              "maxColorError": 0.2598759168961067
+            }
+          },
+          {
+            "step": 6,
+            "validation": {
+              "scenario": 2,
+              "counts": {
+                "0": 450,
+                "1": 450
+              },
+              "covered": 900,
+              "maxColorError": 0.2598759168961067
+            },
+            "hardwareComparison": {
+              "covered": 900,
+              "maxDepthError": 3.725290298461914e-9,
+              "maxNormalError": 0
+            }
+          },
+          {
+            "step": 7,
+            "validation": {
+              "scenario": 3,
+              "counts": {
+                "1": 450
+              },
+              "covered": 450,
+              "maxColorError": 0.2598759168961067
+            }
+          },
+          {
+            "step": 8,
+            "validation": {
+              "scenario": 3,
+              "counts": {
+                "1": 450
+              },
+              "covered": 450,
+              "maxColorError": 0.2598759168961067
+            },
+            "hardwareComparison": {
+              "covered": 450,
+              "maxDepthError": 3.725290298461914e-9,
+              "maxNormalError": 0
+            }
+          },
+          {
+            "step": 9,
+            "validation": {
+              "scenario": 4,
+              "counts": {
+                "0": 333,
+                "1": 393
+              },
+              "covered": 726,
+              "maxColorError": 0.2598759168961067
+            }
+          },
+          {
+            "step": 10,
+            "validation": {
+              "scenario": 4,
+              "counts": {
+                "0": 333,
+                "1": 393
+              },
+              "covered": 726,
+              "maxColorError": 0.2598759168961067
+            },
+            "hardwareComparison": {
+              "covered": 726,
+              "maxDepthError": 0,
+              "maxNormalError": 0
+            }
+          },
+          {
+            "step": 11,
+            "validation": {
+              "scenario": 5,
+              "counts": {
+                "1": 450
+              },
+              "covered": 450,
+              "maxColorError": 0.2598759168961067
+            }
+          },
+          {
+            "step": 12,
+            "validation": {
+              "scenario": 5,
+              "counts": {
+                "1": 450
+              },
+              "covered": 450,
+              "maxColorError": 0.2598759168961067
+            },
+            "hardwareComparison": {
+              "covered": 450,
+              "maxDepthError": 3.725290298461914e-9,
+              "maxNormalError": 0
+            }
+          },
+          {
+            "step": 13,
+            "validation": {
+              "scenario": 6,
+              "counts": {
+                "0": 450,
+                "1": 450
+              },
+              "covered": 900,
+              "maxColorError": 0.2598759168961067
+            }
+          },
+          {
+            "step": 14,
+            "validation": {
+              "scenario": 6,
+              "counts": {
+                "0": 450,
+                "1": 450
+              },
+              "covered": 900,
+              "maxColorError": 0.2598759168961067
+            },
+            "hardwareComparison": {
+              "covered": 900,
+              "maxDepthError": 3.725290298461914e-9,
+              "maxNormalError": 0
+            }
+          },
+          {
+            "step": 15,
+            "validation": {
+              "scenario": 7,
+              "counts": {
+                "0": 136,
+                "1": 153
+              },
+              "covered": 289,
+              "maxColorError": 0.2598759168961067
+            }
+          },
+          {
+            "step": 16,
+            "validation": {
+              "scenario": 7,
+              "counts": {
+                "0": 136,
+                "1": 153
+              },
+              "covered": 289,
+              "maxColorError": 0.2598759168961067
+            },
+            "hardwareComparison": {
+              "covered": 289,
+              "maxDepthError": 1.1920928955078125e-7,
+              "maxNormalError": 0
+            }
+          },
+          {
+            "step": 17,
+            "validation": {
+              "scenario": 8,
+              "counts": {
+                "1": 136
+              },
+              "covered": 136,
+              "maxColorError": 0.2598759168961067
+            }
+          },
+          {
+            "step": 18,
+            "validation": {
+              "scenario": 8,
+              "counts": {
+                "1": 136
+              },
+              "covered": 136,
+              "maxColorError": 0.2598759168961067
+            },
+            "hardwareComparison": {
+              "covered": 136,
+              "maxDepthError": 1.1920928955078125e-7,
+              "maxNormalError": 0
+            }
+          },
+          {
+            "step": 19,
+            "validation": {
+              "scenario": 9,
+              "counts": {},
+              "covered": 0,
+              "maxColorError": 0
+            }
+          },
+          {
+            "step": 20,
+            "validation": {
+              "scenario": 9,
+              "counts": {},
+              "covered": 0,
+              "maxColorError": 0
+            },
+            "hardwareComparison": {
+              "covered": 0,
+              "maxDepthError": 0,
+              "maxNormalError": 0
+            }
+          },
+          {
+            "step": 21,
+            "validation": {
+              "scenario": 10,
+              "counts": {
+                "0": 450,
+                "1": 450
+              },
+              "covered": 900,
+              "maxColorError": 0.2598759168961067
+            }
+          },
+          {
+            "step": 22,
+            "validation": {
+              "scenario": 10,
+              "counts": {
+                "0": 450,
+                "1": 450
+              },
+              "covered": 900,
+              "maxColorError": 0.2598759168961067
+            },
+            "hardwareComparison": {
+              "covered": 900,
+              "maxDepthError": 3.725290298461914e-9,
+              "maxNormalError": 0
+            }
+          }
+        ]
+      },
+      {
+        "artifact": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-sidedness\\browser-scalar.json",
+          "sha256": "be21501c0f917ef9d53c73bc065b906b0e1e913312693f04c6025579e3c6ab24"
+        },
+        "scalarVisibility": true,
+        "frames": 8200,
+        "steps": [
+          {
+            "step": 1,
+            "validation": {
+              "scenario": 0,
+              "counts": {
+                "0": 450,
+                "1": 450
+              },
+              "covered": 900,
+              "maxColorError": 0.2598759168961067
+            }
+          },
+          {
+            "step": 2,
+            "validation": {
+              "scenario": 0,
+              "counts": {
+                "0": 450,
+                "1": 450
+              },
+              "covered": 900,
+              "maxColorError": 0.2598759168961067
+            },
+            "hardwareComparison": {
+              "covered": 900,
+              "maxDepthError": 3.725290298461914e-9,
+              "maxNormalError": 0
+            }
+          },
+          {
+            "step": 3,
+            "validation": {
+              "scenario": 1,
+              "counts": {
+                "1": 450
+              },
+              "covered": 450,
+              "maxColorError": 0.2598759168961067
+            }
+          },
+          {
+            "step": 4,
+            "validation": {
+              "scenario": 1,
+              "counts": {
+                "1": 450
+              },
+              "covered": 450,
+              "maxColorError": 0.2598759168961067
+            },
+            "hardwareComparison": {
+              "covered": 450,
+              "maxDepthError": 3.725290298461914e-9,
+              "maxNormalError": 0
+            }
+          },
+          {
+            "step": 5,
+            "validation": {
+              "scenario": 2,
+              "counts": {
+                "0": 450,
+                "1": 450
+              },
+              "covered": 900,
+              "maxColorError": 0.2598759168961067
+            }
+          },
+          {
+            "step": 6,
+            "validation": {
+              "scenario": 2,
+              "counts": {
+                "0": 450,
+                "1": 450
+              },
+              "covered": 900,
+              "maxColorError": 0.2598759168961067
+            },
+            "hardwareComparison": {
+              "covered": 900,
+              "maxDepthError": 3.725290298461914e-9,
+              "maxNormalError": 0
+            }
+          },
+          {
+            "step": 7,
+            "validation": {
+              "scenario": 3,
+              "counts": {
+                "1": 450
+              },
+              "covered": 450,
+              "maxColorError": 0.2598759168961067
+            }
+          },
+          {
+            "step": 8,
+            "validation": {
+              "scenario": 3,
+              "counts": {
+                "1": 450
+              },
+              "covered": 450,
+              "maxColorError": 0.2598759168961067
+            },
+            "hardwareComparison": {
+              "covered": 450,
+              "maxDepthError": 3.725290298461914e-9,
+              "maxNormalError": 0
+            }
+          },
+          {
+            "step": 9,
+            "validation": {
+              "scenario": 4,
+              "counts": {
+                "0": 333,
+                "1": 393
+              },
+              "covered": 726,
+              "maxColorError": 0.2598759168961067
+            }
+          },
+          {
+            "step": 10,
+            "validation": {
+              "scenario": 4,
+              "counts": {
+                "0": 333,
+                "1": 393
+              },
+              "covered": 726,
+              "maxColorError": 0.2598759168961067
+            },
+            "hardwareComparison": {
+              "covered": 726,
+              "maxDepthError": 0,
+              "maxNormalError": 0
+            }
+          },
+          {
+            "step": 11,
+            "validation": {
+              "scenario": 5,
+              "counts": {
+                "1": 450
+              },
+              "covered": 450,
+              "maxColorError": 0.2598759168961067
+            }
+          },
+          {
+            "step": 12,
+            "validation": {
+              "scenario": 5,
+              "counts": {
+                "1": 450
+              },
+              "covered": 450,
+              "maxColorError": 0.2598759168961067
+            },
+            "hardwareComparison": {
+              "covered": 450,
+              "maxDepthError": 3.725290298461914e-9,
+              "maxNormalError": 0
+            }
+          },
+          {
+            "step": 13,
+            "validation": {
+              "scenario": 6,
+              "counts": {
+                "0": 450,
+                "1": 450
+              },
+              "covered": 900,
+              "maxColorError": 0.2598759168961067
+            }
+          },
+          {
+            "step": 14,
+            "validation": {
+              "scenario": 6,
+              "counts": {
+                "0": 450,
+                "1": 450
+              },
+              "covered": 900,
+              "maxColorError": 0.2598759168961067
+            },
+            "hardwareComparison": {
+              "covered": 900,
+              "maxDepthError": 3.725290298461914e-9,
+              "maxNormalError": 0
+            }
+          },
+          {
+            "step": 15,
+            "validation": {
+              "scenario": 7,
+              "counts": {
+                "0": 136,
+                "1": 153
+              },
+              "covered": 289,
+              "maxColorError": 0.2598759168961067
+            }
+          },
+          {
+            "step": 16,
+            "validation": {
+              "scenario": 7,
+              "counts": {
+                "0": 136,
+                "1": 153
+              },
+              "covered": 289,
+              "maxColorError": 0.2598759168961067
+            },
+            "hardwareComparison": {
+              "covered": 289,
+              "maxDepthError": 1.1920928955078125e-7,
+              "maxNormalError": 0
+            }
+          },
+          {
+            "step": 17,
+            "validation": {
+              "scenario": 8,
+              "counts": {
+                "1": 136
+              },
+              "covered": 136,
+              "maxColorError": 0.2598759168961067
+            }
+          },
+          {
+            "step": 18,
+            "validation": {
+              "scenario": 8,
+              "counts": {
+                "1": 136
+              },
+              "covered": 136,
+              "maxColorError": 0.2598759168961067
+            },
+            "hardwareComparison": {
+              "covered": 136,
+              "maxDepthError": 1.1920928955078125e-7,
+              "maxNormalError": 0
+            }
+          },
+          {
+            "step": 19,
+            "validation": {
+              "scenario": 9,
+              "counts": {},
+              "covered": 0,
+              "maxColorError": 0
+            }
+          },
+          {
+            "step": 20,
+            "validation": {
+              "scenario": 9,
+              "counts": {},
+              "covered": 0,
+              "maxColorError": 0
+            },
+            "hardwareComparison": {
+              "covered": 0,
+              "maxDepthError": 0,
+              "maxNormalError": 0
+            }
+          },
+          {
+            "step": 21,
+            "validation": {
+              "scenario": 10,
+              "counts": {
+                "0": 450,
+                "1": 450
+              },
+              "covered": 900,
+              "maxColorError": 0.2598759168961067
+            }
+          },
+          {
+            "step": 22,
+            "validation": {
+              "scenario": 10,
+              "counts": {
+                "0": 450,
+                "1": 450
+              },
+              "covered": 900,
+              "maxColorError": 0.2598759168961067
+            },
+            "hardwareComparison": {
+              "covered": 900,
+              "maxDepthError": 3.725290298461914e-9,
+              "maxNormalError": 0
+            }
+          }
+        ]
+      }
+    ],
+    "regressions": [
+      {
+        "artifact": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\results.json",
+          "sha256": "1bd118a3845ea1169f12c986ec891da114c3e9b8cbc9f0c209117e77ecb97a1a"
+        },
+        "scalarVisibility": false,
+        "frames": 40280,
+        "enabled": {
+          "sampleFrame": 40260,
+          "graphicsPipelines": 971,
+          "computePipelines": 1578,
+          "graphicsPipelineCreateMs": 54.412126541137695,
+          "computePipelineCreateMs": 44.50273513793945,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 757,
+          "storageFormatPrecached": 9,
+          "storageFormatPrecachedUsed": 1,
+          "storageFormatPrecachedBinds": 39652,
+          "asyncPrecacheRequested": 2254,
+          "asyncPrecacheCompleted": 2254,
+          "asyncPrecacheFailed": 0,
+          "unsupportedPrecacheRequests": 0,
+          "precachedGraphicsUsed": 89,
+          "precachedGraphicsBinds": 424170,
+          "precacheConcurrency": 8,
+          "runtimeAsyncPSO": false,
+          "runtimeAsyncRequested": 0,
+          "runtimeAsyncCompleted": 0,
+          "runtimeAsyncFailed": 0
+        },
+        "disabled": {
+          "sampleFrame": 540,
+          "graphicsPipelines": 850,
+          "computePipelines": 1568,
+          "graphicsPipelineCreateMs": 50.194740295410156,
+          "computePipelineCreateMs": 39.65306282043457,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 735,
+          "storageFormatPrecached": 9,
+          "storageFormatPrecachedUsed": 1,
+          "storageFormatPrecachedBinds": 275,
+          "asyncPrecacheRequested": 2232,
+          "asyncPrecacheCompleted": 2232,
+          "asyncPrecacheFailed": 0,
+          "unsupportedPrecacheRequests": 0,
+          "precachedGraphicsUsed": 70,
+          "precachedGraphicsBinds": 114912,
+          "precacheConcurrency": 8,
+          "runtimeAsyncPSO": false,
+          "runtimeAsyncRequested": 0,
+          "runtimeAsyncCompleted": 0,
+          "runtimeAsyncFailed": 0
+        }
+      },
+      {
+        "artifact": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser-scalar\\results.json",
+          "sha256": "a3f891f6f69f50416c8b8b2211c51d3df1ad14c467ea19a9062a7996260f757b"
+        },
+        "scalarVisibility": true,
+        "frames": 40812,
+        "enabled": {
+          "sampleFrame": 40800,
+          "graphicsPipelines": 970,
+          "computePipelines": 1578,
+          "graphicsPipelineCreateMs": 56.1366081237793,
+          "computePipelineCreateMs": 43.73431205749512,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 757,
+          "storageFormatPrecached": 9,
+          "storageFormatPrecachedUsed": 1,
+          "storageFormatPrecachedBinds": 40192,
+          "asyncPrecacheRequested": 2253,
+          "asyncPrecacheCompleted": 2253,
+          "asyncPrecacheFailed": 0,
+          "unsupportedPrecacheRequests": 0,
+          "precachedGraphicsUsed": 89,
+          "precachedGraphicsBinds": 419605,
+          "precacheConcurrency": 8,
+          "runtimeAsyncPSO": false,
+          "runtimeAsyncRequested": 0,
+          "runtimeAsyncCompleted": 0,
+          "runtimeAsyncFailed": 0
+        },
+        "disabled": {
+          "sampleFrame": 540,
+          "graphicsPipelines": 850,
+          "computePipelines": 1567,
+          "graphicsPipelineCreateMs": 54.42047119140625,
+          "computePipelineCreateMs": 40.54713249206543,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 735,
+          "storageFormatPrecached": 9,
+          "storageFormatPrecachedUsed": 1,
+          "storageFormatPrecachedBinds": 267,
+          "asyncPrecacheRequested": 2231,
+          "asyncPrecacheCompleted": 2231,
+          "asyncPrecacheFailed": 0,
+          "unsupportedPrecacheRequests": 0,
+          "precachedGraphicsUsed": 70,
+          "precachedGraphicsBinds": 114914,
+          "precacheConcurrency": 8,
+          "runtimeAsyncPSO": false,
+          "runtimeAsyncRequested": 0,
+          "runtimeAsyncCompleted": 0,
+          "runtimeAsyncFailed": 0
+        }
+      }
+    ],
+    "streaming": [
+      {
+        "artifact": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-streaming\\browser.json",
+          "sha256": "37a543310c0070f11b34f24ea1fd44ca747df9ea40a92dbb0c3247f24d5ceee4"
+        },
+        "scalarVisibility": false,
+        "frames": 2100
+      },
+      {
+        "artifact": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-streaming\\browser-scalar.json",
+          "sha256": "f25e2bbf84c61b0da5dd2d346d58682fb144a18435f86e8e613eecac9de81cde"
+        },
+        "scalarVisibility": true,
+        "frames": 2241
+      }
+    ],
+    "payloadEncoding": "gzip-base64-json",
+    "payload": {
+      "$omitted": true,
+      "reason": "Full diagnostic data is retained in the original report",
+      "type": "string",
+      "bytes": 2845348,
+      "sha256": "205c730e04a4d50bcd53d9daf9dd2be729b28a530c6621858be71ab0dde9ea30"
+    },
+    "boundary": "Per-material rigid opaque sidedness in hardware and compute raster, instance mirroring, component reverse culling, orthographic views and material replacement. Original source geometry and fixed-function GPU culling provide independent references. Full native scene visual/performance comparison and remaining material/instance features remain open."
+  }
+}

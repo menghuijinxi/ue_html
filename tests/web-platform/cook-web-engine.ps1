@@ -4,6 +4,7 @@ param(
     [ValidateSet('Minimal', 'DefaultTemplate', 'Project')][string]$Scene = 'Minimal',
     [string]$Project,
     [string]$Map,
+    [string[]]$ExtraPackages = @(),
     [string]$Profile,
     [switch]$UseProjectSettings,
     [switch]$ManualVertexFetch,
@@ -83,6 +84,7 @@ $taskProcess = Get-Process -Id $PID
 $taskAffinity = $taskProcess.ProcessorAffinity
 $taskPreviousTint = $env:WEBGPU_TINT_DIR
 $taskPreviousIntermediate = $env:WEBGPU_INTERMEDIATE_DIR
+$taskPreviousEngineRoot = $env:UE_ENGINE_ROOT
 function Get-TaskAudit([string]$File) {
     return @{ file = $File; sha256 = (Get-FileHash -LiteralPath $File -Algorithm SHA256).Hash.ToLowerInvariant() }
 }
@@ -127,6 +129,7 @@ function Wait-TaskCookProcess([Diagnostics.Process]$Child) {
 }
 New-Item -ItemType Directory -Path $taskResults, $taskOutput -Force | Out-Null
 try {
+    $env:UE_ENGINE_ROOT = [IO.Path]::GetFullPath((Join-Path $Engine 'Engine'))
     if (-not $UseProjectSettings) { $taskProcess.ProcessorAffinity = [IntPtr]3 }
     if (-not $SkipBuild) {
         $taskBuildLog = Join-Path $taskResults "web-cook-module-build-$taskStamp.log"
@@ -135,33 +138,6 @@ try {
             "-Project=$taskModuleProject" -WaitMutex -NoHotReloadFromIDE -NoUBA -MaxParallelActions=1 *> $taskBuildLog
         $taskReport.moduleBuildLog = Get-TaskAudit $taskBuildLog
         if ($LASTEXITCODE -ne 0) { throw "Web Cook module build failed: $taskBuildLog" }
-    }
-    if ($Scene -eq 'Minimal') {
-        & (Join-Path $PSScriptRoot 'prepare-web-minimal-map.ps1') -Engine $Engine
-        $taskReport.minimalMapPreparation = Get-TaskAudit (Join-Path $taskResults 'web-minimal-map-results.json')
-        $taskReport.minimalMap = Get-TaskAudit (Join-Path $taskRoot 'tests/ue-shader-host/Content/WebMinimal.umap')
-    } elseif ($Scene -eq 'DefaultTemplate') {
-        $taskReport.templateMap = Get-TaskAudit (Join-Path $Engine 'Engine/Content/Maps/Templates/Template_Default.umap')
-        $taskSampleLayout = Join-Path $taskOutput 'default-samples-layout.json'
-        $taskSampleLog = Join-Path $taskResults "web-default-samples-$taskStamp.log"
-        & (Join-Path $Engine 'Engine/Binaries/Win64/UnrealEditor-Cmd.exe') $taskProject `
-            '-run=WebDefaultSamples' "-Output=$taskSampleLayout" '-nullrhi' '-unattended' `
-            '-nop4' '-nosplash' '-nosound' "-abslog=$taskSampleLog" *> "$taskSampleLog.console.txt"
-        if ($LASTEXITCODE -ne 0) { throw "Default sample material generation failed: $taskSampleLog" }
-        $taskSamples = Get-Content -LiteralPath $taskSampleLayout -Raw | ConvertFrom-Json
-        if (-not $taskSamples.worldUnmodified -or $taskSamples.samples.Count -ne 8 -or
-            $taskSamples.meshTriangles -lt 16000) {
-            throw 'Default template requires eight additive sample materials and a dense test sphere.'
-        }
-        $taskReport.defaultSampleMesh = Get-TaskAudit (Join-Path $taskRoot 'tests/ue-shader-host/Content/DefaultTemplateSamples/SM_TestSphere.uasset')
-        $taskReport.defaultSamples = Get-TaskAudit $taskSampleLayout
-        $taskReport.defaultSamplesLog = Get-TaskAudit $taskSampleLog
-        if ((Get-TaskAudit $taskReport.templateMap.file).sha256 -ne $taskReport.templateMap.sha256) {
-            throw 'The installed default world must remain unchanged.'
-        }
-    } else {
-        $taskMapFile = Join-Path (Split-Path -Parent $taskProject) ("Content/" + $taskMap.Substring(6) + '.umap')
-        $taskReport.projectMap = Get-TaskAudit $taskMapFile
     }
     if ($taskWebGPU) {
         $taskPrepareLog = Join-Path $taskResults "web-cook-host-$taskStamp.log"
@@ -176,6 +152,38 @@ try {
         $taskReport.hostPreparationReport = Get-TaskAudit $taskPreparationSnapshot
         $taskReport.hostPreparationLog = Get-TaskAudit $taskPrepareLog
         $taskReport.shaderSourcesReport = Get-TaskAudit (Join-Path $taskResults 'web-cook-shader-sources.json')
+    }
+    if ($Scene -eq 'Minimal') {
+        & (Join-Path $PSScriptRoot 'prepare-web-minimal-map.ps1') -Engine $Engine
+        $taskReport.minimalMapPreparation = Get-TaskAudit (Join-Path $taskResults 'web-minimal-map-results.json')
+        $taskReport.minimalMap = Get-TaskAudit (Join-Path $taskRoot 'tests/ue-shader-host/Content/WebMinimal.umap')
+    } elseif ($Scene -eq 'DefaultTemplate') {
+        $taskReport.templateMap = Get-TaskAudit (Join-Path $Engine 'Engine/Content/Maps/Templates/Template_Default.umap')
+        $taskSampleLayout = Join-Path $taskOutput 'default-samples-layout.json'
+        $taskSampleLog = Join-Path $taskResults "web-default-samples-$taskStamp.log"
+        $taskSampleArguments = @()
+        if ($NaniteCookData) { $taskSampleArguments += '-NaniteSamples' }
+        & (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-Cmd.exe') $taskProject `
+            '-run=WebDefaultSamples' "-Output=$taskSampleLayout" '-nullrhi' '-unattended' `
+            '-nop4' '-nosplash' '-nosound' "-abslog=$taskSampleLog" @taskSampleArguments *> "$taskSampleLog.console.txt"
+        if ($LASTEXITCODE -ne 0) { throw "Default sample material generation failed: $taskSampleLog" }
+        $taskSamples = Get-Content -LiteralPath $taskSampleLayout -Raw | ConvertFrom-Json
+        if ($NaniteCookData -and (-not $taskSamples.nanite -or $taskSamples.naniteClusters -le 0)) {
+            throw 'Nanite default samples must retain built clusters and their ordinary fallback geometry.'
+        }
+        if (-not $taskSamples.worldUnmodified -or $taskSamples.samples.Count -ne 8 -or
+            $taskSamples.meshTriangles -lt 16000) {
+            throw 'Default template requires eight additive sample materials and a dense test sphere.'
+        }
+        $taskReport.defaultSampleMesh = Get-TaskAudit (Join-Path $taskRoot 'tests/ue-shader-host/Content/DefaultTemplateSamples/SM_TestSphere.uasset')
+        $taskReport.defaultSamples = Get-TaskAudit $taskSampleLayout
+        $taskReport.defaultSamplesLog = Get-TaskAudit $taskSampleLog
+        if ((Get-TaskAudit $taskReport.templateMap.file).sha256 -ne $taskReport.templateMap.sha256) {
+            throw 'The installed default world must remain unchanged.'
+        }
+    } else {
+        $taskMapFile = Join-Path (Split-Path -Parent $taskProject) ("Content/" + $taskMap.Substring(6) + '.umap')
+        $taskReport.projectMap = Get-TaskAudit $taskMapFile
     }
     # Config is an installed-engine junction; add only the isolated platform extension.
     $taskWeb = Join-Path $taskHost 'Platforms/Web'
@@ -233,6 +241,10 @@ try {
         $taskPackages += '/Engine/BasicShapes/Sphere'
         $taskPackages += $taskSamples.meshPackage
         $taskPackages += @($taskSamples.samples | ForEach-Object { $_.package })
+    }
+    foreach ($taskExtraPackage in $ExtraPackages) {
+        if ($taskExtraPackage -notmatch '^/(Game|Engine)/[a-zA-Z0-9_/]+$') { throw "Invalid extra Cook package: $taskExtraPackage" }
+        $taskPackages += $taskExtraPackage
     }
     # The installed native UBT cannot validate a Web SDK. The custom module handles this cook-only path.
     $taskArguments = @($taskProject, '-run=Cook', '-TargetPlatform=Web',
@@ -295,7 +307,7 @@ try {
                 '-ini:Engine:[SystemSettings]:r.ShaderCompiler.JobCacheDDC=0')
         }
         if ($taskES31) { $taskArguments += '-WebGPUES31Cook' }
-        if ($NaniteCookData) { $taskArguments += '-WebNaniteCookData' }
+        if ($NaniteCookData) { $taskArguments += @('-WebNaniteCookData', '-ini:Engine:[SystemSettings]:r.Nanite.AllowAssemblies=1') }
         $taskReport.naniteCookData = [bool]$NaniteCookData
         if ($Scene -eq 'DefaultTemplate' -or $TemplateEnvironment) { $taskArguments += '-WebDefaultCloudDensityCook' }
         $env:WEBGPU_TINT_DIR = Join-Path $taskRoot '.tools/dawn-v20261009.190412/bin'
@@ -381,6 +393,9 @@ try {
     if ($taskReport.skyLightCapture) { $taskReport.products += $taskReport.skyLightCapture }
     $taskReport.totalBytes = ($taskAssets | Measure-Object -Property Length -Sum).Sum
     if ($taskReport.skyLightCapture) { $taskReport.totalBytes += (Get-Item -LiteralPath $taskReport.skyLightCapture.file).Length }
+    if ($taskWebGPU -and -not (Test-Path -LiteralPath (Join-Path $taskOutput 'ShaderConversion/inventory.json'))) {
+        throw "Web Cook shader inventory was not recorded, including cached shader maps: $taskOutput/ShaderConversion/inventory.json"
+    }
     $taskReport.pass = $true
     $taskReport.stage = 'complete'
 } catch {
@@ -395,6 +410,7 @@ try {
         (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-BuildSettings.dll'),
         (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-RenderCore.dll'),
         (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-Renderer.dll'),
+        (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-NaniteBuilder.dll'),
         (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-Engine.dll'),
         $taskHostDDPI
     ) | Where-Object { Test-Path -LiteralPath $_ } | ForEach-Object { Get-TaskAudit $_ }
@@ -459,6 +475,7 @@ try {
         $taskReport.sourceFiles += @(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPUShaderFormat') -File -Recurse |
             ForEach-Object { Get-TaskAudit $_.FullName })
         $taskReport.sourceFiles += Get-TaskAudit (Join-Path $PSScriptRoot 'prepare-web-cook-host.cjs')
+        $taskReport.sourceFiles += Get-TaskAudit (Join-Path $PSScriptRoot 'activate-native-nanite-builder.cjs')
         $taskReport.sourceFiles += Get-TaskAudit (Join-Path $PSScriptRoot 'prepare-web-cook-shaders.cjs')
         $taskReport.nativeRenderCoreBuildReport = Get-TaskAudit (Join-Path $taskResults 'native-rendercore-build-results.json')
         $taskReport.nativeRendererBuildReport = Get-TaskAudit (Join-Path $taskResults 'native-renderer-build-results.json')
@@ -480,5 +497,6 @@ try {
     $taskReport | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $taskResults "$taskPrefix-results.json") -Encoding utf8
     $env:WEBGPU_TINT_DIR = $taskPreviousTint
     $env:WEBGPU_INTERMEDIATE_DIR = $taskPreviousIntermediate
+    $env:UE_ENGINE_ROOT = $taskPreviousEngineRoot
     $taskProcess.ProcessorAffinity = $taskAffinity
 }

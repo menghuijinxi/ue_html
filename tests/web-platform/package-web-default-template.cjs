@@ -90,10 +90,10 @@ try {
   if (acceptedDefaults) {
     report.performanceProfile = applyAcceptedDefaults(output);
     report.sourceFiles.push(audit(require.resolve('./web-accepted-defaults.cjs')));
-    report.releaseDefaults = finalizeDesktopRelease(output, startupOptions);
+    report.releaseDefaults = finalizeDesktopRelease(output, {...startupOptions, optimizationBuild:build});
     report.startupPrewarm = report.releaseDefaults.prewarm;
     report.engineArguments = report.releaseDefaults.engineArguments;
-    report.sourceFiles.push(...['web-release-defaults.cjs', 'web-pipeline-prewarm-package.cjs',
+    report.sourceFiles.push(...['web-release-defaults.cjs', 'web-pipeline-prewarm-package.cjs', 'web-optimization-contract.cjs',
       'web-pipeline-prewarm.js', 'probe-villa-startup.cjs', 'web-startup-profile.js'].map(name =>
       audit(path.join(__dirname, name))));
     report.products = [...new Set([...report.products.map(item => item.file),

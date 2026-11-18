@@ -141,6 +141,26 @@ for (const change of [
     /collectors and browser compiles must complete|native failures or unaccounted pipeline rejections/);
 }
 fs.writeFileSync(incompleteFile, JSON.stringify(completeCapture));
+const movement = fixture('movement'), movementPage = readPage(movement);
+movementPage.args = movementPage.args.map(arg => arg === '-WebProjectMap=/Game/Fixture' ?
+  '-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla' : arg);
+movementPage.assets.pipelineWarmup = {modes: [3, 2, 1], seconds: 20};
+writePage(movement, movementPage);
+const movementCorpus = capture(movement), movementResult = path.join(path.dirname(movementCorpus), 'result.json');
+assert.throws(() => prepareRecordedPrewarm(movement, movementCorpus), /movement coverage/);
+const movementCapture = JSON.parse(fs.readFileSync(movementResult));
+Object.assign(movementCapture, {scriptedMotionModes:[3,2,1], scriptedMotionSeconds:20,
+  runs:[{engine:'ours',pass:true,scriptedMotion:[3,2,1].map(mode => ({motion:{mode,elapsed:20,completed:true,updates:600}}))}]});
+fs.writeFileSync(movementResult, JSON.stringify(movementCapture));
+prepareRecordedPrewarm(movement, movementCorpus);
+movementCapture.runs[0].scriptedMotion[0].motion.completed = false;
+fs.writeFileSync(movementResult, JSON.stringify(movementCapture));
+assert.throws(() => prepareRecordedPrewarm(movement, movementCorpus), /routes did not complete/);
+const villa = finalizeDesktopRelease(movement, {resultsDirectory, capture(folder) {
+  assert(!readPage(folder).assets.pipelineWarmup, 'Ordinary Villa capture must not move the camera');
+  return capture(folder);
+}});
+assert.equal(villa.prewarm.source, 'automatic-collectors');
 const acceptedConfigs = JSON.parse(fs.readFileSync(path.join(source, 'config-files.json')));
 assert(acceptedConfigs.some(item => Buffer.from(item.data, 'base64').toString()
   .includes('r.Shadow.Virtual.SMRT.AdaptiveRayCount=1')));
@@ -151,4 +171,4 @@ console.log(JSON.stringify({pass: true, automaticReuse: true, invalidatedCapture
   forcedPhysicalSize: fixed.fixedRenderSize, diagnosticsRequireExplicitFlags: true,
   automaticCollectorCompletionRequired: true, nativeFailuresRejected: true,
   maskedCapturesRejected: true, adaptiveDefault: true, acceptedIndirectReuseRestored: true,
-  inheritedIndirectReuseOverridden: true}));
+  inheritedIndirectReuseOverridden: true, startupOnlyVillaCaptureRejected:true, unfinishedRoutesRejected:true}));

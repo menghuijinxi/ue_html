@@ -278,7 +278,7 @@ Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runt
 Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Renderer/$taskSceneCulling") -Destination (Join-Path $taskRendererModule $taskSceneCulling) -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/FXRenderingUtils.cpp') -Destination (Join-Path $taskRendererModule 'Private/FXRenderingUtils.cpp') -Force
 foreach ($taskRendererOverlay in @('Private/DistanceFieldAmbientOcclusion.cpp', 'Private/GlobalDistanceField.cpp', 'Private/GlobalDistanceFieldHeightfields.h',
-    'Private/MeshDrawCommands.cpp',
+    'Private/MeshDrawCommands.cpp', 'Private/SplineMeshSceneResources.cpp',
     'Private/LightGridInjection.cpp', 'Private/IndirectLightRendering.cpp',
     'Private/DistortionRendering.cpp', 'Private/MobileFogRendering.cpp', 'Private/ShaderPrint.cpp',
     'Private/SystemTextures.cpp', 'Private/MobileBasePassRendering.cpp', 'Private/ReflectionEnvironmentCapture.cpp',
@@ -305,7 +305,7 @@ foreach ($taskRendererOverlay in @('Private/DistanceFieldAmbientOcclusion.cpp', 
     'Private/PostProcess/PostProcessHMD.cpp',
     'Private/IESTextureManager.cpp',
     'Private/SceneOcclusion.cpp', 'Private/SceneVisibility.cpp', 'Private/SceneVisibilityPrivate.h', 'Private/SceneRendering.h',
-    'Private/SceneViewOcclusionHistory.h', 'Private/WebOcclusionHistory.h', 'Private/PostProcess/PostProcessMotionBlur.cpp',
+    'Private/SceneViewOcclusionHistory.h', 'Private/WebOcclusionHistory.h', 'Private/WebOcclusionBounds.h', 'Private/PostProcess/PostProcessMotionBlur.cpp',
     'Private/RendererScene.cpp', 'Private/MobileShadingRenderer.cpp',
     'Private/VT/VirtualTextureSpace.cpp',
     'Private/ShadowRendering.cpp', 'Private/ShadowSetup.cpp', 'Private/ShadowDepthRendering.cpp',

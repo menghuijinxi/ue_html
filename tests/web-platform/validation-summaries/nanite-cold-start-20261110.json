@@ -1,0 +1,69 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-cold-start-20261110.json",
+    "bytes": 44929,
+    "sha256": "48417d1fae692f2bdd23e3542474c3f4295b28d6e0a6aa200e91d18252752a71",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-09T21:57:14.630Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-cold-start-evidence.cjs",
+      "sha256": "423c334cf76abae81869c6bc05950878e16b1c5a5327aaa9d117bc352ad50be8"
+    },
+    "artifact": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-cold-start\\results.json",
+      "sha256": "1016d5617a7834e9051e6b1e2594d9f157c154711fae8443f38c9b48657e65cd"
+    },
+    "package": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-default-scene\\package.json",
+      "sha256": "80668cf3357ce9af39fd76c5af3ff0ef1b9e8214d27989c378520174d9fc3d33"
+    },
+    "runs": [
+      {
+        "index": 0,
+        "scalar": false,
+        "readyMilliseconds": 22227,
+        "frames": 1335,
+        "covered": 614,
+        "pipelines": 1794
+      },
+      {
+        "index": 1,
+        "scalar": true,
+        "readyMilliseconds": 21776,
+        "frames": 1275,
+        "covered": 614,
+        "pipelines": 1793
+      },
+      {
+        "index": 2,
+        "scalar": false,
+        "readyMilliseconds": 21923,
+        "frames": 1328,
+        "covered": 615,
+        "pipelines": 1794
+      },
+      {
+        "index": 3,
+        "scalar": true,
+        "readyMilliseconds": 22101,
+        "frames": 1294,
+        "covered": 615,
+        "pipelines": 1793
+      }
+    ],
+    "payloadEncoding": "gzip-base64-json",
+    "payload": {
+      "$omitted": true,
+      "reason": "Full diagnostic data is retained in the original report",
+      "type": "string",
+      "bytes": 43264,
+      "sha256": "e80af08bf4feffec88d2a1187ad4e723d5401ad8f003c1de16558f8e6c7f0bc9"
+    },
+    "boundary": "Four fresh persistent browser profiles and disabled HTTP cache, while native shader compilation also runs. Both visibility atomic configurations render all eight normal-scene materials. The earlier isolated 180-second timeout is not reproduced; its original cause is not claimed fixed."
+  }
+}

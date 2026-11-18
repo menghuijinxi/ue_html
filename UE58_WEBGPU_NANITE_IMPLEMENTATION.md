@@ -1,6 +1,20 @@
 # Nanite WebGPU 接入记录
 
-更新：2026-11-08。已完成可见性 RDG、深度/HZB 消费、真实资产驻留页转码与几何解码，
+当前交付范围及最终版本验收见 [普通 Nanite 验收记录](UE58_NANITE_COMPLETION_TRACKER.md)。2026-11-11 用户报告后已复现 Villa 原始出生位置仅 7.5～9.4 FPS，关闭 Nanite 后为 54.85 FPS；完整性能验收重新开放，原交付目录保留为问题复现版本。本文件按实现阶段保留历史记录；后文“尚未接通”“继续验收”描述对应阶段的状态，不作为当前交付版本的状态摘要。未覆盖的实验功能仍保留其原有边界。
+
+2026-11-11 静态/骨骼 assembly 已完成本项验收：共享子树、部件当前/前帧/未蒙皮矩阵、材质映射和镜像通过 12 字节可见记录贯通层级、HZB、光栅、材质与速度。普通静态代理使用实际资源的 assembly 偏移与数量，避免缺失的 GPUScene 元数据；全局层级双队列使用一个缓冲的独立范围，每轮仅重置目标计数并保留 RDG 同步，使原 17 个存储绑定降至设备 16 个上限以内。352 项组合专项及 766 项普通回归共 458,108 帧，GPU 错误为零；60 个材质 shader、14 项 tile、121 项 kernel、四项真实管线和 54 项错误拒绝通过。真实 Nanite bulk 页 IO 失败/恢复及 1/2/4/8/48 页预算覆盖两种原子配置；合并粗级无附件时按原生组件空间验证，深度阈值保持不变。完整证据及失败分段压缩保存在 `tests/web-platform/evidence/nanite-assembly-20261111.json` 和同名目录，引擎提交 `e8061f36e`。曲线、位移、实例化骨骼策略、剩余材质/视图及完整场景时间重建与性能继续验收。
+
+2026-11-10 GPU-only 实例已完成本项验收：实际 GPUScene 提供实例矩阵、距离策略、可见标记、LOD、HZB、光栅和运动数据，CPU 实例变换数组保持为空。两种设备各 29 项正常与强制每帧重建检查、各九项 GPU 实例流送和 29 项相位压力检查通过；同包距离、Spline/WPO、可编程材质、材质生命周期、合并开关速度、流送及五档页池预算合计 681 项、364,104 帧，GPU 错误为零。另通过 72 项 HZB kernel、3,096 项独立原生 HLSL 对照及 50 项错误拒绝。修复测试 writer 在 WorldTickStart 绑定旧代理、重建后被原生队列丢弃而造成全零的问题；改为在 CreateRenderState/SendRenderDynamicData 对当前代理提交，两种设备的强制重建采样帧 writer/render frame 一致，额外同步和源缓冲诊断默认关闭。页池重置观察改为同一渲染命令中先布置再请求，避免热缓存一帧回填导致漏记粗级状态；旧顺序控制本轮通过，不作为确定性失败。保留全零复现、失败定位、原始回读、完整构建/Cook/源码哈希和 16 张截图，证据为 `tests/web-platform/evidence/nanite-gpu-instances-20261110.json`。**skinning、assemblies、curves、displacement、其余材质/视图、完整关卡时间重建与性能继续开放，完成后才交付完整版本。**
+
+2026-11-10 可编程距离兼容：代理保存真实 `NanitePixelProgrammableDistance`，每实例按原生包围盒中心、距离缩放及严格比较选择像素回退；回退仅停止遮罩/PDO，保留顶点变形与最终原材质。WPO 距离遵守 `r.Nanite.Culling.WPODisableDistance`，`r.Nanite.AllowProgrammableDistances` 使用通用控制变量接口读取，修复引用式变量不具备类型化存储而触发的断言。双设备各 33 项专项通过，精确等值边界、CPU ISM 和 Spline 组合均验证；同包各类材质、变形、速度、流送及页池预算共 518 项、197,987 帧，GPU 错误为零。60 项 HZB、3,096 项原生 HLSL 对照和 34 项错误拒绝检查通过，保持透视 1e-7、正交 1.2e-7 深度残差阈值。完整源码/构建/Cook 审计、原始回读、失败记录和截图见 `tests/web-platform/evidence/nanite-distance-20261110.json`；其余兼容与性能项仍依验收表继续。
+
+2026-11-10 Villa 原生画面对照：三组实际相机/投影、Nanite 开/关/恢复与四个 AO 相位在两种 Web 原子配置全部通过，共 27,714 帧、312 项区域比较，GPU 错误为零。最差均值 3.6104/255、P95 16.3333/255，阈值仍为 <5/<18。原生捕获独立构建、校验模块 BuildId，实际使用 TSR，并核对投影抖动、材质 mip bias、2,062 个开启代理和完整资源清单。`-WebMaterialTestClock` 只固定材质表达式时间，保留世界时间和组件可见时间，避免全帧时间冻结污染纹理流送；最终 GPU 图像与 AO 相位绑定回读，每相位独立稳定后比较。完整证据和失败定位保存在 `tests/web-platform/evidence/nanite-full-scene-native-20261110.json`。本轮不关闭性能、变形、其余材质或多视图项；默认场景历史对照还需按同样的实际 AA/抖动规则复验。
+
+2026-11-10 自动场景接入：`-WebNaniteScene` 启用正常静态网格代理的 Nanite 主画面和深度绘制，按真实材质 shader map/资源可用性注册，保留原 fallback 几何及阴影批次；`r.Nanite` 开关沿用原生代理重建并恢复常规绘制。默认页池为 1,024 根页、512 流送页，显式预算参数完整转交 UE。默认关卡新增的八个真实材质球使用 263 簇、4 页的 Cook 资源，并保留 16,128 三角形 fallback。
+
+默认关卡两种原子配置的被动回读检查分别运行 4,332/4,275 帧，自动启用、关闭/重开、隐藏/恢复、相机和窗口尺寸共十六项检查通过，GPU 错误为零；测试没有手工注册资源、替换材质或清空 fallback。修复资产生成器未使用隔离 Shader 根目录、Nanite Auto 策略意外简化 fallback、启动参数遗漏，以及静态光照关闭时不通知 GBuffer 观察者的问题。未分配的原生 GBuffer D/E 在只读快照中记录为透明零。证据：`tests/web-platform/evidence/nanite-automatic-scene-20261110.json`。原生同视角画质/性能、高密度场景及其他未完成项仍按验收表继续推进。
+
+更新：2026-11-09。已完成可见性 RDG、深度/HZB 消费、真实资产驻留页转码与几何解码，
 已增加显式 Web Cook 数据保留入口、Cook 资源序列化/重载，以及实际运行时 uploader
 的 Web 转码调度适配与原生 Dawn RHI 验证。现已在浏览器线程版 UE 中完成
 Cook 资源反序列化、生产 shader map 加载、实际 uploader 执行与 GPU 回读验证。
@@ -13,8 +27,78 @@ Cook 资源反序列化、生产 shader map 加载、实际 uploader 执行与 G
 现已让光栅消费原有 8 字节可见 cluster 记录，填入当前 GPUScene 实例偏移，
 并增加胜出像素的位置、法线、UV0、顶点色和相对材质槽解码；预深度输出保存于
 RDG blackboard，后续阶段可复用同一份几何与可见性。继续加入显式固定参数
-DefaultLit 的实际 GBuffer/场景颜色写入，入口默认关闭；这仍不包含任意 UMaterial 图。
+DefaultLit 的实际 GBuffer/场景颜色写入，并扩展显式基础色纹理及三角形 UV 梯度采样，
+入口默认关闭；这仍不包含任意 UMaterial 图。
+Web RHI 的资源释放已继续修正为原子引用计数/删除状态转换，覆盖 RDG 异步销毁与
+RHI 删除队列之间的可复现竞态；具体复现及验收边界见后文。
+材质阶段继续增加按绑定实例/材质槽的 GPU 瓦片压缩和间接绘制，替换逐实例全屏绘制。
+现已扩展同一组件的多个显式材质槽，并用真实多材质 Nanite Cook 资源验证槽位归属。
+继续加入跨实例显式材质合批，相同参数、纹理资源和 UV 变换共享瓦片列表与间接绘制。
 这还不是完整 Nanite 支持，当前发布场景仍走既有网格路径。
+
+## 启动管线兼容修复（2026-11-09，整包回归通过）
+
+保留了原始 838 个启动失败（668 个计算、170 个图形）、运行时修复后 147 个失败、
+以及 ShaderFormat v32 首次完整 Cook 后 52 个失败的日志与对应包/构建清单。
+本轮不再接受“失败数减少”作为验收结果：完整回归要求 Nanite 开启及关闭时，
+所有预缓存任务完成、实际执行超过 2,000 个异步请求，且拒绝、异步失败、GPU 错误均为零。
+最新完整 Cook 已完成全部 1,959 个资源包，shader 编译错误为零；严格启动检查中
+2,224 项异步请求全部完成、失败和拒绝均为零。完整浏览器回归运行 11,446 帧，
+19 项剔除/光栅、5 项深度、26 项 GBuffer 与资源生命周期全部通过，GPU 错误为零。
+Nanite 开启时 2,246 项、关闭时 2,224 项请求全部完成且零失败；
+动态格式预缓存实际复用 11,123 次。
+
+- 存储图像读写分析覆盖全部 shader，只有能证明无读取的资源才标记只写；真实读取继续保留。
+  补齐合法的 tier 2 读写格式和 RGBA32Sint 映射，ShaderFormat 更新为 v32，旧 metadata 不复用。
+- 补齐点/线拓扑、七种顶点格式，将 UE 稀疏逻辑流映射到 WebGPU 连续绑定槽。
+  原生实际绘制验证覆盖 24 组直接/索引/稀疏流/渲染 bundle 组合与七种格式解码，
+  8 个 bundle 创建、16 次复用，逐像素回读通过。
+- 深度 Gather 在 WebGPU 使用全局点采样器。该操作仍返回四个原始深度 texel；
+  depth24plus 和 depth32float 的边界、屏外坐标与分量顺序回读通过。
+- 全局距离场页图集由 WebGPU 不支持读写的 R8 UNORM 改为 R32F，写入显式保留 8 位量化。
+  4,096 个样本覆盖原位更新和回读，全部 256 个 R8 可表示级精确保留；
+  任意输入与硬件 UNORM 转换最多相差一个量化级，页图集显存占用为原先四倍。
+  这两个差异保留为整场景画质和内存评估项。
+- 64 个次表面散射、2 个高度场、4 个物体距离场 shader 排列通过真实浏览器管线创建。
+  显式导出额外尝试的体纹理原子覆盖排列失败，不计入通过数量；完整 Cook 按平台规则筛选并验收。
+
+- 全量预编译恢复后，镜像组件重新注册会触发 UE 延迟创建代理；原来固定等四帧的
+  回读可能早于新 PSO 完成。测试现等待预缓存完成后再观察四帧，保持两个实例的严格断言。
+  复现中等待 4 帧、最多 11 个未完成请求，之后两个代理和几何均恢复。
+- 另一个顺序问题是首次绘制先创建同步动态格式管线、随后全局预缓存才创建异步管线。
+  格式变体改由同一 shader 的包装器共享完成结果，后续绘制采用已完成的预编译变体；
+  未完成或失败的请求继续使用本地同步回退。shader 只保留弱引用，避免管线持有 shader
+  形成循环引用。真实浏览器延迟 2 秒完成注入与编译失败注入均通过，验证同一 shader/格式
+  先使用同步回退、成功后复用异步结果，失败时仅计入一个失败并继续正确绘制。
+
+完整交付条件集中记录于 `UE58_NANITE_COMPLETION_TRACKER.md`。LOD 的投影函数已有独立验证，
+场景接入仍在开发，不并入上述启动管线验证结论。
+
+## 实例与场景捕获（2026-11-09）
+
+CPU 实例数据现已接入 ISM/HISM：使用每实例世界变换、可见标志和真实 GPUScene 实例偏移，
+支持增删实例、组件隐藏/恢复、重新注册和组件变换。零普通网格 fallback 的实际浏览器 fixture
+覆盖 13 项操作，包含最多 50 个实例、镜像与非均匀缩放、大坐标和 HISM 重排；
+独立原网格三角形参考继续核对覆盖、深度、实例归属和材质输入。
+主视图及场景捕获遵守 HiddenPrimitives、ShowOnlyPrimitives 与 StaticMeshes/NaniteMeshes 标志。
+
+另有十项实际 SceneCaptureComponent2D 检查，覆盖透视/正交、反向视图、隐藏/仅显示/空列表、
+捕获组件重新注册及目标尺寸修改。回读直接检查 Nanite 深度已进入实际捕获场景深度附件。
+本轮发现并修复：
+
+- 无 owner 的测试组件必须保存 World 后使用 RegisterComponentWithWorld 重新注册。
+- HDR 捕获目标可合法携带 SRGB 标志；Web RHI 与原生 D3D 保持一致，只在格式存在 sRGB
+  变体时选择该变体。十种格式、两种标志、三种纹理视图共 60 项原生 GPU 回读通过，
+  浮点格式保留线性值，RGBA8/BGRA8 的 sRGB 转换继续有效。
+- 正交深度范围很大时，MakeFrustumPlane 的固定法线阈值会丢弃有效近/远平面。
+  自定义剔除改为在双精度组合后的 LocalToClip 上直接提取六个齐次不等式，
+  保留常量平面，并按非零法线最大分量缩放后传入 GPU。反向正交视图从错误保留
+  40 个 cluster 修正为零，实际覆盖和深度均为空。
+
+打包原子/无扩展配置的最新完整回归分别通过 15,550/15,151 帧，GPU 错误均为零；
+两种配置的 13 项实例和十项捕获检查全部通过，延迟完成与编译失败注入也通过。
+GPU-only 实例、完整距离/淡出策略、反射/平面捕获和立体视图尚未完成对应验收，
+因此本轮不关闭“实例和视图”的完整交付条件。
 
 ## 已实现
 
@@ -39,7 +123,7 @@ DefaultLit 的实际 GBuffer/场景颜色写入，入口默认关闭；这仍不
   read-write 存储纹理访问。
 - Web Nanite 编译使用 UE 已有的 `uint2` 型 `UlongType` 和打包函数，
   局部关闭 Vulkan 的通用 uint64 图像原子声明；`DEPTH_ONLY` 保留原来的独立分支。
-  可见性阶段 ShaderFormat 缓存版本为 v30；当前驻留页阶段为 v31。
+  可见性阶段 ShaderFormat 缓存版本为 v30；驻留页阶段为 v31，当前存储访问修复为 v32。
 
 ## 真实资产驻留页
 
@@ -690,6 +774,472 @@ GBuffer 法线允许一个 10 位码值的差异。硬件 sRGB 转换存在逼�
 同名 PNG 为真实 GBuffer 回读图，`-scene-2.png` / `-scene-6.png` 为实际运行画布截图。
 完整默认灯光天空关卡、任意材质以及与原生同视角对照仍未验收。
 
+## 显式基础色纹理与三角形 UV 梯度（2026-11-09）
+
+在已有 DefaultLit 绑定上增加可选的常驻基础色纹理和 UV0 缩放/偏移。
+接受带 ShaderResource 标志的单采样 RGBA8/BGRA8 二维纹理，按 RHI 的 sRGB
+标志解释 RGB，忽略 alpha；绑定保留资源引用，替换或流送后的资源需要重新绑定。
+不绑定纹理时使用白纹理，保留原固定参数结果。非法维度、整数格式、虚拟纹理、
+非有限或绝对值大于 65,536 的 UV 参数被拒绝，失败不覆盖已有绑定。
+
+`WebResolveMaterialInputsWithGradients` 复用 UE 原有 `CalculateTriangleBarycentrics`
+的透视正确梯度，插值 UV0 及其屏幕偏导，再对梯度施加 UV 缩放。
+GBuffer PS 使用 `SampleGrad` 和 wrap/trilinear sampler，将采样 RGB 乘以 BaseColor。
+不依赖相邻像素的隐式 ddx/ddy，避免可见性边界处相邻线程属于不同三角形或实例。
+原有属性诊断接口保持输出布局；没有消费者的梯度计算由 shader 编译器消除。
+
+新增四组实际场景 GBuffer 验证：两种格式与色彩空间的纹理同时绑定、负 UV 平铺
+和缩放、放大/缩小与 mip 尾部采样，以及替换纹理并清空另一实例的纹理绑定。
+纹理是测试用的 128×128 BGRA8 sRGB 和 64×64 RGBA8 linear，分别上传 8/7 级
+可区分的 mip；它们不代表已从 UMaterial 或完整 Cook 包自动取得纹理。
+CPU 从实际驻留页解码三角形，用齐次坐标独立求 UV，通过同三角形的中心差分
+计算屏幕梯度，再用 UV Jacobian 的最大奇异值求理想 mip LOD，执行 wrap、
+双线性、三线性和色彩空间转换，核对 GBuffer。
+[D3D 规范 §7.18.11](https://microsoft.github.io/DirectX-Specs/d3d/archive/D3D11_3_FunctionalSpec.htm)
+允许纹理足迹变换的近似；本检查限定相对理想值最多 1/4 mip 的共同 LOD 偏移，
+同一个偏移必须使 RGB 三个通道同时满足最多 2 个 8 位 sRGB 码值的过滤/转换误差。
+这是本探针的验收上限，不代表跨 GPU 的统一精度保证。固定色仍保持原有半码容限，
+深度、可见性以及未拥有的附件区域仍必须逐位不变。
+
+UE 的 12 个 shader 入口编译、隔离 Wasm 增量编译/链接及浏览器回归全部通过。
+最终 Edge `157.0.4341.42` / NVIDIA Lovelace 非 fallback 运行至第 12,914 帧。
+保留 19 组光栅/属性和 5 组场景深度检查；GBuffer 扩展为 10 组，共 81,600
+采样点，1,622 点正确写入，79,978 点逐位保持，深度/可见性/曝光均未改写。
+
+| 新增状态 | GBuffer 写入点 | 纹理采样点 | 理想 mip 下界覆盖 | 最大所需 LOD 调整 |
+| --- | ---: | ---: | --- | ---: |
+| 两实例分别绑定 sRGB / linear | 229 | 229 | 0–4 | 0.13184 |
+| 负 UV 平铺与放大 | 230 | 230 | 0–5 | 0.05664 |
+| 32 倍缩小与 mip 尾部 | 229 | 229 | 3–7 | 0.09766 |
+| 替换纹理，另一实例恢复固定参数 | 231 | 113 | 0–2 | 0.05859 |
+
+801 个纹理点中，sRGB 336 点、linear 465 点，放大 304 点、缩小 497 点，
+16 点钳制到最后一级 mip。最大所需共同 LOD 调整为 `0.131836`，调整后最大颜色
+误差为 `1.994` 个码值。16 项非法输入检查通过；另有 14 项 CPU 参考反例，故意
+移除/交换纹理、改错 UV 偏移或恢复错误的 UV 缩放，均被参考校验拒绝。
+这些反例与 RHI 非法输入检查分别统计，不混称为运行时拒绝。
+
+退出后连续 4 帧所有实验 pass 计数不变；默认关闭启动运行至第 12 帧，相关调用
+全部为零。没有未捕获 GPU 错误、Fatal 或断言；开启/关闭配置仍各有既有 834 条
+PSO 预缓存失败日志。首次测试暴露 CPU LOD 参考遗漏了足迹正交化及硬件近似，
+修正参考后重新执行了完整浏览器流程，没有改动 shader 去适配错误参考。
+本轮仍使用隔离增量链接和已有 Villa Cook 包，不是完整关卡重新 Cook 的验收。
+
+证据：`tests/web-platform/evidence/nanite-browser-textures-20261109.json`；同名 PNG
+为真实 GBuffer 回读图，`-scene-7.png` / `-scene-8.png` / `-scene-9.png` /
+`-scene-10.png` 为纹理场景的实际光照画布。仍未接通自动 UMaterial/Cook 纹理绑定、
+压缩纹理、其他材质属性贴图、材质分桶及完整 Nanite 关卡验收。
+
+## GPU 材质瓦片与间接绘制（2026-11-09）
+
+实验 GBuffer 路径从逐绑定实例的全屏三角形，改为 GPU 生成的 8×8 瓦片列表。
+`GBufferTilesCS` 每组检查一个瓦片的全部像素，以保存的可见 cluster 记录确认实例，
+从实际 Nanite 页读取相对材质槽，并要求可见性深度等于当前场景深度。
+组内用共享原子标记是否占用，只有一个线程追加瓦片并递增间接绘制实例数。
+组内所有线程均经过两次屏障，包括最后一行/列中位于视口外的线程。
+
+列表容量等于完整瓦片网格，每组最多追加一次，因此不会超过容量；当前上限为
+262,144 个瓦片。初始化参数为 `{6, 0, 0, 0}`，空列表维持零实例。
+VS 从压缩列表取瓦片，每实例输出两个三角形，末行/列夹到实际视口边界；
+`DrawPrimitiveIndirect` 直接消费 GPU 参数，运行时没有 CPU 回读或绘制计数同步。
+RDG 跟踪 UAV→SRV/IndirectArgs 转换；GBuffer PS 仍核对像素实例/材质并使用
+只读 equal 深度，保持此前的属性、纹理和附件语义。
+
+`AddWebMaterialTilePass` 拒绝非法条目、材质槽、空/错误深度、错配视图、无效矩形
+和超出上限的网格。失效资源绑定在分配列表之前跳过；缺失材质槽和完全遮挡的
+有效绑定生成空列表。诊断委托只提供结果观察，不参与生产路径的成员筛选。
+
+测试回读 GBuffer 前全分辨率的可见性/深度，并只省略 ID=0 的像素进行保存；
+CPU 从页数据独立解码材质槽，重建每个绑定应拥有的完整瓦片集合。
+逐项核对间接参数、成员、重复/遗漏/越界及未使用容量清零，再用原有回读验证
+最终 GBuffer。新增完全遮挡和受限宽高比状态，保留全部固定参数和纹理场景。
+受限宽高比由 UE 先渲染到 702×540 的原点视口，再贴到含黑边的画布，验证末端
+不足 8 像素的实际材质绘制；另以 `(7,5)` 起点的子矩形直接执行瓦片筛选并核对
+完整集合，验证非零原点和截断边界。这个子矩形检查不另行绘制 GBuffer。
+浏览器同时拦截实际 `dispatchWorkgroups` / `drawIndirect`，验证没有退回全屏 draw。
+
+受限宽高比还暴露并修正了 WebRHI 的 Canvas 后备缓冲区过渡：Canvas 的 RDG
+默认 epilogue 会要求 `RTV→SRVMask`。仅对仍有效且标为 Presentable/RenderTargetable
+的非 SRV 纹理允许这个停放状态，实际 shader 访问仍检查资源能力，不赋予采样权限。
+原生专项包含状态进入/恢复、恢复 Present、拒绝部分 SRV/UAV/过期帧/实际 SRV
+访问以及 clear 像素保持，共 8 项；通过独立入口运行，不依赖历史测试 shader 包。
+
+本轮重新编译 Web shader、增量链接 Wasm 并打包，原生 uploader 的 12 个页输出及
+21 项策略检查通过。完整浏览器流程的上传、驻留、场景生命周期、19 个剔除/光栅
+状态、5 个场景深度状态和 12 个 GBuffer 状态全部通过。瓦片验证覆盖 6,081,480
+个像素，12 个状态共生成 2,114 个瓦片，对应逐绑定全视口容量为 167,008；
+完全遮挡状态的 14,515 个 Nanite 像素全部被排除，两份间接参数均为零实例。
+702×540 场景生成 135 个瓦片，其中 10 个在截断边缘；692×533 子矩形也生成
+135 个瓦片，其中 10 个在截断边缘。两者均逐项匹配独立 CPU 集合。
+
+真实 GBuffer 共检查 95,744 个采样点：1,726 个应写入点通过属性核对，其余
+94,018 个点保持不变；907 个纹理采样点及 14 项参考反例检查通过。
+16 项材质输入和新增 8 项瓦片输入拒绝检查通过。浏览器观察到 19,360 次材质
+间接绘制，全部材质 draw 均为 indirect；19,362 次瓦片 dispatch 中额外两次是
+非零原点诊断。清理后继续观察 4 帧，各相关计数不再增长；默认关闭运行 11 帧，
+全部实验路径计数为零。开启配置运行至 13,934 帧，未出现未捕获 GPU 错误、
+Fatal 或断言；开启/关闭仍各有既有 834 条 PSO 预缓存失败日志。
+
+证据：`tests/web-platform/evidence/nanite-browser-tiles-20261109.json`，包含本轮
+源码/二进制/回读文件哈希、原生 Canvas 8 项检查，以及独立重放的瓦片/GBuffer
+验证结果。同名 PNG 为 GBuffer 回读图，`-scene-7.png` 至 `-scene-12.png` 为
+实际光照画布。仍使用已有 Villa Cook 包和隔离增量链接，未完成整关卡重新 Cook。
+
+这是按显式实例/槽绑定的瓦片筛选，仍会对每个绑定扫描整个视口；尚未实现共享
+材质表、多实例统一分桶、任意 UMaterial 或完整 Nanite shading bin 流程。
+瓦片数量降低只能说明送入材质光栅的区域减少，不能据此断言整帧加速或性能达标。
+
+## 多材质槽绑定与真实材质范围（2026-11-09）
+
+`SetWebConstantMaterial` 现在按组件、运行时资源 ID 和材质槽保存绑定，同一资源的
+槽位更新只替换该槽，保留其他槽。支持编码范围内的 0–63 槽；资源 ID 变化时清除
+旧资源全部槽位，防止资源替换后误用旧材质。新增 `RemoveWebConstantMaterialSlot`
+按资源 ID 移除单槽，拒绝过期 ID、越界槽和不存在的槽；非法材质输入不改变现有
+绑定。原有整组件移除及代理注销仍释放全部材质与持有的纹理引用。
+
+材质阶段为每个有效槽生成瓦片及间接绘制，PS 继续根据 Nanite 页内的真实相对材质
+索引筛选像素。测试新增的多材质球体来自原始 MeshDescription，按 32 个 polygon
+一组分配到 `0、7、31、63`，并设置 SectionInfoMap 映射，再交给原生 Nanite builder
+和真实 Web Cook 资源序列化器；没有修改编码后的页字节。构建结果为 1 个根页、
+15 个 cluster，8 个叶 cluster 均包含多个材质，6 个叶 cluster 使用材质范围表。
+独立 CPU 解码将全部 960 个叶三角形的位置及材质槽与 Cook 前原始数据逐一匹配：
+槽 0/7 各 256 个三角形，槽 31/63 各 224 个。此检查同时覆盖简化编码与范围表编码。
+
+浏览器测试保留前 12 个场景，新增 7 个状态：两个实例各绑定四槽、只更新一槽、
+分别移除一槽、拒绝非法输入并保留有效绑定、失效资源 ID、切回当前资源并重建另一
+组件代理、移除全部绑定。两槽使用固定参数，另两槽分别使用 sRGB/linear 基础色
+纹理。逐像素参考按页内槽位选择独立预期材质，同时核对每个槽的完整瓦片集合。
+首次绑定之后不逐帧重绑，避免测试掩盖其他槽被覆盖或代理重建残留的问题。
+
+新页的三角形重排使轮廓附近 float 重心插值与独立 double 解的最大位置差达到
+约 `0.0013`，多材质夹具的位置误差上限设为 `1/512`（源位置精度 `1/256` 的一半），
+原单材质场景仍保留 `0.001` 上限；多材质半径 50 球体的法线阈值按对应角度
+设为 `1/25600`，UV 和顶点色阈值保持原值。材质参数
+参考同时按当前后端的 float32 UNORM 半值舍入到偶数处理，解决 `Specular=0.3`
+在 JavaScript `Math.round` 中产生相邻量化码的问题；参数仍须匹配对应量化码，
+没有增加一个完整码值的容差。原始三角形及材质槽匹配仍为精确检查。
+原纹理状态还暴露 LOD 搜索步长 `1/1024` 会跨过 mip 边界附近很窄的有效 RGB
+量化区间；未找到解时细化到 `1/16384`，仍要求三通道共用同一个 LOD 偏移，
+偏移不超过 `1/4` mip、sRGB 码误差不超过 2，原有 14 项错误参考拒绝检查保留。
+
+复现新增夹具后，用两个原生 uploader 输出目录打包：
+
+```powershell
+./tests/web-platform/probe-nanite-multimaterial.ps1 -Engine D:/UE_5.8
+./tests/web-platform/probe-nanite-uploader.ps1 -Engine D:/UE_5.8 -CookedAsset tests/web-platform/results/nanite-multimaterial -SkipBuild
+node tests/web-platform/build-web-nanite-runtime.cjs
+node tests/web-platform/package-web-nanite-runtime.cjs <原单材质Uploader目录> <多材质Uploader目录>
+node tests/web-platform/verify-web-nanite-uploader.cjs
+node tests/web-platform/collect-nanite-browser-evidence.cjs
+```
+
+前提仍为已配置的隔离构建宿主、匹配原生 uploader 构建记录、NODE_PATH 和本地
+8765 服务；本机执行采用 CPU affinity 3。证据收集会重放原始网格/材质槽核对、
+GBuffer 和瓦片核对，并审计两份夹具的源码、构建、Cook、转码及回读文件哈希。
+本轮 Web shader 编译、Wasm 增量构建、多材质资产 Cook/重载、Edge 两组转码/几何
+解码，以及多材质原生 uploader 的 12 个页输出、21 项策略检查全部通过。
+最终浏览器运行至 22,994 帧，19 个 GBuffer 状态全部通过，具体新增结果为：
+
+| 状态 | 有效绑定槽 | GBuffer 写入点 | 缺失/失效槽保留点 | 材质瓦片数 |
+| --- | ---: | ---: | ---: | ---: |
+| 双实例各四槽 | 8 | 123 | 0 | 304 |
+| 仅更新第一实例槽 7 | 8 | 123 | 0 | 298 |
+| 移除第一实例槽 31、第二实例槽 63 | 6 | 100 | 23 | 235 |
+| 10 项非法更新/移除拒绝 | 6 | 100 | 23 | 235 |
+| 第一实例切换到失效资源 ID | 3 | 50 | 73 | 112 |
+| 第一实例仅重绑槽 63，第二实例重建代理 | 1 | 15 | 108 | 37 |
+| 移除全部绑定 | 0 | 0 | 123 | 0 |
+
+19 个状态共核对 9,710,280 个像素的完整瓦片归属、152,864 个 GBuffer 采样点：
+2,238 个应写入点通过，150,626 个其他点保持原值；纹理检查覆盖 1,110 个采样点。
+观察到 56,647 次材质 draw，全部为 indirect；瓦片 dispatch 为 56,649 次，额外两次
+仍为非零原点诊断。清理后观察 4 帧所有实验计数不再增长；默认关闭运行 13 帧，
+相关计数均为零。着色器审计保存每次创建的哈希并要求四份唯一代码，以允许资源
+切换期间重建相同 shader module；本次运行共创建四次。未捕获 GPU 错误、Fatal
+和断言为零，开启/关闭配置仍各有既有 834 条 PSO 预缓存失败日志。
+
+证据：`tests/web-platform/evidence/nanite-browser-multimaterial-20261109.json`；同名
+PNG 为 GBuffer 回读图，`-scene-13.png` / `-scene-14.png` / `-scene-15.png` /
+`-scene-18.png` / `-scene-19.png` 为多材质及移除状态的实际光照画布。
+
+此阶段仍由显式接口绑定参数与纹理，尚未从 UMaterial/组件材质自动生成绑定，
+也未合并多实例材质分桶。现有 Villa Cook 资源仅作运行宿主，完整关卡验收仍待完成。
+
+## 跨实例显式材质分桶（2026-11-09）
+
+材质阶段按基础色、自发光、Metallic、Specular、Roughness、基础色纹理资源身份和
+UV scale/bias 的精确值分桶。浮点零的符号统一处理，其他数值不做近似合并；纹理
+资源身份不同即分开。每桶最多 64 个实例/槽成员，超过后另建同材质桶，限制 shader
+逐像素成员查找的工作量。每帧从当前有效绑定重建，继续排除过期资源 ID。
+分桶前保留逐实例的行列式和法线逆转置矩阵有限性检查，异常实例不会使同材质的
+正常实例整桶被拒绝。
+
+每桶上传成员的 cluster 范围、页范围、GPUScene 实例 ID、LocalToClip 和逆转置法线
+矩阵，并由 RDG 复制各成员的 GPU 剔除状态。Tile CS 根据最终可见性、场景深度和
+页内真实材质槽，只生成整个桶的占用瓦片并集；同一瓦片中的多个成员只输出一次。
+一次间接绘制消费该并集。PS 按像素的可见 cluster 找到实际成员，使用该成员的
+变换解码属性和 UV 梯度，再使用桶的公共参数及纹理写入 GBuffer。
+
+浏览器新增状态 20–26：双实例四槽共享四份材质、八个绑定合为一个纹理材质桶、
+单槽改纹理、单槽改 UV、单槽改 Roughness、恢复共享并去掉一槽、全部解绑。
+合并状态使用两个相互重叠且变换不同的实例，覆盖镜像和非均匀缩放。CPU 参考从
+显式绑定独立计算预期分桶，从完整 ID/深度回读和独立页解码计算每桶瓦片并集；
+检查成员、间接参数、瓦片去重和无效尾部，同时继续逐点检查实际 GBuffer。
+额外拒绝空成员、重复成员、非法实例、越界材质槽及超过 64 成员的诊断请求。
+重叠后的后方实例被移除槽只有少量可见采样，解绑断言要求非零覆盖，并对每个未
+绑定样本保持逐位不变检查；不沿用并排场景的最小采样数，材质数值容差保持原值。
+
+最终 Web shader 编译、Wasm 增量构建、多材质 Cook/重载、浏览器转码和原生 uploader
+检查通过；同一构建完整浏览器复跑至 31,334 帧，26 个 GBuffer 状态全部通过。
+新增状态的实际回读为：
+
+| 状态 | 成员数 | 材质桶/每帧间接绘制数 | 合并前瓦片总数 | 合并后瓦片数 | 写入采样点 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 双实例四槽共享四份材质 | 8 | 4 | 302 | 302 | 123 |
+| 八个绑定共享同一纹理材质 | 8 | 1 | 253 | 122 | 101 |
+| 其中一槽改纹理 | 8 | 2 | 256 | 149 | 100 |
+| 另一槽改 UV | 8 | 3 | 262 | 177 | 101 |
+| 再一槽改 Roughness | 8 | 4 | 260 | 197 | 101 |
+| 恢复共享并移除后方实例一槽 | 7 | 1 | 235 | 120 | 94 |
+| 全部解绑 | 0 | 0 | 0 | 0 | 0 |
+
+26 个状态合计核对 13,339,080 个像素的完整瓦片归属、209,984 个 GBuffer 采样点，
+其中 2,860 个应写入点及 1,656 个纹理采样点通过检查，其他点保持原值。
+76,626 次材质 draw 全部为 indirect；76,628 次瓦片 dispatch 中额外两次为非零原点
+诊断。清理后 4 帧计数不再增长；默认关闭配置运行 13 帧，实验路径计数全部为零。
+最终通过运行无未捕获 GPU 错误、Fatal 或断言；开启/关闭配置仍分别保留既有
+834 条 PSO 预缓存失败日志。创建 5 次材质 shader module，去重后为预期的 4 份代码。
+
+证据：`tests/web-platform/evidence/nanite-browser-material-bins-20261109.json`；同名
+PNG 为全部状态的 GBuffer 回读图，`-scene-21.png` / `-scene-24.png` / `-scene-25.png`
+展示共享、拆分和解绑后的实际光照画布。复现沿用上一节命令，重新生成当前
+hierarchy shader archive、多材质夹具和两份 uploader 证据后打包验证。
+
+这是显式固定参数材质的有界合批，尚未自动读取 UMaterial/组件材质，未接入完整
+Nanite shading bin 管线。每桶仍扫描整个视口，成员查找为有界线性循环；绘制次数
+和重复瓦片减少不代表已经证明整帧加速。完整关卡验收、LOD/HZB 和页流送仍待完成。
+本轮回归每桶最多 8 个成员，64 成员及更大规模拆桶的容量、性能验收尚未完成。
+
+本轮一次浏览器复跑在场景剔除状态 11、尚未启用 GBuffer 时触发
+`FRHIResource::MarkForDelete` 的 `DeletingBit` 断言，栈经过 RDG 异步销毁
+`FRDGUniformBuffer`。根因未确认，不能归因于或宣称已修复材质分桶；失败运行
+单独保存在 `tests/web-platform/evidence/nanite-browser-uniform-buffer-failure-20261109.json`，
+包括运行时哈希、断言栈及原日志哈希。后续验收使用同一构建，未关闭断言、异步
+销毁或改变线程参数；该轮未确认根因，后续定位与修复记录见下节。
+
+## Web RHI 资源释放与删除队列竞态（2026-11-09）
+
+上节失败栈指向 `FRHIResource::MarkForDelete`。检查旧实现后，能够确定复现以下
+交错：资源已标记并在删除队列中，又被临时引用；RDG worker 释放最后一份引用时，
+先执行 `fetch_sub` 将引用数降为零，尚未执行单独的 `MarkForDelete`。RHI 线程此时
+可以从旧队列记录认领并销毁资源，随后 worker 再访问删除标记。原日志缺少资源
+身份及完整线程交错，因此这证明了与断言吻合的代码缺陷，不能严格唯一归因到
+那次历史崩溃中的具体 UniformBuffer。
+
+Web 分支现在使用 CAS 将引用递减和最后引用的删除标记合为一次状态变更。
+已标记的最后引用释放后，只读取局部结果，不再访问该资源；只有成功从未标记
+转为标记的调用者负责入队。删除消费者也用 CAS 同时检查引用数和标记：存在活跃
+引用时清除旧标记，引用为零时认领删除；并发变化会重试。否则只修释放一端，会
+在消费者读取活跃引用、最后引用释放、消费者清除旧标记的顺序中漏掉再次入队。
+删除认领位在 Web 的 `DO_CHECK=0` 配置中也生效。非 Web 分支保持原来的实现。
+入队继续区分允许延长生命周期与普通资源；未关闭 RDG 异步销毁或改变线程调度。
+
+`verify-rhi-resource-lifetime.cjs` 从参考引擎的真实源码提取 `FAtomicFlags`、
+`AddRef/Release/GetRefCount`、删除标记及入队方法，替换的仅是测试原子包装器和
+队列记录器。测试停在线程交错的指定位置，让另一线程执行删除，再恢复；对象
+保持分配，仅观察逻辑删除认领，以便安全检测错误。它不复制另一套修复算法。
+按 Wasm64 ABI、lowered 32 位线性内存与 pthread 构建四个版本：历史提交、Web
+修复、Web 修复且 `DO_CHECK=0`、当前源码的非 Web 对照。
+
+| 可控交错 | 历史/非 Web 对照 | Web 修复（两种检查配置） |
+| --- | --- | --- |
+| 末次释放归零后消费者先认领删除 | 后续标记访问触发断言 | 无后续资源访问 |
+| 消费者读到活跃引用后发生末次释放 | 清除标记后漏入队 | CAS 重试并完成删除 |
+| 消费者读到零后资源被重新引用 | 错误认领活跃资源 | CAS 重试并保留活跃资源 |
+
+各版本还检查两种入队策略下的复用/再次释放，以及 8 线程、160,000 对竞争引用
+增减，四个版本共 640,000 对。历史及非 Web 版本须准确暴露上述三个问题，两个
+Web 版本须全部消除；这不是把旧版本的已知错误计作修复通过。`DO_CHECK=0`
+版本关闭提取的生产方法内的检查，测试自身的断言仍保留。
+
+因为 `Release` 是公共内联函数，本轮通过完整 UBT target 重编所有受头文件变更
+影响的对象。隔离 Nanite 包用 `build-web-nanite-runtime.cjs --from-full-build`
+导入完整 target 的已验证 JS/Wasm，审计源码、对象、响应文件和平台覆盖；未做从零
+清空缓存重编。以后增量诊断重链接也会要求匹配当前 RHI 头文件及实现的完整构建
+记录，避免混用新旧引用计数逻辑。
+
+首次完整 target 构建完成 185 个编译任务、422 个对象的链接和 Wasm 验证。
+依赖文件中包含 `RHIResources.h` 的 184 个对象均在该次成功编译任务中；随后
+RHI 诊断、阴影占位纹理修复及测试几何覆盖修正分别触发 1 个编译任务及完整链接。证据同时保留首次
+头文件重编与最终 target 构建记录，并要求二者使用完全相同的 RHI 资源协议源码。
+新版完整运行时还暴露旧 Villa Cook 包缺少 VT/VSM、透明光照及相关全局着色器
+排列的问题。补充工具读取原 Cook 的 frozen map 元数据，不加载外部 shader library
+或创建 RHI 资源；逐项比较当前原生宿主 `ShouldCompilePermutation` 所需排列。
+使用非编辑器标志，按类型对象排除另外打包的 13 个 Nanite 测试类型，保留 Renderer
+中的生产可见性清理/解析类型。本次发现 59 类、395 个缺项，
+其中包括 HZB froxel 和延迟光照 VSM 排列；按缺项所属 shader section 补编完整内容，
+保留同一 section 原有入口。VT 显式名单另补齐宿主中 `UseVirtualTexturing=false`
+时未选择的 22 类、71 个排列，包含 RVT copy；透明光照 section 保留批量、清理和
+简单灯光入口；另补充受同一 VT 开关影响的 GPU feedback 压缩 3 类、6 个排列。
+编译使用原生 UE 注册类型、编译环境、参数绑定检查及
+`FGlobalShaderMap` 序列化，浏览器仍执行原有的全局着色器完整性检查。
+补编期间的绑定检查还发现旧原生 Renderer DLL 缺少
+`FCullPerPageDrawCommandsCs::WebInstanceCullingMetadata`。因此先按当前参考源码
+重建隔离原生 Renderer；补充脚本校验该构建的源码、产物及安装目录未修改记录，
+再断开旧宿主 DLL 的硬链接并复制新产物。没有忽略未绑定参数或修改安装版 Renderer。
+原生 Renderer 重建 40 个任务通过。诊断补充归档 81 类、661 个排列、22 个
+shader sections，转换与绑定检查均通过。归档的来源、缺失排列清单、编译日志、宿主
+二进制和 shader 输入均进入证据审计，证据收集会逐项检查缺失排列均已补编。
+但仅补全全局 shader 后，旧 Cook 的默认 `WorldGridMaterial` 仍缺少
+`FWebTranslucentLightingInjectCS` 第 8 号排列。因此最终打包入口要求同一 Villa
+工程的新 Cook 与 stage 审计，通过同一套配置重建全局和材质 shader map；历史
+补充归档保留为缺项诊断证据，不拼入新包。新 Cook 已注册 13 个 Nanite 测试类型，
+也不再用独立 hierarchy 归档覆盖共享 shader section，以保留其中的生产入口。
+只有经过验证的 production transcode 独立归档继续追加。
+
+重跑场景流程还修正了两个宿主问题：生成工程的 `UEShaderHost` 模块加载阶段改为
+`PostConfigInit`，与宿主原工程一致，确保在 shader type 初始化前注册；WebGPU
+场景的原生 D3D12 天空光采集改用准备好的工作区 Cook 宿主，取得新增 Nanite shader
+源文件。仍保留天空光采集和工程的 VT/光照设置，不修改安装引擎。
+原生天空光采集已通过；352 字节的 `WebSkyCaptures.bin` 与原 Villa Cook 完全一致，
+SHA-256 为 `0f2bf861eb50b0b3e5be8bc96b16ae3c319caaf0ebc4a687e92fa9b3ff0c8a3c`。
+完整 Web Cook 已通过：处理 1,959 个包，其中 1,928 个完成 Cook、31 个按平台跳过，
+0 错误、14 警告，shader 失败记录为空。全局清单为 774 类、4,459 个排列；已逐项
+核对 13 个 Nanite 测试类型与 2 个生产可见性类型。stage 去掉重复 shader metadata
+后包含 5,163 个文件、3,320,708,311 字节（含下述运动模糊格式与材质精度修复）。打包要求该 Cook 的源码、宿主、资源、
+shader 清单和 stage 审计全部一致，不再接受仅靠历史全局 shader 补充归档启动。
+这些构建及 Cook 兼容修正不等于完成 VT/VSM 渲染或整场景 Nanite 验收。
+
+新 Cook 通过 shader map 完整性检查后，还暴露普通阴影路径的占位纹理契约问题。
+`ShadowDepthPass_OutDepthBufferArray` 在 Web shader 中仍保留原子缓冲绑定，而
+`Dummy-OutDepthBuffer` 原来只有 ShaderResource/UAV 标志。诊断记录其格式为
+R32_UINT、完整单层视图，但没有原子 mip 后备缓冲（`atomicMips=0`）。现仅在 Web
+shader platform 为这份占位纹理补上 `AtomicCompatible`，继续使用 RHI 原有的
+原子缓冲分配、同步和严格视图校验。RHI 错误信息也加入纹理名、格式、mip、层范围
+和标志，便于定位后续契约错误；没有把不兼容纹理当成合法原子资源。
+
+继续回归到正交视图时，`MotionBlur.VelocityFlatten` 使用 RGBA32F，而原 Web shader
+声明固定为打包浮点格式，触发 `OutVelocityFlatTexture` 格式断言。现在只为
+`MotionBlurVelocityFlatten.usf` 的 compute 排列启用已有的运行时 storage format
+替换，按实际 UAV 格式创建并缓存管线；保持透视视图的打包浮点格式与正交视图的
+RGBA32F。更新 shader map 缓存键，受影响编译任务取得 storage-format 编译参数，
+避免沿用旧 metadata。`compile-web-motion-blur-shaders.ps1` 编译真实 UE 类型的
+两个排列，并检查 WGSL 替换位置；浏览器以两种格式各创建一次 compute pipeline，
+四个管线均通过。这一专项不替代下面的实际场景执行回归。
+
+完整运行到 GBuffer 第 23 步时还发现测试取样边界：重叠后方球体的 63 号材质槽在
+该帧只有 5 个 stride-8 样本，未达到原有 `count > 5` 标准；其全分辨率 6,420 个
+Nanite 像素和 3 个材质桶的瓦片、间接参数检查全部通过。投影抖动会改变窄区域的
+稀疏样本数。将后方测试球体横向偏移从 70 调至 90，仍保留局部重叠，增加可见槽位
+的采样面积；保留原有像素数量门槛、逐像素误差与瓦片一致性检查。失败运行和原始
+回读另行保存，证据收集会重验失败帧的完整瓦片，并记录缺少样本的具体材质槽。
+
+随后第 24 步暴露材质插值的实际数值缺陷：原 shader 先把像素坐标归一化，再减 1，
+屏幕中心附近发生浮点消减；细长投影三角形将误差放大，位置与独立双精度参考相差
+约 0.00364 个源模型单位。`WebNaniteRaster.usf` 现先在像素空间减去视口中心，
+再归一化，并用 `precise` 保留计算顺序；原有 UE 透视插值和梯度计算保持不变。
+`verify-nanite-material-precision.cjs` 使用失败帧的真实可见性、矩阵、抖动与 Nanite
+页，在浏览器分别执行旧 WGSL 与重新编译的生产 shader。旧输出与历史 GPU 回读
+逐位一致并重现失败；新输出的 105 个有效样本全部满足原有容差，最大位置误差
+降到约 0.000307。未关闭时间抖动，也未放宽位置、法线、UV 或颜色精度要求。
+
+最终使用完整 target 运行时及更新后的 Villa Cook，在 NVIDIA Lovelace 硬件适配器上
+完成浏览器回归：4 个 uploader、4 个驻留管理、5 个静态网格生命周期、19 个剔除/
+光栅、5 个场景深度及 26 个 GBuffer 用例全部通过。包含原失败位置的第 24 步本轮
+最大位置误差约 0.0000347；第 23 步每个绑定材质槽至少覆盖 8 个稀疏样本。
+清理后观察 4 帧，计数停止增长；同一运行包关闭常驻入口后启动到第 11 帧，所有
+Nanite 专项 dispatch/draw 计数为零。启用运行共观察 23,164 帧，专项未记录断言、
+页面错误或未捕获 GPU 校验错误；Canvas 的 8 项过渡检查也通过。
+
+启用与默认关闭两次启动各记录 **847 条管线创建失败日志**，完整内容保存在证据
+中的 `startupPipelineFailures`，不计作专项通过的管线，也未被隐藏或改为成功。
+所以本轮不代表普通场景所有管线已兼容、VT/VSM 渲染完成或整关卡 Nanite 验收通过。
+仍需自动 UMaterial/组件材质绑定、任意材质图、法线贴图、lightmap/Substrate、
+LOD/HZB 剔除、Compute 微三角形光栅与页流送。
+
+最终证据：`tests/web-platform/evidence/nanite-browser-resource-lifetime-20261109.json`，
+附 GBuffer 回读预览和 11 张实际场景画布截图。收集器逐项重验源码、编译、Cook、
+打包与 GPU 回读哈希，同时保留历史失败、竞态对照和精度回放。
+
+```powershell
+node tests/web-platform/verify-rhi-resource-lifetime.cjs
+node tests/web-platform/prepare-web-rhi-host.cjs D:/UE_5.8
+./tests/web-platform/build-web-engine.ps1 -Engine D:/UE_5.8 -Threads -SkipHostPreparation -StandaloneCompiles -MaxParallelActions 4
+node tests/web-platform/build-web-nanite-runtime.cjs --from-full-build
+./tests/web-platform/build-native-rendercore.ps1 -Engine D:/UE_5.8 -Module Renderer -MaxParallelActions 2 -HostProcessorAffinity 3 -CompilerVersion 14.44.35207
+./tests/web-platform/compile-nanite-hierarchy.ps1 -Engine D:/UE_5.8
+node tests/web-platform/verify-nanite-material-precision.cjs
+./tests/web-platform/compile-web-motion-blur-shaders.ps1 -Engine D:/UE_5.8
+./tests/web-platform/compile-web-shader-supplement.ps1 -Engine D:/UE_5.8
+# 宿主 DLL 改变后，重新执行多材质夹具与对应 uploader 探针，更新审计。
+./tests/web-platform/probe-nanite-multimaterial.ps1 -Engine D:/UE_5.8 -SkipBuild
+./tests/web-platform/probe-nanite-uploader.ps1 -Engine D:/UE_5.8 -CookedAsset tests/web-platform/results/nanite-multimaterial -SkipBuild
+$env:UE_ENGINE_ROOT = 'D:/UE_5.8/Engine'
+# 使用 prepare-web-project.cjs 更新后的 PostConfigInit 工程描述。
+./tests/web-platform/cook-web-engine.ps1 -Engine D:/UE_5.8 -Mode WebGPU-SM5 -Scene Project -Project tests/web-platform/build/projects/lumen-off-v59/TriplexHouseVilla.uproject -Map /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla -UseProjectSettings -ReportId nanite-lifetime -HostProcessorAffinity 3 -SkipBuild -StopOnShaderError
+node tests/web-platform/stage-web-engine.cjs --project=nanite-lifetime --desktop
+node tests/web-platform/package-web-nanite-runtime.cjs <原单材质Uploader目录> <多材质Uploader目录>
+node tests/web-platform/verify-web-nanite-uploader.cjs
+node tests/web-platform/collect-nanite-browser-evidence.cjs
+```
+
+### 动态 UAV 格式的计算管线预缓存（2026-11-09）
+
+继续追查前轮 847 条启动失败时，发现 `CanPrecacheShader` 对所有保留动态存储格式
+源码的 shader 直接返回不支持。运行时虽能按 UAV 格式创建管线，但无法提前编译和
+复用。现在计算预缓存为通过格式/资源限制检查的 shader 编译一个具体变体，并放进
+原有的 `FormatVariants` 缓存。运动模糊 flatten 按 Renderer 的资源约定选择透视
+flat velocity 的 R11G11B10 与 tile array 的 RGBA16F；其他可用组合使用反射格式。
+异步回调完成的是具体变体；外层延迟包装对象保持无句柄，
+因此后续 dispatch 仍会检查实际绑定资源，选择匹配格式或创建新的变体。
+
+预缓存与首次运行共用格式替换、布局构造和管线创建实现，避免两条路径的 WGSL 与
+绑定布局不一致。图形管线尚未接入该变体机制，继续保留原有准入限制；设备格式、
+访问模式和资源数量限制也保持检查。预编译失败仍返回失败，不能被计作完成的可用
+管线。浏览器额外记录计算管线拒绝原因，便于区分预检查拒绝与 WebGPU 编译失败。
+
+最初只编译反射格式的版本通过全部 26 个 GBuffer 用例，但被新增复用检查拒绝：
+9 个动态变体完成异步编译，实际复用为零。原因是动态 float4 的 RGBA32F 反射值
+并不代表 Renderer 创建的纹理格式。保留该失败报告，修正为上述资源约定后重验；
+不能用减少失败日志或完成编译来替代实际 dispatch 证据。
+
+`observe-storage-precache.cjs` 在实际 GPU owner worker 中观测原生 WebGPU API，
+跟踪 shader 格式、管线对象、同步/异步创建方式与直接/间接 dispatch，并将只差
+存储格式的 WGSL 归为同一 shader。验证要求实际执行异步预编译产物，同时覆盖
+运动模糊透视 `rg11b10ufloat` 与正交 `rgba32float` 的同源变体；RHI 复用计数作为
+交叉证据。完整 Nanite 用例和默认关闭检查继续执行。
+
+完整 Web target 与原生 RHI 重编译后，单/多材质 uploader 各 21 项策略检查和 12 页
+回读、Canvas 8 项检查均通过；Cook 源码、宿主与 5,165 个产物哈希保持有效，使用
+上一轮相同场景包。浏览器观察 29,507 帧，4 个 uploader、4 个驻留、5 个静态网格、
+19 个剔除/光栅、5 个深度和 26 个 GBuffer 用例及清理检查全部通过，错误数组为空。
+关闭 Nanite 常驻入口后的第 61 帧，专项 dispatch/draw 均为零。
+
+两次启动的管线失败日志均从 **847 降至 838**，其中计算管线从 677 降至 668，
+图形管线仍为 170；现有日志全部保留。这 9 个新增动态预编译变体中，本场景实际
+命中 1 个，不能把其余 8 个计作已执行。独立 WebGPU 对象跟踪记录运动模糊透视
+预编译管线 dispatch 29,417 次、同源正交 RGBA32F 运行时变体 81 次；RHI 在
+第 29,490 帧的统计记录预编译变体绑定 29,402 次。统计采样点不同，保留原始数值。
+普通场景启动也命中该预编译变体，异步编译失败计数为零。
+
+`verify-storage-precache-failure.cjs` 随后对同一个运动模糊入口注入一次 WebGPU 异步
+编译失败，真实 UE 预缓存任务正确返回失败，运行时重新同步创建相同格式管线并
+执行，启动超过 60 帧且无 GPU 校验错误或断言。该检查验证失败后不会复用无效
+句柄；注入次数与异步失败计数均为 1。
+
+本轮证据：`tests/web-platform/evidence/nanite-browser-storage-precache-20261109.json`，
+附原有类型的回读预览和 11 张实际画布截图。收集器同时校验成功路径、故障恢复、
+占位格式零复用的历史失败，以及原生、完整构建、Cook 和 GPU 回读产物。
+
+```powershell
+node tests/web-platform/verify-web-nanite-uploader.cjs
+node tests/web-platform/verify-storage-precache-failure.cjs
+node tests/web-platform/collect-nanite-browser-evidence.cjs
+```
+
+这些结果补齐动态计算管线的一个预缓存入口，仍不代表剩余 668 个计算、170 个
+图形请求可用，也不代表自动 UMaterial 绑定、LOD/HZB 或页流送完成。
+
 当前保留 UE 纹理消费者，用解析纹理作为桥接：
 
 ```text
@@ -804,22 +1354,323 @@ Renderer 覆盖，将独立对象和依赖输出写到 `results/nanite-wasm`，�
 `node tests/web-platform/collect-nanite-asset-evidence.cjs` 汇总结果前会校验源文件哈希，
 并要求上述可见性回归结果存在且通过。
 
+## 常驻层级 LOD（2026-11-09）
+
+常驻页层级剔除使用真实视图、视口高度和 `r.Nanite.MaxPixelsPerEdge` 选择
+父子 cluster cut，支持透视和正交投影、相机相对矩阵、镜像和非均匀缩放。
+投影函数与原生 HLSL、独立 CPU 几何推导比较的 3,255 个用例全部通过；
+连续缩放的四档几何分别为 126、252、504、960 个三角形，闭合边检查通过。
+
+完整 Villa Cook 后的浏览器回归运行 11,730 帧，零 GPU 错误。
+新增 10 项实际场景测试覆盖远近、正交缩放、千万量级坐标、镜像、返回原视角
+及像素误差调整，逐项比较 CPU 层级选择和独立可见性/深度参考。
+启动管线开启时 2,246 项、关闭时 2,224 项全部完成且零失败；
+延迟预缓存和失败注入均通过。证据为
+`tests/web-platform/evidence/nanite-browser-lod-20261109.json`。
+
+首次增量构建曾复用时间戳较旧的布局依赖对象，导致无效视图测试失败；
+已重编译全部七个相关对象并保存失败构建、包和运行日志，采集器检查这些依赖。
+本项仅覆盖常驻 root 页，流送页安装/替换时的 LOD 依赖继续归流送项验收。
+
+## 核心 32 位原子兼容路径（2026-11-09）
+
+RHI 根据实际获授设备特性公布只读能力，光栅自动选择 packed 原子或两阶段核心
+32 位原子。兼容路径先完成所有实例的最大反向深度，再在最终深度上选择最大 ID，
+保持 `uint2(ID, depthBits)` 的 8 字节可见性布局。RDG 将两阶段排序；不支持扩展
+的设备不实例化 packed shader，也不请求其预缓存。
+
+独立 GPU 测试使用不请求任何可选特性的设备，验证 8,199 个候选争用、深度相等、
+无符号 ID、计算/片元混合、越界及缓冲区保护区，九组逐位回读全部通过。
+完整浏览器回归实际移除设备申请中的原子扩展，自动选择兼容路径；
+11,646 帧内上传、常驻、19 项剔除/光栅、5 项深度、26 项材质和 10 项 LOD
+全部通过，零 GPU 错误。packed 路径同包复验 11,657 帧通过。
+兼容路径每批绘制两次，是明确的光栅成本；其他设备特性和资源上限仍按实际 RHI 要求。
+
+原生探针发现能力标记在渲染线程初始化时调用普通控制台更新会断言。
+修复为在设备初始化/销毁同步边界同时发布控制台双份数据，再通过原生上传、
+拓扑、顶点格式和画布回归；失败日志与对应源码/构建信息保留在验收证据中。
+双路径证据为 `tests/web-platform/evidence/nanite-browser-scalar-packed-20261109.json`
+和 `tests/web-platform/evidence/nanite-browser-scalar-fallback-20261109.json`。
+
+## 常驻场景 HZB 与遮挡恢复（2026-11-09）
+
+真实渲染帧已接入反向深度的最小值金字塔、前一帧遮挡判断和当前帧恢复。
+第一轮保留历史中可见的 cluster，写入当前深度后再次检查之前被遮挡的候选；
+最终可见性表合并两轮结果，避免不同压缩列表的 slot ID 混用。
+当前实现会再次光栅第一轮保留的几何，这一额外成本仍需在完整场景中测量。
+历史按视图、场景、视口和连续帧验证，摄像机切换时失效；设备释放时清空历史纹理。
+
+12,005 个包围盒的独立 GPU/CPU 对照未出现错误遮挡，九级金字塔全部逐值一致。
+实际 UE 编译的遮挡 kernel 通过十项测试，覆盖两轮恢复、保留第一轮结果、错误状态、
+无效页/cluster、计数溢出和缓冲区保护区。真实场景九项检查也通过：移走遮挡物和
+切换到背面视角时，第一轮的零可见 cluster 在当帧第二轮恢复为全部八个；
+另覆盖目标移动、正交视图、重新遮挡、隐藏及十三项非法 API 输入检查。
+
+首轮实际场景触发了深度纹理被误当作可过滤纹理的 WebGPU 绑定错误。
+shader format v33 将纹理仅 Load 的访问分析扩展到所有 shader，并重新 Cook 完整 Villa；
+depth24plus、depth32float 和 R32F 的真实 UE HZB shader 回读均零误差。
+失败运行、包和构建记录保留供证据采集器核对。packed 与无扩展原子配置的整包回归
+分别运行 13,309/13,341 帧，上传、常驻、光栅、深度、材质、LOD、HZB 和清理检查均通过，
+GPU 错误为零；开启/关闭分别 2,248/2,226 项启动管线全部完成且零失败。
+双路径证据为 `tests/web-platform/evidence/nanite-browser-hzb-packed-20261109.json`
+和 `tests/web-platform/evidence/nanite-browser-hzb-fallback-20261109.json`。
+
+## 常驻微三角形混合光栅（2026-11-10）
+
+实际 Nanite 页解码后的三角形按屏幕跨度选择 VS/PS 或 Compute。
+Compute 处理完整位于裁剪体内且不超过 8×8 像素的三角形，采用 16.8 定点覆盖规则；
+裁剪、大三角形和亚像素舍入有歧义的三角形交给硬件光栅。
+两条路径写入同一可见性缓冲，核心 32 位原子设备仍先完成所有实例的深度阶段，
+再完成 ID 阶段。`r.Nanite.WebMicroRasterSpan=0` 可用于纯硬件对照。
+
+重复帧测试捕获了顶点靠近半个定点单位时的舍入差异，原先最大深度误差为
+2.45×10⁻⁶。保留失败帧和对应构建，修复使用保守投影误差范围选择硬件回退，
+没有放宽深度和材质误差阈值。大视口或较大视口原点可能让该范围覆盖全部舍入
+区间，从而使用纯硬件；完整场景验收必须测量此成本，不能据专项测试声称性能达标。
+
+独立 GPU 对照覆盖 2,048 个三角形、512 条共享边和 8 项非法输入，
+其中 1,079 个三角形使用 Compute，覆盖/ID 零差异，最大深度差 1.20×10⁻⁷。
+完整 Villa Cook 后，packed 与核心原子配置分别运行 42,315/42,526 帧，
+每种配置还执行 128 次 50 实例重复帧，覆盖 11 种投影抖动，
+混合光栅与硬件光栅的最大深度差均为 5.59×10⁻⁹，GPU 错误为零。
+开启/关闭启动管线分别为 packed 2,251/2,229 和核心原子 2,250/2,228，
+全部完成且零失败；延迟预缓存和失败注入检查通过。
+证据为 `tests/web-platform/evidence/nanite-browser-micro-packed-20261110.json`
+和 `tests/web-platform/evidence/nanite-browser-micro-fallback-20261110.json`。
+
+## 真实 UMaterial 与 GPUScene（2026-11-10）
+
+新增 `FWebNaniteVertexFactory`，复用原生 Nanite 顶点属性、GPUScene、
+解析导数和 BasePass 材质代码。组件注册时从 LOD section 保存真实材质代理与
+LCI，BasePass 按实际材质和光照策略选择 Cook shader，并通过占用瓦片进行
+间接绘制。像素归属检查同时验证实例、材质槽和场景深度，保留普通几何遮挡。
+入口为 `r.Nanite.WebMaterialGraphs`；当前默认关闭，整关卡自动启用尚未验收。
+
+原生 shader 中的静态 Uniform Buffer 由 RDG 绑定，直接绑定只用于 shader
+独有槽。首轮浏览器发现重复绑定断言，修复后保留原失败日志与构建记录。
+测试夹具的 Root 清理顺序也已修正；冷启动时等待 PSO 预缓存延迟创建的代理就绪，
+使用有界超时，避免空场景被提前判定或永久等待。
+
+完整 Web 构建及包含三种真实材质资产的 Villa Cook 通过。两种设备配置分别
+运行 3,551/3,428 帧、执行 9,564/9,281 次真实材质间接绘制，均实际使用三种
+材质 shader。十项检查覆盖 Unlit、DefaultLit、法线贴图、MID 颜色更新、
+材质替换、旋转、隐藏、注销/恢复、运行时法线纹理替换和参数恢复；组件清理后
+继续运行，GPU 错误为零。基础色误差不超过 0.260 个 sRGB 码值，法线夹角余弦
+最大误差 0.00214（阈值 0.003）。夹具不提交 fallback 三角形。
+
+`tests/web-platform/evidence/nanite-native-materials-20261110.json` 保存源码、
+构建、Cook 和运行包校验信息；完整像素回读、WGSL 和运行日志以无损 gzip/base64
+保存于同一文件。独立管线检查还验证了三个真实材质的 HLSL→WGSL 编译及管线创建。
+该证据不关闭 lightmap、Substrate、全部材质排列和完整关卡画面对照验收。
+同一运行包的现有完整回归运行 42,089 帧，GPU 错误及启动管线失败为零，
+包含 128 次混合光栅重复帧、13 项实例和 10 项真实场景捕获。
+
+## 原生速度与 stencil/shading mask（2026-11-10）
+
+常驻刚性不透明路径在场景深度之后输出原生 shading mask 与速度缓冲。
+速度直接调用 UE 的 CalculateNaniteVelocity，读取真实 GPUScene 上一帧变换；
+静止物体保留原生零值语义，由时间重建处理相机运动。
+材质 BasePass 消费生成的 shading mask。WebGPU 的 stencil reference 为每次绘制固定，
+因此用七次有深度归属检查的绘制清除并写入 shadow、ray representation、
+lighting channels 和 decal bits，保留普通几何及其他 stencil 位。
+光照通道 0 按原生 stencil 约定反相存储，后续 CopyStencilToLightingChannels
+读取实际 stencil 并输出原生光照/阴影标记纹理；不会向多视图数组追加无序遮罩。
+七次 stencil 绘制的成本仍须纳入完整场景性能验收。
+
+浏览器发现 stencil metadata 的 MaintainCompression transition 被拒绝，现仅为
+真实深度/stencil 资源的 stencil plane 支持该标记，仍执行访问状态与 Begin/End
+生命周期检查；非法 depth raw、UAV 和额外标记继续拒绝。原生 RHI 的 14 项检查通过。
+着色器还修正了局部 Primitive.Flags 被 UE Uniform Buffer 预处理误展开的问题。
+
+两种设备配置各完成九项真实帧回读：静止、实例运动、相机运动、旋转及镜像非均匀
+缩放、同时运动、三种光照通道与标志更新、普通网格遮挡、正交投影、相机切换当帧。
+速度 XYZ 通过独立矩阵重投影核对，XY 在原生 gamma/16 位量化界限加浮点误差内，
+Z 最大误差 5.97×10⁻⁸。回读位于原生光照通道复制之后，也验证该消费者的最终结果。
+两种配置分别运行 1,313/1,130 帧，GPU 错误为零；原有十项材质回归也重新通过。
+证据为 tests/web-platform/evidence/nanite-native-composition-20261110.json，
+同一文件无损保存两种配置的速度/遮罩、材质像素、WGSL 和日志。
+同一包的完整回归运行 44,687 帧，GPU 错误为零；开启/关闭启动管线分别
+2,252/2,230 项全部完成且零失败，包含 128 次重复帧和十项场景捕获。
+本项不代表变形几何、流送页、完整关卡时间重建或画质/性能验收完成。
+
+## 有界原生页流送（2026-11-10）
+
+启动参数 `-WebNaniteStreamingPages=N` 与常驻根页预算一起启用有界流送池，
+总字节数受实际 WebGPU storage binding 上限限制。复用原生 ReadbackManager、
+异步 bulk IO、LRU、页依赖、相对编码转码、安装/卸载 fixup 和质量缩放。
+Web 的可见叶节点使用标量原子提交原生格式请求，避免分歧控制流中的 subgroup
+操作被 WGSL 校验拒绝；缺失细节由原生 STREAMING_LEAF 父簇继续覆盖。
+
+所有裁剪、HZB、光栅、材质与速度/遮罩路径使用同一个流送页数量和 GPU 地址规则。
+安装后上传页归属表，按活跃资源版本关联根页；外来/过期页在被读取之前拒绝。
+流送模式仍是显式入口，不能据此视为完整关卡已自动启用。
+
+专项资产包含 65,024 个输入三角形和 1,059 个簇：流送版 1 个根页加 11 个
+流送页，另有同几何全常驻版及第二个流送资源。12 页预算迫使两个资源互相淘汰。
+测试不提交 fallback 三角形，读取实际 GPU 请求、归属表、裁剪状态、深度和遮罩。
+九项检查覆盖粗模首帧、全常驻对照、细节补齐、资源切换淘汰、热缓存重载、
+资源版本更新、远距离 LOD、真实 HZB 和原生页池重置。注入一次 bulk IO 失败后，
+原生重试一次成功；两种原子能力配置均通过，六组 964 像素的覆盖和深度零差异。
+故意替换页归属表也会得到明确拒绝。
+
+资源重建曾暴露 Web RHI 对 CreateNull 索引缓冲仍读取空 CPU 数组的断言。
+已按原生语义保留零大小占位符，不分配 GPU 存储或访问数组；两个原生回归检查通过。
+原始失败报告保留，设备丢失恢复仍需独立实现与验收，不能以页池重置代替。
+
+证据：`tests/web-platform/evidence/nanite-native-streaming-20261110.json`。
+专项两种配置分别运行 2,225/2,306 帧；同包完整回归分别运行 42,483/41,468 帧，
+GPU 错误为零，开启/关闭启动管线各 2,254/2,232 项全部完成且零失败。
+真实材质与速度/遮罩双配置复测通过；全部证据核对源码、完整链接、Cook 和包的哈希。
+
+## 设备丢失后的运行时重建（2026-11-10，专项验收通过）
+
+依据 WebGPU 的设备丢失语义，旧设备的资源不能继续复用。页面收到真实
+`device.lost` 后终止旧引擎 Worker，替换已转移的 Canvas，重新请求适配器和设备，
+从已校验的持久缓存重新加载引擎与 Cook 数据。最多自动重建两次；正常销毁
+`destroyed` 不触发恢复，普通 GPU 校验错误仍然失败。
+
+所有输入监听、尺寸观察器、DPI 计时器、帧调度端口、性能 HUD 和 RPC 都统一清理。
+旧代次通知不能改变新运行时；原生预初始化失败也进入同一清理流程，修复了
+连续 GPU 故障后页面报错但 Worker 和“恢复中”状态仍保留的问题。
+
+相机检查点包含位置、旋转、FOV 与 Pawn/相机目标类型，重新加载后自动恢复。
+应用可通过 `startWebEngineWorker` 的 `recovery.capture/restore` 保存和恢复动态状态；
+捕获数据须可结构化克隆，恢复回调使用新运行时提供的 `rpc`。
+这里重启 UE 世界，不是保留整个任意运行时世界的原地 RHI 重建。
+
+专项使用隔离浏览器的 `Browser.crashGpuProcess` 触发真实 `unknown` 丢失。
+默认浏览器设置下检查恢复和连续故障后的设备拒绝；重复故障诊断仅在独立测试
+进程使用 `--disable-domain-blocking-for-3d-apis`，验证两次恢复和上限退出，
+交付页面不需要该标志。对照包括旧子线程退出、真实页重新流送、相机、像素、
+输入、缩放和 UI 清理。四组测试均通过，六次恢复各重新流送 1,059 个簇，
+964 个采样像素的深度和遮罩差异均为零；每次 30 个旧 Worker 全部退出。
+普通 Error 和同名 OperationError 的独立注入均正常失败并清理，未误触发自动恢复。
+冷启动不使用恢复期限，后台恢复暂停超时计时；这两项及旧代次通知、恢复失败、
+关闭页面、上限退出均通过生命周期检查。
+
+同包完整回归分别运行 42,034 / 41,473 帧，GPU 错误为零；每种配置包含
+128 次微三角形重复帧和十项真实多视图检查。开启/关闭的启动管线均全部完成且零失败。
+证据归档为 `tests/web-platform/evidence/nanite-device-recovery-20261110.json`。
+此前一次冷启动测试等待 180 秒超时未再次复现，已补完整启动诊断；原因尚未确认，
+不能把增加诊断记录写作该超时已修复。
+
+参考：[WebGPU 设备丢失](https://www.w3.org/TR/webgpu/#dom-gpudevice-lost)、
+[Worker 终止](https://html.spec.whatwg.org/multipage/workers.html#terminate-a-worker)、
+[Chromium GPU 故障注入](https://chromedevtools.github.io/devtools-protocol/tot/Browser/#method-crashGpuProcess)。
+
+## 有界页池压力验证（2026-11-10）
+
+对真实流送球体分别设置 1、2、4、8、12 页预算，两个原子配置共运行
+26,690 帧，90 个生命周期步骤和 60 组全常驻对照通过，GPU 错误为零。
+预算小于完整细节依赖组时，原生父层级保持闭合；867 个内部采样点没有缺口，
+964 个覆盖采样均一致，最大反向 Z 深度差为 0.000104845。
+12 页预算下 1,059 个簇全部驻留，六类生命周期对照深度差均为零。
+检查包含资产切换、资源重建、远近视角、HZB 返回和页池重置；这不替代完整关卡性能验收。
+证据：`tests/web-platform/evidence/nanite-streaming-budget-20261110.json`。
+
+## 材质单双面与反向剔除（2026-11-10）
+
+光栅现从真实材质代理取得每个槽的有效性和单双面状态，同时组合实例镜像、
+组件 ReverseCulling 和视图反向剔除。硬件片元和 Compute 微三角形使用同一语义；
+不存在的材质槽不再参与可见性竞争。运行时更换材质后直接更新剔除状态。
+
+独立 GPU 校验将 2,048 个三角形与固定功能的前面/背面/双面光栅对照，
+7,715 个覆盖像素一致，其中 4,039 个由 Compute 处理，最大深度差为 1.19×10⁻⁷。
+真实 Cook 的开放曲面分为单面与双面两个槽，两种原子配置的 44 项检查均通过，
+分别运行 8,181 / 8,200 帧，GPU 错误为零。覆盖正反面、镜像、非均匀缩放、
+组件反向剔除、正交投影和运行时材质替换，硬件/Compute 覆盖、材质槽及法线一致。
+
+首次真实场景检查揭示资产生成器的三角形绕序与 UE 左手法线约定相反，
+已修正开放曲面和流送球体的源三角形，未改动渲染器正面约定来迎合错误资产。
+完整剔除/实例/多视图参考也加入独立背面判断；相机进入单面闭合球体时应为空。
+
+重新 Cook 还复现了完全命中 shader-map 缓存时没有编译任务、因而没有清单的问题。
+ShaderFormat 模块在引擎退出前补记录已加载类型；Cook 缺失清单时失败并保存报告。
+新的 1,969 包 Cook 在零转换任务的情况下生成完整清单，严格打包检查通过。
+同包两种配置完整回归分别通过 40,280 / 40,812 帧，GPU 错误为零。
+开启/关闭的启动管线分别为 2,254/2,232 和 2,253/2,231 项，全部完成且零失败；
+每种配置包含 128 次微三角形抖动帧和十项场景捕获。两种配置的九项流送专项
+均通过，修正后的资产恢复到 1,058 个驻留簇；六组全常驻像素对照保持一致。
+失败原因、修复后的 Cook、源码与构建哈希、独立 GPU 参考及场景回读归档于
+`tests/web-platform/evidence/nanite-sidedness-20261110.json`。
+
 ## 尚未接通
 
-- 已执行有界常驻页光栅、真实场景深度和显式固定参数 DefaultLit GBuffer，
-  完整 Nanite Renderer 的任意材质图、材质分桶、速度和 stencil/shading mask 消费尚未接通。
-  HZB 专项仍使用导出的 UE shader packet，尚未做真实 Nanite HZB 剔除。
-- Nanite 完整关卡 Cook/打包加载验收、完整实例／视图类型和可见性策略、cluster 层级 LOD 与 HZB 剔除、
-  VS/PS 光栅和 Compute 微三角形光栅的完整接入。
-- 页流送、缺页请求、淘汰与依赖 fixup、冷/热缓存及设备恢复。
+CPU ISM/HISM 的实例距离剔除专项已完成（2026-11-10）。创建和运行时修改
+保留组件的最小/最大距离，按原生包围盒中心及距离缩放做含边界的平方距离判定；
+最大距离为零时取消范围。StartCullDistance 不被误用为最小绘制距离。
+HISM 普通 CPU 树的查询返回 false，Web Nanite 直接保存组件范围，避免漏画策略。
+真实 Cook 的球体和材质经正常组件路径自动加入，不修改 fallback 三角形。
+
+两个原子配置各 17 项检查通过，分别运行 3,549/3,502 帧，GPU 错误为零；
+覆盖端点、空范围、关闭范围、缩放、调试开关、相机移动、注销/恢复、镜像缩放、
+HISM 重排、删除和清空。独立计算与实际实例、GPU 层级状态及光栅回读一致。
+同包默认关卡各八项回归分别运行 4,427/4,300 帧。新增实例材质 Cook 标记；
+Cook 显式 Engine 参数现传入子工具并在退出时恢复原环境，修复误找旧 H 盘的问题。
+证据为 `tests/web-platform/evidence/nanite-instance-distance-20261110.json`。
+GPU-only 实例及其余视图/淡出策略尚未关闭。
+
+默认场景同视角画面对照已完成专项（2026-11-10）：原生 SM6 的八个真实
+Nanite 代理及关闭后的 fallback，与两种 Web 原子配置使用相同实际投影矩阵。
+UE 的 MaintainYFOV 规则使请求 75° 对应当前宽屏水平 FOV 91.30865°；验收现
+直接读取渲染投影，原生采集也记录并校验矩阵。修正原生采集在渲染初始化前
+读取尚未填写的 ProjectionNoAA，并在开始采集时清除上轮成功状态。
+截图去除网页性能浮窗，原灯光、天空、材质及相机位置均保留。
+
+两种配置分别运行 4,285/4,283 帧，八项正常组件生命周期检查继续通过。
+整图及八个材质区域的 Nanite 开关差异保持原阈值，最差区域均值
+4.5065/255、P95 17/255；同时记录 Web/原生绝对颜色差异，避免以差分消去
+平台差异后声称像素完全一致。原失败、实际矩阵、原生代理数、全部回读、
+源码/构建/Cook 哈希与四图对照归档于
+`tests/web-platform/evidence/nanite-default-native-20261110.json`。
+该专项不代表高密度完整关卡或完整性能验收完成。
+
+- 已执行有界常驻页光栅、真实场景深度和真实 Unlit/DefaultLit 材质图，
+  显式材质支持跨实例分桶；完整 Nanite Renderer 的其余材质排列、lightmap、Substrate、原生 shading bin、
+  变形几何和完整场景时间重建仍待完成。
+- Nanite 完整关卡 Cook/打包加载验收、完整实例／视图类型和可见性策略，
+  以及混合光栅在高分辨率、高密度场景中的性能验收。
+- 页流送的完整关卡验收；设备丢失重建和五档小预算压力已通过上述专项。
 - 默认带灯光天空的关卡验收，以及高密度资产性能与原生同视角对比。
-- 不具备新原子特性的设备兼容路径。
 
 `bSupportsNanite`、`bSupportsUInt64ImageAtomics` 和 Wave 平台声明保持原值；
 RHI 的实际 wave 能力已按获授设备特性与 subgroup 范围填写。
 不能据本轮检查宣称通用 64 位原子、全部 Nanite permutations、真实 Nanite 场景
 或硬件光追已受支持。本轮结果也不能用于估计完整 Nanite 的帧耗时。
 
-下一阶段将已验证的浏览器静态网格常驻资源路径接入完整 Cook 包，
-继续补齐材质分桶、GPUScene/material/view 绑定和材质/GBuffer，统一 Nanite 深度与材质的
-几何来源，再推进 LOD、Compute 微三角形光栅与页流送。
+当前专项包使用重新 Cook 的完整 Villa 资源，真实组件材质已自动绑定，但 Nanite
+仍由专项入口启用。继续补齐其余材质和视图策略、页流送及完整场景验收。
+
+WPO 专项已实现并验收（2026-11-10）：可编程 VS 使用真实 Cook 材质和原生
+Nanite 顶点重建，PS 保留 mask/PDO 竞争；组件/距离策略与 Always Evaluate 分槽
+处理。旋转后的世界位移盒完整变换到局部空间，无法界定的位移跳过视锥/HZB
+剔除并保留全视口材质范围。原生 base pass 输出变形 XYZ 速度，刚性材质继续
+使用原来的合成投影，避免改变深度舍入。实际页流送、重试、淘汰与恢复均使用
+同一变形路径。两种设备合计 268 项、107,900 帧零 GPU 错误，另有 32 个 shader
+排列、52 项 HZB kernel 和 12 项参考拒绝检查；证据为
+`tests/web-platform/evidence/nanite-wpo-20261110.json`。
+
+浏览器内容缓存遇到配额错误时，持有排他锁清理失败写入，再回收无使用租约的
+旧版本和无完成标记的文件，最多重试一次；持续空间不足返回明确错误，后续请求
+可以重试。六类 OPFS 故障和跨标签页租约保护通过。该修复没有证明早先未复现的
+180 秒启动超时与配额问题具有相同原因。Spline 和其余变形、完整材质/视图策略、
+整场景时间重建与性能继续按照完成清单验收。
+
+Spline 专项已实现并验收（2026-11-10）：正常 USplineMeshComponent 代理使用原生七组打包参数，并复用 Nanite 数值样条位置、法线、层级包围盒、LOD 球和误差缩放函数。参数逐帧读取，支持三个前向轴、曲率、滚转、平滑插值、边界、偏移、负截面缩放、组件镜像、单/双面、反向剔除和运行时注销/恢复；真实 WPO、遮罩、PDO 及材质速度继续经过原生材质图。层级流送和 HZB 也在变形后的边界上执行。Web 采用原生数值样条函数，未声称与缓存纹理采样模式逐像素相同。
+
+修复 Tint 不允许无穷常量作为包围盒累积器、显式 FVector4f 数组默认初始化编译失败，以及运行时 Spline 旋转纹理使用 WebGPU 不支持的 RGBA16 SNORM 格式导致断言的问题。旋转缓存改为 RGBA32F，并显式保留有符号 16 位归一化量化，纹理占用由每像素 8 字节增加为 16 字节。原生 Nanite 前后帧均使用当前样条形状，因此仅改变形状的编辑速度沿用原生限制；实例运动、相机运动与 WPO 前后帧速度分别验证。
+
+两种设备配置各 38 项 Spline 检查、各九项变形流送、五档页池预算以及同包 WPO/可编程材质/材质生命周期/合并开关速度合成/刚性流送回归共 452 项、176,775 帧通过，GPU 错误为零。独立样条参考与原生 HLSL GPU 对照 3,096 项通过，最大位置差 4.93e-5、法线分量差 3.28e-7；60 项 HZB kernel 和 28 项参考拒绝检查通过。保留所有失败定位、原始回读、源码/原生 shader/Cook/构建哈希及 16 张截图于 tests/web-platform/evidence/nanite-spline-20261110.json。
+
+同包 WPO 正交运动回归发现参考值未转换到 R32F，导致恰好两个量化级的差异被未量化双精度尾差误判。检查现同时记录原始双精度误差和格式对齐后的误差，保留透视 1e-7、正交 1.2e-7 的原有阈值，并新增三个量化级错误注入的拒绝检查。保存了修正前失败及完整回放结果，未将失败运行计入通过帧数。
+
+本项只关闭上述 Spline 范围；skinning、assemblies、curves、displacement、其余材质/实例/视图、完整关卡时间重建与性能继续按完成表推进。
+
+
+## 普通骨骼组件与低层级绑定连续性（2026-11-11）
+
+普通骨骼组件已完成本项验收：真实代理自动注册，原生骨骼层级包围盒、当前/前帧位置、法线、真实材质图与速度接通。两种设备各 32 项场景、九项流送和 1/2/4/8/24 页预算通过；同包 GPU 实例、距离、Spline、WPO、可编程材质、材质生命周期、合并开关速度和流送回归合计 766 项、300,565 帧，GPU 错误为零。修复 R8/R16 骨骼 typed SRV 创建断言与 skinned material tile 拒绝。低预算复现的 31 个内部漏点来自原生简化后重合顶点的骨骼权重不一致；工作区 NaniteBuilder 现对简化位置统一选择最近原始绑定，保留原始刻意分离的权重接缝及法线/UV，并规范化正负零查询键。15 项原生检查、2,048 次独立最近点对照、30 个材质 shader、14 项 tile 和 38 项 RHI 检查通过；CPU 对实际选中几何的覆盖与 GPU 一致，低层级分裂绑定清零。旧按固定 50 点判断轮廓的检查改为双向一采样格边界，内部缺口仍必须为零、深度上限不变、全驻留逐位一致；15 项蒙皮和九项预算错误拒绝通过，旧裂缝仍拒绝。沿用原生骨骼 Nanite 默认白顶点色及普通骨骼代理不使用默认动画尺寸阈值的语义，未把实例化骨骼策略计入完成。保留全部失败现场、原始回读及源码/构建/Cook 哈希，证据为 `tests/web-platform/evidence/nanite-skinning-20261111.json`。**实例化骨骼的动画尺寸策略、assemblies、curves、displacement、其余材质/视图、完整关卡时间重建与性能继续开放；全部完成后才交付完整版本。**
+
+完整 WASM 目标链接与新 Cook 均通过。原生构建只在工作区覆盖中执行，并验证安装目录输入哈希未改变；Cook 主机对 Renderer/RenderCore 产物和 NaniteBuilder 激活分别审计，防止把旧 DLL 与新源码证据混用。重建后的 DDC 版本带 SKINNING_WELD_2，正负零接缝用例曾在 v1 失败，其失败记录与修复后的 15 项检查一并保存。
+
+预算比较原先的固定 50 点阈值在修复后产生 90 个边界差异；独立几何投影确认内部无洞，所有变化在一采样格内。因此改用与周长无关的双向边界包络，新增内部单点缺口、空几何、远处孤点、额外内部区域、深度、遮罩、stencil 和未全驻留错误的拒绝检查；未将旧失败运行计入通过帧数。

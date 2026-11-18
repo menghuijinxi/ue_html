@@ -1,5 +1,32 @@
 const branch = (before, lines) => ({before, after: lines.join('\n')});
-module.exports = [['Private/Nanite/NaniteTranscode.usf', [
+module.exports = [['Private/Nanite/NaniteVertexFetch.ush', [
+  branch('\t// NOTE: We assume non-negative scale. Otherwise, we\'d have to flip the binormal sign and reverse the winding order', [
+    '#if WEB_NANITE_ASSEMBLY_SUPPORT',
+    '    // Web raster reverses per-part winding separately; preserve the tangent',
+    '    // basis handedness for mirrored parts in native material reconstruction.',
+    '    if (determinant((float3x3)AssemblyTransform) < 0)',
+    '        Vert.RawAttributeData.TangentXAndSign.w *= -1.0f;',
+    '#endif',
+    '\t// Native platforms retain their existing assembly vertex behavior.',
+  ]),
+]], ['Private/Nanite/NaniteVertexFactory.ush', [
+  branch('\tVertexParameters.SceneData.Primitive\t= PrimitiveData;', [
+    '\tVertexParameters.SceneData.Primitive\t= PrimitiveData;',
+    '#if COMPILER_WEBGPU && ALWAYS_EVALUATE_WORLD_POSITION_OFFSET',
+    '\t// This material overrides the component switch, including the check in',
+    '\t// MaterialTemplate. Keep the override local so other slots retain their policy.',
+    '\tVertexParameters.SceneData.Primitive.Flags |= PRIMITIVE_SCENE_DATA_FLAG_EVALUATE_WORLD_POSITION_OFFSET;',
+    '#endif',
+  ]),
+]], ['Private/Nanite/NaniteStreaming.ush', [
+  branch('\t\tWaveInterlockedAddScalar_(RequestsBuffer[0].RuntimeResourceID_Magic, 1, Index);', [
+    '#if COMPILER_WEBGPU',
+    '\t\t// Visible leaves diverge across a subgroup. Use one scalar atomic per',
+    '\t\t// request; preserve native request packing, bounds and version magic.',
+    '\t\tInterlockedAdd(RequestsBuffer[0].RuntimeResourceID_Magic, 1, Index);',
+    '#else', '\t\tWaveInterlockedAddScalar_(RequestsBuffer[0].RuntimeResourceID_Magic, 1, Index);', '#endif',
+  ]),
+]], ['Private/Nanite/NaniteTranscode.usf', [
   branch('\tBRANCH\n\tif (ClusterDiskHeader.NumVertexRefs == 0)\n\t{\n\t\treturn;\n\t}', [
     '#if !COMPILER_WEBGPU', '\tBRANCH', '\tif (ClusterDiskHeader.NumVertexRefs == 0)',
     '\t{', '\t\treturn;', '\t}', '#endif',

@@ -2,6 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
 const {chromium} = require('playwright');
+const {audit} = require('./content-file-metadata.cjs');
 const processMemory = require('./gpu-process-memory.cjs');
 const option = name => process.argv.find(arg => arg.startsWith(`--${name}=`))?.slice(name.length + 3);
 const tag = option('tag'), folder = option('folder') || 'triplex-project-distance-fields-threads';
@@ -11,16 +12,34 @@ const width = Number(option('width') || 1280), height = Number(option('height') 
 const dpr = Number(option('dpr') || 1), warmup = Number(option('warmup') || 90);
 const output = path.join(__dirname, 'results', `cpu-${tag}`);
 const report = {date: new Date().toISOString(), tag, folder, seconds, width, height, dpr,
+  source: audit(__filename),
   cameraMode: process.argv.includes('--spawn') ? 'original-spawn' : 'fixed-room-wall',
   settingsOverrides: [], samples: [], errors: [], pass: false};
+const naniteOff = process.argv.includes('--nanite-off');
+const rasterBatch = option('nanite-raster-batch');
+const materialBatch = option('nanite-material-batch');
+const primitiveVisibility = option('nanite-primitive-visibility');
+assert(primitiveVisibility === undefined || primitiveVisibility === '0' || primitiveVisibility === '1');
+assert(materialBatch === undefined || /^(?:[0-9]|[12][0-9]|3[0-2])$/.test(materialBatch));
+assert(rasterBatch === undefined || rasterBatch === '0' || rasterBatch === '1');
 let context;
 function countGPUCalls() {
   const counts = globalThis.__cpuGPUCalls = {};
   for (const [prototype, names] of [[GPUDevice.prototype, ['createBindGroup', 'createBuffer']],
-    [GPUQueue.prototype, ['submit', 'writeBuffer']], [GPURenderPassEncoder.prototype, ['draw', 'drawIndexed']]]) {
+    [GPUQueue.prototype, ['submit', 'writeBuffer']],
+    [GPUCommandEncoder.prototype, ['beginRenderPass', 'beginComputePass']],
+    [GPURenderPassEncoder.prototype, ['draw', 'drawIndexed', 'drawIndirect', 'drawIndexedIndirect']],
+    [GPUComputePassEncoder.prototype, ['dispatchWorkgroups', 'dispatchWorkgroupsIndirect']]]) {
     for (const name of names) {
       const original = prototype[name];
-      prototype[name] = function(...args) { counts[name] = (counts[name] || 0) + 1; return original.apply(this, args); };
+      prototype[name] = function(...args) {
+        counts[name] = (counts[name] || 0) + 1;
+        if (name === 'beginRenderPass' || name === 'beginComputePass') {
+          const label = name + ':' + (args[0]?.label || '(unlabelled)');
+          counts[label] = (counts[label] || 0) + 1;
+        }
+        return original.apply(this, args);
+      };
     }
   }
 }
@@ -40,6 +59,13 @@ function summarize(profile) {
 }
 (async () => {
   try {
+    const packageFile = path.join(__dirname, 'build', folder, 'package.json');
+    if (fs.existsSync(packageFile)) {
+      report.package = audit(packageFile);
+      const packaged = JSON.parse(fs.readFileSync(packageFile, 'utf8'));
+      assert(packaged.pass);
+      for (const product of packaged.products) assert.equal(audit(product.file).sha256, product.sha256, product.file);
+    }
     context = await chromium.launchPersistentContext(path.join(__dirname, 'build/browser-profiles', 'cpu-villa'),
       {channel: 'msedge', headless: !process.argv.includes('--visible'), viewport: {width, height}, deviceScaleFactor: dpr});
     await context.route('**/web-engine-worker.js?*', async route => {
@@ -58,6 +84,38 @@ function summarize(profile) {
     assert(!await page.evaluate(() => globalThis.__webEngineFailure));
     const owner = page.workers().find(worker => worker.url().includes('web-engine-worker.js'));
     assert(owner);
+    if (rasterBatch !== undefined) {
+      assert.equal(await page.evaluate(v => __webEngineRPC('WebNaniteRasterBatchTest', v), Number(rasterBatch)), 1);
+      report.settingsOverrides.push({naniteRasterBatch: Number(rasterBatch)});
+    }
+    if (materialBatch !== undefined) {
+      assert.equal(await page.evaluate(v => __webEngineRPC('WebNaniteMaterialPassBatchTest', v), Number(materialBatch)), 1);
+      report.settingsOverrides.push({naniteMaterialPassBatch: Number(materialBatch)});
+    }
+    report.visualClock = await owner.evaluate(() => globalThis.__webVisualTestClock || null);
+    if (primitiveVisibility !== undefined) {
+      assert.equal(await page.evaluate(v => __webEngineRPC('WebNanitePrimitiveVisibilityTest', v), Number(primitiveVisibility)), 1);
+      report.settingsOverrides.push({nanitePrimitiveVisibility: Number(primitiveVisibility)});
+    }
+    assert(!report.visualClock?.renderTimeFrozen && !report.visualClock?.materialTimeFrozen, 'Game performance requires advancing render and material clocks');
+    if (naniteOff || rasterBatch !== undefined || materialBatch !== undefined || primitiveVisibility !== undefined) {
+      for (const step of naniteOff ? [1, 2] : [1]) {
+        assert.equal(await page.evaluate(s => __webEngineRPC('WebNaniteAutomaticSceneTest', s), step), 1);
+        const start = Date.now(); let value;
+        do {
+          await page.waitForTimeout(100);
+          assert.equal(await page.evaluate(() => __webEngineRPC('WebNaniteAutomaticSceneTest', 0)), 1);
+          value = await owner.evaluate(() => globalThis.__webNaniteAutomaticSceneTest);
+        } while ((!value || value.step !== step) && Date.now() - start < 120000);
+        assert.equal(value?.step, step); assert.equal(value.enabled, step === 1);
+        if (step === 2) assert.equal(value.entries, 0);
+        if (rasterBatch !== undefined) assert.equal(value.rasterBatch, rasterBatch === '1');
+        if (materialBatch !== undefined) { assert.equal(value.materialPassBatch, materialBatch !== '0'); assert.equal(value.materialPassBatchMode, Number(materialBatch)); }
+        if (primitiveVisibility !== undefined) assert.equal(value.primitiveVisibility, primitiveVisibility === '1');
+        report.nanite = {enabled: value.enabled, primitiveVisibility: value.primitiveVisibility, primitiveVisibilitySkipped: value.primitiveVisibilitySkipped, rasterBatch: value.rasterBatch, materialPassBatch: value.materialPassBatch, materialPassBatchMode: value.materialPassBatchMode, registered: value.registered, entries: value.entries};
+      }
+      if (naniteOff) report.settingsOverrides.push({nanite: false, verifiedEntries: 0});
+    }
     const cdp = await context.browser().newBrowserCDPSession();
     const {targetInfos} = await cdp.send('Target.getTargets');
     const target = targetInfos.find(target => target.type === 'worker' && target.url.includes('web-engine-worker.js'));

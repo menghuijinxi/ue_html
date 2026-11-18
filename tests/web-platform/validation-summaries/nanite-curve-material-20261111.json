@@ -1,0 +1,940 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-curve-material-20261111.json",
+    "bytes": 1062555,
+    "sha256": "29c0d63a7f676283c3167488e501a6aa190c4a66d8ff17f41a2377820bf96d12",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-11T02:42:07.073Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-curve-material-evidence.cjs",
+      "sha256": "ae4c154b9ebc862ba80879f956adb609eddedb375d1a5b1b6b3ec0ad276d2405"
+    },
+    "gpu": {
+      "pass": true,
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-nanite-curve-material-index.cjs",
+        "sha256": "729ebf18db3d6534605a43e60b835ba926a04d57ef060b3a49dc651a85e33d8e"
+      },
+      "inputs": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\NaniteAttributeDecode.ush",
+          "sha256": "7b08052b6b642e74e782cf48da194eca485b8df3783a4c484ab216841e5f1516"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-index\\original-NaniteAttributeDecode.ush",
+          "sha256": "ddb02a92be11c7f463a53d743dfe9df0550dc57590902a3eaeec3c9543b3b757"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\WebNaniteCurves.ush",
+          "sha256": "05e0b7fb964afa22e6989dd44293b5179170fffeadc8965e93a2b00dd5e13774"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-index\\cases.bin",
+          "sha256": "3560870f91a87ae029cfe7c03d37bbdbd3fdbdf9b831f71418d65c0212ed59f1"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-index\\tables.bin",
+          "sha256": "04a6fb4d9f89a5adde02be56b11b61af062406c1b56e1d2045028be92668dc73"
+        }
+      ],
+      "results": [
+        {
+          "name": "old",
+          "failures": [
+            86501,
+            86501,
+            86501,
+            86501,
+            0,
+            0
+          ],
+          "cases": 116288,
+          "readback": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-index\\old-readback.bin",
+            "sha256": "8f2956e8592966005a9c45ac66d547209db3717bfc79ace10f4801bcea193416"
+          },
+          "files": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-index\\old.hlsl",
+              "sha256": "facaf56d443348506c385182cdfd81b63140f6d848b6c26beec51a6787b55ea6"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-index\\old.spv",
+              "sha256": "3bf3fb94abf5e11477e74f92045124c97a7a0ff054877ad71d6f01c8e780fc74"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-index\\old.wgsl",
+              "sha256": "2276264f13ff08fcdf983e818e720126bec733c3283cbb8d1a60b276310d7913"
+            }
+          ]
+        },
+        {
+          "name": "current",
+          "failures": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "cases": 116288,
+          "readback": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-index\\current-readback.bin",
+            "sha256": "dbf7162217a6c632e19abb9164287c65792ebc6721259722562630e8de784be4"
+          },
+          "files": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-index\\current.hlsl",
+              "sha256": "7915b0f954e13d3d219a30b63ad2d4ba1869f21d85c36bbedad45859a543d378"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-index\\current.spv",
+              "sha256": "ab05895a8deb14e2c93b905e0076ecc633388dd8a1db1ef6dc4091df4b5f64df"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\material-index\\current.wgsl",
+              "sha256": "3605da1c13eba3e6fc4ab5bd2da22d6526e541583bd063b9725a18a790778c5a"
+            }
+          ]
+        }
+      ]
+    },
+    "native": {
+      "pass": true,
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-nanite-curves-native-preflight.cjs",
+        "sha256": "5f1d62d94e429f76652c7fd82c073b341577848d52b392c8439c0666b1498d19"
+      },
+      "input": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\input.json",
+        "sha256": "4cd80c07abac8a46e824985491ee16cc947127738e2043ca4c6dde1245cd209c"
+      },
+      "run": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\run.json",
+        "sha256": "d52f48d6994dd20bf3ef4045f52ec8c568c4af401d2f1b1438a0d06cb989bf21"
+      },
+      "results": [
+        {
+          "name": "preflight-small-1",
+          "covered": 454,
+          "materialSamples": [
+            220,
+            234
+          ],
+          "maxColorError": 0.39964522731078894,
+          "maxMaterialError": 0.0019608139991760254,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-1.json",
+              "sha256": "ca69ac55b5bf54a2038c522ed8accff7727a3eb427c5cadba8c3cb4f153dfd0d"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-1.bin",
+              "sha256": "56eb5c03e6f32a6abf603ed223ca8ecec56284a46df99b9b4303ecd74501b1de"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-1.png",
+              "sha256": "0e77ce14f01f6a8e4f612efed5383c97b0d3657ccf762602d02b820f48d49a6e"
+            }
+          ]
+        },
+        {
+          "name": "preflight-small-2",
+          "covered": 332,
+          "materialSamples": [
+            157,
+            175
+          ],
+          "maxColorError": 0.39964522731078894,
+          "maxMaterialError": 0.0019608139991760254,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-2.json",
+              "sha256": "fcbb467401227caa68e6ad357ea6d0d0674413152464df571624dabc2dd6867e"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-2.bin",
+              "sha256": "031e997ba27030a8f996494eccdbeb8dd4bc8cd7fe1bb62a5dd81d9f692af891"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-2.png",
+              "sha256": "52c12785d4ce3a9bfaa437aaef18bfe59f79209a8b1de2b0ff0dee93a4800a57"
+            }
+          ]
+        },
+        {
+          "name": "preflight-small-3",
+          "covered": 383,
+          "materialSamples": [
+            205,
+            178
+          ],
+          "maxColorError": 0.39964522731078894,
+          "maxMaterialError": 0.0019608139991760254,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-3.json",
+              "sha256": "dfb26e107c2383273668d3e481632eee1b333bd5cb7400443b4870da915c77d0"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-3.bin",
+              "sha256": "4e27a4b316e10f8500f054d70a9e126c3aea6147bedfa57524eb18e00441684a"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-3.png",
+              "sha256": "c5fe01ba1e1bf622e2743357464806adaab42a8ee0c0c9cefd8a754c13aeb18f"
+            }
+          ]
+        },
+        {
+          "name": "preflight-small-4",
+          "covered": 647,
+          "materialSamples": [
+            337,
+            310
+          ],
+          "maxColorError": 0.39964522731078894,
+          "maxMaterialError": 0.0019608139991760254,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-4.json",
+              "sha256": "ff350ff2ff803866889d92557d73b1829c4f653936f5d5239eda04205f81e427"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-4.bin",
+              "sha256": "27fc963f1b8baad33bd7e39a4580b395c286c5e8d21ea01e9f099d58ae781268"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-4.png",
+              "sha256": "97a138a37be0d654ff9f9dcb695c482edc68a9b41212d2058fbd1f5157127957"
+            }
+          ]
+        },
+        {
+          "name": "preflight-small-10",
+          "covered": 454,
+          "materialSamples": [
+            215,
+            239
+          ],
+          "maxColorError": 0.39964522731078894,
+          "maxMaterialError": 0.0019608139991760254,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-10.json",
+              "sha256": "2fc2d900eb2bb59592a20a68c138515f177e030a7fd5068a5e645b4e08b9a640"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-10.bin",
+              "sha256": "bd3152c88adda8120fee44e5b81c1d7b207d6801b5b8684e4e4d8b5b8589c9b5"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-10.png",
+              "sha256": "0503caa7cde2d81b37186e756c4e26e64c9ddf59d62216a3123c2867b6d4eb1c"
+            }
+          ]
+        },
+        {
+          "name": "preflight-small-24",
+          "covered": 454,
+          "materialSamples": [
+            112,
+            131,
+            211
+          ],
+          "maxColorError": 0.39964522731078894,
+          "maxMaterialError": 0.0019608139991760254,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-24.json",
+              "sha256": "260a08bf4d1097758fac14252ca8efff581f93bb76da8b772b2f5ea9041a001a"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-24.bin",
+              "sha256": "b1b4bcf8988be65e5949e1328dd48dfe77f134a2aeb353ab4fdb0c2876cbd404"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-24.png",
+              "sha256": "1f3960f68c7eab6a80ce8025ae13524525091e2997afb6202d1e136e1bf3072c"
+            }
+          ]
+        },
+        {
+          "name": "preflight-small-32",
+          "covered": 454,
+          "materialSamples": [
+            112,
+            131,
+            211
+          ],
+          "maxColorError": 0.39964522731078894,
+          "maxMaterialError": 0.0019608139991760254,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-32.json",
+              "sha256": "b9859936e139890a1513e267dbdc7e807257084d5370ab227fa759a94af8ef46"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-32.bin",
+              "sha256": "a0eaa612ffabb87791c3d6330e14194e549a5d3e99f4e934a4bd2973d29b09b3"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-32.png",
+              "sha256": "3d80e4a09ac877d29db74bc76c410b331555981219ba62853c731f35e4693d3b"
+            }
+          ]
+        },
+        {
+          "name": "preflight-long-1",
+          "covered": 248,
+          "materialSamples": [
+            129,
+            119
+          ],
+          "maxColorError": 0.39964522731078894,
+          "maxMaterialError": 0.0019608139991760254,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-1.json",
+              "sha256": "ca69ac55b5bf54a2038c522ed8accff7727a3eb427c5cadba8c3cb4f153dfd0d"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-1.bin",
+              "sha256": "1c8ff3fde508b0579bf3efc75d9db3bd6cace811cb82b31a03c5f3baa5d042d4"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-1.png",
+              "sha256": "7831eae045eec1cc184c40ccca5d071829d54576cf003abb43126af1c0ad312f"
+            }
+          ]
+        },
+        {
+          "name": "preflight-long-2",
+          "covered": 193,
+          "materialSamples": [
+            97,
+            96
+          ],
+          "maxColorError": 0.39964522731078894,
+          "maxMaterialError": 0.0019608139991760254,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-2.json",
+              "sha256": "fcbb467401227caa68e6ad357ea6d0d0674413152464df571624dabc2dd6867e"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-2.bin",
+              "sha256": "048b2f55867975abcc1c2b42c880f9bfb9f66daa1ec44059f9b79f1fbb271126"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-2.png",
+              "sha256": "71d3c6109365ee1a23e8a6457d726ca7cabf538103b54cf15106fcbb58a06d1f"
+            }
+          ]
+        },
+        {
+          "name": "preflight-long-3",
+          "covered": 235,
+          "materialSamples": [
+            144,
+            91
+          ],
+          "maxColorError": 0.39964522731078894,
+          "maxMaterialError": 0.0019608139991760254,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-3.json",
+              "sha256": "dfb26e107c2383273668d3e481632eee1b333bd5cb7400443b4870da915c77d0"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-3.bin",
+              "sha256": "b2d666c5ebb39c1ad353d3c125ae091fe5d8e1cd16afc1c41be3a52190362827"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-3.png",
+              "sha256": "3761cff16b06092e8dad7e442603a07c26583f299068e73e414abf54098cada1"
+            }
+          ]
+        },
+        {
+          "name": "preflight-long-4",
+          "covered": 351,
+          "materialSamples": [
+            173,
+            178
+          ],
+          "maxColorError": 0.39964522731078894,
+          "maxMaterialError": 0.0019608139991760254,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-4.json",
+              "sha256": "ff350ff2ff803866889d92557d73b1829c4f653936f5d5239eda04205f81e427"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-4.bin",
+              "sha256": "080e77318cf49979d821f885106991266fe360a27a88ccf8397553b9f0509837"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-4.png",
+              "sha256": "8510af77a648a8aa793c4f9a6fe9cc70da09f2bd42b3ae1da1c1ac7c1e1ff295"
+            }
+          ]
+        },
+        {
+          "name": "preflight-long-10",
+          "covered": 248,
+          "materialSamples": [
+            122,
+            126
+          ],
+          "maxColorError": 0.39964522731078894,
+          "maxMaterialError": 0.0019608139991760254,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-10.json",
+              "sha256": "2fc2d900eb2bb59592a20a68c138515f177e030a7fd5068a5e645b4e08b9a640"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-10.bin",
+              "sha256": "8106d1f2ae39b2b3b7798f60d88f6a3c9d7b8abd6450b5dc2dbe1c06e7817e36"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-10.png",
+              "sha256": "b4a9f1b3238aeb9854e4b4d4c17bc49a5659af7205278df79743bc414f031dde"
+            }
+          ]
+        },
+        {
+          "name": "preflight-long-24",
+          "covered": 248,
+          "materialSamples": [
+            71,
+            68,
+            109
+          ],
+          "maxColorError": 0.39964522731078894,
+          "maxMaterialError": 0.0019608139991760254,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-24.json",
+              "sha256": "260a08bf4d1097758fac14252ca8efff581f93bb76da8b772b2f5ea9041a001a"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-24.bin",
+              "sha256": "4e83ead411fc3fa47259ec4e4a7b09435f6089ad2cd41b38c018c817174f92e0"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-24.png",
+              "sha256": "bfb763cb34ab947fce7caa4beff660a2f171192aec68210f41ac667ed70b46bd"
+            }
+          ]
+        },
+        {
+          "name": "preflight-long-32",
+          "covered": 248,
+          "materialSamples": [
+            71,
+            68,
+            109
+          ],
+          "maxColorError": 0.39964522731078894,
+          "maxMaterialError": 0.0019608139991760254,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-32.json",
+              "sha256": "b9859936e139890a1513e267dbdc7e807257084d5370ab227fa759a94af8ef46"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-32.bin",
+              "sha256": "a7a011612e2bf82357aee097d80ca771f9bff954869fa92569945078a98a6dab"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-32.png",
+              "sha256": "b607aa67d0f3ff28f6a761633041fccd96519052c9be470f1486111596afea83"
+            }
+          ]
+        },
+        {
+          "name": "preflight-streaming-1",
+          "covered": 3946,
+          "materialSamples": [
+            1912,
+            2034
+          ],
+          "maxColorError": 0.39964522731078894,
+          "maxMaterialError": 0.0019608139991760254,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-1.json",
+              "sha256": "4ef1228d8c46e0688e89469b7311df513bbb845756e1b4d62f8f1d7c583a5855"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-1.bin",
+              "sha256": "38db7200d2397b814e6403ccc47e4e1a6e32b9693cb28f6a92821e7d661280c6"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-1.png",
+              "sha256": "c93727a8eead93a57fc91df20ddf88c67a7ef25fa9b8cdc94252c8ac1b2763c8"
+            }
+          ]
+        },
+        {
+          "name": "preflight-streaming-2",
+          "covered": 3165,
+          "materialSamples": [
+            626,
+            2539
+          ],
+          "maxColorError": 0.39964522731078894,
+          "maxMaterialError": 0.0019608139991760254,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-2.json",
+              "sha256": "a6d9ca6a1ce8215d2bb447c1227068ef5ebfaa4d3b25bc7aa63ce903111966be"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-2.bin",
+              "sha256": "2114ded79520844c75a7fbf06ddda6e91409d50f3f41cbf0168ab083fe19ad75"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-2.png",
+              "sha256": "794f835142372ac212ec604d877ad678aea96ed2a1743759adfc7dc6b228f31a"
+            }
+          ]
+        },
+        {
+          "name": "preflight-streaming-3",
+          "covered": 3254,
+          "materialSamples": [
+            623,
+            2631
+          ],
+          "maxColorError": 0.39964522731078894,
+          "maxMaterialError": 0.0019608139991760254,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-3.json",
+              "sha256": "88911a2e7d80a18f65eafcbd23da082de7cdfc05f4cad3fec28aae7e242393dc"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-3.bin",
+              "sha256": "07937702839bfde20cb3e87aae64a05f53ae03628719b73aed8c5d0cf4d9c4ab"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-3.png",
+              "sha256": "19e6bd754df47444c62ce3224fa814b4f085091d4a873a07370edafcabcdc84f"
+            }
+          ]
+        },
+        {
+          "name": "preflight-streaming-4",
+          "covered": 4139,
+          "materialSamples": [
+            1951,
+            2188
+          ],
+          "maxColorError": 0.39964522731078894,
+          "maxMaterialError": 0.0019608139991760254,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-4.json",
+              "sha256": "8873926c5260923e2c63153f249195f04bfa59ff001c1a9ce5c1dfec5092aae5"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-4.bin",
+              "sha256": "4fba8ecf8b31816ab975f4dd0412fa31784804cf3fb8d2ca175635c79b5c0d29"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-4.png",
+              "sha256": "b74c5f70ff9136b4119d51de8ad34deee463c39a567432c008de56f3cac3f183"
+            }
+          ]
+        },
+        {
+          "name": "preflight-streaming-10",
+          "covered": 3946,
+          "materialSamples": [
+            395,
+            3551
+          ],
+          "maxColorError": 0.39964522731078894,
+          "maxMaterialError": 0.0019608139991760254,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-10.json",
+              "sha256": "37e83cd23d94bf94a8afa2a80ac563f140cf52115ea12f4b030383b9e252b128"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-10.bin",
+              "sha256": "4c620c8be13db1e66cf2ec28b44854d0fa0cecf7aeb09535fb3ba79aeae6b6c6"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-10.png",
+              "sha256": "58641ae049005d42ea00dbd36dc62db4962f957d002c1221cc31564be2dfb52f"
+            }
+          ]
+        },
+        {
+          "name": "preflight-streaming-24",
+          "covered": 3946,
+          "materialSamples": [
+            206,
+            1845,
+            1895
+          ],
+          "maxColorError": 0.39964522731078894,
+          "maxMaterialError": 0.0019608139991760254,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-24.json",
+              "sha256": "ddb78310a86405af46cb10b261edd930e8dfc902fdd98e71252f210ef851f8db"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-24.bin",
+              "sha256": "a30fe38a0d648d022bd693ee097a04832398dea79a64ed1bce0412c76a4738e3"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-24.png",
+              "sha256": "9ef252e441ced2e817a2d17f1a396643d09b76bff66c03a8b6c92f87d9b04601"
+            }
+          ]
+        },
+        {
+          "name": "preflight-streaming-32",
+          "covered": 3946,
+          "materialSamples": [
+            206,
+            1845,
+            1895
+          ],
+          "maxColorError": 0.39964522731078894,
+          "maxMaterialError": 0.0019608139991760254,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-32.json",
+              "sha256": "8196e05ae16811c0d46e439243c173d0a20b0a12121e993e96095cf0854afab6"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-32.bin",
+              "sha256": "a347f78858b75bc7427fe63a804f9c6ceabb24a538a1fb2d144f03fcc638be57"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-32.png",
+              "sha256": "53353abb08b6e5fd68064f141539d00285834f6274a59cdb0773ec38ecf8fe7a"
+            }
+          ]
+        }
+      ],
+      "boundary": "Native-only 21 views check actual Nanite components and authored/override surface materials, including streaming and long curves. Does not replace browser-derived native/Web coverage, depth and normal comparison."
+    },
+    "run": {
+      "log": {
+        "$omitted": true,
+        "reason": "Full diagnostic data is retained in the original report",
+        "type": "object",
+        "bytes": 182,
+        "sha256": "9be7428201fbd66a1aa68af7e7dd09286fa91cd68886c7d5bc8f3e2f7f963db0"
+      },
+      "arguments": [
+        "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\fixture-host\\WebCurveFixture.uproject",
+        "/Engine/Maps/Templates/Template_Default",
+        "-WebGroomNativeCapture=G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\input.json",
+        "-CurveShaderRoot=G:\\UE_HTML\\ue_html\\.tools\\ue58-native-groom-shaders",
+        "-abslog=G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\native.log",
+        "-culture=en",
+        "-d3d12",
+        "-sm6",
+        "-RenderOffscreen",
+        "-NoSplash",
+        "-NoSound",
+        "-NoLoadingScreen",
+        "-unattended",
+        "-nop4",
+        "-windowed",
+        "-NoThrottleCPU",
+        "-corelimit=8",
+        "-ini:Engine:[SystemSettings]:r.Nanite.AllowCurves=1,[SystemSettings]:r.HairStrands.Nanite=1,[SystemSettings]:r.HairStrands.Nanite.MaxPointPerCurve=256,[SystemSettings]:r.AntiAliasingMethod=0,[SystemSettings]:r.ScreenPercentage=100",
+        "-ini:EditorPerProjectUserSettings:[/Script/UnrealEd.EditorPerformanceSettings]:bThrottleCPUWhenNotForeground=False"
+      ],
+      "preflight": true,
+      "pass": true,
+      "sources": {
+        "$omitted": true,
+        "reason": "Large array",
+        "type": "array",
+        "entries": 1278,
+        "bytes": 239780,
+        "sha256": "5951af6a7e027def52bfd15e0df11e92f045227d4c32c35ffedbbd23db9bb5d0"
+      },
+      "captures": [
+        {
+          "sha256": "56eb5c03e6f32a6abf603ed223ca8ecec56284a46df99b9b4303ecd74501b1de",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-1.bin"
+        },
+        {
+          "sha256": "ca69ac55b5bf54a2038c522ed8accff7727a3eb427c5cadba8c3cb4f153dfd0d",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-1.json"
+        },
+        {
+          "sha256": "0e77ce14f01f6a8e4f612efed5383c97b0d3657ccf762602d02b820f48d49a6e",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-1.png"
+        },
+        {
+          "sha256": "031e997ba27030a8f996494eccdbeb8dd4bc8cd7fe1bb62a5dd81d9f692af891",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-2.bin"
+        },
+        {
+          "sha256": "fcbb467401227caa68e6ad357ea6d0d0674413152464df571624dabc2dd6867e",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-2.json"
+        },
+        {
+          "sha256": "52c12785d4ce3a9bfaa437aaef18bfe59f79209a8b1de2b0ff0dee93a4800a57",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-2.png"
+        },
+        {
+          "sha256": "4e27a4b316e10f8500f054d70a9e126c3aea6147bedfa57524eb18e00441684a",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-3.bin"
+        },
+        {
+          "sha256": "dfb26e107c2383273668d3e481632eee1b333bd5cb7400443b4870da915c77d0",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-3.json"
+        },
+        {
+          "sha256": "c5fe01ba1e1bf622e2743357464806adaab42a8ee0c0c9cefd8a754c13aeb18f",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-3.png"
+        },
+        {
+          "sha256": "27fc963f1b8baad33bd7e39a4580b395c286c5e8d21ea01e9f099d58ae781268",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-4.bin"
+        },
+        {
+          "sha256": "ff350ff2ff803866889d92557d73b1829c4f653936f5d5239eda04205f81e427",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-4.json"
+        },
+        {
+          "sha256": "97a138a37be0d654ff9f9dcb695c482edc68a9b41212d2058fbd1f5157127957",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-4.png"
+        },
+        {
+          "sha256": "bd3152c88adda8120fee44e5b81c1d7b207d6801b5b8684e4e4d8b5b8589c9b5",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-10.bin"
+        },
+        {
+          "sha256": "2fc2d900eb2bb59592a20a68c138515f177e030a7fd5068a5e645b4e08b9a640",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-10.json"
+        },
+        {
+          "sha256": "0503caa7cde2d81b37186e756c4e26e64c9ddf59d62216a3123c2867b6d4eb1c",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-10.png"
+        },
+        {
+          "sha256": "b1b4bcf8988be65e5949e1328dd48dfe77f134a2aeb353ab4fdb0c2876cbd404",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-24.bin"
+        },
+        {
+          "sha256": "260a08bf4d1097758fac14252ca8efff581f93bb76da8b772b2f5ea9041a001a",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-24.json"
+        },
+        {
+          "sha256": "1f3960f68c7eab6a80ce8025ae13524525091e2997afb6202d1e136e1bf3072c",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-24.png"
+        },
+        {
+          "sha256": "a0eaa612ffabb87791c3d6330e14194e549a5d3e99f4e934a4bd2973d29b09b3",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-32.bin"
+        },
+        {
+          "sha256": "b9859936e139890a1513e267dbdc7e807257084d5370ab227fa759a94af8ef46",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-32.json"
+        },
+        {
+          "sha256": "3d80e4a09ac877d29db74bc76c410b331555981219ba62853c731f35e4693d3b",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-small-32.png"
+        },
+        {
+          "sha256": "1c8ff3fde508b0579bf3efc75d9db3bd6cace811cb82b31a03c5f3baa5d042d4",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-1.bin"
+        },
+        {
+          "sha256": "ca69ac55b5bf54a2038c522ed8accff7727a3eb427c5cadba8c3cb4f153dfd0d",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-1.json"
+        },
+        {
+          "sha256": "7831eae045eec1cc184c40ccca5d071829d54576cf003abb43126af1c0ad312f",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-1.png"
+        },
+        {
+          "sha256": "048b2f55867975abcc1c2b42c880f9bfb9f66daa1ec44059f9b79f1fbb271126",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-2.bin"
+        },
+        {
+          "sha256": "fcbb467401227caa68e6ad357ea6d0d0674413152464df571624dabc2dd6867e",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-2.json"
+        },
+        {
+          "sha256": "71d3c6109365ee1a23e8a6457d726ca7cabf538103b54cf15106fcbb58a06d1f",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-2.png"
+        },
+        {
+          "sha256": "b2d666c5ebb39c1ad353d3c125ae091fe5d8e1cd16afc1c41be3a52190362827",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-3.bin"
+        },
+        {
+          "sha256": "dfb26e107c2383273668d3e481632eee1b333bd5cb7400443b4870da915c77d0",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-3.json"
+        },
+        {
+          "sha256": "3761cff16b06092e8dad7e442603a07c26583f299068e73e414abf54098cada1",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-3.png"
+        },
+        {
+          "sha256": "080e77318cf49979d821f885106991266fe360a27a88ccf8397553b9f0509837",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-4.bin"
+        },
+        {
+          "sha256": "ff350ff2ff803866889d92557d73b1829c4f653936f5d5239eda04205f81e427",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-4.json"
+        },
+        {
+          "sha256": "8510af77a648a8aa793c4f9a6fe9cc70da09f2bd42b3ae1da1c1ac7c1e1ff295",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-4.png"
+        },
+        {
+          "sha256": "8106d1f2ae39b2b3b7798f60d88f6a3c9d7b8abd6450b5dc2dbe1c06e7817e36",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-10.bin"
+        },
+        {
+          "sha256": "2fc2d900eb2bb59592a20a68c138515f177e030a7fd5068a5e645b4e08b9a640",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-10.json"
+        },
+        {
+          "sha256": "b4a9f1b3238aeb9854e4b4d4c17bc49a5659af7205278df79743bc414f031dde",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-10.png"
+        },
+        {
+          "sha256": "4e83ead411fc3fa47259ec4e4a7b09435f6089ad2cd41b38c018c817174f92e0",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-24.bin"
+        },
+        {
+          "sha256": "260a08bf4d1097758fac14252ca8efff581f93bb76da8b772b2f5ea9041a001a",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-24.json"
+        },
+        {
+          "sha256": "bfb763cb34ab947fce7caa4beff660a2f171192aec68210f41ac667ed70b46bd",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-24.png"
+        },
+        {
+          "sha256": "a7a011612e2bf82357aee097d80ca771f9bff954869fa92569945078a98a6dab",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-32.bin"
+        },
+        {
+          "sha256": "b9859936e139890a1513e267dbdc7e807257084d5370ab227fa759a94af8ef46",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-32.json"
+        },
+        {
+          "sha256": "b607aa67d0f3ff28f6a761633041fccd96519052c9be470f1486111596afea83",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-long-32.png"
+        },
+        {
+          "sha256": "38db7200d2397b814e6403ccc47e4e1a6e32b9693cb28f6a92821e7d661280c6",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-1.bin"
+        },
+        {
+          "sha256": "4ef1228d8c46e0688e89469b7311df513bbb845756e1b4d62f8f1d7c583a5855",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-1.json"
+        },
+        {
+          "sha256": "c93727a8eead93a57fc91df20ddf88c67a7ef25fa9b8cdc94252c8ac1b2763c8",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-1.png"
+        },
+        {
+          "sha256": "2114ded79520844c75a7fbf06ddda6e91409d50f3f41cbf0168ab083fe19ad75",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-2.bin"
+        },
+        {
+          "sha256": "a6d9ca6a1ce8215d2bb447c1227068ef5ebfaa4d3b25bc7aa63ce903111966be",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-2.json"
+        },
+        {
+          "sha256": "794f835142372ac212ec604d877ad678aea96ed2a1743759adfc7dc6b228f31a",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-2.png"
+        },
+        {
+          "sha256": "07937702839bfde20cb3e87aae64a05f53ae03628719b73aed8c5d0cf4d9c4ab",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-3.bin"
+        },
+        {
+          "sha256": "88911a2e7d80a18f65eafcbd23da082de7cdfc05f4cad3fec28aae7e242393dc",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-3.json"
+        },
+        {
+          "sha256": "19e6bd754df47444c62ce3224fa814b4f085091d4a873a07370edafcabcdc84f",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-3.png"
+        },
+        {
+          "sha256": "4fba8ecf8b31816ab975f4dd0412fa31784804cf3fb8d2ca175635c79b5c0d29",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-4.bin"
+        },
+        {
+          "sha256": "8873926c5260923e2c63153f249195f04bfa59ff001c1a9ce5c1dfec5092aae5",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-4.json"
+        },
+        {
+          "sha256": "b74c5f70ff9136b4119d51de8ad34deee463c39a567432c008de56f3cac3f183",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-4.png"
+        },
+        {
+          "sha256": "4c620c8be13db1e66cf2ec28b44854d0fa0cecf7aeb09535fb3ba79aeae6b6c6",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-10.bin"
+        },
+        {
+          "sha256": "37e83cd23d94bf94a8afa2a80ac563f140cf52115ea12f4b030383b9e252b128",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-10.json"
+        },
+        {
+          "sha256": "58641ae049005d42ea00dbd36dc62db4962f957d002c1221cc31564be2dfb52f",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-10.png"
+        },
+        {
+          "sha256": "a30fe38a0d648d022bd693ee097a04832398dea79a64ed1bce0412c76a4738e3",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-24.bin"
+        },
+        {
+          "sha256": "ddb78310a86405af46cb10b261edd930e8dfc902fdd98e71252f210ef851f8db",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-24.json"
+        },
+        {
+          "sha256": "9ef252e441ced2e817a2d17f1a396643d09b76bff66c03a8b6c92f87d9b04601",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-24.png"
+        },
+        {
+          "sha256": "a347f78858b75bc7427fe63a804f9c6ceabb24a538a1fb2d144f03fcc638be57",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-32.bin"
+        },
+        {
+          "sha256": "8196e05ae16811c0d46e439243c173d0a20b0a12121e993e96095cf0854afab6",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-32.json"
+        },
+        {
+          "sha256": "53353abb08b6e5fd68064f141539d00285834f6274a59cdb0773ec38ecf8fe7a",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\native-preflight\\preflight-streaming-32.png"
+        }
+      ]
+    },
+    "files": {
+      "$omitted": true,
+      "reason": "Large array",
+      "type": "array",
+      "entries": 1426,
+      "bytes": 611403,
+      "sha256": "c47d37d1f916ac754fafa2ab96af6802f22cf39572cc4b8a7d7f9bf5e1fa9163"
+    },
+    "boundary": "Native Nanite visibility-to-curve material index conversion only. Six GPU consumers and 21 independent native SM6 material preflight views pass. These views are not the browser-derived native comparison; browser curves, streaming and full Nanite completion remain open."
+  }
+}

@@ -64,6 +64,7 @@ report.capture = capture;
 report.noPrecache = noPrecache;
 report.plain = plain;
 report.motionSeconds = motionSeconds;
+report.scriptedMotionModes = scriptedMotionSeconds ? [3, 2, 1] : [];
 report.scriptedMotionSeconds = scriptedMotionSeconds;
 report.package = require('./content-file-metadata.cjs').audit(
   path.join(__dirname, 'build', folder || profile.ours, 'asset-versions.json'));
@@ -239,7 +240,9 @@ let context, server;
         }
         if (run.pass && scriptedMotionSeconds && engine === 'ours') {
           run.scriptedMotion = [];
-          for (const mode of [2, 1]) {
+          // Include translation through the interior, where additional material
+          // and shadow permutations are first encountered, as well as turning.
+          for (const mode of [3, 2, 1]) {
             const serial = await frame.evaluate(({mode, seconds}) =>
               __webEngineRPC('WebMotionBenchmarkControl', mode, seconds), {mode, seconds: scriptedMotionSeconds});
             assert(serial > 0);
@@ -259,6 +262,20 @@ let context, server;
           assert(!await frame.evaluate(() => globalThis.__webEngineFailure) && !run.errors.length,
             'Pipeline capture failed during settling');
           run.settleFrames = settleFrames;
+        }
+        if (run.pass && direct && engine === 'ours' && !cvars && !candidate) {
+          const {readPage} = require('./web-pipeline-prewarm-package.cjs');
+          const {verifyOptimizationContract,verifyNativeDefaults} = require('./web-optimization-contract.cjs');
+          const output = path.join(__dirname,'build',folder), pageConfig = readPage(output);
+          const contract = verifyOptimizationContract(output,pageConfig);
+          if (contract) {
+            const owner = page.workers().find(worker => worker.url().includes('web-engine-worker.js'));
+            const native = await owner.evaluate(() => ({rhi:globalThis.__webOcclusionRHI,
+              history:globalThis.__webOcclusionHistory,upload:globalThis.__webUploadStaging,
+              readback:globalThis.__webStagingReadbackPool,replayScratchEnabled:globalThis.__webReuseReplayScratch}));
+            assert.equal(native.replayScratchEnabled,contract.runtime.reuseReplayScratch,'Runtime lost replay scratch reuse');
+            run.optimizationAudit = {version:contract.version, values:verifyNativeDefaults(contract,native)};
+          }
         }
         save();
         if (capture && run.pass && engine === 'ours') {

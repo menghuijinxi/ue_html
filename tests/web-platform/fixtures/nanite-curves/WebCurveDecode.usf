@@ -1,0 +1,29 @@
+#include "/WebCurveProbe/WebCurveFeatures.ush"
+#include "/Engine/Private/Common.ush"
+#include "/Engine/Private/Nanite/NaniteDataDecode.ush"
+#include "/Engine/Private/Nanite/NaniteAttributeDecode.ush"
+StructuredBuffer<uint4> InstallInfo;
+RWStructuredBuffer<uint4> DecodedClusters;
+RWStructuredBuffer<float4> DecodedPoints;
+uint ClusterCount;
+[numthreads(64,1,1)]
+void MainCS(uint3 Group:SV_GroupID,uint Lane:SV_GroupIndex)
+{
+ const uint I=Group.x;if(I>=ClusterCount)return;
+ const uint Key=InstallInfo[I].x;
+ FCluster C=GetCluster(Key>>NANITE_MAX_CLUSTERS_PER_PAGE_BITS,Key&NANITE_MAX_CLUSTERS_PER_PAGE_MASK);
+ if(Lane==0){
+  DecodedClusters[I*3]=uint4(C.NumVerts,C.NumCurves,C.NumPointsPerCurve,C.Flags);
+  DecodedClusters[I*3+1]=uint4(C.bCurve,C.bHasCurveRadius,C.CurveRadiusBits,C.PosPrecision);
+  DecodedClusters[I*3+2]=uint4(asuint(C.CurveRadiusScale),C.CurveFadingIndex,asuint(C.ParentLODError),asuint(C.ParentSphereBoundRadius));
+ }
+ for(uint V=Lane;V<C.NumVerts;V+=64){
+  float3 Positions[1];Positions[0]=DecodePosition(V,C);
+  FNaniteRawAttributeData A[1];GetRawAttributeData<1>(A,C,Positions,uint3(V,V,V),2);
+  const uint Base=(I*256+V)*4;
+  DecodedPoints[Base]=float4(Positions[0],A[0].CurveRadius);
+  DecodedPoints[Base+1]=float4(A[0].TangentZ,GetRelativeMaterialIndex(C,V/max(C.NumPointsPerCurve,1u)));
+  DecodedPoints[Base+2]=float4(A[0].TexCoords[0],A[0].TexCoords[1]);
+  DecodedPoints[Base+3]=A[0].TangentXAndSign;
+ }
+}

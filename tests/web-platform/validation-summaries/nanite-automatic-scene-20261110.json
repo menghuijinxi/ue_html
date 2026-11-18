@@ -1,0 +1,1509 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-automatic-scene-20261110.json",
+    "bytes": 1900290,
+    "sha256": "23c3390ff41bc5774c38a384b60ae24f2336620f4c65d93f135c87b066fb5e4c",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-09T21:48:29.410Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-automatic-scene-evidence.cjs",
+      "sha256": "d9406e2f79a393c4aad62b47551b8f224c35551be6924ea4765b9489a55b38a4"
+    },
+    "package": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-default-scene\\package.json",
+      "sha256": "80668cf3357ce9af39fd76c5af3ff0ef1b9e8214d27989c378520174d9fc3d33"
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "6463645228ff1ac5ec43989d1b6f1deade4b279d8057dee1bb89b8a7170ab228"
+    },
+    "cook": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-webgpu-sm5-default-cook-results.json",
+      "sha256": "90ea44865372088e7e265a0490b63203a7d3ff6d6fcea839f3a464a7758ea4ed"
+    },
+    "samples": {
+      "samples": [
+        {
+          "package": "/Game/DefaultTemplateSamples/M_Default_0_0",
+          "material": "/Game/DefaultTemplateSamples/M_Default_0_0.M_Default_0_0",
+          "row": 0,
+          "column": 0,
+          "metallic": 0,
+          "roughness": 0.05000000074505806,
+          "specular": 0.5
+        },
+        {
+          "package": "/Game/DefaultTemplateSamples/M_Default_0_1",
+          "material": "/Game/DefaultTemplateSamples/M_Default_0_1.M_Default_0_1",
+          "row": 0,
+          "column": 1,
+          "metallic": 0,
+          "roughness": 0.25,
+          "specular": 0.5
+        },
+        {
+          "package": "/Game/DefaultTemplateSamples/M_Default_0_2",
+          "material": "/Game/DefaultTemplateSamples/M_Default_0_2.M_Default_0_2",
+          "row": 0,
+          "column": 2,
+          "metallic": 0,
+          "roughness": 0.6000000238418579,
+          "specular": 0.5
+        },
+        {
+          "package": "/Game/DefaultTemplateSamples/M_Default_0_3",
+          "material": "/Game/DefaultTemplateSamples/M_Default_0_3.M_Default_0_3",
+          "row": 0,
+          "column": 3,
+          "metallic": 0,
+          "roughness": 1,
+          "specular": 0.5
+        },
+        {
+          "package": "/Game/DefaultTemplateSamples/M_Default_1_0",
+          "material": "/Game/DefaultTemplateSamples/M_Default_1_0.M_Default_1_0",
+          "row": 1,
+          "column": 0,
+          "metallic": 1,
+          "roughness": 0.05000000074505806,
+          "specular": 0.5
+        },
+        {
+          "package": "/Game/DefaultTemplateSamples/M_Default_1_1",
+          "material": "/Game/DefaultTemplateSamples/M_Default_1_1.M_Default_1_1",
+          "row": 1,
+          "column": 1,
+          "metallic": 1,
+          "roughness": 0.25,
+          "specular": 0.5
+        },
+        {
+          "package": "/Game/DefaultTemplateSamples/M_Default_1_2",
+          "material": "/Game/DefaultTemplateSamples/M_Default_1_2.M_Default_1_2",
+          "row": 1,
+          "column": 2,
+          "metallic": 1,
+          "roughness": 0.6000000238418579,
+          "specular": 0.5
+        },
+        {
+          "package": "/Game/DefaultTemplateSamples/M_Default_1_3",
+          "material": "/Game/DefaultTemplateSamples/M_Default_1_3.M_Default_1_3",
+          "row": 1,
+          "column": 3,
+          "metallic": 1,
+          "roughness": 1,
+          "specular": 0.5
+        }
+      ],
+      "worldUnmodified": true,
+      "meshPackage": "/Game/DefaultTemplateSamples/SM_TestSphere",
+      "mesh": "/Game/DefaultTemplateSamples/SM_TestSphere.SM_TestSphere",
+      "meshTriangles": 16128,
+      "nanite": true,
+      "naniteClusters": 263,
+      "naniteRootPages": 1,
+      "nanitePages": 4
+    },
+    "legacyStartup": {
+      "artifact": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-pipeline-runtime-only\\results.json",
+        "sha256": "237fcfe2a76814192d57fa20547945c293c1e9288221305f853a8a708da7f68f"
+      },
+      "oldCookDiagnostic": true,
+      "rhi": {
+        "sampleFrame": 540,
+        "graphicsPipelines": 850,
+        "computePipelines": 1568,
+        "graphicsPipelineCreateMs": 52.248239517211914,
+        "computePipelineCreateMs": 41.72563552856445,
+        "textureReadbacks": 0,
+        "textureReadbacksReady": 0,
+        "textureReadbackMaps": 0,
+        "textureReadbackNotReady": 0,
+        "psoPrecaching": true,
+        "precachedGraphicsPipelines": 735,
+        "storageFormatPrecached": 9,
+        "storageFormatPrecachedUsed": 1,
+        "storageFormatPrecachedBinds": 270,
+        "asyncPrecacheRequested": 2232,
+        "asyncPrecacheCompleted": 2232,
+        "asyncPrecacheFailed": 0,
+        "unsupportedPrecacheRequests": 0,
+        "precachedGraphicsUsed": 70,
+        "precachedGraphicsBinds": 114976,
+        "precacheConcurrency": 8,
+        "runtimeAsyncPSO": false,
+        "runtimeAsyncRequested": 0,
+        "runtimeAsyncCompleted": 0,
+        "runtimeAsyncFailed": 0
+      }
+    },
+    "resolvedFailures": {
+      "startup": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-default-samples-20261110-050509.log",
+        "sha256": "978a8dd8befea710c4a59babbcb781133c1c2a4d5abfae2644ae7fd68f2eefb5"
+      },
+      "simplifiedFixture": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\web-engine-webgpu-sm5-default-cook\\20261110-051027\\default-samples-layout.json",
+        "sha256": "9356035225be9fc31dc0af6408684dcc6473fc70134cf92729c7e53dea6183fc"
+      },
+      "browser": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\failure-launch-forwarding.json",
+          "sha256": "aeb2ae438314700efb4b8278140e5136be72cda649af45194f591f21c46e3851"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\failure-static-lighting-observer.json",
+          "sha256": "cf2c3ca52c7dba56f7b7a81882c036299836edbd340c2bb14c6903b9c40fbb57"
+        }
+      ],
+      "fixes": [
+        "Prepare and use the isolated shader host before generating default samples.",
+        "Select PercentTriangles explicitly so Nanite Auto fallback policy cannot simplify the reference and shadow geometry.",
+        "Forward the automatic Nanite mode and explicit page budgets into the UE command line; publish default sample observations from the owner thread.",
+        "Notify native material observers with static lighting disabled, and snapshot absent custom-data/precomputed-shadow targets as transparent zero without changing scene rendering."
+      ]
+    },
+    "runs": [
+      {
+        "artifact": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed.json",
+          "sha256": "c72109078a6181c475eab086447d79a98adc76053039e5f40567782a6d0f333c"
+        },
+        "scalar": false,
+        "frames": 4332,
+        "steps": [
+          {
+            "step": 1,
+            "registered": 8,
+            "entries": 8,
+            "batches": [
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              }
+            ],
+            "validation": {
+              "covered": 614,
+              "materials": {
+                "1/0": 48,
+                "1/1": 43,
+                "1/2": 45,
+                "1/3": 49,
+                "0/0": 109,
+                "0/1": 104,
+                "0/2": 105,
+                "0/3": 111
+              }
+            },
+            "pipelines": {
+              "requested": 1794,
+              "completed": 1794,
+              "failed": 0
+            }
+          },
+          {
+            "step": 2,
+            "registered": 0,
+            "entries": 0,
+            "batches": [
+              {
+                "created": true,
+                "material": true,
+                "depth": true,
+                "occluder": true,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": true,
+                "depth": true,
+                "occluder": true,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": true,
+                "depth": true,
+                "occluder": true,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": true,
+                "depth": true,
+                "occluder": true,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": true,
+                "depth": true,
+                "occluder": true,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": true,
+                "depth": true,
+                "occluder": true,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": true,
+                "depth": true,
+                "occluder": true,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": true,
+                "depth": true,
+                "occluder": true,
+                "shadow": true,
+                "triangles": 16128
+              }
+            ],
+            "validation": {
+              "covered": 0
+            },
+            "pipelines": {
+              "requested": 1794,
+              "completed": 1794,
+              "failed": 0
+            }
+          },
+          {
+            "step": 3,
+            "registered": 8,
+            "entries": 8,
+            "batches": [
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              }
+            ],
+            "validation": {
+              "covered": 614,
+              "materials": {
+                "1/0": 48,
+                "1/1": 43,
+                "1/2": 45,
+                "1/3": 48,
+                "0/0": 110,
+                "0/1": 104,
+                "0/2": 104,
+                "0/3": 112
+              }
+            },
+            "pipelines": {
+              "requested": 1794,
+              "completed": 1794,
+              "failed": 0
+            }
+          },
+          {
+            "step": 4,
+            "registered": 0,
+            "entries": 0,
+            "batches": [],
+            "validation": {
+              "covered": 0
+            },
+            "pipelines": {
+              "requested": 1794,
+              "completed": 1794,
+              "failed": 0
+            }
+          },
+          {
+            "step": 5,
+            "registered": 8,
+            "entries": 8,
+            "batches": [
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              }
+            ],
+            "validation": {
+              "covered": 615,
+              "materials": {
+                "1/0": 48,
+                "1/1": 43,
+                "1/2": 45,
+                "1/3": 50,
+                "0/0": 109,
+                "0/1": 104,
+                "0/2": 105,
+                "0/3": 111
+              }
+            },
+            "pipelines": {
+              "requested": 1794,
+              "completed": 1794,
+              "failed": 0
+            }
+          },
+          {
+            "step": 6,
+            "registered": 8,
+            "entries": 8,
+            "batches": [
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              }
+            ],
+            "validation": {
+              "covered": 2655,
+              "materials": {
+                "1/3": 1848,
+                "1/0": 82,
+                "1/1": 185,
+                "1/2": 540
+              }
+            },
+            "pipelines": {
+              "requested": 1794,
+              "completed": 1794,
+              "failed": 0
+            }
+          },
+          {
+            "step": 7,
+            "registered": 8,
+            "entries": 8,
+            "batches": [
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              }
+            ],
+            "validation": {
+              "covered": 841,
+              "materials": {
+                "1/3": 583,
+                "1/0": 27,
+                "1/1": 57,
+                "1/2": 174
+              }
+            },
+            "pipelines": {
+              "requested": 1794,
+              "completed": 1794,
+              "failed": 0
+            }
+          },
+          {
+            "step": 8,
+            "registered": 8,
+            "entries": 8,
+            "batches": [
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              }
+            ],
+            "validation": {
+              "covered": 616,
+              "materials": {
+                "1/0": 48,
+                "1/1": 43,
+                "1/2": 46,
+                "1/3": 50,
+                "0/0": 110,
+                "0/1": 104,
+                "0/2": 105,
+                "0/3": 110
+              }
+            },
+            "pipelines": {
+              "requested": 1794,
+              "completed": 1794,
+              "failed": 0
+            }
+          }
+        ]
+      },
+      {
+        "artifact": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar.json",
+          "sha256": "4c44bf545ae8040e070ebd9016241d1c1437013b918f316a57442fbceb820826"
+        },
+        "scalar": true,
+        "frames": 4275,
+        "steps": [
+          {
+            "step": 1,
+            "registered": 8,
+            "entries": 8,
+            "batches": [
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              }
+            ],
+            "validation": {
+              "covered": 615,
+              "materials": {
+                "1/0": 48,
+                "1/1": 43,
+                "1/2": 45,
+                "1/3": 50,
+                "0/0": 109,
+                "0/1": 104,
+                "0/2": 105,
+                "0/3": 111
+              }
+            },
+            "pipelines": {
+              "requested": 1793,
+              "completed": 1793,
+              "failed": 0
+            }
+          },
+          {
+            "step": 2,
+            "registered": 0,
+            "entries": 0,
+            "batches": [
+              {
+                "created": true,
+                "material": true,
+                "depth": true,
+                "occluder": true,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": true,
+                "depth": true,
+                "occluder": true,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": true,
+                "depth": true,
+                "occluder": true,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": true,
+                "depth": true,
+                "occluder": true,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": true,
+                "depth": true,
+                "occluder": true,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": true,
+                "depth": true,
+                "occluder": true,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": true,
+                "depth": true,
+                "occluder": true,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": true,
+                "depth": true,
+                "occluder": true,
+                "shadow": true,
+                "triangles": 16128
+              }
+            ],
+            "validation": {
+              "covered": 0
+            },
+            "pipelines": {
+              "requested": 1793,
+              "completed": 1793,
+              "failed": 0
+            }
+          },
+          {
+            "step": 3,
+            "registered": 8,
+            "entries": 8,
+            "batches": [
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              }
+            ],
+            "validation": {
+              "covered": 616,
+              "materials": {
+                "1/0": 48,
+                "1/1": 43,
+                "1/2": 46,
+                "1/3": 50,
+                "0/0": 110,
+                "0/1": 104,
+                "0/2": 105,
+                "0/3": 110
+              }
+            },
+            "pipelines": {
+              "requested": 1793,
+              "completed": 1793,
+              "failed": 0
+            }
+          },
+          {
+            "step": 4,
+            "registered": 0,
+            "entries": 0,
+            "batches": [],
+            "validation": {
+              "covered": 0
+            },
+            "pipelines": {
+              "requested": 1793,
+              "completed": 1793,
+              "failed": 0
+            }
+          },
+          {
+            "step": 5,
+            "registered": 8,
+            "entries": 8,
+            "batches": [
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              }
+            ],
+            "validation": {
+              "covered": 614,
+              "materials": {
+                "1/0": 49,
+                "1/1": 44,
+                "1/2": 44,
+                "1/3": 49,
+                "0/0": 109,
+                "0/1": 104,
+                "0/2": 104,
+                "0/3": 111
+              }
+            },
+            "pipelines": {
+              "requested": 1793,
+              "completed": 1793,
+              "failed": 0
+            }
+          },
+          {
+            "step": 6,
+            "registered": 8,
+            "entries": 8,
+            "batches": [
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              }
+            ],
+            "validation": {
+              "covered": 2655,
+              "materials": {
+                "1/3": 1848,
+                "1/0": 82,
+                "1/1": 185,
+                "1/2": 540
+              }
+            },
+            "pipelines": {
+              "requested": 1793,
+              "completed": 1793,
+              "failed": 0
+            }
+          },
+          {
+            "step": 7,
+            "registered": 8,
+            "entries": 8,
+            "batches": [
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              }
+            ],
+            "validation": {
+              "covered": 842,
+              "materials": {
+                "1/3": 584,
+                "1/0": 28,
+                "1/1": 56,
+                "1/2": 174
+              }
+            },
+            "pipelines": {
+              "requested": 1793,
+              "completed": 1793,
+              "failed": 0
+            }
+          },
+          {
+            "step": 8,
+            "registered": 8,
+            "entries": 8,
+            "batches": [
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              },
+              {
+                "created": true,
+                "material": false,
+                "depth": false,
+                "occluder": false,
+                "shadow": true,
+                "triangles": 16128
+              }
+            ],
+            "validation": {
+              "covered": 615,
+              "materials": {
+                "1/0": 48,
+                "1/1": 44,
+                "1/2": 44,
+                "1/3": 50,
+                "0/0": 109,
+                "0/1": 104,
+                "0/2": 105,
+                "0/3": 111
+              }
+            },
+            "pipelines": {
+              "requested": 1793,
+              "completed": 1793,
+              "failed": 0
+            }
+          }
+        ]
+      }
+    ],
+    "images": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-automatic-scene-20261110-packed-1.png",
+        "sha256": "4f978992b35dd180d3420f5684b80adefdf8c613ac97b296ec87b3fbb800bdef"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-automatic-scene-20261110-packed-2.png",
+        "sha256": "2d8e4079f9e527400ccabf74e5c78a4086de76fcd66056e49d3461229d32c928"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-automatic-scene-20261110-packed-3.png",
+        "sha256": "90c70fca7d93c39d34e26dd64147be26528572e89bfec88d77df02565f00cc89"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-automatic-scene-20261110-packed-4.png",
+        "sha256": "645bfbe981d76448f12385f4b2b08239d116317a760a5f3e9b9af2fb7611e6b6"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-automatic-scene-20261110-packed-5.png",
+        "sha256": "9d9de29742291f878ad89e4fd4f190a29b53ffa3680e37c8a1763feb7b980f4d"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-automatic-scene-20261110-packed-6.png",
+        "sha256": "b71068c991f886647f25faa3351ae39fe5472ab883913d25fad51561342fd99f"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-automatic-scene-20261110-packed-7.png",
+        "sha256": "ae4a5de140ce24a4cd1d2255eb3a802cc4836ec1e741ababe935d2a44fc6217e"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-automatic-scene-20261110-packed-8.png",
+        "sha256": "5133b8d0ca965eaca87cc89a9117b4c56f7ba7776e01b35a564f688e6ad606cb"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-automatic-scene-20261110-scalar-1.png",
+        "sha256": "a208d4c9ba2cbd5ece8aa95c692852e0933b950dea029130ab8cf67422359d10"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-automatic-scene-20261110-scalar-2.png",
+        "sha256": "0f12a049ea965c6c414235c9a9debc3e9f5da168a38a7256c0bc11f2570c0346"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-automatic-scene-20261110-scalar-3.png",
+        "sha256": "914bb646f13879d29082c0983e05196e269fbe3c2c60a7e365307c742475d1e6"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-automatic-scene-20261110-scalar-4.png",
+        "sha256": "4e08da79fef27113c93b5cdc1df3e7bc657a9701078f3e300a19e5ff7c1b0376"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-automatic-scene-20261110-scalar-5.png",
+        "sha256": "edac2cc1dbdf2d39d66e470fc57237fd84c6d8e765deeffee688d7587ac177d0"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-automatic-scene-20261110-scalar-6.png",
+        "sha256": "746ff36d4c72767bb768360cff6e9b8b25477cf83d1bdfc2c17febac4eaf743f"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-automatic-scene-20261110-scalar-7.png",
+        "sha256": "489876aab14c64d13d5584f56f3a21462d6ebe59be8872d804e09c60757f24db"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-automatic-scene-20261110-scalar-8.png",
+        "sha256": "357fabf4bf4518291d34316f2acb32fd8fbd9f6894513d85c83d78f62d665f06"
+      }
+    ],
+    "payloadEncoding": "gzip-base64-json",
+    "payload": {
+      "$omitted": true,
+      "reason": "Full diagnostic data is retained in the original report",
+      "type": "string",
+      "bytes": 1857588,
+      "sha256": "c5e3a88311c7d5b170be65032abefe61dc833deccd7db46c16a85041a833e220"
+    },
+    "boundary": "Normal default-template world with original lighting and sky, additive streamable Nanite static meshes, actual materials and intact fallback geometry. Passive readback does not register geometry or replace materials. Native same-view image/performance comparison and remaining material/instance functionality are still open."
+  }
+}

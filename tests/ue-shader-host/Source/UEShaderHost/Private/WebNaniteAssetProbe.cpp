@@ -32,6 +32,41 @@ int32 RunWebNaniteAssetProbe(const FString& Params)
     UStaticMesh* Source = LoadObject<UStaticMesh>(nullptr, *SourcePath);
     if (!Source) return 1;
     UStaticMesh* Mesh = DuplicateObject<UStaticMesh>(Source, GetTransientPackage());
+    const bool bMultiMaterial = FParse::Param(*Params, TEXT("WebNaniteMultiMaterial"));
+    TArray<uint32> SourceMaterials;
+    if (bMultiMaterial)
+    {
+        auto* Description = Mesh->GetMeshDescription(0); if (!Description) return 1;
+        auto Material = Mesh->GetStaticMaterials()[0].MaterialInterface;
+        Mesh->GetStaticMaterials().Empty();
+        for (int32 Slot = 0; Slot < 64; ++Slot)
+        {
+            const FName Name(*FString::Printf(TEXT("WebSlot%d"), Slot));
+            Mesh->GetStaticMaterials().Add(FStaticMaterial(Material, Name, Name));
+        }
+        FStaticMeshAttributes Attributes(*Description);
+        auto Names = Attributes.GetPolygonGroupMaterialSlotNames();
+        const uint32 Slots[] = {0, 7, 31, 63};
+        TArray<FPolygonGroupID> Groups;
+        for (const uint32 Slot : Slots)
+        {
+            const auto Group = Description->CreatePolygonGroup(); Groups.Add(Group);
+            Names[Group] = Mesh->GetStaticMaterials()[Slot].ImportedMaterialSlotName;
+            Mesh->GetSectionInfoMap().Set(0, Group.GetValue(), FMeshSectionInfo(Slot));
+            Mesh->GetOriginalSectionInfoMap().Set(0, Group.GetValue(), FMeshSectionInfo(Slot));
+        }
+        // Interleave real source polygons so individual Nanite clusters contain
+        // multiple material ranges; never patch encoded Nanite page bytes.
+        int32 Index = 0;
+        for (const auto Polygon : Description->Polygons().GetElementIDs())
+            Description->SetPolygonPolygonGroup(Polygon, Groups[(Index++ / 32) % 4]);
+        for (const auto Triangle : Description->Triangles().GetElementIDs())
+        {
+            const auto Group = Description->GetTrianglePolygonGroup(Triangle);
+            SourceMaterials.Add(Slots[Groups.IndexOfByKey(Group)]);
+        }
+        Mesh->CommitMeshDescription(0);
+    }
     Mesh->GetNaniteSettings().bEnabled = true;
     Mesh->GetNaniteSettings().TargetMinimumResidencyInKB = 32768;
     Mesh->GetNaniteSettings().PositionPrecision = 8;
@@ -105,6 +140,7 @@ int32 RunWebNaniteAssetProbe(const FString& Params)
     Report->SetStringField(TEXT("sourceAsset"), SourcePath);
     Report->SetStringField(TEXT("scope"), bCookRoundTrip ? TEXT("fully-resident-cooked-resource-roundtrip") : TEXT("fully-resident-editor-export"));
     Report->SetBoolField(TEXT("webCookEnabled"), bCookRoundTrip);
+    Report->SetBoolField(TEXT("multiMaterial"), bMultiMaterial);
     Report->SetNumberField(TEXT("numRootPages"), Resources.NumRootPages);
     Report->SetNumberField(TEXT("numClusters"), Resources.NumClusters);
     Report->SetNumberField(TEXT("numInputTriangles"), Resources.NumInputTriangles);
@@ -165,6 +201,9 @@ int32 RunWebNaniteAssetProbe(const FString& Params)
         }
     }
     Report->SetNumberField(TEXT("sourceTriangles"), Triangles.Num() / 9);
+    if (bMultiMaterial && (SourceMaterials.Num() != Triangles.Num() / 9 ||
+        !FFileHelper::SaveArrayToFile(MakeArrayView(reinterpret_cast<const uint8*>(SourceMaterials.GetData()),
+            SourceMaterials.Num() * sizeof(uint32)), *(Directory / TEXT("source-materials.bin"))))) return 1;
     if (!FFileHelper::SaveArrayToFile(DiskPages, *(Directory / TEXT("pages.bin"))) ||
         !FFileHelper::SaveArrayToFile(MakeArrayView(reinterpret_cast<const uint8*>(InstallInfo.GetData()),
             InstallInfo.Num() * sizeof(uint32)), *(Directory / TEXT("install.bin"))) ||

@@ -1,0 +1,40 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-micro-profile-cleanup-20261113.json",
+    "bytes": 2590,
+    "sha256": "5721d929e276f11b96b1f9ceabedd5d4e7ded53ee969f4788f3c52bf6a35c6ee",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-13T10:32:07.9030513+08:00",
+    "deleted": [
+      "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\gpu-nanite-micro-controlled-off-20261113",
+      "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\gpu-nanite-micro-controlled-on-20261113",
+      "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-micro-default-correctness-20261113",
+      "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-micro-default-scalar-20261113",
+      "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-micro-villa-correctness-20261113",
+      "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-micro-eligibility-20261113",
+      "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-micro-motion-abba-20261113-0",
+      "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-micro-motion-abba-20261113-1",
+      "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-micro-motion-abba-20261113-2",
+      "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-micro-motion-abba-20261113-3",
+      "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-micro-onoff-abba-20261113-0",
+      "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-micro-onoff-abba-20261113-1",
+      "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-micro-onoff-abba-20261113-2",
+      "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-micro-onoff-abba-20261113-3",
+      "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-micro-programmable-20261113-packed",
+      "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-micro-programmable-20261113-scalar",
+      "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-micro-recovery-20261113-packed",
+      "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-micro-recovery-20261113-scalar",
+      "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-micro-wpo-20261113-packed",
+      "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\browser-profiles\\nanite-micro-wpo-20261113-scalar"
+    ],
+    "freeBefore": 157309911040,
+    "freeAfter": 220727930880,
+    "freedBytes": 63418019840,
+    "evidence": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-micro-batch-20261113.json"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/cleanup-standalone-20261111.json",
+    "bytes": 4403,
+    "sha256": "ee940781fe62a9c4be469561c3ffa1028f71006f1f9c3442ce98a0a0ade9d97b",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-11T14:34:52.340Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\package-standalone-test-cleanup.cjs",
+      "sha256": "237c0d3fd3965b6157a7ca48f2d5c1aa1a7c0b5c58629a9b618ddefde85e555e"
+    },
+    "template": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\cleanup-old-tests-20261104.bat",
+      "sha256": "8b4c685375b00ac924a0acefa37a170917c134e07701f8bbbd0bc7f9e212b973"
+    },
+    "plan": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\cleanup-test-cache-20261111.json",
+      "sha256": "66b9f20a3b805909f495fd55a15e1d288a1a1289c720283757d3d079c9b1e9ae"
+    },
+    "output": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\cleanup-test-cache-standalone-20261111.bat",
+      "sha256": "7be74632e48dfc076f0b59d77365e021dc304193662afff98b9645a8f415fbfc"
+    },
+    "userFile": {
+      "file": "G:/UE_HTML/清理旧测试文件.bat",
+      "sha256": "7be74632e48dfc076f0b59d77365e021dc304193662afff98b9645a8f415fbfc"
+    },
+    "compatibilityLauncher": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\清理旧测试缓存-20261111.bat",
+      "sha256": "7be74632e48dfc076f0b59d77365e021dc304193662afff98b9645a8f415fbfc"
+    },
+    "directories": 191,
+    "logicalGiB": 281.9437286769971,
+    "boundary": "Preserves the user-provided single-file CMD/embedded-PowerShell launcher. Only the fixed cleanup list, cutoff, count and related checks are updated. No deletion is performed by this packager.",
+    "preview": {
+      "file": "tests/web-platform/results/cleanup-standalone-20261111-preview.txt",
+      "sha256": "21ef29a905f140a46ed4fa2da667de234c00b5148595c958d22882173cd170ea",
+      "encoding": "gzip-base64",
+      "data": {
+        "$omitted": true,
+        "reason": "Large text",
+        "type": "string",
+        "bytes": 2684,
+        "sha256": "b7abf34d3cb4ac5793f705d340e27095feb6eef1da06b3556bb2b39226a01fff"
+      }
+    },
+    "deletionExecuted": false
+  }
+}

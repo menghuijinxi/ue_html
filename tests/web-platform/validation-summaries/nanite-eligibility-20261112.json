@@ -1,0 +1,1781 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-eligibility-20261112.json",
+    "bytes": 80024,
+    "sha256": "2b75ea96d4e7f171fcf968fde64feb4a0aefdc99c790332930dd2a87453e8de6",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "date": "2026-11-12T02:25:45.174Z",
+    "pass": true,
+    "componentPolicyFixed": true,
+    "emptyViewGpuWorkFixed": true,
+    "naniteFullPerformanceAccepted": false,
+    "failedDiagnostics": "The first helper compile used pointer deduction on TObjectPtr and an unparenthesized EM_ASM object. The first browser collector incorrectly expected hidden components to retain proxies; the real component lifecycle unregisters them. These failed attempts are archived and excluded from passing verification.",
+    "assets": {
+      "originalProject": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\projects\\lumen-off-v59\\TriplexHouseVilla.uproject",
+      "originalMeshes": 590,
+      "originalNaniteMeshes": 0,
+      "testProject": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\projects\\nanite-full-scene\\TriplexHouseVilla.uproject",
+      "testNaniteMeshes": 587,
+      "registeredComponents": 2062
+    },
+    "runs": [
+      {
+        "kind": "before",
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\report.json",
+          "sha256": "f44ff3d3226f42310b5ae72f89275b48c7cf1879da418e9821a9af3aecc0f8f5"
+        },
+        "package": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-eligibility-before-20261112\\package.json",
+          "sha256": "29c5d23aad80a90132336a9842289243bd6b32e21825989edbc8b914727b0711"
+        },
+        "build": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-eligibility-before-20261112\\runtime-build.json",
+          "sha256": "3b79436655f91cdf6dd5d94b0df983a378761834ce7cf4340a3fe7b8820d90bd"
+        },
+        "tests": [
+          {
+            "step": 1,
+            "mode": 0,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-1.json",
+              "sha256": "18b026cf52fefe98afa73cf3b695de7a1fdfcf90ac8f62e0dbe4b6f5d3a2749f"
+            },
+            "enabled": true,
+            "assets": 2180,
+            "registered": 2062,
+            "entries": 308,
+            "covered": 13625,
+            "materialComplete": true,
+            "materialDraws": 94,
+            "suppressed": 2062,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 80990,
+              "draws": 74984,
+              "pipelines": {
+                "main_00001aac_06486aa9": 56056,
+                "main_00005170_6bba530e / main_00000ad0_a419fca8": 24752,
+                "main_00019a50_8a7254f2 / main_00000ff4_8bb86398": 8554,
+                "main_00019aec_8d339dd0 / main_00019070_446a8a7c": 27482,
+                "main_00019aec_8d339dd0 / main_0001a1e4_214b81ee": 1092,
+                "main_00019aec_8d339dd0 / main_00019070_8e64fc7e": 4550,
+                "main_00006404_60bc9159": 24752,
+                "main_00000704_d92e1dee": 182,
+                "main_00000930_48a87330 / main_0001d400_479129fd": 3822,
+                "main_00000930_48a87330 / main_0001cb18_c47cb80f": 910,
+                "main_00000930_48a87330 / main_0001d9e8_71fd3edd": 2457,
+                "main_00000930_48a87330 / main_0001d668_63fecb8e": 182,
+                "main_00000930_48a87330 / main_0001e768_532a842b": 546,
+                "main_00000930_48a87330 / main_0001d8b0_3abfd963": 91,
+                "main_00000930_48a87330 / main_0001e2e8_d9666456": 364,
+                "main_00000930_48a87330 / main_0001db98_f4146d5c": 91,
+                "main_00000930_48a87330 / main_000036fc_b7a31adf": 91
+              }
+            }
+          },
+          {
+            "step": 2,
+            "mode": 0,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-2.json",
+              "sha256": "daf59b720e1f9f2f59f15fd82e02352d4c900693c68b13b4562249fa45e1cce9"
+            },
+            "enabled": false,
+            "assets": 2180,
+            "registered": 0,
+            "entries": 0,
+            "covered": 0,
+            "suppressed": 0,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 0,
+              "draws": 0,
+              "pipelines": {}
+            }
+          },
+          {
+            "step": 3,
+            "mode": 0,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-3.json",
+              "sha256": "9d3f9d9a4bacf7b518fbdf46905c34bf96ed0d32ec83f9a2282a674626bbce1d"
+            },
+            "enabled": true,
+            "assets": 2180,
+            "registered": 2062,
+            "entries": 308,
+            "covered": 13611,
+            "materialComplete": true,
+            "materialDraws": 94,
+            "suppressed": 2062,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 80990,
+              "draws": 74984,
+              "pipelines": {
+                "main_00001aac_06486aa9": 56056,
+                "main_00005170_6bba530e / main_00000ad0_a419fca8": 24752,
+                "main_00019aec_8d339dd0 / main_00019070_8e64fc7e": 4550,
+                "main_00019aec_8d339dd0 / main_00019070_446a8a7c": 27482,
+                "main_00019aec_8d339dd0 / main_0001a1e4_214b81ee": 1092,
+                "main_00019a50_8a7254f2 / main_00000ff4_8bb86398": 8554,
+                "main_00006404_60bc9159": 24752,
+                "main_00000704_d92e1dee": 182,
+                "main_00000930_48a87330 / main_0001e2e8_d9666456": 364,
+                "main_00000930_48a87330 / main_0001d400_479129fd": 3822,
+                "main_00000930_48a87330 / main_0001d9e8_71fd3edd": 2457,
+                "main_00000930_48a87330 / main_0001e768_532a842b": 546,
+                "main_00000930_48a87330 / main_0001cb18_c47cb80f": 910,
+                "main_00000930_48a87330 / main_0001db98_f4146d5c": 91,
+                "main_00000930_48a87330 / main_0001d8b0_3abfd963": 91,
+                "main_00000930_48a87330 / main_0001d668_63fecb8e": 182,
+                "main_00000930_48a87330 / main_000036fc_b7a31adf": 91
+              }
+            }
+          },
+          {
+            "step": 4,
+            "mode": 1,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-4.json",
+              "sha256": "958a5e50e4ae0fb1fbce29a6ac63f28fc0691755122adb8b110e4bfebffb4cdc"
+            },
+            "enabled": true,
+            "assets": 2180,
+            "registered": 2062,
+            "entries": 308,
+            "covered": 13624,
+            "materialComplete": true,
+            "materialDraws": 94,
+            "suppressed": 2062,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 80990,
+              "draws": 74984,
+              "pipelines": {
+                "main_00001aac_06486aa9": 56056,
+                "main_00005170_6bba530e / main_00000ad0_a419fca8": 24752,
+                "main_00019aec_8d339dd0 / main_00019070_8e64fc7e": 4550,
+                "main_00019aec_8d339dd0 / main_00019070_446a8a7c": 27482,
+                "main_00019aec_8d339dd0 / main_0001a1e4_214b81ee": 1092,
+                "main_00019a50_8a7254f2 / main_00000ff4_8bb86398": 8554,
+                "main_00006404_60bc9159": 24752,
+                "main_00000704_d92e1dee": 182,
+                "main_00000930_48a87330 / main_0001e2e8_d9666456": 364,
+                "main_00000930_48a87330 / main_0001d400_479129fd": 3822,
+                "main_00000930_48a87330 / main_0001d9e8_71fd3edd": 2457,
+                "main_00000930_48a87330 / main_0001e768_532a842b": 546,
+                "main_00000930_48a87330 / main_0001cb18_c47cb80f": 910,
+                "main_00000930_48a87330 / main_0001db98_f4146d5c": 91,
+                "main_00000930_48a87330 / main_0001d8b0_3abfd963": 91,
+                "main_00000930_48a87330 / main_0001d668_63fecb8e": 182,
+                "main_00000930_48a87330 / main_000036fc_b7a31adf": 91
+              }
+            }
+          },
+          {
+            "step": 5,
+            "mode": 0,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-5.json",
+              "sha256": "5302671ba66877b082660b4a20a28674ba083da1a39f4d167f7c4312202156c9"
+            },
+            "enabled": true,
+            "assets": 2180,
+            "registered": 2062,
+            "entries": 308,
+            "covered": 13620,
+            "materialComplete": true,
+            "materialDraws": 94,
+            "suppressed": 2062,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 79210,
+              "draws": 73336,
+              "pipelines": {
+                "main_00001aac_06486aa9": 54824,
+                "main_00005170_6bba530e / main_00000ad0_a419fca8": 24208,
+                "main_00019aec_8d339dd0 / main_00019070_8e64fc7e": 4450,
+                "main_00019aec_8d339dd0 / main_00019070_446a8a7c": 26878,
+                "main_00019aec_8d339dd0 / main_0001a1e4_214b81ee": 1068,
+                "main_00019a50_8a7254f2 / main_00000ff4_8bb86398": 8366,
+                "main_00006404_60bc9159": 24208,
+                "main_00000704_d92e1dee": 178,
+                "main_00000930_48a87330 / main_0001e2e8_d9666456": 356,
+                "main_00000930_48a87330 / main_0001d400_479129fd": 3738,
+                "main_00000930_48a87330 / main_0001d9e8_71fd3edd": 2403,
+                "main_00000930_48a87330 / main_0001e768_532a842b": 534,
+                "main_00000930_48a87330 / main_0001cb18_c47cb80f": 890,
+                "main_00000930_48a87330 / main_0001db98_f4146d5c": 89,
+                "main_00000930_48a87330 / main_0001d8b0_3abfd963": 89,
+                "main_00000930_48a87330 / main_0001d668_63fecb8e": 178,
+                "main_00000930_48a87330 / main_000036fc_b7a31adf": 89
+              }
+            }
+          },
+          {
+            "step": 6,
+            "mode": 2,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-6.json",
+              "sha256": "b77f1c82c9fc3e668c00af10d032ed2a59b4f683c5af74804f78001afdf0aa84"
+            },
+            "enabled": true,
+            "assets": 2180,
+            "registered": 2062,
+            "entries": 308,
+            "covered": 13618,
+            "materialComplete": true,
+            "materialDraws": 94,
+            "suppressed": 2062,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 79210,
+              "draws": 73336,
+              "pipelines": {
+                "main_00001aac_06486aa9": 54824,
+                "main_00005170_6bba530e / main_00000ad0_a419fca8": 24208,
+                "main_00019aec_8d339dd0 / main_00019070_8e64fc7e": 4450,
+                "main_00019aec_8d339dd0 / main_00019070_446a8a7c": 26878,
+                "main_00019aec_8d339dd0 / main_0001a1e4_214b81ee": 1068,
+                "main_00019a50_8a7254f2 / main_00000ff4_8bb86398": 8366,
+                "main_00006404_60bc9159": 24208,
+                "main_00000704_d92e1dee": 178,
+                "main_00000930_48a87330 / main_0001e2e8_d9666456": 356,
+                "main_00000930_48a87330 / main_0001d400_479129fd": 3738,
+                "main_00000930_48a87330 / main_0001d9e8_71fd3edd": 2403,
+                "main_00000930_48a87330 / main_0001e768_532a842b": 534,
+                "main_00000930_48a87330 / main_0001cb18_c47cb80f": 890,
+                "main_00000930_48a87330 / main_0001db98_f4146d5c": 89,
+                "main_00000930_48a87330 / main_0001d8b0_3abfd963": 89,
+                "main_00000930_48a87330 / main_0001d668_63fecb8e": 178,
+                "main_00000930_48a87330 / main_000036fc_b7a31adf": 89
+              }
+            }
+          },
+          {
+            "step": 7,
+            "mode": 0,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-7.json",
+              "sha256": "ce6788d6fd637360be0f24344e7a71995cbc8a1002fa14fe54e2477c089b2111"
+            },
+            "enabled": true,
+            "assets": 2180,
+            "registered": 2062,
+            "entries": 308,
+            "covered": 13611,
+            "materialComplete": true,
+            "materialDraws": 94,
+            "suppressed": 2062,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 78320,
+              "draws": 72512,
+              "pipelines": {
+                "main_00001aac_06486aa9": 54208,
+                "main_00005170_6bba530e / main_00000ad0_a419fca8": 23936,
+                "main_00019aec_8d339dd0 / main_00019070_8e64fc7e": 4400,
+                "main_00019aec_8d339dd0 / main_00019070_446a8a7c": 26576,
+                "main_00019aec_8d339dd0 / main_0001a1e4_214b81ee": 1056,
+                "main_00019a50_8a7254f2 / main_00000ff4_8bb86398": 8272,
+                "main_00006404_60bc9159": 23936,
+                "main_00000704_d92e1dee": 176,
+                "main_00000930_48a87330 / main_0001e2e8_d9666456": 352,
+                "main_00000930_48a87330 / main_0001d400_479129fd": 3696,
+                "main_00000930_48a87330 / main_0001d9e8_71fd3edd": 2376,
+                "main_00000930_48a87330 / main_0001e768_532a842b": 528,
+                "main_00000930_48a87330 / main_0001cb18_c47cb80f": 880,
+                "main_00000930_48a87330 / main_0001db98_f4146d5c": 88,
+                "main_00000930_48a87330 / main_0001d8b0_3abfd963": 88,
+                "main_00000930_48a87330 / main_0001d668_63fecb8e": 176,
+                "main_00000930_48a87330 / main_000036fc_b7a31adf": 88
+              }
+            }
+          },
+          {
+            "step": 8,
+            "mode": 3,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-8.json",
+              "sha256": "01c012862e78cdae3d883ef50e359ab83948d4aa187a2a021752af74b4252712"
+            },
+            "enabled": true,
+            "assets": 2180,
+            "registered": 2062,
+            "entries": 308,
+            "covered": 13619,
+            "materialComplete": true,
+            "materialDraws": 94,
+            "suppressed": 2062,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 80100,
+              "draws": 74160,
+              "pipelines": {
+                "main_00001aac_06486aa9": 55440,
+                "main_00005170_6bba530e / main_00000ad0_a419fca8": 24480,
+                "main_00019aec_8d339dd0 / main_00019070_8e64fc7e": 4500,
+                "main_00019aec_8d339dd0 / main_00019070_446a8a7c": 27180,
+                "main_00019aec_8d339dd0 / main_0001a1e4_214b81ee": 1080,
+                "main_00019a50_8a7254f2 / main_00000ff4_8bb86398": 8460,
+                "main_00006404_60bc9159": 24480,
+                "main_00000704_d92e1dee": 180,
+                "main_00000930_48a87330 / main_0001e2e8_d9666456": 360,
+                "main_00000930_48a87330 / main_0001d400_479129fd": 3780,
+                "main_00000930_48a87330 / main_0001d9e8_71fd3edd": 2430,
+                "main_00000930_48a87330 / main_0001e768_532a842b": 540,
+                "main_00000930_48a87330 / main_0001cb18_c47cb80f": 900,
+                "main_00000930_48a87330 / main_0001db98_f4146d5c": 90,
+                "main_00000930_48a87330 / main_0001d8b0_3abfd963": 90,
+                "main_00000930_48a87330 / main_0001d668_63fecb8e": 180,
+                "main_00000930_48a87330 / main_000036fc_b7a31adf": 90
+              }
+            }
+          },
+          {
+            "step": 9,
+            "mode": 0,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-9.json",
+              "sha256": "e6ff9e501b131341d99b5301d4137dc0fabc69eed643bfb04befa3058246cee5"
+            },
+            "enabled": true,
+            "assets": 2180,
+            "registered": 2062,
+            "entries": 308,
+            "covered": 13620,
+            "materialComplete": true,
+            "materialDraws": 94,
+            "suppressed": 2062,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 80990,
+              "draws": 74984,
+              "pipelines": {
+                "main_00001aac_06486aa9": 56056,
+                "main_00005170_6bba530e / main_00000ad0_a419fca8": 24752,
+                "main_00019aec_8d339dd0 / main_00019070_8e64fc7e": 4550,
+                "main_00019aec_8d339dd0 / main_00019070_446a8a7c": 27482,
+                "main_00019aec_8d339dd0 / main_0001a1e4_214b81ee": 1092,
+                "main_00019a50_8a7254f2 / main_00000ff4_8bb86398": 8554,
+                "main_00006404_60bc9159": 24752,
+                "main_00000704_d92e1dee": 182,
+                "main_00000930_48a87330 / main_0001e2e8_d9666456": 364,
+                "main_00000930_48a87330 / main_0001d400_479129fd": 3822,
+                "main_00000930_48a87330 / main_0001d9e8_71fd3edd": 2457,
+                "main_00000930_48a87330 / main_0001e768_532a842b": 546,
+                "main_00000930_48a87330 / main_0001cb18_c47cb80f": 910,
+                "main_00000930_48a87330 / main_0001db98_f4146d5c": 91,
+                "main_00000930_48a87330 / main_0001d8b0_3abfd963": 91,
+                "main_00000930_48a87330 / main_0001d668_63fecb8e": 182,
+                "main_00000930_48a87330 / main_000036fc_b7a31adf": 91
+              }
+            }
+          },
+          {
+            "step": 10,
+            "mode": 4,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-10.json",
+              "sha256": "b308ec12ab9fce02f3e16a887d8ecb4555be50fcd7a2afcddaf87eb30cac6fee"
+            },
+            "enabled": true,
+            "assets": 2180,
+            "registered": 0,
+            "entries": 0,
+            "covered": 0,
+            "suppressed": 0,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 88,
+              "draws": 0,
+              "pipelines": {
+                "main_00000704_d92e1dee": 88
+              }
+            }
+          },
+          {
+            "step": 11,
+            "mode": 0,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-11.json",
+              "sha256": "42801452956e669b5faaf1285dd1904f2a2eee7a8f82af24ef0849f6876c6d01"
+            },
+            "enabled": true,
+            "assets": 2180,
+            "registered": 2062,
+            "entries": 308,
+            "covered": 13625,
+            "materialComplete": true,
+            "materialDraws": 94,
+            "suppressed": 2062,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 79210,
+              "draws": 73336,
+              "pipelines": {
+                "main_00001aac_06486aa9": 54824,
+                "main_00005170_6bba530e / main_00000ad0_a419fca8": 24208,
+                "main_00019aec_8d339dd0 / main_00019070_446a8a7c": 26878,
+                "main_00019aec_8d339dd0 / main_00019070_8e64fc7e": 4450,
+                "main_00019a50_8a7254f2 / main_00000ff4_8bb86398": 8366,
+                "main_00019aec_8d339dd0 / main_0001a1e4_214b81ee": 1068,
+                "main_00006404_60bc9159": 24208,
+                "main_00000704_d92e1dee": 178,
+                "main_00000930_48a87330 / main_0001d9e8_71fd3edd": 2403,
+                "main_00000930_48a87330 / main_0001d400_479129fd": 3738,
+                "main_00000930_48a87330 / main_0001e2e8_d9666456": 356,
+                "main_00000930_48a87330 / main_0001cb18_c47cb80f": 890,
+                "main_00000930_48a87330 / main_0001e768_532a842b": 534,
+                "main_00000930_48a87330 / main_0001d668_63fecb8e": 178,
+                "main_00000930_48a87330 / main_0001d8b0_3abfd963": 89,
+                "main_00000930_48a87330 / main_000036fc_b7a31adf": 89,
+                "main_00000930_48a87330 / main_0001db98_f4146d5c": 89
+              }
+            }
+          },
+          {
+            "step": 12,
+            "mode": 5,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-12.json",
+              "sha256": "87dffc25764ef36f2ca1f09e7948aae408c41f6dbbaff7d9b201fdf105a50660"
+            },
+            "enabled": true,
+            "assets": 0,
+            "registered": 0,
+            "entries": 0,
+            "covered": 0,
+            "suppressed": 0,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 94,
+              "draws": 0,
+              "pipelines": {
+                "main_00000704_d92e1dee": 94
+              }
+            }
+          },
+          {
+            "step": 13,
+            "mode": 0,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-13.json",
+              "sha256": "5f8053f74cf14797f60a01145eaece8a2b0057a7963319363888e4cc3d6ccfe0"
+            },
+            "enabled": true,
+            "assets": 2180,
+            "registered": 2062,
+            "entries": 308,
+            "covered": 13624,
+            "materialComplete": true,
+            "materialDraws": 94,
+            "suppressed": 2062,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 81880,
+              "draws": 75808,
+              "pipelines": {
+                "main_00001aac_06486aa9": 56672,
+                "main_00005170_6bba530e / main_00000ad0_a419fca8": 25024,
+                "main_00019aec_8d339dd0 / main_00019070_446a8a7c": 27784,
+                "main_00019aec_8d339dd0 / main_00019070_8e64fc7e": 4600,
+                "main_00019a50_8a7254f2 / main_00000ff4_8bb86398": 8648,
+                "main_00019aec_8d339dd0 / main_0001a1e4_214b81ee": 1104,
+                "main_00006404_60bc9159": 25024,
+                "main_00000704_d92e1dee": 184,
+                "main_00000930_48a87330 / main_0001d9e8_71fd3edd": 2484,
+                "main_00000930_48a87330 / main_0001d400_479129fd": 3864,
+                "main_00000930_48a87330 / main_0001e2e8_d9666456": 368,
+                "main_00000930_48a87330 / main_0001d668_63fecb8e": 184,
+                "main_00000930_48a87330 / main_0001cb18_c47cb80f": 920,
+                "main_00000930_48a87330 / main_0001d8b0_3abfd963": 92,
+                "main_00000930_48a87330 / main_0001db98_f4146d5c": 92,
+                "main_00000930_48a87330 / main_0001e768_532a842b": 552,
+                "main_00000930_48a87330 / main_000036fc_b7a31adf": 92
+              }
+            }
+          }
+        ]
+      },
+      {
+        "kind": "fixed",
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\report.json",
+          "sha256": "bbbe961ac0abb22fd0ac93710dffd98f4729154aa175d71c083f9c4c393a8d2d"
+        },
+        "package": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-eligibility-fixed-20261112\\package.json",
+          "sha256": "7e96315d72e00fb4b40cc57d0f823e5447afe6476dd443a1f201f102bd4d7356"
+        },
+        "build": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-eligibility-fixed-20261112\\runtime-build.json",
+          "sha256": "0ae590eb985ddcad04e3530359e0148463eaa432c07547c7efcc813062d25a2d"
+        },
+        "tests": [
+          {
+            "step": 1,
+            "mode": 0,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-1.json",
+              "sha256": "1fdce1c6644778dbd38d03f018a50848f900aa5f8dda2bd7db03364d03fccace"
+            },
+            "enabled": true,
+            "assets": 2180,
+            "registered": 2062,
+            "entries": 308,
+            "covered": 13621,
+            "materialComplete": true,
+            "materialDraws": 94,
+            "suppressed": 2062,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 83660,
+              "draws": 77456,
+              "pipelines": {
+                "main_00001aac_06486aa9": 57904,
+                "main_00005170_6bba530e / main_00000ad0_a419fca8": 25568,
+                "main_00019a50_8a7254f2 / main_00000ff4_8bb86398": 8836,
+                "main_00019aec_8d339dd0 / main_00019070_446a8a7c": 28388,
+                "main_00019aec_8d339dd0 / main_0001a1e4_214b81ee": 1128,
+                "main_00019aec_8d339dd0 / main_00019070_8e64fc7e": 4700,
+                "main_00006404_60bc9159": 25568,
+                "main_00000704_d92e1dee": 188,
+                "main_00000930_48a87330 / main_0001d400_479129fd": 3948,
+                "main_00000930_48a87330 / main_0001cb18_c47cb80f": 940,
+                "main_00000930_48a87330 / main_0001d9e8_71fd3edd": 2538,
+                "main_00000930_48a87330 / main_0001e768_532a842b": 564,
+                "main_00000930_48a87330 / main_0001d668_63fecb8e": 188,
+                "main_00000930_48a87330 / main_0001e2e8_d9666456": 376,
+                "main_00000930_48a87330 / main_0001db98_f4146d5c": 94,
+                "main_00000930_48a87330 / main_0001d8b0_3abfd963": 94,
+                "main_00000930_48a87330 / main_000036fc_b7a31adf": 94
+              }
+            }
+          },
+          {
+            "step": 2,
+            "mode": 0,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-2.json",
+              "sha256": "bac8a4da7cd6200b93b3ed884cf777fcdf1e00776f1001946773522215bdf16f"
+            },
+            "enabled": false,
+            "assets": 2180,
+            "registered": 0,
+            "entries": 0,
+            "covered": 0,
+            "suppressed": 0,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 0,
+              "draws": 0,
+              "pipelines": {}
+            }
+          },
+          {
+            "step": 3,
+            "mode": 0,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-3.json",
+              "sha256": "951c1d1ad9df659d265577112ccd7c83a44eff5c9f75dbdb5e489c8162f54fe0"
+            },
+            "enabled": true,
+            "assets": 2180,
+            "registered": 2062,
+            "entries": 308,
+            "covered": 13611,
+            "materialComplete": true,
+            "materialDraws": 94,
+            "suppressed": 2062,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 79210,
+              "draws": 73336,
+              "pipelines": {
+                "main_00001aac_06486aa9": 54824,
+                "main_00005170_6bba530e / main_00000ad0_a419fca8": 24208,
+                "main_00019a50_8a7254f2 / main_00000ff4_8bb86398": 8366,
+                "main_00019aec_8d339dd0 / main_00019070_8e64fc7e": 4450,
+                "main_00019aec_8d339dd0 / main_00019070_446a8a7c": 26878,
+                "main_00019aec_8d339dd0 / main_0001a1e4_214b81ee": 1068,
+                "main_00006404_60bc9159": 24208,
+                "main_00000704_d92e1dee": 178,
+                "main_00000930_48a87330 / main_0001db98_f4146d5c": 89,
+                "main_00000930_48a87330 / main_0001cb18_c47cb80f": 890,
+                "main_00000930_48a87330 / main_0001e2e8_d9666456": 356,
+                "main_00000930_48a87330 / main_0001d400_479129fd": 3738,
+                "main_00000930_48a87330 / main_0001d9e8_71fd3edd": 2403,
+                "main_00000930_48a87330 / main_0001d668_63fecb8e": 178,
+                "main_00000930_48a87330 / main_0001d8b0_3abfd963": 89,
+                "main_00000930_48a87330 / main_0001e768_532a842b": 534,
+                "main_00000930_48a87330 / main_000036fc_b7a31adf": 89
+              }
+            }
+          },
+          {
+            "step": 4,
+            "mode": 1,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-4.json",
+              "sha256": "0063fe8f426b98e25bcad0d2505ca5a09d142012e03f3a62364b2ee91be2d0ab"
+            },
+            "enabled": true,
+            "assets": 2180,
+            "registered": 0,
+            "entries": 0,
+            "covered": 0,
+            "suppressed": 0,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 0,
+              "draws": 0,
+              "pipelines": {}
+            }
+          },
+          {
+            "step": 5,
+            "mode": 0,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-5.json",
+              "sha256": "bb47824d1367cb009cf6f62793e7db0e589c08bf6fcb5dc2e85ffae502cb4895"
+            },
+            "enabled": true,
+            "assets": 2180,
+            "registered": 2062,
+            "entries": 308,
+            "covered": 13618,
+            "materialComplete": true,
+            "materialDraws": 94,
+            "suppressed": 2062,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 80990,
+              "draws": 74984,
+              "pipelines": {
+                "main_00001aac_06486aa9": 56056,
+                "main_00005170_6bba530e / main_00000ad0_a419fca8": 24752,
+                "main_00019aec_8d339dd0 / main_00019070_446a8a7c": 27482,
+                "main_00019aec_8d339dd0 / main_0001a1e4_214b81ee": 1092,
+                "main_00019aec_8d339dd0 / main_00019070_8e64fc7e": 4550,
+                "main_00019a50_8a7254f2 / main_00000ff4_8bb86398": 8554,
+                "main_00006404_60bc9159": 24752,
+                "main_00000704_d92e1dee": 182,
+                "main_00000930_48a87330 / main_0001d9e8_71fd3edd": 2457,
+                "main_00000930_48a87330 / main_0001e768_532a842b": 546,
+                "main_00000930_48a87330 / main_0001e2e8_d9666456": 364,
+                "main_00000930_48a87330 / main_0001d400_479129fd": 3822,
+                "main_00000930_48a87330 / main_0001d668_63fecb8e": 182,
+                "main_00000930_48a87330 / main_0001db98_f4146d5c": 91,
+                "main_00000930_48a87330 / main_0001cb18_c47cb80f": 910,
+                "main_00000930_48a87330 / main_0001d8b0_3abfd963": 91,
+                "main_00000930_48a87330 / main_000036fc_b7a31adf": 91
+              }
+            }
+          },
+          {
+            "step": 6,
+            "mode": 2,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-6.json",
+              "sha256": "c6926850efe4c4a6a4f2b60e4cef151a61767d3c09c2cf3c445f54175dbd2031"
+            },
+            "enabled": true,
+            "assets": 2180,
+            "registered": 0,
+            "entries": 0,
+            "covered": 0,
+            "suppressed": 0,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 0,
+              "draws": 0,
+              "pipelines": {}
+            }
+          },
+          {
+            "step": 7,
+            "mode": 0,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-7.json",
+              "sha256": "90e3415af51ae5d5bb7ea836f424b81061e09a406f686173f6d46742835b14f5"
+            },
+            "enabled": true,
+            "assets": 2180,
+            "registered": 2062,
+            "entries": 308,
+            "covered": 13622,
+            "materialComplete": true,
+            "materialDraws": 94,
+            "suppressed": 2062,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 79210,
+              "draws": 73336,
+              "pipelines": {
+                "main_00001aac_06486aa9": 54824,
+                "main_00005170_6bba530e / main_00000ad0_a419fca8": 24208,
+                "main_00019aec_8d339dd0 / main_00019070_446a8a7c": 26878,
+                "main_00019aec_8d339dd0 / main_00019070_8e64fc7e": 4450,
+                "main_00019a50_8a7254f2 / main_00000ff4_8bb86398": 8366,
+                "main_00019aec_8d339dd0 / main_0001a1e4_214b81ee": 1068,
+                "main_00006404_60bc9159": 24208,
+                "main_00000704_d92e1dee": 178,
+                "main_00000930_48a87330 / main_0001d9e8_71fd3edd": 2403,
+                "main_00000930_48a87330 / main_0001d400_479129fd": 3738,
+                "main_00000930_48a87330 / main_0001e2e8_d9666456": 356,
+                "main_00000930_48a87330 / main_0001cb18_c47cb80f": 890,
+                "main_00000930_48a87330 / main_0001d668_63fecb8e": 178,
+                "main_00000930_48a87330 / main_0001e768_532a842b": 534,
+                "main_00000930_48a87330 / main_0001d8b0_3abfd963": 89,
+                "main_00000930_48a87330 / main_0001db98_f4146d5c": 89,
+                "main_00000930_48a87330 / main_000036fc_b7a31adf": 89
+              }
+            }
+          },
+          {
+            "step": 8,
+            "mode": 3,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-8.json",
+              "sha256": "24bf51c151c29c2a3523e30a28fec98aca7bd9c33c0d1492b399ca9a95f2d64c"
+            },
+            "enabled": true,
+            "assets": 2180,
+            "registered": 0,
+            "entries": 0,
+            "covered": 0,
+            "suppressed": 0,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 0,
+              "draws": 0,
+              "pipelines": {}
+            }
+          },
+          {
+            "step": 9,
+            "mode": 0,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-9.json",
+              "sha256": "3a2e9f8462d56e3a816c249bf2cf586ee777dbd48cfd5878b38fe03846ed8a86"
+            },
+            "enabled": true,
+            "assets": 2180,
+            "registered": 2062,
+            "entries": 308,
+            "covered": 13625,
+            "materialComplete": true,
+            "materialDraws": 94,
+            "suppressed": 2062,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 80990,
+              "draws": 74984,
+              "pipelines": {
+                "main_00001aac_06486aa9": 56056,
+                "main_00005170_6bba530e / main_00000ad0_a419fca8": 24752,
+                "main_00019aec_8d339dd0 / main_00019070_8e64fc7e": 4550,
+                "main_00019aec_8d339dd0 / main_00019070_446a8a7c": 27482,
+                "main_00019a50_8a7254f2 / main_00000ff4_8bb86398": 8554,
+                "main_00019aec_8d339dd0 / main_0001a1e4_214b81ee": 1092,
+                "main_00006404_60bc9159": 24752,
+                "main_00000704_d92e1dee": 182,
+                "main_00000930_48a87330 / main_0001e2e8_d9666456": 364,
+                "main_00000930_48a87330 / main_0001d400_479129fd": 3822,
+                "main_00000930_48a87330 / main_0001d9e8_71fd3edd": 2457,
+                "main_00000930_48a87330 / main_0001cb18_c47cb80f": 910,
+                "main_00000930_48a87330 / main_0001e768_532a842b": 546,
+                "main_00000930_48a87330 / main_0001d668_63fecb8e": 182,
+                "main_00000930_48a87330 / main_0001d8b0_3abfd963": 91,
+                "main_00000930_48a87330 / main_0001db98_f4146d5c": 91,
+                "main_00000930_48a87330 / main_000036fc_b7a31adf": 91
+              }
+            }
+          },
+          {
+            "step": 10,
+            "mode": 4,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-10.json",
+              "sha256": "46e8e6835ecc3e48eebcf0bd623e66bd4131c41eef67f46b851215bd9e8f0527"
+            },
+            "enabled": true,
+            "assets": 2180,
+            "registered": 0,
+            "entries": 0,
+            "covered": 0,
+            "suppressed": 0,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 0,
+              "draws": 0,
+              "pipelines": {}
+            }
+          },
+          {
+            "step": 11,
+            "mode": 0,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-11.json",
+              "sha256": "46291a65c07ea696077a8875e4933f915c544fea5a8ab58433647fb93cb417c8"
+            },
+            "enabled": true,
+            "assets": 2180,
+            "registered": 2062,
+            "entries": 308,
+            "covered": 13619,
+            "materialComplete": true,
+            "materialDraws": 94,
+            "suppressed": 2062,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 80990,
+              "draws": 74984,
+              "pipelines": {
+                "main_00001aac_06486aa9": 56056,
+                "main_00005170_6bba530e / main_00000ad0_a419fca8": 24752,
+                "main_00019aec_8d339dd0 / main_00019070_446a8a7c": 27482,
+                "main_00019a50_8a7254f2 / main_00000ff4_8bb86398": 8554,
+                "main_00019aec_8d339dd0 / main_0001a1e4_214b81ee": 1092,
+                "main_00019aec_8d339dd0 / main_00019070_8e64fc7e": 4550,
+                "main_00006404_60bc9159": 24752,
+                "main_00000704_d92e1dee": 182,
+                "main_00000930_48a87330 / main_0001d9e8_71fd3edd": 2457,
+                "main_00000930_48a87330 / main_0001d400_479129fd": 3822,
+                "main_00000930_48a87330 / main_0001cb18_c47cb80f": 910,
+                "main_00000930_48a87330 / main_0001e768_532a842b": 546,
+                "main_00000930_48a87330 / main_0001e2e8_d9666456": 364,
+                "main_00000930_48a87330 / main_0001d668_63fecb8e": 182,
+                "main_00000930_48a87330 / main_0001db98_f4146d5c": 91,
+                "main_00000930_48a87330 / main_0001d8b0_3abfd963": 91,
+                "main_00000930_48a87330 / main_000036fc_b7a31adf": 91
+              }
+            }
+          },
+          {
+            "step": 12,
+            "mode": 5,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-12.json",
+              "sha256": "a59c6cbcdaf9357faa2757e9fbd61e2def0033f324ed82d96925e160f13c1bc4"
+            },
+            "enabled": true,
+            "assets": 0,
+            "registered": 0,
+            "entries": 0,
+            "covered": 0,
+            "suppressed": 0,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 0,
+              "draws": 0,
+              "pipelines": {}
+            }
+          },
+          {
+            "step": 13,
+            "mode": 0,
+            "changed": 2180,
+            "readback": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-13.json",
+              "sha256": "cd47a5413e4e10433dd1f0c5a81aa0b1f4901479ca360c822e6f1e659e4b8866"
+            },
+            "enabled": true,
+            "assets": 2180,
+            "registered": 2062,
+            "entries": 308,
+            "covered": 13625,
+            "materialComplete": true,
+            "materialDraws": 94,
+            "suppressed": 2062,
+            "gpu": {
+              "active": false,
+              "resources": {},
+              "dispatches": 83660,
+              "draws": 77456,
+              "pipelines": {
+                "main_00001aac_06486aa9": 57904,
+                "main_00005170_6bba530e / main_00000ad0_a419fca8": 25568,
+                "main_00019aec_8d339dd0 / main_0001a1e4_214b81ee": 1128,
+                "main_00019aec_8d339dd0 / main_00019070_446a8a7c": 28388,
+                "main_00019a50_8a7254f2 / main_00000ff4_8bb86398": 8836,
+                "main_00019aec_8d339dd0 / main_00019070_8e64fc7e": 4700,
+                "main_00006404_60bc9159": 25568,
+                "main_00000704_d92e1dee": 188,
+                "main_00000930_48a87330 / main_0001e768_532a842b": 564,
+                "main_00000930_48a87330 / main_0001d9e8_71fd3edd": 2538,
+                "main_00000930_48a87330 / main_0001d400_479129fd": 3948,
+                "main_00000930_48a87330 / main_0001cb18_c47cb80f": 940,
+                "main_00000930_48a87330 / main_0001e2e8_d9666456": 376,
+                "main_00000930_48a87330 / main_0001d8b0_3abfd963": 94,
+                "main_00000930_48a87330 / main_0001db98_f4146d5c": 94,
+                "main_00000930_48a87330 / main_0001d668_63fecb8e": 188,
+                "main_00000930_48a87330 / main_000036fc_b7a31adf": 94
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "records": [
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-full-scene-inventory.json",
+          "sha256": "c6fb398ef9d8298b8550a930c6ae816d4c027a03df34d25e2fd5ceeef4d7d417"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\0-nanite-full-scene-inventory.json.gz",
+          "sha256": "a8374c63a8b84fca934629856c0e111ab8f1d0739f0eb353f212338ac8f057cb"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-full-scene-conversion.json",
+          "sha256": "1db1f37295a465c854141cd7176cbf86f22195f2dc9eb699fa12ffad28030843"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\1-nanite-full-scene-conversion.json.gz",
+          "sha256": "3e12b1537ca29ce4f201511ca3d80446e7a532420ef9cd02176ed124b9ff313e"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-full-scene-conversion-verified.json",
+          "sha256": "75f300f75ff1104216527437ba712b02e9f4eee8936bdbc31b6755bdaba8e915"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\2-nanite-full-scene-conversion-verified.json.gz",
+          "sha256": "91ceddc1722ffc2e2e8ad3dc1f67d6521f5e8e246fa8d0af387a2ec4cc6b8fe2"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-nanite-full-scene-prepare-results.json",
+          "sha256": "5db758ce6c72ca861500427ba8b975c24e918712e3034452054da10c4d45ba01"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\3-web-project-nanite-full-scene-prepare-results.json.gz",
+          "sha256": "99ddba0b3ca4c6179baecdfeeb422bb4252375d005bf24e410a586edba3620a2"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\projects\\nanite-full-scene\\.web-nanite-project-copy.json",
+          "sha256": "d87bfa464881d74c356fc29bdef8c62b573774e23b3686cbf6e20f83c823d181"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\4-.web-nanite-project-copy.json.gz",
+          "sha256": "b79dc79875f3f8f414f566cf86d0915039adc58898ecbae5dcdfbd4612ad85a8"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\report.json",
+          "sha256": "f44ff3d3226f42310b5ae72f89275b48c7cf1879da418e9821a9af3aecc0f8f5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\5-report.json.gz",
+          "sha256": "a919a5de2a305a18dfc75204ad65235a009146329333b4461a36ea95cce64857"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\source.cjs",
+          "sha256": "e5645e8f7bb954845626868d8247795f73ea6dc33bacafc8aca71177de43694b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\6-source.cjs.gz",
+          "sha256": "188ecf72820c70c965b156eec78bb054f306531d57be1ea8580d6a4818c64325"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-eligibility-before-20261112\\package.json",
+          "sha256": "29c5d23aad80a90132336a9842289243bd6b32e21825989edbc8b914727b0711"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\7-package.json.gz",
+          "sha256": "d017dab4937f77c19198b3714a220773d3334eab66e700e2053f683a935dae2e"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-eligibility-before-20261112\\runtime-build.json",
+          "sha256": "3b79436655f91cdf6dd5d94b0df983a378761834ce7cf4340a3fe7b8820d90bd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\8-runtime-build.json.gz",
+          "sha256": "a28ba2cc83ac551909e70bd138c4c688664f1a4f6fc1a487c45abb1391848bb6"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-20261112-095909.log",
+          "sha256": "a58f4013a5b12c3949f9ce54d90472ece83244e0e24f15ad85ed7f1e748d2c4b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\9-web-engine-full-thread-20261112-095909.log.gz",
+          "sha256": "c632da802ad6056dabca40444809df2347e99863d3b57ff7d55846688a6d8789"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\UEWebEngineThreads.js.rsp",
+          "sha256": "9e637844abe9fc70a95f330e745443b053d510f20c4dda3f94dac6fc17a86c15"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\10-UEWebEngineThreads.js.rsp.gz",
+          "sha256": "c738f590bb12e1421249318a9cae28e7fd232ec2f9997816a73f4d66e1e06291"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-eligibility-before-20261112\\index.html",
+          "sha256": "defd7b625e52b501673490a7aff1d2629a1c87c4acf4e14965d55a667c5ffb05"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\11-index.html.gz",
+          "sha256": "ea02007e740976f893023e922e722e8df0829146910337d49b34275c59236e3c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-eligibility-before-20261112\\asset-versions.json",
+          "sha256": "68d21905a8018c1595956dad072c8d6d61b2c1e6046b5ec85434ad285579599f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\12-asset-versions.json.gz",
+          "sha256": "ee7d2d8a50b80c4bfe39457368bba424c9b32bba43e22e90b015ddf96462957c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-1.json",
+          "sha256": "18b026cf52fefe98afa73cf3b695de7a1fdfcf90ac8f62e0dbe4b6f5d3a2749f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\13-step-1.json.gz",
+          "sha256": "32e6468e68d1b9c5b8c0c5b15ca7d12b7694d0548c09ca3cb8231a4d6ee46a1c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-2.json",
+          "sha256": "daf59b720e1f9f2f59f15fd82e02352d4c900693c68b13b4562249fa45e1cce9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\14-step-2.json.gz",
+          "sha256": "226c1bf2fc8af068f506dd1c9558712a193281c3c5d9fa72d1b9f2ac4eb2ffca"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-3.json",
+          "sha256": "9d3f9d9a4bacf7b518fbdf46905c34bf96ed0d32ec83f9a2282a674626bbce1d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\15-step-3.json.gz",
+          "sha256": "fe81d368988d9b6bb6b86a539697390cc418efd2ed3e34b888f7ee39ca4bc041"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-4.json",
+          "sha256": "958a5e50e4ae0fb1fbce29a6ac63f28fc0691755122adb8b110e4bfebffb4cdc"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\16-step-4.json.gz",
+          "sha256": "d328a922613a50b425067acf985fb3206568a6dc9f326374e8de8269cc5c4bf8"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-5.json",
+          "sha256": "5302671ba66877b082660b4a20a28674ba083da1a39f4d167f7c4312202156c9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\17-step-5.json.gz",
+          "sha256": "cf35acae26bba2262cb862d0e37b68dc9601faca87baabadffa91e7eefbaa3d7"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-6.json",
+          "sha256": "b77f1c82c9fc3e668c00af10d032ed2a59b4f683c5af74804f78001afdf0aa84"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\18-step-6.json.gz",
+          "sha256": "a07a6b4bf839be7a08b2da3ee36b854716ccd9b3cd27ae30f878f8f5aaf45dc2"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-7.json",
+          "sha256": "ce6788d6fd637360be0f24344e7a71995cbc8a1002fa14fe54e2477c089b2111"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\19-step-7.json.gz",
+          "sha256": "585c52892b038b1be139e3ad5c11e321dd4627b10fad600667221e41f5d0e31a"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-8.json",
+          "sha256": "01c012862e78cdae3d883ef50e359ab83948d4aa187a2a021752af74b4252712"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\20-step-8.json.gz",
+          "sha256": "7785ceacd22979a3bc61e8cdb9806505679363670553ac972a61132a791cffc1"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-9.json",
+          "sha256": "e6ff9e501b131341d99b5301d4137dc0fabc69eed643bfb04befa3058246cee5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\21-step-9.json.gz",
+          "sha256": "62ae0b5d7e6b967c4de4ba87e178c22875811620e399655bf7c30a33f2ed81b0"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-10.json",
+          "sha256": "b308ec12ab9fce02f3e16a887d8ecb4555be50fcd7a2afcddaf87eb30cac6fee"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\22-step-10.json.gz",
+          "sha256": "9591133cedee789228aacf71de68558a3455cd843ee7876f8f1a9153aeb51d4d"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-11.json",
+          "sha256": "42801452956e669b5faaf1285dd1904f2a2eee7a8f82af24ef0849f6876c6d01"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\23-step-11.json.gz",
+          "sha256": "5726b0f808eccd1147fc607d2b33eafcb76be567f99e34a7a801ff97faa94052"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-12.json",
+          "sha256": "87dffc25764ef36f2ca1f09e7948aae408c41f6dbbaff7d9b201fdf105a50660"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\24-step-12.json.gz",
+          "sha256": "b7c9af442c70c7c118b6aba861b866c659f213ae166cc3b245d59887f8c4ec8d"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-retry-20261112\\step-13.json",
+          "sha256": "5f8053f74cf14797f60a01145eaece8a2b0057a7963319363888e4cc3d6ccfe0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\25-step-13.json.gz",
+          "sha256": "93288ca7c5be81bd42c65d920b0c20c43e029dd6b3a2b7864b4b1e23b129a7d0"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\report.json",
+          "sha256": "bbbe961ac0abb22fd0ac93710dffd98f4729154aa175d71c083f9c4c393a8d2d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\26-report.json.gz",
+          "sha256": "c33638e11512bde819a2ead51c66e8ba5ecfc99c91cf204a8d86e2528030b1ed"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\source.cjs",
+          "sha256": "b299e87ae6b3391d2a7e844aa3fe5f498fbc3b57c0d5eaf76649039c67b77621"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\27-source.cjs.gz",
+          "sha256": "7a1fb4c53c3d2818aac99adc2f309174bc876380ad1b68bd7e1ba9338e39c8a0"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-eligibility-fixed-20261112\\package.json",
+          "sha256": "7e96315d72e00fb4b40cc57d0f823e5447afe6476dd443a1f201f102bd4d7356"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\28-package.json.gz",
+          "sha256": "a157a452f0211f2b3ed7fd47e170aa98a53e20bf540fe8932b5a99e6a3c24aff"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-eligibility-fixed-20261112\\runtime-build.json",
+          "sha256": "0ae590eb985ddcad04e3530359e0148463eaa432c07547c7efcc813062d25a2d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\29-runtime-build.json.gz",
+          "sha256": "4a7522f834b81db157e72123882b339746a41577d303b2f98fe9be4ce74502ba"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-20261112-100938.log",
+          "sha256": "65ae1c333e17ff22e2a7485e73c23d116df8435a56f8d474ada65c2cebd6d142"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\30-web-engine-full-thread-20261112-100938.log.gz",
+          "sha256": "7c5c63d616fc0314b6f5d0c095e03980aba45c4ca15d160326c28867a8368ef5"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-eligibility-fixed-20261112\\index.html",
+          "sha256": "fe05fc605ba0b32ab813deb4abf617ee313491de9751c4c86e8399cfa9217436"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\31-index.html.gz",
+          "sha256": "ad16acff45c12fcf7308d72b268a40c48cc44e752ea9105aa0dc8dedfbff9feb"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-eligibility-fixed-20261112\\asset-versions.json",
+          "sha256": "affee26a241f800253cb3dc43015a4f3d222edb20ef0a0019eb06b18f67bb133"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\32-asset-versions.json.gz",
+          "sha256": "e91fdddaba2a51947910178211a4d92dc26112d02c56688b53da696448ddbe65"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-1.json",
+          "sha256": "1fdce1c6644778dbd38d03f018a50848f900aa5f8dda2bd7db03364d03fccace"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\33-step-1.json.gz",
+          "sha256": "a3d5002695be9fe4f6147c5a6563615dfd853c0720175eb970f68001e13fc5a1"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-2.json",
+          "sha256": "bac8a4da7cd6200b93b3ed884cf777fcdf1e00776f1001946773522215bdf16f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\34-step-2.json.gz",
+          "sha256": "7572fb324a8a55e13009d3d467bbaca650de9555b913e12b16593c387746fb2d"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-3.json",
+          "sha256": "951c1d1ad9df659d265577112ccd7c83a44eff5c9f75dbdb5e489c8162f54fe0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\35-step-3.json.gz",
+          "sha256": "0539185d0c7dc2bf72d1253bcdeea7869f5a687da8d803e44246bbbd37663fbc"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-4.json",
+          "sha256": "0063fe8f426b98e25bcad0d2505ca5a09d142012e03f3a62364b2ee91be2d0ab"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\36-step-4.json.gz",
+          "sha256": "f81f0ffa00715fef8fdba78f9be55e34a99517feb933c562fca8e6006b6f19ea"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-5.json",
+          "sha256": "bb47824d1367cb009cf6f62793e7db0e589c08bf6fcb5dc2e85ffae502cb4895"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\37-step-5.json.gz",
+          "sha256": "8f3ee8f56570c482bb628b5ab0c8343be4133e1240691bdd7fc47befa0046bca"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-6.json",
+          "sha256": "c6926850efe4c4a6a4f2b60e4cef151a61767d3c09c2cf3c445f54175dbd2031"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\38-step-6.json.gz",
+          "sha256": "fcdc1e47b94827107ba1fc1079e28a2c1080b7ed9c3d4070e27c643514cda89a"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-7.json",
+          "sha256": "90e3415af51ae5d5bb7ea836f424b81061e09a406f686173f6d46742835b14f5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\39-step-7.json.gz",
+          "sha256": "d70b8b9f442fbf4cf81750e3853897863ac63a086d66c98c07aa676acb819664"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-8.json",
+          "sha256": "24bf51c151c29c2a3523e30a28fec98aca7bd9c33c0d1492b399ca9a95f2d64c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\40-step-8.json.gz",
+          "sha256": "43c31de21c5c932d5216c35d132c48ed963d8921f9b5b84929fbeca4503a4d7a"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-9.json",
+          "sha256": "3a2e9f8462d56e3a816c249bf2cf586ee777dbd48cfd5878b38fe03846ed8a86"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\41-step-9.json.gz",
+          "sha256": "2f9d2ab5a05ec8378adc13fab88aad7e6dc43e9f133c19f4a33492f923dc23cc"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-10.json",
+          "sha256": "46e8e6835ecc3e48eebcf0bd623e66bd4131c41eef67f46b851215bd9e8f0527"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\42-step-10.json.gz",
+          "sha256": "49b97047047e8070032ba73ab0acf89c149cddbca44d820cd99b55594c0240cb"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-11.json",
+          "sha256": "46291a65c07ea696077a8875e4933f915c544fea5a8ab58433647fb93cb417c8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\43-step-11.json.gz",
+          "sha256": "4b56d8a99e2429d5ed2cf249aec261dc4a1512389e0c0cd99bb2bfa93eeb30a6"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-12.json",
+          "sha256": "a59c6cbcdaf9357faa2757e9fbd61e2def0033f324ed82d96925e160f13c1bc4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\44-step-12.json.gz",
+          "sha256": "b8d154735e727fda1950f0b0f18689b215a0392093a6854dd66c3e392e423dbd"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-fixed-20261112\\step-13.json",
+          "sha256": "cd47a5413e4e10433dd1f0c5a81aa0b1f4901479ca360c822e6f1e659e4b8866"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\45-step-13.json.gz",
+          "sha256": "0c8f496bc8fb64fb535b738ba665f98a9840673f03679b70cd17c036e3771c87"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-20261112\\fixed-sources.json",
+          "sha256": "9deeb862bc4be0f02f7add962dc349ec30930525291e151be5bee3ff664c26bc"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\46-fixed-sources.json.gz",
+          "sha256": "f7279891e2456a30adf9b91824c2690dd1d031e30d60ad1bd7e17f1c0f5a6a3d"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-20261112\\additional-before-source.json",
+          "sha256": "cca844b3890bb470fc3accc437e80d03fb8612dfa7fcf333575dbc74e01ced54"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\47-additional-before-source.json.gz",
+          "sha256": "67a1454b6737b422383482ac553ee208f49b10a95e3eafcfe88f69dfa4b5a2a5"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-20261112\\build-web-engine-before.ps1",
+          "sha256": "3784a7b5805b67cefd7f0773f576bb93a47be6c9139759d6f4d7946b07c4a534"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\48-build-web-engine-before.ps1.gz",
+          "sha256": "06d7bce2bb2e9507fe11c14303d6aed5ff23ad4902daaa98a94ea58924141bef"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-20261112\\before-build-failure.json",
+          "sha256": "252af561c307f41f617e199412bc3b5a5b5eaffdd9e2fb3f188b57e544ff2ea3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\49-before-build-failure.json.gz",
+          "sha256": "1337fc8147d251aa20d3a266635b51cf18491ba1d661979c2221fe9913b75e7e"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-20261112-094559.log",
+          "sha256": "faf6327c24c27a5e3fcd643d5bd1805b2bbde42736fbe00f44768e67de316ec6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\50-web-engine-full-thread-20261112-094559.log.gz",
+          "sha256": "70f7a9b3ea00ac90db139998af52af9956597d733f5c9527dbfb48ca8b8368ba"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-20261112\\eligibility-test-before-compile-fix.cpp",
+          "sha256": "d45a0373c98d3186376d03a14019ca9174e0ede895def790421cc02bbabefe1e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\51-eligibility-test-before-compile-fix.cpp.gz",
+          "sha256": "3b20eabafd15db3fec095e5810d7193a17c301b62c3ac34b47b69458ab1ea243"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-20261112\\report.json",
+          "sha256": "34d062b87ad64efdfd73ec978afb8d10533331e611c638226ac0d314070c5385"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\52-report.json.gz",
+          "sha256": "3a908ff36ce9d48b3408f38086a6f02c10b29cc6e2494b20f6f77bdaf66852a9"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-20261112\\source.cjs",
+          "sha256": "c8d54402cc097a1113d4427f2d027de406fde0103dd18bb0aabcb5d32744ee87"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\53-source.cjs.gz",
+          "sha256": "6c12108610d22c4df74ad9f652930384286d7a1b7f419a3e666b159f5c368bb0"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-20261112\\step-1.json",
+          "sha256": "daede69aab1c5ac8c3c75a7696b5943875daad3b7e7b9169c9eb951b19145a15"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\54-step-1.json.gz",
+          "sha256": "9b865bf949a137c8c4ba44768091102bd637a0e3ec40fcf287ff6320477268cb"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-20261112\\step-2.json",
+          "sha256": "5bce0d204cbd2afef148bd6e593d2637b40c3b7c6e50a1370469109fc947966d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\55-step-2.json.gz",
+          "sha256": "0c45d75ddddc7d638f8c0a7690e1a36d5019b30d36a7c35d268875dc50ed7efc"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-20261112\\step-3.json",
+          "sha256": "5095e7641b220516175101fc661b24abde8c708dab82bc4825b884301b9246be"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\56-step-3.json.gz",
+          "sha256": "5a566e814a277448cda777edf14820dc5de94eb9f975cfc3761b8daf4ba857ea"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-20261112\\step-4.json",
+          "sha256": "a718ebcbe76e75cec1bb1457e57fb98e53eac3280e4f89804ffba37eeb9a9ada"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\57-step-4.json.gz",
+          "sha256": "7329dd6010d89df8dc7dbe8710df8b23d53ba21fefdb9f29907b1413cc187329"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-20261112\\step-5.json",
+          "sha256": "680c5155e10ea84f760581dbbc3d524b3ab4133530299d1a1a3ddeee68cfe133"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\58-step-5.json.gz",
+          "sha256": "c52fef4f11f4d89b2f24654324ddf440c77ce339ce5a70da9ba4940c737154ec"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-20261112\\step-6.json",
+          "sha256": "c7d13e90ddab2ebcc61cbc2ac6a0723915df6674eccbe768a7f895d7d12123b2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\59-step-6.json.gz",
+          "sha256": "aabe57e564b66b2e3b55b437f068ce249d210812fece549a1991a0dd67322709"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-20261112\\step-7.json",
+          "sha256": "575076a615e78bae3e71f76db992a92a9db2537b553122c6cd9b269b5b92172c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\60-step-7.json.gz",
+          "sha256": "be9596d69dfbe398769a0e8b474762dc27458a1bcc5dd0fc1da96cec60f3429d"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-20261112\\step-8.json",
+          "sha256": "63f418e7e34a77cc33ca22d810c9bfd9ede9fb6652119fb2445839a80ba84e02"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\61-step-8.json.gz",
+          "sha256": "7af09354e55f8d6be9ff0db1d32dafb641cec29d52c50c2558c2d07ad495dd03"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-20261112\\step-9.json",
+          "sha256": "49e90dbcfc5d9c7351fe62fd142934d6cf42e28e50cc48f17612ca60e9501c56"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\62-step-9.json.gz",
+          "sha256": "96ff0bd84073ba41b1cc3bba9a9b140b1c1091e9fee940d6f58272426cbcd389"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-before-20261112\\step-10.json",
+          "sha256": "52c75965dd822c8efe1397873f7402b94a1c908d30c68b18aa96312aa81b571d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\63-step-10.json.gz",
+          "sha256": "904d67dd029a87b702ab01041bc9da38ea794902d34528c161cb3de81a8d62fd"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-20261112\\0-before-source",
+          "sha256": "c9e811af150750f7b1c9917c25db05ea5664510a7c378ea472129b3838af56dd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\64-0-before-source.gz",
+          "sha256": "03b4b9f025c5a59c639089aafda4b3111fd17c552a86e9c1e1e4cade140236bf"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Public\\StaticMeshSceneProxy.h",
+          "sha256": "16aa9ee0d6073fae1ba96b5bcd2975beba039795c029800a92aa0ca53b012e8b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\65-StaticMeshSceneProxy.h.gz",
+          "sha256": "6c08a3a7ae445f4d217466fe1e7db90edba8b3671a09d75d9ef083150c545ca5"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-20261112\\1-before-source",
+          "sha256": "8a9aa6e28c2ac33c5e2a048c35bb5222a66aad2ca3541e122d244d5f4e7a7e3c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\66-1-before-source.gz",
+          "sha256": "d37728b2de5ef395b70e9e7eca0d7234a340db8502eddb8e48e9ba77909f1cf5"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\StaticMeshSceneProxy.cpp",
+          "sha256": "5aca7c7b7d1ce66d444101ac70167fc78fe949fe770b9976fc9ee873726cd49e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\67-StaticMeshSceneProxy.cpp.gz",
+          "sha256": "b6d0080f96724778cf6c4bf7453394207285464a3c9be878e1e181e7135108f5"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-20261112\\2-before-source",
+          "sha256": "7e640feb1868faa256ee23277e7251dc1a49d8198680f4e1439b48df4a6a34a2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\68-2-before-source.gz",
+          "sha256": "da35afb97862c7bf7147fdee7ca4eb10268530d88776eff096b1e5627362d4b7"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteWebScene.cpp",
+          "sha256": "1511074399ddb1453b7a9c9379e1762826686f236a72d63cabf2710d7cd4665d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\69-NaniteWebScene.cpp.gz",
+          "sha256": "ca470fad2abd0384693912fafc4d89f11a2e96f8c10ab8d7968c2215fc7d57f6"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-20261112\\3-before-source",
+          "sha256": "14986c790fb0f9eccecaa86a43995446ca3e2008de2a5b1a62a0088fa1920370"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\70-3-before-source.gz",
+          "sha256": "065131c2932673ac7a7ca570681576bbd8201ac4003c33dc49e371958003322c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteWebDepth.cpp",
+          "sha256": "7d54f256b57844c4ea529d5da718c7851f291fbf59e98897c3e68b0eb71f8b5b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\71-NaniteWebDepth.cpp.gz",
+          "sha256": "30f4cca67efba4aa409ea0a9602845ce271683b3b7fb2925fba9275b7bacef21"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-eligibility-20261112\\4-before-source",
+          "sha256": "c2dda531aab04fca86fbbd7fcffb66f3dcf1d331e9b5bdff3e0703b0614014e9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\72-4-before-source.gz",
+          "sha256": "2c29fcea141d7436230ce9f25db77734d09a0ee46144eafb6d20e0f7692f46cc"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\StaticMeshComponent.cpp",
+          "sha256": "cbbd869234243b586a0681bb2e1c4887a91dae650bd88f98c686ccc01a8f0b33"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\73-StaticMeshComponent.cpp.gz",
+          "sha256": "d07c062655a91ad4aab9cea37d0e10b9a23e39a93b80e4027917214573fb151b"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-eligibility.cjs",
+          "sha256": "a6eceee36a20255552a2368ec20e56be230d3ed938c9c110cba44a2652d0b610"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\74-collect-nanite-eligibility.cjs.gz",
+          "sha256": "e8ef06f67ef6ce44dac711290b1372eb47dd75cb78dd5ac65321f8663904538c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-eligibility.cjs",
+          "sha256": "b299e87ae6b3391d2a7e844aa3fe5f498fbc3b57c0d5eaf76649039c67b77621"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\75-probe-nanite-eligibility.cjs.gz",
+          "sha256": "7a1fb4c53c3d2818aac99adc2f309174bc876380ad1b68bd7e1ba9338e39c8a0"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\package-nanite-runtime-variant.cjs",
+          "sha256": "68d460ec4f138305c3cee599bb82f97202943aa2b19f775479a55baefea22253"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\76-package-nanite-runtime-variant.cjs.gz",
+          "sha256": "93cd8aab923d7803e19c4eb7743de58f669175a5abe60078ab3d415009ce8d27"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-engine-worker.js",
+          "sha256": "fa7dfc620aead345b2bd36fec277ba129ab5124b0ac1b8c7a8c06484c57b07a7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\77-web-engine-worker.js.gz",
+          "sha256": "38e94cb54cd35444d5135de6f8518460d40b1b5e44442549c37b49617a7e8b1e"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build-web-engine.ps1",
+          "sha256": "d0ff02a8b84404839241f4dd193a378f379393cbf42dd19890e8be62e8d9b02b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\78-build-web-engine.ps1.gz",
+          "sha256": "776bb2eba2f943c6dcef9b36652ec641e268d84a0d5b808e87677014d4650fea"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\Private\\WebNaniteEligibilityTest.cpp",
+          "sha256": "84d16aac993c77ca2440581e225dedbf5324e11ba5ac7401dc507dc5c7a90191"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-eligibility-20261112\\79-WebNaniteEligibilityTest.cpp.gz",
+          "sha256": "bd10c70a652786fbb1f0cb2d13db0072046395fea0ac1c87c26cea921abcc35d"
+        }
+      }
+    ],
+    "boundary": "Original Villa contains no enabled Nanite meshes. The compatibility package deliberately converts a separate project copy. Real component disable flags, all-hidden candidates, non-Nanite mesh replacement, and restoration are tested. Empty visible Nanite work now exits before raster visibility/depth preparation. The scene opt-in still initializes streaming infrastructure and enables conservative ordinary-occlusion invalidation; zero total CPU/memory overhead is not claimed. These instrumented frozen-clock checks are correctness evidence and do not establish Nanite-on scene performance acceptance."
+  }
+}

@@ -10,14 +10,14 @@ const output = path.join(__dirname, 'build/ue-rhi-texture-uint');
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const sha = file => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 const required = ['global-device-and-recording-mode', 'shader-reflects-uint-texture', 'shader-reflects-float-texture',
-  ...['cube-integer', 'srgb', 'render-target', 'uav', 'multi-mip', 'array', 'multisample', 'missing-bulk',
+  ...['cube-integer', 'render-target', 'uav', 'multi-mip', 'array', 'multisample', 'missing-bulk',
     'dimension-limit', 'short-bulk', 'oversized-bulk'].map(name => `reject-create-${name}`),
-  'invalid-bulk-not-discarded', 'default-zero-initialization', 'one-voxel-bulk-and-dimensions',
+  'volume-srgb-flag-keeps-linear-format', 'invalid-bulk-not-discarded', 'default-zero-initialization', 'one-voxel-bulk-and-dimensions',
   'one-voxel-bulk-discarded', 'reject-uint-shader-for-unorm-texture', 'reject-null-texture-binding',
   'compute-pipelines-reused', 'transitions-released', 'gpu-validation-clean', 'host-rhi-restored'];
 for (const format of [28, 32, 60, 10, 71, 3, 40])
   required.push(...['creation-valid', 'view-valid', 'direct-type-compatible', 'srv-type-compatible',
-    'reject-scalar-mismatch', 'reject-srgb', 'reject-array', 'volume-scope-retained']
+    'reject-scalar-mismatch', 'srgb-flag-keeps-linear-format', 'reject-array', 'volume-scope-retained']
     .map(name => `system-2d-${format}-${name}`));
 const values = Array.from({length: 72}, (_, index) =>
   index < 6 ? [0, 1, 127, 128, 254, 255][index] : (index * 73 + 29) % 256);

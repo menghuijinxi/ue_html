@@ -13,7 +13,8 @@ function createWebPipelineCache(device) {
       ++counts.active;
       counts.peakActive = Math.max(counts.peakActive, counts.active);
       let creation;
-      try {creation = native['create' + kind + 'PipelineAsync'](descriptor);}
+      const name = 'create' + kind + 'PipelineAsync';
+      try {creation = observe(name, descriptor, () => native[name](descriptor));}
       catch (error) {creation = Promise.reject(error);}
       Promise.resolve(creation).then(pipeline => {
         pipelines.set(key, pipeline); ++counts.ready;
@@ -33,6 +34,11 @@ function createWebPipelineCache(device) {
     pump();
     return promise;
   }
+  const observe = (name, descriptor, invoke) => {
+    const start = performance.now();
+    try {return invoke();}
+    finally {globalThis.__webRecordPipelineEvent?.({name,start,end:performance.now(),label:descriptor.label,cacheMiss:true});}
+  };
   const encode = value => {
     if (value === null || typeof value !== 'object') return value;
     if (resources.has(value)) return {$resource: resources.get(value)};
@@ -53,7 +59,7 @@ function createWebPipelineCache(device) {
     device[name] = descriptor => {
       const key = keyFor(name, descriptor);
       if (records.has(key)) return records.get(key);
-      const value = native[name](descriptor);
+      const value = observe(name, descriptor, () => native[name](descriptor));
       resources.set(value, ++sequence); records.set(key, value);
       ++counts[name === 'createShaderModule' ? 'modules' : 'layouts'];
       return value;
@@ -70,7 +76,7 @@ function createWebPipelineCache(device) {
           ++counts.syncWhilePending;
         }
         ++counts.misses;
-        return suffix ? compile(kind, descriptor, key) : native[name](descriptor);
+        return suffix ? compile(kind, descriptor, key) : observe(name, descriptor, () => native[name](descriptor));
       };
     }
   }

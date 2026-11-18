@@ -1,0 +1,81 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-disocclusion-native-20261111.json",
+    "bytes": 241178,
+    "sha256": "d404f7c0c3072dc70a3e7b757b8e4958dd4fb71f42cfe996061adebb041453da",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-11T10:57:24.193Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-core-native-evidence.cjs",
+      "sha256": "030448d25cc223498b3225c7d12ed0f7eff84ec2fa3aa7664f568d6662705110"
+    },
+    "runtimeEvidence": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-disocclusion-20261111.json",
+      "sha256": "3de6c9a2056c7ed41354242bbedfb5c79811f2a3e58fcbf8eed7756604a45e74"
+    },
+    "runs": [
+      {
+        "scene": "Villa",
+        "mode": "packed",
+        "frames": 14086,
+        "comparisons": 156,
+        "maxMean": 3.6169487847220587,
+        "maxP95": 16,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-full-scene-native\\packed-comparison.json",
+          "sha256": "ac0329e8a4bfe5d6c7ddf12f456ca16b2d02261d0d9c65a802d721548aa92ba6"
+        }
+      },
+      {
+        "scene": "Villa",
+        "mode": "scalar",
+        "frames": 13799,
+        "comparisons": 156,
+        "maxMean": 3.611710069444287,
+        "maxP95": 16.333333333333332,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-full-scene-native\\scalar-comparison.json",
+          "sha256": "a6c75e48b8a1ec29045777ff032a03657ef1135078937a88e332c36275d82e4b"
+        }
+      },
+      {
+        "scene": "Template_Default",
+        "mode": "packed",
+        "frames": 6971,
+        "comparisons": 84,
+        "maxMean": 3.83345204178538,
+        "maxP95": 15,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-default-native-current\\packed-comparison.json",
+          "sha256": "7e898e64b862b26466dab892b65727e8f14fc3b265faa3f3510ef5a3740caec0"
+        }
+      },
+      {
+        "scene": "Template_Default",
+        "mode": "scalar",
+        "frames": 6963,
+        "comparisons": 84,
+        "maxMean": 3.8361823361823393,
+        "maxP95": 15,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-default-native-current\\scalar-comparison.json",
+          "sha256": "54c79ee2b55207add2a0659f8345f2e7aa92487946507fc1f9b2fd149fc4609f"
+        }
+      }
+    ],
+    "artifacts": {
+      "$omitted": true,
+      "reason": "Large array",
+      "type": "array",
+      "entries": 428,
+      "bytes": 200961,
+      "sha256": "8b9403aca5d179738384d07c9cec16823f7248c3105fecc1aa50a496003803af"
+    },
+    "boundary": "Same final runtime in Template_Default and Villa, actual TAA/TSR, matched jitter and material mip bias, four stable AO phases, independent native SM6 on/off/restored capture. Full-world clocks advance and only material time is fixed. Existing image thresholds are unchanged; absolute platform differences remain reported separately. This does not claim every experimental Nanite feature is supported."
+  }
+}
