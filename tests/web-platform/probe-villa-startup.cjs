@@ -42,6 +42,8 @@ const save = () => fs.writeFileSync(path.join(directory, 'result.json'), JSON.st
 const recorder = fs.readFileSync(path.join(__dirname, 'web-startup-probe.js'), 'utf8');
 const candidate = option('worker');
 const capture = process.argv.includes('--capture');
+const startupTimeoutMs = capture ? 360000 : 120000;
+report.startupTimeoutMs = startupTimeoutMs;
 const plain = process.argv.includes('--plain');
 const withoutSubgroups = process.argv.includes('--without-subgroups');
 assert(!withoutSubgroups || capture && direct && selected === 'ours' && !plain && !cvars && !candidate,
@@ -152,10 +154,11 @@ let context, server;
           (noLumen ? '?lighting=off' : '') + '#' + engine);
         if (!direct) await page.waitForSelector('iframe');
         const frame = direct ? page : await (await page.locator('iframe').elementHandle()).contentFrame();
-        while (Date.now() - began < 120000) {
+        while (Date.now() - began < startupTimeoutMs) {
           const sample = await frame.evaluate(() => ({
             elapsed: performance.now(), frames: globalThis.__webEngineFrames,
             ready: globalThis.__webPSOPrecacheReady, shown: document.getElementById('loading')?.hidden,
+            nativePso: globalThis.__webPSOPrecache, nativeRhi: globalThis.__webOptimizationRHI,
             failure: globalThis.__webEngineFailure,
             stage: globalThis.__webStartupDiagnostics?.stage,
             prewarm: globalThis.__webPipelinePrewarm,
@@ -177,15 +180,21 @@ let context, server;
           }
           await page.waitForTimeout(100);
         }
+        if (run.pass === undefined) {
+          run.pass = false;
+          run.elapsedMs = Date.now() - began;
+          run.failure = `Startup did not reach ready within ${startupTimeoutMs / 1000}s`;
+        }
         if (run.pass && engine === 'ours' && automaticCollectors) {
+          const {nativePso, nativeRhi} = run.last;
           const worker = run.last.worker;
-          assert(worker?.pso?.enabled && worker.pso.active === 0 &&
-            worker.rhi?.asyncPrecacheRequested > 0 &&
-            worker.rhi.asyncPrecacheRequested === worker.rhi.asyncPrecacheCompleted &&
-            worker.rhi.asyncPrecacheFailed === 0 && worker.pending === 0 &&
+          assert(nativePso?.enabled && nativePso.active === 0 &&
+            nativeRhi?.asyncPrecacheRequested > 0 &&
+            nativeRhi.asyncPrecacheRequested === nativeRhi.asyncPrecacheCompleted &&
+            nativeRhi.asyncPrecacheFailed === 0 && worker?.pending === 0 &&
             !worker.errors.length && Object.values(worker.calls).every(call => call.failed === 0),
           'Automatic collectors or native pipeline compilation failed');
-          assert(run.precacheRejections.length <= worker.rhi.unsupportedPrecacheRequests,
+          assert(run.precacheRejections.length <= nativeRhi.unsupportedPrecacheRequests,
             'Pipeline failures must be accounted for by unsupported speculative states');
         }
         if (run.pass && engine === 'ours' && expectedPrewarm)
@@ -285,7 +294,7 @@ let context, server;
           fs.writeFileSync(path.join(directory, `${index}-corpus.json`), JSON.stringify(corpus));
         }
         console.log(JSON.stringify({index, engine, pass: run.pass, elapsedMs: run.elapsedMs,
-          failure: run.last?.failure, calls: run.last?.worker?.calls, pso: run.last?.worker?.pso}));
+          failure: run.failure || run.last?.failure, calls: run.last?.worker?.calls, pso: run.last?.worker?.pso}));
         if (run.pass) await page.screenshot({path: path.join(directory, `${index}-${engine}.png`)});
         await page.goto('about:blank');
         run = null;

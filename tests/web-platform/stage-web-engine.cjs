@@ -54,11 +54,22 @@ try {
   const entries = [];
   const pluginContentRoots = new Map();
   report.omittedMetadata = [];
+  const userShaderCopies = new Map(['Global', cookProject].map(library => {
+    const suffix = `${library}-${format}-${platform}.ushaderbytecode`;
+    return [`User/Saved/Shaders/${format}-${platform}/ShaderCode-${suffix}`, `ShaderArchive-${suffix}`];
+  }));
   let offset = 0;
   for (const product of [...cook.products].sort((a, b) => a.file.localeCompare(b.file))) {
     let relative = path.relative(cook.output, product.file).replaceAll('\\', '/');
     assert(!relative.startsWith('../') && !path.isAbsolute(relative));
     if (webgpu) {
+      const userShaderCopy = userShaderCopies.get(relative);
+      if (userShaderCopy) {
+        const runtimeFile = path.join(cook.output, cookProject, 'Content', userShaderCopy);
+        assert.equal(sha(fs.readFileSync(runtimeFile)), product.sha256, 'Cook shader cache must duplicate runtime bytes');
+        report.omittedMetadata.push(product);
+        continue;
+      }
       if (relative.startsWith(cookProject + '/Metadata/ShaderLibrarySource/ShaderArchive-') &&
           relative.endsWith('.ushaderbytecode')) {
         const runtimeFile = path.join(cook.output, cookProject, 'Content', path.basename(product.file));
