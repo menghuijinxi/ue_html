@@ -2,6 +2,7 @@
 // Compare the shipped packages and isolate the retained scene opt-in flag.
 // Default performance runs observe viewport submissions without GPU wrappers or
 // frozen clocks. Explicit diagnostic switches are recorded separately.
+const {initializeProjectOutput, assertProjectOutputTree} = require('./project-output.cjs');
 const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
 const {chromium} = require('playwright');
 const {audit} = require('./content-file-metadata.cjs');
@@ -18,9 +19,11 @@ const backendDefaultModes = option('backend-defaults')?.split(',');
 assert(!backendDefaultModes || (backendDefaultModes.length === modes.length &&
   backendDefaultModes.every(v => ['off', 'on', 'disabled'].includes(v)) && modes.every(m => m === 'candidate')));
 const recordIdleStatus = process.argv.includes('--idle-status') || !!(runtimeDefaultModes || backendDefaultModes);
-const baselineFolder = option('baseline-folder');assert(!baselineFolder||/^[a-z0-9-]+$/.test(baselineFolder));
+const packagedFolder = /^[a-z0-9-]+(?:\/[a-z0-9-]+)*$/;
+const baselineFolder = option('baseline-folder');
+assert(!baselineFolder || packagedFolder.test(baselineFolder));
 assert(modes.every(m => ['legacy', 'off', 'no-scene','candidate'].includes(m)));
-assert(!modes.includes('candidate') || /^[a-z0-9-]+$/.test(candidateFolder));
+assert(!modes.includes('candidate') || (candidateFolder && packagedFolder.test(candidateFolder)));
 const hierarchyBatches = option('hierarchy-batches')?.split(',');
 assert(!hierarchyBatches || (hierarchyBatches.length === modes.length && hierarchyBatches.every(v=>v==='0'||v==='1') && modes.every(m=>m==='candidate')));
 const occlusionBatches = option('occlusion-batches')?.split(',');
@@ -64,7 +67,8 @@ assert(Number.isFinite(seconds) && seconds >= 16 && seconds <= 180);
 assert(!tour || seconds <= 60);
 const tag = option('tag') || 'nanite-off-regression-20261111';
 assert(/^[a-z0-9-]+$/.test(tag));
-const output = path.join(__dirname, 'results', tag);
+initializeProjectOutput();
+const output = assertProjectOutputTree(path.join(__dirname, 'results', tag));
 assert(!fs.existsSync(path.join(output, 'report.json')), 'Use a new result tag');
 fs.mkdirSync(output, {recursive: true});
 fs.copyFileSync(__filename, path.join(output, 'source.cjs'));
@@ -169,9 +173,12 @@ function statistics(times) {
       const run = {index, mode, folder, errors: [], phases: [], assets: []}; report.runs.push(run);
       for (const file of ['index.html', 'asset-versions.json', 'config-files.json'])
         run.assets.push(audit(path.join(__dirname, 'build', folder, file)));
-      const context = await chromium.launchPersistentContext(
-        `G:/UE_HTML/ue_html/tests/web-platform/results/browser-profiles/${tag}-${index}`, {
-          channel: 'msedge', headless: !headed, viewport: {width, height}, deviceScaleFactor: 1});
+      const profile = assertProjectOutputTree(path.join(__dirname, 'build/browser-profiles', `${tag}-${index}`));
+      const context = await chromium.launchPersistentContext(profile, {
+        channel: 'msedge', headless: !headed, viewport: {width, height}, deviceScaleFactor: 1,
+        downloadsPath: path.join(profile, 'downloads'),
+        args: ['--disk-cache-dir=' + path.join(profile, 'http-cache'),
+          '--crash-dumps-dir=' + path.join(profile, 'crashes')]});
       const log = fs.createWriteStream(path.join(output, index + '-' + mode + '.log'));
       try {
         run.browser = context.browser().version();
