@@ -49,6 +49,12 @@ assert(!materialPrecaches || (materialPrecaches.length === modes.length && mater
 assert(!nanites || ![packBatches,microBatches,fixedMerges,programmableMerges,shadeBinnings,hierarchyBatches,occlusionBatches,materialPrecaches].some(Boolean),'Isolate the Nanite switch');
 const tour = process.argv.includes('--tour');
 const walk = process.argv.includes('--walk') || tour, headed = process.argv.includes('--headed');
+const browser = option('browser') || 'msedge';
+const affinity = Number(option('affinity') || 0);
+assert(['chrome', 'msedge'].includes(browser));
+assert(Number.isSafeInteger(affinity) && affinity >= 0 &&
+  (!affinity || (browser === 'chrome' && process.platform === 'win32')));
+const checkAffinity = affinity ? require('./comparison-browser-affinity.cjs') : null;
 const trace = process.argv.includes('--trace'), gpuProbe = process.argv.includes('--gpu-probe');
 const traceStart = Number(option('trace-start') || 0), traceSeconds = Number(option('trace-seconds') || 0);
 const gpuTimestamps = process.argv.includes('--gpu-timestamps');
@@ -74,8 +80,8 @@ fs.mkdirSync(output, {recursive: true});
 fs.copyFileSync(__filename, path.join(output, 'source.cjs'));
 if (gpuTimestamps) fs.copyFileSync(require.resolve('./observe-nanite-motion-gpu.cjs'), path.join(output,'gpu-observer.cjs'));
 if (pointOnly) fs.copyFileSync(require.resolve('./diagnose-point-shadow-vsm.cjs'), path.join(output,'point-diagnostic.cjs'));
-const report = {date: new Date().toISOString(), pass: false, source: audit(__filename), origin, runtimeDefaultModes, backendDefaultModes, recordIdleStatus, baselineFolder, hierarchyBatches, occlusionBatches, packBatches, microBatches, fixedMerges, programmableMerges, shadeBinnings, cvarName, cvarValues, nanites, materialPrecaches, walk, tour, headed, trace, traceStart, traceSeconds, gpuProbe, gpuTimestamps, pointOnly, width, height, seconds, runs: [],
-  boundary: 'Serial fresh Edge contexts at the recorded viewport, DPR 1. Viewport submission intervals, not physical display timestamps. '
+const report = {date: new Date().toISOString(), pass: false, source: audit(__filename), origin, runtimeDefaultModes, backendDefaultModes, recordIdleStatus, baselineFolder, hierarchyBatches, occlusionBatches, packBatches, microBatches, fixedMerges, programmableMerges, shadeBinnings, cvarName, cvarValues, nanites, materialPrecaches, walk, tour, headed, browser, affinity, trace, traceStart, traceSeconds, gpuProbe, gpuTimestamps, pointOnly, width, height, seconds, runs: [],
+  boundary: 'Serial fresh browser contexts at the recorded viewport, DPR 1. Viewport submission intervals, not physical display timestamps. '
     + 'All intervals retained, including stalls. No-scene changes only the HTML -WebNaniteScene argument of the shipped Nanite-off package. '
     + 'Legacy also has different runtime and Cook, so its difference cannot be assigned to one code change. '
     + (tour ? 'Existing native game-frame camera tour through the interior: simultaneous position and rotation, without keyboard input or route warmup. ' : walk ?
@@ -175,13 +181,14 @@ function statistics(times) {
         run.assets.push(audit(path.join(__dirname, 'build', folder, file)));
       const profile = assertProjectOutputTree(path.join(__dirname, 'build/browser-profiles', `${tag}-${index}`));
       const context = await chromium.launchPersistentContext(profile, {
-        channel: 'msedge', headless: !headed, viewport: {width, height}, deviceScaleFactor: 1,
+        channel: browser, headless: !headed, viewport: {width, height}, deviceScaleFactor: 1,
         downloadsPath: path.join(profile, 'downloads'),
         args: ['--disk-cache-dir=' + path.join(profile, 'http-cache'),
           '--crash-dumps-dir=' + path.join(profile, 'crashes')]});
       const log = fs.createWriteStream(path.join(output, index + '-' + mode + '.log'));
       try {
         run.browser = context.browser().version();
+        if (checkAffinity) run.affinityBefore = checkAffinity(profile, affinity, true);
         if (runtimeDefaultModes) await context.route('**/index.html', async route => {
           const response = await route.fetch(), html = await response.text();
           const match = html.match(/const localRuntimeAssets = (\{[^\n]+\});/); assert(match);
@@ -254,7 +261,8 @@ ${marker}
         const response = await page.goto(`${origin}/build/${folder}/index.html`, {waitUntil: 'commit'});
         assert(response?.ok(), 'Package entry HTTP ' + response?.status());
         await page.waitForFunction(() => globalThis.__webEngineFailure ||
-          (globalThis.__webEngineFrames >= 180 && globalThis.__webPSOPrecacheReady), null, {timeout: 300000});
+          (globalThis.__webEngineFrames >= 180 && globalThis.__webPSOPrecacheReady &&
+            document.getElementById('loading')?.hidden), null, {timeout: 300000});
         const startupFailure = await page.evaluate(() => globalThis.__webEngineFailure);
         assert(!startupFailure, startupFailure);
         run.startupReadyMs = Date.now() - startupBegin;
@@ -360,6 +368,7 @@ ${marker}
           const capture = await owner.evaluate(() => {__naniteOffFrames.active = false; return __naniteOffFrames;});
           const {times} = capture;
           const after = await snapshot();
+          if (checkAffinity) (run.affinityAfter ||= []).push(checkAffinity(profile, affinity, false));
           for (const s of [before, after]) {
             assert(!s.failure && !s.visualClock?.renderTimeFrozen && !s.visualClock?.materialTimeFrozen);
             assert.equal(s.view.outputWidth, width); assert.equal(s.view.outputHeight, height);
