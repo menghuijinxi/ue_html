@@ -48,7 +48,9 @@ const materialPrecaches = option('material-precaches')?.split(',');
 assert(!materialPrecaches || (materialPrecaches.length === modes.length && materialPrecaches.every(v=>v==='0'||v==='1') && modes.every(m=>m==='candidate')));
 assert(!nanites || ![packBatches,microBatches,fixedMerges,programmableMerges,shadeBinnings,hierarchyBatches,occlusionBatches,materialPrecaches].some(Boolean),'Isolate the Nanite switch');
 const tour = process.argv.includes('--tour');
-const walk = process.argv.includes('--walk') || tour, headed = process.argv.includes('--headed');
+const interactive = process.argv.includes('--interactive');
+const walk = process.argv.includes('--walk') || tour || interactive, headed = process.argv.includes('--headed');
+assert(!interactive || (headed && !tour), '--interactive needs a headed browser and its own input route');
 const browser = option('browser') || 'msedge';
 const affinity = Number(option('affinity') || 0);
 assert(['chrome', 'msedge'].includes(browser));
@@ -65,6 +67,7 @@ const pointOnly = process.argv.includes('--shadow-point-only');
 const pointDiagnostic = pointOnly ? require('./diagnose-point-shadow-vsm.cjs') : null;
 assert(!pointOnly || modes.every(m=>m==='off'));
 assert(!trace || walk); assert(!gpuProbe || walk);
+assert(!interactive || !(trace || gpuProbe || gpuTimestamps), 'Measure interactive performance without diagnostic instrumentation');
 const width = Number(option('width') || 1280), height = Number(option('height') || 720);
 const seconds = Number(option('seconds') || 60);
 assert(Number.isInteger(width) && width >= 640 && width <= 3840);
@@ -83,11 +86,12 @@ fs.mkdirSync(output, {recursive: true});
 fs.copyFileSync(__filename, path.join(output, 'source.cjs'));
 if (gpuTimestamps) fs.copyFileSync(require.resolve('./observe-nanite-motion-gpu.cjs'), path.join(output,'gpu-observer.cjs'));
 if (pointOnly) fs.copyFileSync(require.resolve('./diagnose-point-shadow-vsm.cjs'), path.join(output,'point-diagnostic.cjs'));
-const report = {date: new Date().toISOString(), pass: false, source: audit(__filename), origin, runtimeDefaultModes, backendDefaultModes, recordIdleStatus, baselineFolder, hierarchyBatches, occlusionBatches, packBatches, microBatches, fixedMerges, programmableMerges, shadeBinnings, cvarName, cvarValues, nanites, materialPrecaches, walk, tour, headed, browser, affinity, trace, traceStart, traceSeconds, gpuProbe, gpuTimestamps, pointOnly, width, height, seconds, runs: [],
+const report = {date: new Date().toISOString(), pass: false, source: audit(__filename), origin, runtimeDefaultModes, backendDefaultModes, recordIdleStatus, baselineFolder, hierarchyBatches, occlusionBatches, packBatches, microBatches, fixedMerges, programmableMerges, shadeBinnings, cvarName, cvarValues, nanites, materialPrecaches, walk, tour, interactive, headed, browser, affinity, trace, traceStart, traceSeconds, gpuProbe, gpuTimestamps, pointOnly, width, height, seconds, runs: [],
   boundary: 'Serial fresh browser contexts at the recorded viewport, DPR 1. Viewport submission intervals, not physical display timestamps. '
     + 'All intervals retained, including stalls. No-scene changes only the HTML -WebNaniteScene argument of the shipped Nanite-off package. '
     + 'Legacy also has different runtime and Cook, so its difference cannot be assigned to one code change. '
-    + (tour ? 'Existing native game-frame camera tour through the interior: simultaneous position and rotation, without keyboard input or route warmup. ' : walk ?
+    + (interactive ? 'Headed browser keyboard and mouse input, sampled actual camera poses, and separate idle, first/repeated combined, turn and walk windows. Pass indicates successful capture, not performance acceptance. ' :
+      tour ? 'Existing native game-frame camera tour through the interior: simultaneous position and rotation, without keyboard input or route warmup. ' : walk ?
       'Simultaneous keyboard movement and horizontal/vertical mouse input through the packaged bridge. First movement is measured without a route warmup. '
       + 'Identical requested inputs do not guarantee identical world trajectories; sampled camera coordinates are retained.' :
       'Mouse-only DOM input follows the same absolute trajectory; actual camera state and event count are retained.')};
@@ -111,7 +115,7 @@ if(cvarName)report.boundary='Serial fresh Edge contexts, same package with Nanit
 if(nanites)report.boundary='Serial fresh Edge contexts, identical runtime/Cook/configuration except r.Nanite set before startup and verified by native readback. Scene opt-in and all optimization settings retained. Normal clocks, first simultaneous movement/turn route without warmup, all viewport submission intervals retained. Nanite-off uses the same converted assets\' cooked fallback geometry. Explicit diagnostics are excluded from FPS acceptance.';
 if (gpuTimestamps) { report.gpuWindow = {start:gpuStart,end:gpuEnd}; report.boundary += ' GPU timestamp instrumentation is diagnostic and is excluded from game-performance acceptance.'; }
 if (trace) report.boundary += ' DevTools trace instrumentation is diagnostic.';
-function installObserver(detailed) {
+function installObserver(detailed, interactive) {
   const state = globalThis.__naniteOffFrames = {active: false, times: [], frames: [], samples: [], gpu: []};
   let sampled = 0;
   let count = 0;
@@ -126,6 +130,7 @@ function installObserver(detailed) {
           if (now - sampled >= 200) {
             sampled = now;
             state.samples.push({time:now, frame:next, camera:{...globalThis.__webDefaultCamera},
+              player:interactive ? globalThis.__webPlayerView : undefined,
               history:{...globalThis.__webOcclusionHistory}, rhi:{...globalThis.__webOcclusionRHI},
               optimization:{...globalThis.__webOptimizationRHI}, streaming:{...globalThis.__webTextureStreaming},
               io:{...globalThis.__webContentIO?.stats}, stages:{...globalThis.__webThreadStages}});
@@ -174,7 +179,46 @@ function statistics(times) {
     low1Fps: 1000 * tail.length / tail.reduce((a, b) => a + b, 0),
     p50Ms: sorted[Math.floor(sorted.length * .5)], p95Ms: sorted[Math.floor(sorted.length * .95)],
     p99Ms: sorted[Math.floor(sorted.length * .99)], maxMs: sorted.at(-1),
-    over33Ms: intervals.filter(v => v > 1000 / 30).length, over50Ms: intervals.filter(v => v > 50).length};
+    over33Ms: intervals.filter(v => v > 1000 / 30).length, over50Ms: intervals.filter(v => v > 50).length,
+    over100Ms: intervals.filter(v => v > 100).length};
+}
+
+const cameraDistance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y, a.z - b.z);
+const yawDistance = (a, b) => Math.abs((a.yaw - b.yaw + 540) % 360 - 180);
+
+async function browserMotion(page, box, seconds, {translate, rotate}) {
+  const [x, y] = [box.x + box.width / 2, box.y + box.height / 2];
+  const started = performance.now();
+  let key, moves = 0, buttonDown = false;
+  try {
+    if (rotate) {
+      await page.mouse.move(x, y);
+      await page.mouse.down({button: 'right'});
+      buttonDown = true;
+    }
+    for (;;) {
+      const elapsed = (performance.now() - started) / 1000;
+      if (elapsed >= seconds) break;
+      if (translate) {
+        const next = ['s', 'd', 'w', 'a'][Math.floor(elapsed / 2) % 4];
+        if (next !== key) {
+          if (key) await page.keyboard.up(key);
+          key = next;
+          await page.keyboard.down(key);
+        }
+      }
+      if (rotate) {
+        await page.mouse.move(x + box.width * .20 * Math.sin(elapsed * Math.PI / 2),
+          y + box.height * .04 * Math.sin(elapsed * Math.PI / 3));
+        ++moves;
+      }
+      await page.waitForTimeout(20);
+    }
+  } finally {
+    if (key) await page.keyboard.up(key);
+    if (buttonDown) await page.mouse.up({button: 'right'});
+  }
+  return {translate, rotate, moves};
 }
 (async () => {
   try {
@@ -244,7 +288,7 @@ function statistics(times) {
 ${marker}
     if (probe) probe.completed = performance.now();`);
           }
-          await route.fulfill({response, body: `(${installObserver.toString()})(${walk});\n` +
+          await route.fulfill({response, body: `(${installObserver.toString()})(${walk}, ${interactive});\n` +
             (pointOnly ? `(${pointDiagnostic.toString()})();\n` : '') +
             (gpuTimestamps ? `(${observeMotionGPU.toString()})(${JSON.stringify({start:gpuStart,end:gpuEnd})});\n` : '') + body});
         });
@@ -255,7 +299,7 @@ ${marker}
         });
         const page = context.pages()[0];
         const cdp = await context.newCDPSession(page);
-        await cdp.send('Emulation.setFocusEmulationEnabled', {enabled:true});
+        if (!interactive) await cdp.send('Emulation.setFocusEmulationEnabled', {enabled:true});
         page.on('pageerror', e => run.errors.push(e.message));
         page.on('crash', () => run.errors.push('Page crashed'));
         page.on('console', m => {
@@ -340,6 +384,7 @@ ${marker}
         }
         const snapshot = () => owner.evaluate(() => ({time: performance.now(), stages: globalThis.__webThreadStages,
           frame: globalThis.__webRHIFrames, view: globalThis.__webRenderView, camera: globalThis.__webDefaultCamera,
+          player: globalThis.__webPlayerView,
           settings: globalThis.__webProjectSettings, history: globalThis.__webOcclusionHistory,
           occlusion: globalThis.__webOcclusionRHI, optimization: globalThis.__webOptimizationRHI,
           pool: globalThis.__webStagingReadbackPool, clock: globalThis.__webGameFrameClock,
@@ -369,7 +414,7 @@ ${marker}
               performance.mark('UE motion trace window'); return now;});
             await page.waitForTimeout(traceSeconds * 1000); await cdp.send('Tracing.end');
           })() : null;
-          await action(); await delayedTrace;
+          const input = await action(); await delayedTrace;
           const capture = await owner.evaluate(() => {__naniteOffFrames.active = false; return __naniteOffFrames;});
           const {times} = capture;
           const after = await snapshot();
@@ -384,23 +429,43 @@ ${marker}
           result.renderMs = (after.stages.renderWorkMilliseconds - before.stages.renderWorkMilliseconds) /
             (after.stages.presented - before.stages.presented);
           const phase = {name, before, after, result, times, traceMark};
+          if (interactive) {
+            phase.input = input;
+            phase.page = await page.evaluate(() => ({visible: document.visibilityState === 'visible',
+              focused: document.hasFocus(), pointerLock: document.pointerLockElement?.id ?? null,
+              dpr: devicePixelRatio}));
+          }
           if (walk) {
             phase.frameColumns = ['rhiFrame','time','gameFrame','rhiTotalMs','lastGameMs','renderTotalMs','renderCommands'];
             phase.frames = capture.frames; phase.samples = capture.samples;
             if (gpuProbe) phase.gpu = capture.gpu;
             const cameras = [before.camera, ...capture.samples.map(s => s.camera), after.camera];
-            const distance = (a,b) => Math.hypot(a.x-b.x, a.y-b.y, a.z-b.z);
-            phase.travelCm = cameras.slice(1).reduce((s,c,i) => s + distance(c,cameras[i]), 0);
-            phase.radiusCm = Math.max(...cameras.map(c => distance(c,cameras[0])));
-            phase.turnDegrees = cameras.slice(1).reduce((s,c,i) => s + Math.abs((c.yaw-cameras[i].yaw+540)%360-180), 0);
+            phase.travelCm = cameras.slice(1).reduce((s,c,i) => s + cameraDistance(c,cameras[i]), 0);
+            phase.radiusCm = Math.max(...cameras.map(c => cameraDistance(c,cameras[0])));
+            phase.turnDegrees = cameras.slice(1).reduce((s,c,i) => s + yawDistance(c,cameras[i]), 0);
             phase.pitchRange = Math.max(...cameras.map(c=>c.pitch))-Math.min(...cameras.map(c=>c.pitch));
             // The real camera has an approximately 80 cm rotation orbit. Require
             // displacement beyond that orbit to prove keyboard translation.
-            assert(phase.radiusCm > 150 && phase.travelCm > 500 && phase.turnDegrees > 180 && phase.pitchRange > 5,
+            assert(interactive || (phase.radiusCm > 150 && phase.travelCm > 500 && phase.turnDegrees > 180 && phase.pitchRange > 5),
               'Simultaneous translation and camera rotation must actually occur');
           }
           run.phases.push(phase); save();
-          console.log(JSON.stringify({index, mode, name, ...result}));
+          if (interactive) {
+            assert(phase.page.visible && phase.page.focused && Math.abs(phase.page.dpr - 1) < .001,
+              'Interactive page lost focus or changed DPR');
+            const players = [before.player, ...capture.samples.map(s => s.player), after.player];
+            assert(players.every(p => p?.active), `${name}: playable camera lost control`);
+            phase.playerRadiusCm = Math.max(...players.map(p => cameraDistance(p, players[0])));
+            phase.playerTravelCm = players.slice(1).reduce((sum, p, i) => sum + cameraDistance(p, players[i]), 0);
+            save();
+            if (input?.translate) assert(phase.playerRadiusCm > 60 && phase.playerTravelCm > 150,
+              `${name}: keyboard translation did not occur`);
+            else assert(phase.playerRadiusCm < 5, `${name}: unexpected player translation`);
+            if (input?.rotate) assert(phase.turnDegrees > 45 && phase.pitchRange > 3, `${name}: mouse look did not occur`);
+            if (!input?.rotate) assert(phase.turnDegrees < 2, `${name}: unexpected camera rotation`);
+          }
+          console.log(JSON.stringify({index, mode, name, ...result,
+            playerRadiusCm:phase.playerRadiusCm, radiusCm:phase.radiusCm, turnDegrees:phase.turnDegrees}));
           if (trace) {
             if (!traceStart) await cdp.send('Tracing.end');
             phase.traceWindowMark = traceWindowMark;
@@ -420,12 +485,52 @@ ${marker}
           await page.evaluate(mouseMotion, {seconds, walk});
           await page.waitForFunction(() => __naniteOffMotion.done, null, {timeout: (seconds + 30) * 1000});
         };
+        if (interactive) {
+          await page.bringToFront();
+          await page.locator('#canvas').focus();
+        }
         await page.waitForTimeout(10000);
         // Recorded outside the measured window: CPU speed and desktop state.
         run.environmentBefore = await require('./sample-test-environment.cjs')(page);
         await page.waitForTimeout(1000);
         run.initial = await snapshot();
         save();
+        if (interactive) {
+          const canvas = page.locator('#canvas');
+          const box = await canvas.boundingBox();
+          assert(box && box.width > 0 && box.height > 0);
+          const initial = run.initial.camera;
+          const setPlayer = async (args) => {
+            const serial = await page.evaluate(values => __webEngineRPC('WebPlayerViewControl', ...values), args);
+            assert(serial > 0, 'Playable camera control is unavailable');
+            await page.waitForFunction(id => globalThis.__webPlayerView?.serial === id &&
+              globalThis.__webPlayerView.active, serial, {timeout: 10000});
+          };
+          await setPlayer([0, ...Array(9).fill(0)]);
+          const {player} = await snapshot();
+          assert(player?.active);
+          const reset = async () => {
+            await setPlayer([1, player.x, player.y, player.z, player.pitch, player.yaw, player.roll,
+              player.controlPitch, player.controlYaw, player.controlRoll]);
+            await page.waitForTimeout(300);
+            const {camera} = await snapshot();
+            assert(cameraDistance(camera, initial) < 5 && yawDistance(camera, initial) < 1 &&
+              Math.abs(camera.pitch - initial.pitch) < 1, 'Could not restore the same starting camera');
+          };
+          await measure('idle', () => page.waitForTimeout(seconds * 1000));
+          for (const [name, translate, rotate] of [
+            ['walk-turn-first', true, true], ['walk-turn-repeat', true, true],
+            ['turn-only', false, true], ['walk-only', true, false],
+          ]) {
+            if (name !== 'walk-turn-first') await reset();
+            await measure(name, () => browserMotion(page, box, seconds, {translate, rotate}));
+          }
+          run.environmentAfter = await require('./sample-test-environment.cjs')(page);
+          await page.screenshot({path:path.join(output, index + '-' + mode + '.png')});
+          assert.deepEqual(run.errors, []);
+          run.pass = true; save();
+          continue;
+        }
         if (walk) {
           await measure(tour ? 'interior-tour-first' : 'walk-and-turn-first', async () => {
             if (!tour) return motion(seconds);
