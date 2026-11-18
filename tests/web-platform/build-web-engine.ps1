@@ -16,6 +16,8 @@ param(
     [string]$RendererRevision = ''
 )
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'project-output.ps1')
+Initialize-ProjectOutput
 $taskAllocatorExplicit = $PSBoundParameters.ContainsKey('Mimalloc')
 if (-not $taskAllocatorExplicit) {
     $Mimalloc = $Threads -and -not $Trace -and -not $Simd
@@ -239,9 +241,12 @@ try {
     $env:WEB_EMSDK_ROOT = Join-Path $taskRoot '.tools/emsdk'
     # Emscripten keys its shared cache by the literal LLVM_ROOT expanded from this path.
     $env:EM_CONFIG = (Join-Path $env:WEB_EMSDK_ROOT '.emscripten').Replace('\', '/')
+    $taskUbaRoot = Join-Path $PSScriptRoot 'build/cache/uba-web'
+    Assert-ProjectOutput -Path $taskUbaRoot -Tree
+    # UBT 5.8 still uses the local UBA executor with detouring disabled.
     $taskArguments = @($taskUbt, $taskTarget, 'Web', 'Development',
         "-Project=$(Join-Path $taskRoot 'tests/ue-web-smoke/UEWebSmoke.uproject')",
-        '-NoUBA', "-MaxParallelActions=$MaxParallelActions", '-NoUBTMakefiles')
+        '-NoUBA', "-UBARootDir=$taskUbaRoot", "-MaxParallelActions=$MaxParallelActions", '-NoUBTMakefiles')
     if ($LinkOptimization -gt 0) { $taskArguments += "-WebLinkOptimization=$LinkOptimization" }
     if ($KeepLinkNames) { $taskArguments += '-WebKeepLinkNames' }
     if ($LowerMemory64) { $taskArguments += '-WebLowerMemory64' }
@@ -252,7 +257,7 @@ try {
     if ($AllocationProbe) { $taskArguments += '-WebAllocationProbe' }
     if ($StandaloneCompiles) {
         $taskActions = "$taskLog.actions.json"
-        & $taskDotnet @taskArguments "-WriteOutdatedActions=$taskActions" *> "$taskLog.export.log"
+        & $taskDotnet @taskArguments "-WriteOutdatedActions=$taskActions" "-Log=$taskLog.export-ubt" *> "$taskLog.export.log"
         if ($LASTEXITCODE -ne 0) { throw "UBT action export failed: $taskLog.export.log" }
         $taskGraph = Get-Content -LiteralPath $taskActions -Raw | ConvertFrom-Json
         if (@($taskGraph.Actions | Where-Object Type -EQ 'Compile').Count -gt 0) {
@@ -263,7 +268,7 @@ try {
         $taskReport.exportedActions = Get-TaskAudit $taskActions
     }
     Write-Output "Building the full Engine Target. Log: $taskLog"
-    & $taskDotnet @taskArguments *> $taskLog
+    & $taskDotnet @taskArguments "-Log=$taskLog.ubt" *> $taskLog
     $taskExit = $LASTEXITCODE
     $taskText = Get-Content -LiteralPath $taskLog -Raw
     $taskReport.exitCode = $taskExit

@@ -16,8 +16,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="build/UEBuildTarget.cs" />
+    <Compile Include="build/UnrealBuildTool.cs" />
     <Compile Include="$(UEEngineRoot)/Source/Programs/UnrealBuildTool/**/*.cs"
-             Exclude="$(UEEngineRoot)/Source/Programs/UnrealBuildTool/obj/**;$(UEEngineRoot)/Source/Programs/UnrealBuildTool/bin/**;$(UEEngineRoot)/Source/Programs/UnrealBuildTool/Configuration/UEBuildTarget.cs" />
+             Exclude="$(UEEngineRoot)/Source/Programs/UnrealBuildTool/obj/**;$(UEEngineRoot)/Source/Programs/UnrealBuildTool/bin/**;$(UEEngineRoot)/Source/Programs/UnrealBuildTool/Configuration/UEBuildTarget.cs;$(UEEngineRoot)/Source/Programs/UnrealBuildTool/UnrealBuildTool.cs" />
     <Compile Include="$(UEEngineRoot)/Platforms/*/Source/Programs/UnrealBuildTool/**/*.cs" />
     <Compile Include="$(UEEngineRoot)/Source/Programs/Shared/MetaData.cs" />
     <Reference Include="$(UEEngineRoot)/Binaries/DotNET/UnrealBuildTool/*.dll"

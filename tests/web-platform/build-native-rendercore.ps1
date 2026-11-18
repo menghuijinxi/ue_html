@@ -7,6 +7,8 @@ param(
     [switch]$DisableHostOptimization
 )
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'project-output.ps1')
+Initialize-ProjectOutput
 $taskRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $taskHost = Join-Path $taskRoot '.tools/ue58-web-native-build-host/Engine'
 $taskProject = Join-Path $taskRoot 'tests/ue-shader-host/UEShaderHost.uproject'
@@ -15,6 +17,8 @@ $taskModuleName = $Module.ToLowerInvariant()
 $taskLog = Join-Path $PSScriptRoot "results/native-$taskModuleName-$taskStamp.log"
 $taskReportFile = Join-Path $PSScriptRoot "results/native-$taskModuleName-build-results.json"
 $taskActions = Join-Path $PSScriptRoot "build/native-$taskModuleName-actions-$taskStamp.json"
+$taskUbaRoot = Join-Path $PSScriptRoot 'build/cache/uba-native'
+Assert-ProjectOutput -Path $taskUbaRoot -Tree
 $taskProcess = Get-Process -Id $PID
 $taskAffinity = $taskProcess.ProcessorAffinity
 $taskFlag = "UE_WEB_NATIVE_$($Module.ToUpperInvariant())"
@@ -62,6 +66,7 @@ try {
     if (Test-Path -LiteralPath $taskMakefile) { Remove-Item -LiteralPath $taskMakefile }
     $taskArguments = @($taskUBT, 'UEShaderHostEditor', 'Win64', 'Development',
         "-Project=$taskProject", "-Module=$Module", '-NoUBA', '-NoUbaLocal',
+        "-UBARootDir=$taskUbaRoot",
         "-MaxParallelActions=$MaxParallelActions", '-NoHotReloadFromIDE')
     if ($CompilerVersion) { $taskArguments += "-CompilerVersion=$CompilerVersion" }
     & $taskDotnet @taskArguments "-WriteOutdatedActions=$taskActions" "-Log=$taskLog.actions-ubt" *> "$taskLog.actions"
@@ -92,8 +97,10 @@ try {
     $taskReport.sourceFiles = @($taskPrepared.sourceFiles) + @(
         $PSCommandPath,
         (Join-Path $Engine 'Engine/Source/Programs/UnrealBuildTool/Configuration/UEBuildTarget.cs'),
+        (Join-Path $Engine 'Engine/Source/Programs/UnrealBuildTool/UnrealBuildTool.cs'),
         (Join-Path $PSScriptRoot 'prepare-native-ubt.cjs'),
         (Join-Path $PSScriptRoot 'native-ubt/build/UEBuildTarget.cs'),
+        (Join-Path $PSScriptRoot 'native-ubt/build/UnrealBuildTool.cs'),
         (Join-Path $PSScriptRoot 'native-ubt/UnrealBuildTool.Native.csproj')
     ) | ForEach-Object { if ($_ -is [string]) { Get-TaskAudit $_ } else { $_ } }
     $taskReport.products = @("UnrealEditor-$Module.dll", "UnrealEditor-$Module.pdb") |

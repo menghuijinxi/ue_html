@@ -699,11 +699,10 @@ function prepare() {
       expected = expected.replaceAll(before, after);
     }
     let reference = normalize(fs.readFileSync(override));
-    // The reference branch also contains an unrelated native voxel workaround.
-    // Audit that exact version difference, but keep the installed native code
-    // in this 5.8.1 snapshot. Only declared feature patches reach Cook.
+    // Preserve the installed native code whether it already has the workaround or not.
     for (const {before, after} of curveVersions.get(relative) || []) {
       assert.equal(reference.split(after).length - 1, 1, `Unexpected reference version: ${relative}`);
+      if (expected.split(after).length - 1 === 1) continue;
       assert.equal(expected.split(before).length - 1, 1, `Unexpected installed version: ${relative}`);
       reference = reference.replace(after, before);
     }

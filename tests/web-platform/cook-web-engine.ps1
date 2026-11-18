@@ -22,6 +22,9 @@ param(
     [switch]$SkipBuild
 )
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'project-output.ps1')
+if ($OutputRoot) { Assert-ProjectOutput -Path $OutputRoot }
+Initialize-ProjectOutput
 $taskRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $taskInstalledVersion = Get-Content -LiteralPath (Join-Path $Engine 'Engine/Build/Build.version') -Raw | ConvertFrom-Json
 $taskHost = Join-Path $taskRoot '.tools/ue58-web-platform-host/Engine'
@@ -80,6 +83,12 @@ if ($taskBuildRoot.StartsWith([IO.Path]::GetFullPath($Engine).TrimEnd('\', '/') 
 }
 $taskOutput = Join-Path $taskBuildRoot "$taskPrefix/$taskStamp"
 $taskLog = Join-Path $taskResults "$taskPrefix-$taskStamp.log"
+Assert-ProjectOutput -Path $taskOutput -Tree
+$taskUserDirectory = Join-Path $taskOutput 'User'
+Assert-ProjectOutput -Path $taskUserDirectory -Tree
+$taskUserDirectoryArgument = "-UserDir=$taskUserDirectory"
+Assert-ProjectOutput -Path $taskLog
+Assert-ProjectOutput -Path (Split-Path -Parent $taskProject)
 $taskProcess = Get-Process -Id $PID
 $taskAffinity = $taskProcess.ProcessorAffinity
 $taskPreviousTint = $env:WEBGPU_TINT_DIR
@@ -252,7 +261,7 @@ try {
         "-OutputDir=$taskOutput", "-PACKAGE=$($taskPackages -join '+')",
         '-SkipZenStore', '-NoDefaultMaps', '-NoGameAlwaysCook',
         '-CookProcessCount=1', '-unattended', '-nop4', '-nosplash', '-nosound',
-        '-nullrhi', '-sm5', '-UTF8Output', "-abslog=$taskLog")
+        '-nullrhi', '-sm5', '-UTF8Output', $taskUserDirectoryArgument, "-abslog=$taskLog")
     if (-not $UseProjectSettings) { $taskArguments += '-processaffinity=2' }
     if ($Scene -ne 'Project') { $taskArguments += '-SkipSoftReferences' }
     if ($DisableProjectSkyLight) { $taskArguments += '-WebProjectDisableSkyLightCook' }
@@ -323,7 +332,7 @@ try {
             '-ShaderTypes=FScreenProbeTraceMeshSDFsCS,FScreenProbeIntegrateCS,FLumenCardCombineLightingCS,FReflectionTraceMeshSDFsCS,FLumenSceneUpdateCS,FStochasticLightingTileClassificationMarkCS',
             "-Output=$taskPreflightDirectory", '-WebGPUCook', '-WebProjectSettingsCook',
             '-TargetPlatform=Web', '-ddpi:Web:bIsEnabled=false', '-nullrhi', '-sm5',
-            '-unattended', '-nop4', '-nosplash', '-nosound', "-abslog=$taskPreflightDirectory/probe.log")
+            '-unattended', '-nop4', '-nosplash', '-nosound', $taskUserDirectoryArgument, "-abslog=$taskPreflightDirectory/probe.log")
         $taskPreflight = Start-Process -FilePath (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-Cmd.exe') `
             -ArgumentList ($taskPreflightArguments | ForEach-Object { '"' + $_ + '"' }) `
             -WindowStyle Hidden -PassThru -RedirectStandardOutput "$taskPreflightDirectory/console.log" `
@@ -350,7 +359,7 @@ try {
         $taskSkyInventory = Join-Path $taskOutput 'skylight-map.json'
         $taskSkyArguments = @($taskProject, '-run=WebTemplateMap', "-Map=$taskMap",
             "-Output=$taskSkyInventory", "-SkyCaptureOutput=$taskSkyFile", '-AllowCommandletRendering',
-            '-d3d12', '-unattended', '-nop4', '-nosplash', '-nosound', "-abslog=$taskSkyLog")
+            '-d3d12', '-unattended', '-nop4', '-nosplash', '-nosound', $taskUserDirectoryArgument, "-abslog=$taskSkyLog")
         if (-not $UseProjectSettings) { $taskSkyArguments += '-ini:Engine:[SystemSettings]:r.RayTracing=0' }
         # The host module registers Web shaders even for native D3D12 capture.
         # Use the prepared shader tree so those files exist before shader initialization.
