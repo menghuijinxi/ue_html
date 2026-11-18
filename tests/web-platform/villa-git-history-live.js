@@ -16,3 +16,26 @@ globalThis.__villaHistoryVariants = {
   warm2: {folder: 'villa-tsr-turn-prewarm2-20261113', label: '⑤ 预热第二批 · 诊断',
     expected: {indirectDrawReuse: 2, vsmPageOptimization: 3}},
 };
+
+if (new URLSearchParams(location.search).get('comparison') === 'merge') {
+  globalThis.__villaHistoryVariants = {
+    baseline: {folder: 'villa-pso-eager-20261117-d/release', label: '合并前老版',
+      expected: {indirectDrawReuse: 2, vsmPageOptimization: 3}},
+    merged: {folder: 'villa-nanite-merged-20261118-raw-mouse', label: '合并后鼠标对照版',
+      expected: {indirectDrawReuse: 2, vsmPageOptimization: 3}},
+  };
+  globalThis.__villaComparisonPlayerStart = {x: -20, y: 200, pitch: 12, yaw: -35};
+  document.title = document.querySelector('h1').textContent = 'Triplex Villa · 客厅性能对照';
+  document.querySelector('.modes').replaceChildren(...Object.entries(__villaHistoryVariants).map(([mode, variant]) => {
+    const label = document.createElement('label'), radio = document.createElement('input');
+    const text = document.createElement('span');
+    Object.assign(radio, {type: 'radio', name: 'mode', value: mode});
+    text.textContent = variant.label;
+    label.append(radio, text);
+    return label;
+  }));
+  const reset = document.getElementById('reset');
+  reset.title = '恢复客厅起点';
+  reset.setAttribute('aria-label', reset.title);
+  document.getElementById('viewpoint').value = 'living';
+}

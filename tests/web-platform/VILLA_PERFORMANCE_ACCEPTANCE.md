@@ -12,29 +12,29 @@
 
 | 场景 | 操作与确认 |
 | --- | --- |
-| 出生点静止 | 记录基础帧节奏，回读相机确认没有偏移。 |
-| 首次同时移动和转向 | 首次用 WASD 加鼠标从出生点探索，包含横向和俯仰转向。确认实际位移、偏航和俯仰都有变化。 |
-| 重复同时移动和转向 | 回到同一起点并重复相同输入，观察首次进入区域和重复后的差异。 |
-| 单独转向 | 站定做连续转向和快速反向，回读角度，观察帧时间和可见画面。 |
-| 单独移动 | 保持朝向，前后移动与侧移，回读位置和角度，确认键鼠输入到达游戏。 |
-| 人工画面对照 | 在正式页面用实际键鼠依次测试快速转向、边走边转、停下再转。观察停顿、跳步、来回抖动和阴影或轮廓跳变。记录触发路段、方向、浏览器和时间点，必要时另做诊断录屏。用户反馈出现在外层比较页或自适应模式时，用相同入口和模式复现。 |
+| 客厅静止 | 从沙发、挑高吊灯和二楼栏杆可见的起点记录基础帧节奏，回读玩家位置确认没有偏移。 |
+| 客厅首次同时移动和转向 | 从客厅起点在客厅和相连开阔区用 WASD 大范围移动，同时左右扫视并改变俯仰。确认最远玩家位移至少 3 米，累计玩家位移至少 7 米，并保留相机偏航和俯仰轨迹。 |
+| 客厅重复同时移动和转向 | 回到同一客厅起点并重复相同输入。在同一轮中分别保留首次和重复采样。 |
+| 客厅单独转向 | 在同一起点站定，连续转向并快速反向扫视，回读角度并确认玩家未移动。 |
+| 客厅单独移动 | 在同一起点保持朝向，做大范围横移，回读位置和角度。 |
+| 人工画面对照 | 在两版正式页面从相同客厅视角用实际键鼠大范围移动和转向。扫过沙发、楼上栏杆及餐厨交界，观察停顿、跳步和画面抖动。记录触发路段、方向、浏览器和时间点，必要时另做诊断录屏。用户反馈出现在外层比较页或自适应模式时，用相同入口和模式复现。 |
 
-相机脚本巡游可用于等轨迹渲染对照。键鼠探针的实际位姿随碰撞和输入时序变化，需比对相机轨迹和采样窗口，明显不同的路线要调整后重跑。浏览器自动化输入通过页面键鼠链路，物理鼠标、指针锁和显示体验由人工画面对照覆盖。
+相机脚本巡游可用于等轨迹渲染对照。键鼠探针的实际位姿随碰撞和输入时序变化，需比对相机轨迹和采样窗口，明显不同的路线要调整后重跑。浏览器自动化输入通过页面键鼠链路，物理鼠标、指针锁和显示体验由人工画面对照覆盖。出生点采样只用于基础回归。此前出生点键鼠测试实测移动半径约 1.4 米，客厅性能须以客厅测试为准。
 
 ## 采集入口
 
 在本地预览服务启动、Node 可解析仓库使用的 Playwright 后执行。替换两个包目录和 `tag`，按目标浏览器选择 `chrome` 或 `msedge`。
 
 ```powershell
-node tests/web-platform/probe-nanite-off-regression.cjs --interactive --headed --browser=chrome --modes=legacy,candidate,candidate,legacy --baseline-folder=villa-pso-eager-20261117-d/release --folder=villa-nanite-merged-20261118 --width=1920 --height=1080 --seconds=24 --tag=villa-interactive-abba
+node tests/web-platform/probe-nanite-off-regression.cjs --interactive --interactive-route=living --headed --browser=chrome --modes=legacy,candidate,candidate,legacy --baseline-folder=villa-pso-eager-20261117-d/release --folder=villa-nanite-merged-20261118-raw-mouse --width=1920 --height=1080 --seconds=24 --tag=villa-living-abba
 ```
 
-报告在 `tests/web-platform/results/<tag>/report.json`，包含各段原始提交时间戳、实际相机轨迹、设置与焦点。各段分别报告平均 FPS、1% Low、P95/P99、最长帧和超过 33.3、50、100 ms 的帧数。1% Low 是最慢 1% 帧间隔平均值的倒数。比较长帧应同时看计数与每分钟频率。提交帧时间用于定位引擎节奏。显示卡顿以实际画面对照为准，必要时补录屏或呈现诊断。性能采样段关掉浏览器 trace、profiler 和额外 GPU 时间戳。
+报告在 `tests/web-platform/results/<tag>/report.json`，包含各段原始提交时间戳、实际玩家和相机轨迹、设置与焦点。客厅起点截图保存在同一目录。各段分别报告平均 FPS、1% Low、P95/P99、最长帧和超过 33.3、50、100 ms 的帧数。1% Low 是最慢 1% 帧间隔平均值的倒数。比较长帧应同时看计数与每分钟频率。提交帧时间用于定位引擎节奏。显示卡顿以实际画面对照为准，必要时补录屏或呈现诊断。性能采样段关掉浏览器 trace、profiler 和额外 GPU 时间戳。
 
 对比打包前后，核对报告中的实际 `clock.mode`、`inputMode` 和启动 PSO 状态。测试保留原项目设置的正式包时，同时核对 `projectSettingsPreserved`、配置哈希和 `optimization-contract.json` 中的运行时配置。怀疑调度回归时，用同一个包在前台只切换帧时钟。下列操作保留原包的输入路径、WASM、Cook、INI 和 PSO 缓存。
 
 ```powershell
-node tests/web-platform/probe-nanite-off-regression.cjs --interactive --headed --browser=chrome --modes=candidate,candidate,candidate,candidate --folder=villa-nanite-merged-20261118 --game-frame-clocks=owner,page,page,owner --width=1920 --height=1080 --seconds=16 --tag=villa-clock-abba
+node tests/web-platform/probe-nanite-off-regression.cjs --interactive --interactive-route=living --headed --browser=chrome --modes=candidate,candidate,candidate,candidate --folder=villa-nanite-merged-20261118-raw-mouse --game-frame-clocks=owner,page,page,owner --width=1920 --height=1080 --seconds=24 --tag=villa-living-clock-abba
 ```
 
 ## 交付判断
@@ -124,3 +124,32 @@ node tests/web-platform/probe-nanite-off-regression.cjs --interactive --headed -
 固定关闭鼠标平滑，在同一个对照包上按 `4 → 0 → 0 → 4` 补测单独转向。四轮平均 FPS 为 47.73–48.04。运动模糊等级 4 的 1% Low 为 32.65–34.59 FPS，等级 0 为 23.56–25.79 FPS。等级 0 的两轮各有两帧超过 50 ms。继续保留原项目的运动模糊设置。报告见 [单独转向运动模糊对照](results/villa-raw-mouse-blur-abba-20261118/report.json)。
 
 鼠标对照包完成了固定 1920×1080 下的柜门改色、确认、窗口缩放、光标显隐和重新锁定指针验证。报告见 [对照包柜门交互](results/villa-raw-mouse-umg-20261118.json)。
+
+## 客厅大范围移动复测
+
+使用前台 Chrome 和 RTX 3070，以合并前老包、合并后鼠标对照包按 A → B → B → A 各跑两轮。固定输出 1920×1080，内部渲染 1400×788，等价的已缓存资源条件，每段 24 秒。客厅玩家起点为 `(-20, 200)`，沿用出生点地面高度，偏航 `-35°`，俯仰 `12°`。实测边走边转的最大玩家位移为 3.72–3.87 米，累计 27.8–28.4 米，累计偏航 2206°–2223°。四轮大部分轨迹点在 50 厘米、20° 内，个别片段受碰撞和输入时序影响有所偏离。两版 PSO 队列已就绪，采样中无新增请求。
+
+| 客厅场景 | 平均 FPS，老版 → 合并版 | 1% Low FPS，老版 → 合并版 | P99 ms，老版 → 合并版 | >33.3 ms，老版 → 合并版 | >50 ms，老版 → 合并版 |
+| --- | --- | --- | --- | --- | --- |
+| 静止 | 49.01–49.02 → 48.33–48.55 | 34.34–36.54 → 29.78–35.34 | 24.17–24.36 → 24.31–25.05 | 2 → 5 | 0 → 1 |
+| 首次边走边转 | 45.74–46.15 → 44.98–45.12 | 30.92–32.45 → 29.50–30.53 | 27.89–28.77 → 28.84–28.99 | 4 → 8 | 0 → 1 |
+| 重复边走边转 | 45.63–45.81 → 44.93–45.13 | 31.36–32.67 → 29.32–32.95 | 28.45–28.63 → 28.02–28.94 | 5 → 6 | 0 → 1 |
+| 单独转向 | 45.87–46.05 → 45.34 | 32.42–32.64 → 32.47–32.48 | 27.33–28.38 → 27.80–28.00 | 3 → 3 | 1 → 0 |
+| 单独移动 | 45.90–45.98 → 45.22–45.33 | 33.67–36.22 → 34.32–37.45 | 26.23–27.16 → 26.16–26.24 | 1 → 2 | 0 → 0 |
+
+客厅复测中，合并包各段平均 FPS 都偏低，首次边走边转的两轮 1% Low 和 P99 也都比老版差。最长边走边转帧为老版 47.01 ms、合并版 57.00 ms。当前结果覆盖此路线的 RHI 提交节奏，用户报告的更明显画面抖动仍需结合实际路段和浏览器呈现定位。原始数据和客厅起点截图见 [客厅交叉对照](results/villa-living-abba-20261118/report.json)。
+
+人工对照入口为 `villa-git-history-live.html?comparison=merge`。进入后默认从相同的客厅起点开始，`↺` 恢复该起点，记录和导出会保留包路径、版本哈希、提交帧时间和采样时的玩家位置、相机方向。
+
+同一客厅路线再用 `--page-pacing --interactive-phases=walk-turn-first` 按 A → B → B → A 采集现有 HUD 的逐条页面计数。两版页面刷新约为 60 Hz，页面观察到的画面更新为老版 46.23–46.50 FPS、合并版 45.62–45.64 FPS，1% Low 分别为 25.65–27.64 和 24.40–27.42 FPS。两版各有 4 次页面更新间隔超过 50 ms，分布不同。该采样由页面帧回调观察引擎提交计数变化，物理呈现仍由人工对照验收。详见 [页面更新间隔](results/villa-living-page-pacing-abba-20261118/report.json)。
+
+在同一个合并包上逐项按交叉顺序跑客厅首次边走边转。下表只列同包两轮的数值范围。两版正式包的结果仍以本节首表为准。
+
+| 诊断设置 | 平均提交 FPS | 1% Low FPS | 诊断报告 |
+| --- | --- | --- | --- |
+| 遮挡历史开启 → 对照路径 | 45.55–45.84 → 45.56–45.58 | 28.67–29.51 → 27.66–27.83 | [遮挡查询对照](results/villa-living-occlusion-abba-20261118/report.json) |
+| 运动模糊 4 → 0 | 45.65–45.88 → 45.92–46.15 | 27.33–31.18 → 23.40–30.81 | [运动模糊对照](results/villa-living-blur-abba-20261118/report.json) |
+| 并行录制关闭 → 开启 | 45.60–45.86 → 45.55–45.56 | 28.91–31.89 → 24.09–26.22 | [并行录制对照](results/villa-living-recording-abba-20261118/report.json) |
+| 页面帧预算 3 → 4 | 45.61–45.66 → 45.47–45.69 | 28.05–28.63 → 21.61–24.67 | [页面帧预算对照](results/villa-living-budget-abba-20261118/report.json) |
+
+引擎提交 `7f043074761d` 将 Web 渲染图并行执行限制为 RHI 支持并行录制的情况。开启并行录制使平均 Render 耗时从 7.81–7.82 ms 降到 6.31–6.44 ms，同时两轮低帧都下降。帧预算增加到 4 后，实际在途帧峰值为 4，超过 33.3 ms 的提交间隔由 8 次增至 55 次，页面观察超过 50 ms 的间隔由 1 次增至 10 次。四项对照均未得到客厅低帧可重复提升的设置。这批试验保留原包，剩余客厅回归尚未定位到单一改动。

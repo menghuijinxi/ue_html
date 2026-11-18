@@ -10,6 +10,7 @@
     plain: {folder: 'villa-web-optimizations-off-20261112', label: '早期优化也关闭'},
   };
   const defaultMode = globalThis.__villaHistoryVariants ? Object.keys(variants)[0] : 'off';
+  const comparisonStart = globalThis.__villaComparisonPlayerStart;
   const poses = {kitchen: [-175, -80, 160, -5, 230], interior: [-175, -80, 160, -5, 50],
     living: [-20, 200, 130, 12, -35]};
   const state = globalThis.__villaSmoothnessLive = {mode: null, ready: false, busy: false, error: null,
@@ -18,6 +19,10 @@
   const radios = [...document.querySelectorAll('[name=mode]')];
   let frame, generation = 0, spawn, cameraOffset;
   const valid = value => value && keys.every(key => Number.isFinite(value[key]));
+  function livingPlayer() {
+    return {...spawn, x: comparisonStart.x, y: comparisonStart.y, pitch: 0, yaw: comparisonStart.yaw,
+      roll: 0, controlPitch: comparisonStart.pitch, controlYaw: comparisonStart.yaw, controlRoll: 0};
+  }
   const childWindow = () => frame?.contentWindow;
   const number = value => Number.isFinite(value) ? value.toFixed(1) : '待采样';
   function status(text, error = false) {
@@ -139,7 +144,7 @@
           spawn ||= {...initial};
           cameraOffset ||= Object.fromEntries(['x', 'y', 'z'].map(key =>
             [key, child.__webDefaultCamera[key] - initial[key]]));
-          state.player = saved ? await restore(saved) : initial;
+          state.player = saved || comparisonStart ? await restore(saved || livingPlayer()) : initial;
           if (ticket !== generation) return;
           resetMetrics();
           state.ready = true; state.busy = false; element('loading').hidden = true;
@@ -159,13 +164,18 @@
     catch (error) {fail(error);}
   }
   element('viewpoint').onchange = () => {
-    const pose = poses[element('viewpoint').value];
+    const view = element('viewpoint').value;
+    if (view === 'living' && comparisonStart) {move(livingPlayer()); return;}
+    const pose = poses[view];
     if (!pose) {focus(); return;}
     const [x, y, z, pitch, yaw] = pose;
     move({...spawn, x: x - cameraOffset.x, y: y - cameraOffset.y, z: z - cameraOffset.z,
       pitch: 0, yaw, roll: 0, controlPitch: pitch, controlYaw: yaw, controlRoll: 0});
   };
-  element('reset').onclick = () => {element('viewpoint').value = 'current'; move(spawn);};
+  element('reset').onclick = () => {
+    element('viewpoint').value = comparisonStart ? 'living' : 'current';
+    move(comparisonStart ? livingPlayer() : spawn);
+  };
   element('retry').onclick = () => select(state.mode);
   for (const radio of radios) radio.onchange = () => select(radio.value);
   window.addEventListener('hashchange', () => {

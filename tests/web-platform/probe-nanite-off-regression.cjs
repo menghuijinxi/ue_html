@@ -52,6 +52,16 @@ assert(!materialPrecaches || (materialPrecaches.length === modes.length && mater
 assert(!nanites || ![packBatches,microBatches,fixedMerges,programmableMerges,shadeBinnings,hierarchyBatches,occlusionBatches,materialPrecaches].some(Boolean),'Isolate the Nanite switch');
 const tour = process.argv.includes('--tour');
 const interactive = process.argv.includes('--interactive');
+const pagePacing = process.argv.includes('--page-pacing');
+assert(!pagePacing || interactive, '--page-pacing needs a headed interactive run');
+const frameBudgets = option('frame-budgets')?.split(',').map(Number);
+assert(!frameBudgets || (pagePacing && frameBudgets.length === modes.length &&
+  frameBudgets.every(value => Number.isInteger(value) && value >= 1 && value <= 4) &&
+  (!gameFrameClocks || gameFrameClocks.every(value => value === 'page'))));
+const interactiveRoute = option('interactive-route') || 'spawn';
+assert(['spawn', 'living'].includes(interactiveRoute) && (interactive || interactiveRoute === 'spawn'));
+const livingRoute = interactiveRoute === 'living';
+const livingStart = {x: -20, y: 200, pitch: 12, yaw: -35};
 const motionBlurModes = option('motion-blur')?.split(',');
 const mouseSmoothingModes = option('mouse-smoothing')?.split(',');
 const inputPhases = [
@@ -62,6 +72,12 @@ const inputPhases = [
   ['walk-only', true, false],
 ];
 const selectedPhases = option('interactive-phases')?.split(',');
+const occlusionModes = option('occlusion-modes')?.split(',');
+assert(!occlusionModes || (interactive && occlusionModes.length === modes.length &&
+  occlusionModes.every(mode => ['history', 'control'].includes(mode))));
+const parallelRecording = option('parallel-recording')?.split(',');
+assert(!parallelRecording || (interactive && !runtimeDefaultModes && parallelRecording.length === modes.length &&
+  parallelRecording.every(value => ['off', 'on'].includes(value)) && modes.every(mode => mode === 'candidate')));
 for (const settings of [motionBlurModes, mouseSmoothingModes]) {
   assert(!settings || (interactive && settings.length === modes.length &&
     settings.every((setting, index) => setting === 'shipped' || (setting === 'off' && modes[index] === 'candidate'))));
@@ -93,6 +109,7 @@ assert(Number.isInteger(width) && width >= 640 && width <= 3840);
 assert(Number.isInteger(height) && height >= 480 && height <= 2160);
 assert(Number.isFinite(seconds) && seconds >= 16 && seconds <= 180);
 assert(!tour || seconds <= 60);
+assert(!pagePacing || seconds <= 28, 'The HUD keeps a rolling 30-second window');
 const tag = option('tag') || 'nanite-off-regression-20261111';
 assert(/^[a-z0-9-]+$/.test(tag));
 const profileNames = option('profiles')?.split(',');
@@ -115,6 +132,11 @@ const report = {date: new Date().toISOString(), pass: false, source: audit(__fil
       + 'Identical requested inputs do not guarantee identical world trajectories; sampled camera coordinates are retained.' :
       'Mouse-only DOM input follows the same absolute trajectory; actual camera state and event count are retained.')};
 const save = () => fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2) + '\n');
+if (occlusionModes) report.boundary += ' Explicit per-run occlusion mode for diagnosis.';
+if (parallelRecording) report.boundary += ' Explicit per-run draw recording startup flag for diagnosis.';
+if (pagePacing) report.boundary += ' Existing HUD animation-frame and observed update samples, not display timestamps.';
+if (frameBudgets) report.boundary += ' Explicit page clock frame budgets for diagnosis.';
+if (interactive) report.interactiveRoute = interactiveRoute;
 if (selectedPhases) {
   report.selectedPhases = selectedPhases;
   report.boundary += ' Selected interactive windows only, for diagnosis.';
@@ -212,7 +234,7 @@ function statistics(times) {
 const cameraDistance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y, a.z - b.z);
 const yawDistance = (a, b) => Math.abs((a.yaw - b.yaw + 540) % 360 - 180);
 
-async function browserMotion(page, box, seconds, {translate, rotate}) {
+async function browserMotion(page, box, seconds, {translate, rotate, livingRoute}) {
   const [x, y] = [box.x + box.width / 2, box.y + box.height / 2];
   const started = performance.now();
   let key, moves = 0, buttonDown = false;
@@ -226,7 +248,9 @@ async function browserMotion(page, box, seconds, {translate, rotate}) {
       const elapsed = (performance.now() - started) / 1000;
       if (elapsed >= seconds) break;
       if (translate) {
-        const next = ['s', 'd', 'w', 'a'][Math.floor(elapsed / 2) % 4];
+        const next = livingRoute
+          ? ['a', 'd'][Math.floor(elapsed / 4) % 2]
+          : ['s', 'd', 'w', 'a'][Math.floor(elapsed / 2) % 4];
         if (next !== key) {
           if (key) await page.keyboard.up(key);
           key = next;
@@ -234,7 +258,8 @@ async function browserMotion(page, box, seconds, {translate, rotate}) {
         }
       }
       if (rotate) {
-        await page.mouse.move(x + box.width * .20 * Math.sin(elapsed * Math.PI / 2),
+        const angle = livingRoute ? elapsed * Math.PI * 3 / 4 : elapsed * Math.PI / 2;
+        await page.mouse.move(x + box.width * .20 * Math.sin(angle),
           y + box.height * .04 * Math.sin(elapsed * Math.PI / 3));
         ++moves;
       }
@@ -268,6 +293,25 @@ async function browserMotion(page, box, seconds, {translate, rotate}) {
       try {
         run.browser = context.browser().version();
         if (checkAffinity) run.affinityBefore = checkAffinity(profile, affinity, true);
+        if (parallelRecording) {
+          const enabled = parallelRecording[index] === 'on', flag = '-WebParallelDrawRecording';
+          run.parallelRecording = {enabled};
+          await context.route('**/index.html', async route => {
+            const response = await route.fetch(), html = await response.text();
+            const match = html.match(/^( +arguments: )(\[[^\r\n]+\]),$/m);
+            assert(match, 'Could not locate the shipped startup arguments');
+            const args = JSON.parse(match[2]).filter(arg => arg !== flag);
+            if (enabled) args.push(flag);
+            await route.fulfill({response, body: html.replace(match[0], match[1] + JSON.stringify(args) + ',')});
+          });
+        }
+        if (pagePacing) await context.route('**/web-engine-host.js?*', async route => {
+          const response = await route.fetch(), body = await response.text();
+          const marker = '  let contexts = [], events = [], renderView = null;';
+          assert.equal(body.split(marker).length, 2, 'Expected the shipped frame timing HUD');
+          await route.fulfill({response, body: body.replace(marker,
+            '  globalThis.__comparisonPagePacing = {visual, refresh};\n' + marker)});
+        });
         if (runtimeDefaultModes) await context.route('**/index.html', async route => {
           const response = await route.fetch(), html = await response.text();
           const match = html.match(/const localRuntimeAssets = (\{[^\n]+\});/); assert(match);
@@ -343,9 +387,18 @@ ${marker}
         });
         const startupBegin = Date.now();
         const url = new URL(`/build/${folder}/index.html`, origin);
+        if (occlusionModes) {
+          run.occlusionMode = occlusionModes[index];
+          url.searchParams.set('occlusion', run.occlusionMode);
+        }
         if (gameFrameClocks) {
           run.gameFrameClock = gameFrameClocks[index];
           url.searchParams.set('clock', run.gameFrameClock);
+        }
+        if (frameBudgets) {
+          run.frameBudget = frameBudgets[index];
+          url.searchParams.set('clock', 'page');
+          url.searchParams.set('framebudget', run.frameBudget);
         }
         const response = await page.goto(url.href, {waitUntil: 'commit'});
         assert(response?.ok(), 'Package entry HTTP ' + response?.status());
@@ -356,6 +409,10 @@ ${marker}
         assert(!startupFailure, startupFailure);
         run.startupReadyMs = Date.now() - startupBegin;
         const owner = page.workers().find(w => w.url().includes('web-engine-worker.js')); assert(owner);
+        if (parallelRecording) {
+          run.parallelRecording.arguments = await owner.evaluate(() => Module.arguments);
+          assert.equal(run.parallelRecording.arguments.includes('-WebParallelDrawRecording'), run.parallelRecording.enabled);
+        }
         if (motionBlur === 'off') assert.equal(run.motionBlur.loggedQuality.at(-1), 0, 'Motion blur override did not take effect');
         if (mouseSmoothing) {
           const inputMode = await page.evaluate(value => __webEngineRPC('WebMotionBenchmarkControl', 7, value),
@@ -430,7 +487,8 @@ ${marker}
             run.occlusion={enabled,hierarchyBatch:state.hierarchyBatch,registered:state.registered,entries:state.entries,
               batchedEntries:state.finalOcclusionBatchedEntries,dispatchBuffers:state.finalOcclusionDispatchBuffers};}
         }
-        const snapshot = () => owner.evaluate(() => ({time: performance.now(), stages: globalThis.__webThreadStages,
+        const snapshot = () => owner.evaluate(() => ({time: performance.now(), timeOrigin: performance.timeOrigin,
+          stages: globalThis.__webThreadStages,
           frame: globalThis.__webRHIFrames, view: globalThis.__webRenderView, camera: globalThis.__webDefaultCamera,
           player: globalThis.__webPlayerView,
           settings: globalThis.__webProjectSettings, history: globalThis.__webOcclusionHistory,
@@ -450,6 +508,9 @@ ${marker}
             await page.waitForTimeout(1000);
           }
           const before = await snapshot();
+          const schedulerBefore = pagePacing ? await page.evaluate(() => globalThis.__webFrameSchedulerPage) : undefined;
+          if (frameBudgets) assert.equal(schedulerBefore?.maxAhead, run.frameBudget);
+          if (run.occlusionMode) assert.equal(before.history?.enabled, run.occlusionMode === 'history');
           console.log(JSON.stringify({index, mode, name, status:'measuring', seconds:walk ? seconds : 20}));
           const traceMark = await owner.evaluate(() => {__naniteOffFrames.times = []; __naniteOffFrames.frames = [];
             __naniteOffFrames.samples = []; __naniteOffFrames.gpu = [];
@@ -483,6 +544,17 @@ ${marker}
             phase.page = await page.evaluate(() => ({visible: document.visibilityState === 'visible',
               focused: document.hasFocus(), pointerLock: document.pointerLockElement?.id ?? null,
               dpr: devicePixelRatio, inputMode: globalThis.__webInputBridge?.mode}));
+            if (pagePacing) {
+              phase.pagePacing = await page.evaluate(({begin, end}) => {
+                const window = samples => samples.samples.slice(samples.head).map(sample => sample.time)
+                  .filter(time => time + performance.timeOrigin >= begin && time + performance.timeOrigin <= end);
+                return {visual: window(__comparisonPagePacing.visual), refresh: window(__comparisonPagePacing.refresh),
+                  schedulerAfter: globalThis.__webFrameSchedulerPage, queue: globalThis.__webFrameScheduler};
+              }, {begin: before.timeOrigin + times[0], end: before.timeOrigin + times.at(-1)});
+              phase.pagePacing.schedulerBefore = schedulerBefore;
+              phase.pagePacing.visualResult = statistics(phase.pagePacing.visual);
+              phase.pagePacing.refreshResult = statistics(phase.pagePacing.refresh);
+            }
           }
           if (walk) {
             phase.frameColumns = ['rhiFrame','time','gameFrame','rhiTotalMs','lastGameMs','renderTotalMs','renderCommands'];
@@ -512,6 +584,8 @@ ${marker}
             else assert(phase.playerRadiusCm < 5, `${name}: unexpected player translation`);
             if (input?.rotate) assert(phase.turnDegrees > 45 && phase.pitchRange > 3, `${name}: mouse look did not occur`);
             if (!input?.rotate) assert(phase.turnDegrees < 2, `${name}: unexpected camera rotation`);
+            if (livingRoute && input?.translate) assert(phase.playerRadiusCm >= 300 && phase.playerTravelCm >= 700,
+              `${name}: keyboard movement did not cover the living room (${phase.playerRadiusCm.toFixed(0)} cm radius)`);
           }
           console.log(JSON.stringify({index, mode, name, ...result,
             playerRadiusCm:phase.playerRadiusCm, radiusCm:phase.radiusCm, turnDegrees:phase.turnDegrees}));
@@ -558,13 +632,26 @@ ${marker}
           await setPlayer([0, ...Array(9).fill(0)]);
           const {player} = await snapshot();
           assert(player?.active);
+          if (livingRoute) {
+            await setPlayer([1, livingStart.x, livingStart.y, player.z, 0, livingStart.yaw, 0,
+              livingStart.pitch, livingStart.yaw, 0]);
+            await page.waitForTimeout(500);
+            run.routeStart = await snapshot();
+            assert(cameraDistance(run.routeStart.player, {...livingStart, z:player.z}) < 50 &&
+              yawDistance(run.routeStart.camera, livingStart) < 1 &&
+              Math.abs(run.routeStart.camera.pitch - livingStart.pitch) < 1,
+              'Could not place the playable camera in the living room');
+            await page.screenshot({path:path.join(output, `${index}-${mode}-living-start.png`)});
+          }
           const reset = async () => {
-            await setPlayer([1, player.x, player.y, player.z, player.pitch, player.yaw, player.roll,
-              player.controlPitch, player.controlYaw, player.controlRoll]);
+            const start = run.routeStart?.player || player;
+            await setPlayer([1, start.x, start.y, start.z, start.pitch, start.yaw, start.roll,
+              start.controlPitch, start.controlYaw, start.controlRoll]);
             await page.waitForTimeout(300);
             const {camera} = await snapshot();
-            assert(cameraDistance(camera, initial) < 5 && yawDistance(camera, initial) < 1 &&
-              Math.abs(camera.pitch - initial.pitch) < 1, 'Could not restore the same starting camera');
+            const startCamera = run.routeStart?.camera || initial;
+            assert(cameraDistance(camera, startCamera) < 5 && yawDistance(camera, startCamera) < 1 &&
+              Math.abs(camera.pitch - startCamera.pitch) < 1, 'Could not restore the same starting camera');
           };
           for (const [name, translate, rotate] of inputPhases) {
             if (selectedPhases && !selectedPhases.includes(name)) continue;
@@ -572,7 +659,7 @@ ${marker}
               await measure(name, () => page.waitForTimeout(seconds * 1000));
             } else {
               if (name !== 'walk-turn-first') await reset();
-              await measure(name, () => browserMotion(page, box, seconds, {translate, rotate}));
+              await measure(name, () => browserMotion(page, box, seconds, {translate, rotate, livingRoute}));
             }
           }
           run.environmentAfter = await require('./sample-test-environment.cjs')(page);
