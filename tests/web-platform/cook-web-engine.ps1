@@ -38,7 +38,7 @@ if ($Scene -eq 'Project') {
     if (-not $taskWebGPU -or -not $Project -or -not $Map -or (-not $Profile -and -not $UseProjectSettings) -or -not $ReportId) {
         throw 'Project Cook requires WebGPU, Project, Map, ReportId and either Profile or UseProjectSettings.'
     }
-    if ($Map -notmatch '^/Game/[a-zA-Z0-9_/]+$') { throw 'Project Map must be an absolute /Game package name.' }
+    if ($Map -notmatch '^/Game/(?:[\p{L}\p{N}_]+/)*[\p{L}\p{N}_]+$') { throw 'Project Map must be an absolute /Game package name.' }
     $taskMap = $Map
 }
 if ($UseProjectSettings -and ($Scene -ne 'Project' -or $Profile -or $DistanceFields -or
@@ -252,7 +252,7 @@ try {
         $taskPackages += @($taskSamples.samples | ForEach-Object { $_.package })
     }
     foreach ($taskExtraPackage in $ExtraPackages) {
-        if ($taskExtraPackage -notmatch '^/(Game|Engine)/[a-zA-Z0-9_/]+$') { throw "Invalid extra Cook package: $taskExtraPackage" }
+        if ($taskExtraPackage -notmatch '^/(Game|Engine)/(?:[\p{L}\p{N}_]+/)*[\p{L}\p{N}_]+$') { throw "Invalid extra Cook package: $taskExtraPackage" }
         $taskPackages += $taskExtraPackage
     }
     # The installed native UBT cannot validate a Web SDK. The custom module handles this cook-only path.
@@ -392,6 +392,28 @@ try {
             ($taskWebGPU -and ($_.Extension -eq '.ushaderbytecode' -or $_.Name -eq "GlobalShaderCache-$taskShaderPlatformName.bin"))) -and
             -not $_.FullName.StartsWith((Join-Path $taskOutput 'ShaderConversion'), [StringComparison]::OrdinalIgnoreCase) })
     if (-not $taskAssets.Count) { throw 'Cook produced no loose packages.' }
+    if ($Scene -eq 'Project' -and $taskWebGPU) {
+        $taskProjectRoot = Split-Path -Parent $taskProject
+        $taskExtraList = Join-Path $taskProjectRoot 'Config/Web/AdditionalCookFiles.json'
+        if (Test-Path -LiteralPath $taskExtraList) {
+            $taskExtraSources = @()
+            $taskExtraFiles = Get-Content -LiteralPath $taskExtraList -Raw -Encoding UTF8 | ConvertFrom-Json -NoEnumerate
+            if ($taskExtraFiles -isnot [array]) { throw 'Additional Cook files must be a JSON array.' }
+            foreach ($relative in $taskExtraFiles) {
+                if ($relative -isnot [string] -or $relative -notmatch '^(?:[\p{L}\p{N}_-][\p{L}\p{N}_.-]*/)*[\p{L}\p{N}_-][\p{L}\p{N}_.-]*$') {
+                    throw "Invalid additional Cook file: $relative"
+                }
+                $target = Join-Path $taskOutput "$($taskReport.projectName)/Content/$relative"
+                Assert-ProjectOutput -Path $target
+                if (Test-Path -LiteralPath $target) { throw "Additional Cook file collides with a Cook product: $relative" }
+                $source = Join-Path $taskProjectRoot "Content/$relative"
+                New-Item -ItemType Directory -Path (Split-Path -Parent $target) -Force | Out-Null
+                Copy-Item -LiteralPath $source -Destination $target
+                $taskExtraSources += Get-TaskAudit $source
+                $taskAssets += Get-Item -LiteralPath $target
+            }
+        }
+    }
     if ($taskWebGPU) {
         if (-not ($taskAssets | Where-Object Name -eq "GlobalShaderCache-$taskShaderPlatformName.bin") -or
             -not ($taskAssets | Where-Object Name -eq "ShaderArchive-Global-$taskFormat-$taskShaderPlatformName.ushaderbytecode")) {
@@ -473,6 +495,7 @@ try {
         })
     }
     if ($taskReport.projectMap) {
+        if ($taskExtraSources) { $taskReport.sourceFiles += $taskExtraSources }
         $taskReport.sourceFiles += $taskReport.projectMap
         $taskReport.sourceFiles += Get-TaskAudit $taskProject
         $taskReport.sourceFiles += @(Get-ChildItem -LiteralPath (Join-Path (Split-Path -Parent $taskProject) 'Config') -File -Recurse |

@@ -93,7 +93,7 @@ try {
       ...(desktop && cook.vsmAdaptiveSampling ? {vsmAdaptiveSampling: cook.vsmAdaptiveSampling} : {}),
       wasm: metadata(wasm.file, runtime + '.wasm')}) + ';');
   const original = "arguments: ['-webgpu', '-WebDefaultTemplate'],";
-  assert(html.includes(original) && /^\/Game\/[a-zA-Z0-9_/]+$/.test(stage.map));
+  assert(html.includes(original) && /^\/Game\/(?:[\p{L}\p{N}_]+\/)*[\p{L}\p{N}_]+$/u.test(stage.map));
   report.engineArguments = ['-webgpu', '-WebProjectMap=' + stage.map,
     ...(parallelRecording ? ['-WebParallelDrawRecording'] : [])];
   html = html.replace(original, `arguments: ${JSON.stringify(report.engineArguments)},`)

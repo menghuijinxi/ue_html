@@ -54,7 +54,8 @@ const server = http.createServer(async (request, response) => {
     if (version && version !== hash) { response.writeHead(409).end('Asset version changed; reload the page.'); return; }
     response.setHeader('ETag', etag);
     response.setHeader('Last-Modified', stat.mtime.toUTCString());
-    response.setHeader('Cache-Control', version ? 'public, max-age=31536000, immutable' : 'no-cache');
+    response.setHeader('Cache-Control', request.headers['cache-control'] === 'no-store' ? 'no-store' :
+      version ? 'public, max-age=31536000, immutable' : 'no-cache');
     if (request.headers['if-none-match']?.split(',').some(value =>
       value.trim().replace(/^W\//, '') === etag || value.trim() === '*')) {
       response.writeHead(304).end();
