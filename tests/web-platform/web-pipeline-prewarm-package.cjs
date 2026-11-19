@@ -61,14 +61,16 @@ function prepareRecordedPrewarm(folder, input) {
     assert(!capture.noPrecache && !capture.motionSeconds && !capture.scriptedMotionSeconds &&
       capture.runs?.length === 1, 'Automatic catalog must be collected before camera movement');
     const run = capture.runs[0], state = run.last?.worker;
-    assert(capture.runs[0].pass && state?.pso?.enabled && state.pso.active === 0 &&
-      state.rhi?.asyncPrecacheRequested > 0 &&
-      state.rhi.asyncPrecacheRequested === state.rhi.asyncPrecacheCompleted &&
-      state.rhi.asyncPrecacheFailed === 0 && state.pending === 0,
+    const pso = run.last?.nativePso ?? state?.pso;
+    const rhi = run.last?.nativeRhi ?? state?.rhi;
+    assert(run.pass && pso?.enabled && pso.active === 0 &&
+      rhi?.asyncPrecacheRequested > 0 &&
+      rhi.asyncPrecacheRequested === rhi.asyncPrecacheCompleted &&
+      rhi.asyncPrecacheFailed === 0 && state?.pending === 0,
     'Automatic collectors and browser compiles must complete before exporting the catalog');
     assert(!(run.errors || []).length && !(state.errors || []).length &&
       Object.values(state.calls || {}).every(call => call.failed === 0) &&
-      (run.precacheRejections || []).length <= (state.rhi.unsupportedPrecacheRequests || 0),
+      (run.precacheRejections || []).length <= (rhi.unsupportedPrecacheRequests || 0),
     'Automatic catalog contains native failures or unaccounted pipeline rejections');
     assert(corpus.requests?.length && corpus.requests.every(request => request.success),
       'Automatic catalog contains unfinished or failed pipeline requests');

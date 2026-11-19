@@ -27,6 +27,8 @@ if (new URLSearchParams(location.search).get('comparison') === 'merge') {
       expected: {indirectDrawReuse: 2, vsmPageOptimization: 3}},
     native: {folder: 'villa-native-atlas-20261119', label: '合并后 · 自适应距离场',
       expected: {indirectDrawReuse: 2, vsmPageOptimization: 3}},
+    temporaloff: {folder: 'villa-radiosity-temporal-off-20261119-b', label: 'R8 · 关闭间接光时间累积',
+      expected: {indirectDrawReuse: 2, vsmPageOptimization: 3}},
   };
   globalThis.__villaComparisonPlayerStart = {x: -20, y: 200, pitch: 12, yaw: -35};
   document.title = document.querySelector('h1').textContent = 'Triplex Villa · 客厅性能对照';

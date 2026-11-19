@@ -2,7 +2,7 @@
 // Compare the shipped packages and isolate the retained scene opt-in flag.
 // Default performance runs observe viewport submissions without GPU wrappers or
 // frozen clocks. Explicit diagnostic switches are recorded separately.
-const {initializeProjectOutput, assertProjectOutputTree} = require('./project-output.cjs');
+const {initializeProjectOutput, assertProjectOutput, assertProjectOutputTree} = require('./project-output.cjs');
 const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
 const {chromium} = require('playwright');
 const {audit} = require('./content-file-metadata.cjs');
@@ -53,7 +53,18 @@ assert(!nanites || ![packBatches,microBatches,fixedMerges,programmableMerges,sha
 const tour = process.argv.includes('--tour');
 const interactive = process.argv.includes('--interactive');
 const gpuTransfers = process.argv.includes('--gpu-transfers');
+const commandLists = process.argv.includes('--command-lists');
+assert(!commandLists || (interactive && !gpuTransfers));
+const indirectReuse = option('indirect-reuse')?.split(',');
+const renderTiming = option('render-timing')?.split(',');
+assert(!renderTiming || (interactive && renderTiming.length === modes.length &&
+  renderTiming.every(value => ['on', 'off'].includes(value)) && modes.every(mode => mode === 'candidate')));
+assert(!indirectReuse || (interactive && !backendDefaultModes && !cvarName && indirectReuse.length === modes.length &&
+  indirectReuse.every(value => ['0', '2'].includes(value)) && modes.every(mode => mode === 'candidate')));
 const distanceFieldUpdates = option('distance-field-updates')?.split(',');
+const radiosityTemporal = option('radiosity-temporal')?.split(',');
+assert(!radiosityTemporal || (interactive && radiosityTemporal.length === modes.length &&
+  radiosityTemporal.every(value => ['0', '1'].includes(value)) && modes.every(mode => mode === 'candidate')));
 const atlasFormats = option('atlas-formats')?.split(',');
 assert(!atlasFormats || (interactive && !gpuTransfers && !distanceFieldUpdates && atlasFormats.length === modes.length &&
   modes.every(mode => mode === 'candidate') && atlasFormats.every(format => ['r32float', 'r8unorm'].includes(format))));
@@ -145,6 +156,14 @@ const save = () => fs.writeFileSync(path.join(output, 'report.json'), JSON.strin
 if (occlusionModes) report.boundary += ' Explicit per-run occlusion mode for diagnosis.';
 if (parallelRecording) report.boundary += ' Explicit per-run draw recording startup flag for diagnosis.';
 if (pagePacing) report.boundary += ' Existing HUD animation-frame and observed update samples, not display timestamps.';
+if (renderTiming) {
+  report.renderTiming = renderTiming;
+  report.boundary += ' Only the per-view render duration notification is skipped before the Emscripten thread proxy. The native render graph callback still executes.';
+}
+if (indirectReuse) {
+  report.indirectReuse = indirectReuse;
+  report.boundary += ' Per-run indirect draw reuse is verified by native readback before movement.';
+}
 if (frameBudgets) report.boundary += ' Explicit page clock frame budgets for diagnosis.';
 report.dpr = dpr;
 if (distanceFieldUpdates)
@@ -154,6 +173,10 @@ if (atlasFormats)
 if (gpuTransfers) {
   report.gpuTransfers = true;
   report.boundary += ' Diagnostic API calls and estimated logical copy extents. Excludes shader memory accesses, driver traffic and physical residency. Instrumented FPS is excluded from acceptance.';
+}
+if (commandLists) {
+  report.commandLists = audit(require.resolve('./diagnostics/villa-command-lists.cjs'));
+  report.boundary += ' Command lists and actual GPUQueue.submit batches are sampled for six frames; exclude instrumented FPS from acceptance.';
 }
 if (interactive) report.interactiveRoute = interactiveRoute;
 if (selectedPhases) {
@@ -297,6 +320,7 @@ async function browserMotion(page, box, seconds, {translate, rotate, livingRoute
       const run = {index, mode, folder, errors: [], phases: [], assets: []}; report.runs.push(run);
       const motionBlur = motionBlurModes?.[index];
       if (distanceFieldUpdates) run.distanceFieldUpdates = {value: Number(distanceFieldUpdates[index]), logged: []};
+      if (radiosityTemporal) run.radiosityTemporal = {value:Number(radiosityTemporal[index]), logged:[]};
       const mouseSmoothing = mouseSmoothingModes?.[index];
       if (motionBlur) run.motionBlur = {mode: motionBlur, loggedQuality: []};
       if (mouseSmoothing) run.mouseSmoothing = {mode: mouseSmoothing};
@@ -313,6 +337,28 @@ async function browserMotion(page, box, seconds, {translate, rotate, livingRoute
       try {
         run.browser = context.browser().version();
         if (checkAffinity) run.affinityBefore = checkAffinity(profile, affinity, true);
+        if (renderTiming?.[index] === 'off') {
+          await context.route('**/index.html', async route => {
+            const response = await route.fetch(), html = await response.text();
+            const manifest = html.match(/const localRuntimeAssets = (\{[^\n]+\});/);
+            assert(manifest, 'Expected the packaged runtime manifest');
+            const assets = JSON.parse(manifest[1]);
+            assert.equal(assets.runtime, 'UEWebEngineThreads.js');
+            const source = fs.readFileSync(path.join(__dirname, 'build', folder, assets.runtime), 'utf8');
+            assert.equal(crypto.createHash('sha256').update(source).digest('hex'), assets.versions[assets.runtime]);
+            const entries = [...source.matchAll(/^\s*(\d+): \$0 => \{\s*const stages = globalThis\.__webThreadStages \|\|= \{\};\s*stages\.renderWorkMilliseconds =/gm)];
+            const proxy = 'var runMainThreadEmAsm = (emAsmAddr, sigPtr, argbuf, sync) => {';
+            assert.equal(entries.length, 1, 'Expected a single render duration callback');
+            assert.equal(source.split(proxy).length, 2, 'Expected the Emscripten main thread proxy');
+            // Give nested pthread workers the same script as the engine owner.
+            const file = assertProjectOutput(path.join(output, index + '-no-render-timing.js'));
+            fs.writeFileSync(file, source.replace(proxy, proxy + `\n  if (emAsmAddr === ${entries[0][1]}) return;`));
+            run.diagnosticRuntime = audit(file);
+            assets.runtime = '/results/' + tag + '/' + path.basename(file);
+            assets.versions[assets.runtime] = run.diagnosticRuntime.sha256;
+            await route.fulfill({response, body:html.replace(manifest[0], () => 'const localRuntimeAssets = ' + JSON.stringify(assets) + ';')});
+          });
+        }
         if (parallelRecording) {
           const enabled = parallelRecording[index] === 'on', flag = '-WebParallelDrawRecording';
           run.parallelRecording = {enabled};
@@ -360,6 +406,8 @@ async function browserMotion(page, box, seconds, {translate, rotate, livingRoute
           const response = await route.fetch();
           let body = await response.text();
           const iniSettings = {};
+          if (radiosityTemporal) iniSettings['r.LumenScene.Radiosity.Temporal'] = run.radiosityTemporal.value;
+          if (indirectReuse) iniSettings['r.WebGPU.IndirectDrawReuse'] = Number(indirectReuse[index]);
           if (backendDefaultModes) {
             const settings = backendDefaultModes[index] !== 'off' ? Object.fromEntries(
               Object.entries(require('./web-accepted-defaults.cjs').settings).filter(([key]) => /^r\.Web(?:GPU)?\./.test(key))
@@ -389,6 +437,7 @@ ${marker}
           await route.fulfill({response, body: `(${installObserver.toString()})(${walk}, ${interactive});\n` +
             (atlasFormats ? `(${require('./diagnostics/villa-distance-field-atlas.cjs')})(${JSON.stringify(atlasFormats[index])});\n` : '') +
             (gpuTransfers ? `(${require('./web-gpu-memory-observer.cjs')})(${require('./observe-gpu-transfers.cjs')});\n` : '') +
+            (commandLists ? `(${require('./diagnostics/villa-command-lists.cjs')})();\n` : '') +
             (pointOnly ? `(${pointDiagnostic.toString()})();\n` : '') +
             (gpuTimestamps ? `(${observeMotionGPU.toString()})(${JSON.stringify({start:gpuStart,end:gpuEnd})});\n` : '') + body});
         });
@@ -408,6 +457,8 @@ ${marker}
           if (blurQuality) run.motionBlur.loggedQuality.push(Number(blurQuality[1]));
           const fieldUpdates = distanceFieldUpdates && m.text().match(/Set CVar \[\[r\.AOUpdateGlobalDistanceField:(\d+)\]\]/);
           if (fieldUpdates) run.distanceFieldUpdates.logged.push(Number(fieldUpdates[1]));
+          const temporal = radiosityTemporal && m.text().match(/Set CVar \[\[r\.LumenScene\.Radiosity\.Temporal:(\d+)\]\]/);
+          if (temporal) run.radiosityTemporal.logged.push(Number(temporal[1]));
           if (/GPU validation:|Fatal error:|Assertion failed:|DeviceLost/.test(m.text())) run.errors.push(m.text());
         });
         const startupBegin = Date.now();
@@ -434,6 +485,10 @@ ${marker}
         assert(!startupFailure, startupFailure);
         run.startupReadyMs = Date.now() - startupBegin;
         const owner = page.workers().find(w => w.url().includes('web-engine-worker.js')); assert(owner);
+        if (renderTiming) {
+          run.renderTiming = {mode:renderTiming[index], commands:await owner.evaluate(() => globalThis.__webThreadStages?.renderCommands || 0)};
+          assert.equal(run.renderTiming.commands > 0, renderTiming[index] === 'on', 'Render timing cross-thread notification');
+        }
         if (parallelRecording) {
           run.parallelRecording.arguments = await owner.evaluate(() => Module.arguments);
           assert.equal(run.parallelRecording.arguments.includes('-WebParallelDrawRecording'), run.parallelRecording.enabled);
@@ -441,6 +496,8 @@ ${marker}
         if (motionBlur === 'off') assert.equal(run.motionBlur.loggedQuality.at(-1), 0, 'Motion blur override did not take effect');
         if (distanceFieldUpdates)
           assert.equal(run.distanceFieldUpdates.logged.at(-1), run.distanceFieldUpdates.value, 'Distance field update override did not take effect');
+        if (radiosityTemporal)
+          assert.equal(run.radiosityTemporal.logged.at(-1), run.radiosityTemporal.value, 'Lumen radiosity temporal override did not take effect');
         if (mouseSmoothing) {
           const inputMode = await page.evaluate(value => __webEngineRPC('WebMotionBenchmarkControl', 7, value),
             mouseSmoothing === 'off' ? 1 : 0);
@@ -459,6 +516,10 @@ ${marker}
           assert(status?.sequence > previous); return status;
         };
         const inspectNanite = recordIdleStatus || (gpuTransfers && mode === 'candidate');
+        if (indirectReuse) {
+          run.indirectDrawReuse = await owner.evaluate(() => globalThis.__webOcclusionRHI?.indirectDrawReuse);
+          assert.equal(run.indirectDrawReuse, Number(indirectReuse[index]), 'Native indirect draw reuse mode');
+        }
         if (inspectNanite) run.naniteIdleBefore = await idleStatus();
         if (hierarchyBatches || occlusionBatches || packBatches || microBatches || fixedMerges || programmableMerges || shadeBinnings || materialPrecaches || nanites || cvarName) {
           for(const [values,fn] of [[hierarchyBatches,'WebNaniteHierarchyBatchTest'],[occlusionBatches,'WebNaniteOcclusionBatchTest'],[packBatches,'WebNanitePackBatchTest'],[microBatches,'WebNaniteMicroBatchTest'],[fixedMerges,'WebNaniteFixedMergeTest'],[programmableMerges,'WebNaniteProgrammableMergeTest'],[shadeBinnings,'WebNaniteShadeBinningTest']])
@@ -544,6 +605,7 @@ ${marker}
             __naniteOffFrames.samples = []; __naniteOffFrames.gpu = [];
             const time = performance.now(); performance.mark('UE motion capture begin');
             globalThis.__webGPUTransferCapture?.start();
+            globalThis.__villaCommandLists?.start();
             __naniteOffFrames.active = true; return time;});
           const delayedTrace = trace && traceStart ? (async () => {
             assert(traceSeconds > 0 && traceStart + traceSeconds < seconds);
@@ -555,7 +617,8 @@ ${marker}
           const input = await action(); await delayedTrace;
           const capture = await owner.evaluate(() => {
             __naniteOffFrames.active = false;
-            return {...__naniteOffFrames, transfers: globalThis.__webGPUTransferCapture?.stop()};
+            return {...__naniteOffFrames, transfers: globalThis.__webGPUTransferCapture?.stop(),
+              commandLists:globalThis.__villaCommandLists?.stop()};
           });
           const {times} = capture;
           const after = await snapshot();
@@ -571,6 +634,11 @@ ${marker}
           result.renderMs = (after.stages.renderWorkMilliseconds - before.stages.renderWorkMilliseconds) /
             (after.stages.presented - before.stages.presented);
           const phase = {name, before, after, result, times, traceMark};
+          if (commandLists) {
+            phase.commandLists = capture.commandLists;
+            assert.equal(new Set(phase.commandLists.map(batch => batch.frame)).size, 6);
+            assert(phase.commandLists.some(batch => batch.lists.some(list => list && Object.keys(list).length)));
+          }
           if (gpuTransfers) {
             phase.transfers = capture.transfers;
             assert(phase.transfers.some(row => row.calls && row.bytes > 0), 'No GPU transfers recorded');
