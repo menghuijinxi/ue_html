@@ -125,10 +125,13 @@ try {
     fs.copyFileSync(source, destination);
     assert.equal(audit(source).sha256, audit(destination).sha256);
   }
+  const disableMotionBlur = acceptedDefaults && stage.map === '/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla';
   if (acceptedDefaults) {
-    report.performanceProfile = applyAcceptedDefaults(output, {preserveProjectSettings: report.useProjectSettings, disableMouseSmoothing});
+    report.performanceProfile = applyAcceptedDefaults(output, {
+      preserveProjectSettings: report.useProjectSettings, disableMouseSmoothing, disableMotionBlur});
     report.sourceFiles.push(audit(require.resolve('./web-accepted-defaults.cjs')));
   }
+  if (disableMotionBlur) report.motionBlurQuality = 0;
   if (disableMouseSmoothing) report.mouseSmoothing = false;
   const extraFiles = [];
   if (acceptedDefaults) {
@@ -140,7 +143,7 @@ try {
       'web-pipeline-prewarm.js', 'probe-villa-startup.cjs', 'web-startup-profile.js'].map(name =>
       audit(path.join(__dirname, name))));
   }
-  if (report.useProjectSettings && !disableMouseSmoothing) {
+  if (report.useProjectSettings && !disableMouseSmoothing && !disableMotionBlur) {
     assert.equal(audit(path.join(output, 'config-files.json')).sha256, stage.configBundle.sha256,
       'Packaging must preserve the project-settings configuration from staging');
     report.projectSettingsPreserved = true;
@@ -152,8 +155,9 @@ try {
   report.fullNormalUBTBuildVerified = true;
   report.disabledSkyLight = cook.disabledSkyLight;
   report.compressHDRCubemaps = cook.compressHDRCubemaps || false;
-  report.boundary = (report.useProjectSettings ? 'Project map and gameplay with the original project rendering settings. ' :
+  report.boundary = (report.useProjectSettings ? 'Project map and gameplay using staged project settings. ' :
     'Project map and gameplay with the explicitly recorded Web renderer profile. ') +
+    (disableMotionBlur ? 'Villa uses the accepted Web camera motion blur quality of zero. ' : '') +
     (disableMouseSmoothing ? 'The packaged input configuration disables mouse smoothing. ' : '') +
     'Packaging success does not prove browser compatibility, visual parity, performance or phone support.';
   report.pass = true;

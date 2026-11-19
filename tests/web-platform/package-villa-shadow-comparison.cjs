@@ -10,8 +10,13 @@ const option = name => process.argv.find(arg => arg.startsWith('--' + name + '='
 const mode = option('mode'), phase = option('phase');
 assert(['on', 'off'].includes(mode) && ['prepare', 'release'].includes(phase));
 const feature = option('feature') || 'shadow';
-assert(['shadow', 'radiosity-temporal'].includes(feature));
-const setting = feature === 'shadow' ? 'r.Shadow.Virtual.Enable' : 'r.LumenScene.Radiosity.Temporal';
+const features = new Map([
+  ['shadow', ['r.Shadow.Virtual.Enable', 1]],
+  ['radiosity-temporal', ['r.LumenScene.Radiosity.Temporal', 1]],
+  ['motion-blur', ['r.MotionBlurQuality', 4]],
+]);
+assert(features.has(feature));
+const [setting, enabledValue] = features.get(feature);
 const version = option('version') || '20261111';
 const input = option('source') || 'villa-shadow-ab-20261111-diagnostic';
 assert(/^[a-z0-9-]+$/.test(version) && /^[a-z0-9-]+$/.test(input));
@@ -38,7 +43,7 @@ if (phase === 'prepare') {
   const file = path.join(destination, 'config-files.json'), configs = JSON.parse(fs.readFileSync(file));
   const ini = configs.find(item => item.path === '/Engine/Platforms/Web/Config/WebEngine.ini'); assert(ini);
   const text = Buffer.from(ini.data, 'base64').toString('utf8') +
-    '\n[SystemSettings]\n' + setting + '=' + Number(mode === 'on') + '\n';
+    '\n[SystemSettings]\n' + setting + '=' + (mode === 'on' ? enabledValue : 0) + '\n';
   ini.data = Buffer.from(text).toString('base64');
   ini.sha256 = crypto.createHash('sha256').update(text).digest('hex');
   replaceFile(file, JSON.stringify(configs));
@@ -53,7 +58,7 @@ if (phase === 'prepare') {
 const defaults = finalizeDesktopRelease(destination, phase === 'prepare' ?
   {captureOnly: true} : {corpus: option('corpus')});
 assert.equal(defaults.releaseReady, phase === 'release');
-if (phase === 'prepare' && feature === 'radiosity-temporal') {
+if (phase === 'prepare' && feature !== 'shadow') {
   const page = readPage(destination);
   page.args.push('-WebPSOPrecache');
   writePage(destination, page);

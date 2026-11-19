@@ -27,6 +27,8 @@ if (new URLSearchParams(location.search).get('comparison') === 'merge') {
       expected: {indirectDrawReuse: 2, vsmPageOptimization: 3}},
     native: {folder: 'villa-native-atlas-20261119', label: '合并后 · 自适应距离场',
       expected: {indirectDrawReuse: 2, vsmPageOptimization: 3}},
+    clear: {folder: 'villa-motion-blur-off-20261119-clarity', label: '合并后 · 恢复老版运动清晰度',
+      expected: {indirectDrawReuse: 2, vsmPageOptimization: 3}},
     temporaloff: {folder: 'villa-radiosity-temporal-off-20261119-b', label: 'R8 · 关闭间接光时间累积',
       expected: {indirectDrawReuse: 2, vsmPageOptimization: 3}},
   };

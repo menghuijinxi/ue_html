@@ -61,6 +61,13 @@ const inputConfig = mouseConfig.find(item => item.path === inputPath);
 assert(Buffer.from(inputConfig.data, 'base64').toString().endsWith('\nbEnableMouseSmoothing=False\n'));
 assert.deepEqual(mouseConfig.filter(item => item.path !== inputPath), JSON.parse(projectConfig),
   'The desktop mouse override can only change the packaged input configuration');
+const blurProject = fixture('project-motion-blur', false);
+applyAcceptedDefaults(blurProject, {preserveProjectSettings: true, disableMotionBlur: true});
+const blurConfig = JSON.parse(fs.readFileSync(path.join(blurProject, 'config-files.json')));
+assert.deepEqual(blurConfig.map(item => item.path), JSON.parse(projectConfig).map(item => item.path));
+const originalIni = Buffer.from(JSON.parse(projectConfig)[0].data, 'base64').toString();
+assert.equal(Buffer.from(blurConfig[0].data, 'base64').toString(),
+  originalIni + '\n[SystemSettings]\nr.MotionBlurQuality=0\n');
 assert.equal(require('./web-accepted-defaults.cjs').settings['r.WebGPU.IndirectDrawReuse'], 2,
   'The corrected manual result restores accepted indirect reuse in ordinary releases');
 assert.equal(require('./web-accepted-defaults.cjs').settings['r.WebGPU.VSMPageOptimization'], 3);

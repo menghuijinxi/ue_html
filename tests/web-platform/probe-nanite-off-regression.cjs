@@ -82,6 +82,8 @@ assert(!frameBudgets || (pagePacing && frameBudgets.length === modes.length &&
 const interactiveRoute = option('interactive-route') || 'spawn';
 assert(['spawn', 'living'].includes(interactiveRoute) && (interactive || interactiveRoute === 'spawn'));
 const livingRoute = interactiveRoute === 'living';
+const captureTurn = process.argv.includes('--capture-turn');
+assert(!captureTurn || livingRoute, 'Capture the moving image from the living room start');
 const livingStart = {x: -20, y: 200, pitch: 12, yaw: -35};
 const motionBlurModes = option('motion-blur')?.split(',');
 const mouseSmoothingModes = option('mouse-smoothing')?.split(',');
@@ -312,6 +314,39 @@ async function browserMotion(page, box, seconds, {translate, rotate, livingRoute
     if (buttonDown) await page.mouse.up({button: 'right'});
   }
   return {translate, rotate, moves};
+}
+
+async function captureLivingTurn(page, box, owner, prefix) {
+  const pose = () => owner.evaluate(() => ({frame: globalThis.__webRHIFrames,
+    yaw: globalThis.__webDefaultCamera.yaw, time: performance.now()}));
+  const x = box.x + box.width * .25, y = box.y + box.height * .5;
+  const frames = [];
+  await page.mouse.move(x, y);
+  await page.mouse.down({button: 'right'});
+  const start = performance.now();
+  try {
+    // Capture during a constant-speed sweep, after the five performance windows.
+    const capture = async () => {
+      await page.waitForTimeout(300);
+      for (let i = 0; i < 8 && performance.now() - start < 1950; ++i) {
+        const before = await pose();
+        const file = `${prefix}-turn-${i}.png`;
+        await page.screenshot({path: assertProjectOutput(path.join(output, file)), clip: box, scale: 'css'});
+        frames.push({file, before, after: await pose()});
+        await page.waitForTimeout(70);
+      }
+    };
+    const sweep = async () => {
+      for (let ms = 0; ms < 2400; ms = performance.now() - start) {
+        await page.mouse.move(x + box.width * .5 * ms / 2400, y);
+        await page.waitForTimeout(12);
+      }
+    };
+    await Promise.all([sweep(), capture()]);
+    assert(frames.length >= 2 && yawDistance(frames[0].before, frames.at(-1).after) > 10,
+      'Screenshots must span an actual camera turn');
+    return frames;
+  } finally { await page.mouse.up({button: 'right'}); }
 }
 (async () => {
   try {
@@ -787,6 +822,10 @@ ${marker}
             assert(run.phases.every(phase => phase.after.optimization.asyncPrecacheFailed === 0));
           }
           run.environmentAfter = await require('./sample-test-environment.cjs')(page);
+          if (captureTurn) {
+            await reset();
+            run.movingImages = await captureLivingTurn(page, box, owner, `${index}-${mode}`);
+          }
           await page.screenshot({path:path.join(output, index + '-' + mode + '.png')});
           assert.deepEqual(run.errors, []);
           run.pass = true; save();
