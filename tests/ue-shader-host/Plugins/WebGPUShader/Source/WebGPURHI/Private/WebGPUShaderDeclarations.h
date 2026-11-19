@@ -86,6 +86,36 @@ inline TMap<uint64, FWebGPUShaderDeclaration> ParseWebGPUShaderDeclarations(cons
     return Declarations;
 }
 
+inline bool PrepareWebGPUR8DistanceFieldAtlas(FString& Source, FWebGPUShaderData& Data, FString& Error)
+{
+    if (Data.Frequency != SF_Compute) return true;
+    auto* Atlas = Data.Bindings.FindByPredicate([](const auto& Entry) {
+        return Entry.Name == TEXT("RWPageAtlasTexture") && Entry.Descriptor == 3;
+    });
+    if (!Atlas) return true;
+    const auto Declarations = ParseWebGPUShaderDeclarations(Source);
+    const auto* Declaration = Declarations.Find((uint64(Atlas->Group) << 32) | Atlas->Index);
+    if (!Declaration || Declaration->Name != Atlas->Name || Declaration->Type != TEXT("texture_storage_3d"))
+    {
+        Error = TEXT("Invalid Web distance field atlas binding");
+        return false;
+    }
+    if (Declaration->Format == TEXT("r8unorm") && Atlas->StorageImageFormat == 15) return true;
+    if (Declaration->Format != TEXT("r32float") || Atlas->StorageImageFormat != 3)
+    {
+        Error = TEXT("Unexpected Web distance field atlas storage format");
+        return false;
+    }
+    // Keep Cook portable. Specialize this binding once at shader load, before PSO creation.
+    const int32 Offset = Declaration->FormatOffset;
+    Source.RemoveAt(Offset, Declaration->Format.Len(), EAllowShrinking::No);
+    Source.InsertAt(Offset, TEXT("r8unorm"));
+    for (auto& Entry : Data.Bindings)
+        if (Entry.StorageFormatOffset > Offset) --Entry.StorageFormatOffset;
+    Atlas->StorageImageFormat = 15;
+    return true;
+}
+
 inline bool PrepareWebGPUPackedShadowMaskFormat(const FString& Source, FWebGPUShaderData& Data, FString& Error)
 {
     if (Data.Frequency != SF_Compute) return true;

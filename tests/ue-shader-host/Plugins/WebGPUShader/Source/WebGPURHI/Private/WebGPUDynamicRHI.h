@@ -689,7 +689,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     WGPUQueue Queue = nullptr;
     WGPULimits Limits = WGPU_LIMITS_INIT;
     TOptional<FPixelFormatInfo> PreviousDepthFormat, PreviousStencilFormat, PreviousShadowFormat, PreviousPackedHDRFormat,
-        PreviousFloatRGBFormat, PreviousR16UIntFormat;
+        PreviousFloatRGBFormat, PreviousR16UIntFormat, PreviousR8Format;
     WGPUCommandEncoder Encoder = nullptr;
     WGPURenderPassEncoder Pass = nullptr;
     WGPUComputePassEncoder ComputePass = nullptr;

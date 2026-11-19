@@ -374,7 +374,7 @@ bool CanPrecacheShader(const FWebGPUShaderData& Shader, const WGPULimits& Limits
                 Format != WGPUTextureFormat_R32Uint && Format != WGPUTextureFormat_R32Sint &&
                 !(SupportsExtendedStorageAccess &&
                     (Format == WGPUTextureFormat_RGBA16Float || Format == WGPUTextureFormat_R16Uint ||
-                     Format == WGPUTextureFormat_R8Uint || Format == WGPUTextureFormat_R16Float ||
+                     Format == WGPUTextureFormat_R8Unorm || Format == WGPUTextureFormat_R8Uint || Format == WGPUTextureFormat_R16Float ||
                      Format == WGPUTextureFormat_RGBA8Unorm || Format == WGPUTextureFormat_RGBA8Uint ||
                      Format == WGPUTextureFormat_RGBA32Float || Format == WGPUTextureFormat_RGBA32Uint ||
                      Format == WGPUTextureFormat_RGBA32Sint)))
@@ -1002,6 +1002,12 @@ void FWebGPUDynamicRHI::Init()
     PreviousPackedHDRFormat = GPixelFormats[PF_FloatR11G11B10];
     PreviousFloatRGBFormat = GPixelFormats[PF_FloatRGB];
     PreviousR16UIntFormat = GPixelFormats[PF_R16_UINT];
+    auto& R8 = GPixelFormats[PF_R8];
+    PreviousR8Format = R8;
+    if (wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureFormatsTier2))
+        R8.Capabilities |= EPixelFormatCapabilities::TypedUAVLoad;
+    else
+        R8.Capabilities &= ~EPixelFormatCapabilities::TypedUAVLoad;
     auto& R16UIntFormat = GPixelFormats[PF_R16_UINT];
     R16UIntFormat.Supported = true;
     R16UIntFormat.PlatformFormat = WGPUTextureFormat_R16Uint;
@@ -1196,12 +1202,14 @@ void FWebGPUDynamicRHI::Shutdown()
         GPixelFormats[PF_FloatR11G11B10] = PreviousPackedHDRFormat.GetValue();
         GPixelFormats[PF_FloatRGB] = PreviousFloatRGBFormat.GetValue();
         GPixelFormats[PF_R16_UINT] = PreviousR16UIntFormat.GetValue();
+        GPixelFormats[PF_R8] = PreviousR8Format.GetValue();
         PreviousDepthFormat.Reset();
         PreviousStencilFormat.Reset();
         PreviousShadowFormat.Reset();
         PreviousPackedHDRFormat.Reset();
         PreviousFloatRGBFormat.Reset();
         PreviousR16UIntFormat.Reset();
+        PreviousR8Format.Reset();
     }
 }
 void FWebGPUDynamicRHI::PostInit()
@@ -1678,6 +1686,9 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
         if (Data.Bindings.Last().Name == TEXT("$Globals")) Data.Globals.SetNumZeroed(Data.Bindings.Last().PaddedSize);
     }
     Data.RuntimeMetadata.Bindings.Empty();
+    if (Metadata.PlatformName == TEXT("SP_WEBGPU_SM5") &&
+        EnumHasAnyFlags(GPixelFormats[PF_R8].Capabilities, EPixelFormatCapabilities::TypedUAVLoad) &&
+        !PrepareWebGPUR8DistanceFieldAtlas(Source, Data, Error)) return false;
     if (!LowerWebGPUDepthAtlasSampling(Source, Data, Error)) return false;
     if (!PrepareWebGPUPackedShadowMaskFormat(Source, Data, Error)) return false;
     if (!LowerWebGPUViewSamplerBias(Source, Data, Error)) return false;
