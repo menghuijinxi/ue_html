@@ -21,6 +21,8 @@ if (new URLSearchParams(location.search).get('comparison') === 'merge') {
   globalThis.__villaHistoryVariants = {
     baseline: {folder: 'villa-pso-eager-20261117-d/release', label: '合并前老版',
       expected: {indirectDrawReuse: 2, vsmPageOptimization: 3}},
+    baselineblur: {folder: 'villa-baseline-motion-blur-4-20261119', label: '合并前老版 · 运动模糊 4',
+      expected: {indirectDrawReuse: 2, vsmPageOptimization: 3}},
     merged: {folder: 'villa-nanite-merged-20261118-raw-mouse', label: '合并后鼠标对照版',
       expected: {indirectDrawReuse: 2, vsmPageOptimization: 3}},
     r8: {folder: 'villa-nanite-merged-20261118-atlas-r8', label: '合并后 · R8 距离场',
