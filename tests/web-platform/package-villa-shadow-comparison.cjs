@@ -12,7 +12,6 @@ assert(['on', 'off'].includes(mode) && ['prepare', 'release'].includes(phase));
 const feature = option('feature') || 'shadow';
 const features = new Map([
   ['shadow', ['r.Shadow.Virtual.Enable', 1]],
-  ['radiosity-temporal', ['r.LumenScene.Radiosity.Temporal', 1]],
   ['motion-blur', ['r.MotionBlurQuality', 4]],
 ]);
 assert(features.has(feature));
@@ -58,7 +57,7 @@ if (phase === 'prepare') {
 const defaults = finalizeDesktopRelease(destination, phase === 'prepare' ?
   {captureOnly: true} : {corpus: option('corpus')});
 assert.equal(defaults.releaseReady, phase === 'release');
-if (phase === 'prepare' && feature !== 'shadow') {
+if (phase === 'prepare' && feature === 'motion-blur') {
   const page = readPage(destination);
   page.args.push('-WebPSOPrecache');
   writePage(destination, page);

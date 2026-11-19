@@ -18,6 +18,7 @@ globalThis.__villaHistoryVariants = {
 };
 
 if (new URLSearchParams(location.search).get('comparison') === 'merge') {
+  if (location.hash === '#temporaloff') history.replaceState(history.state, '', '#clear');
   globalThis.__villaHistoryVariants = {
     baseline: {folder: 'villa-pso-eager-20261117-d/release', label: '合并前老版',
       expected: {indirectDrawReuse: 2, vsmPageOptimization: 3}},
@@ -30,8 +31,6 @@ if (new URLSearchParams(location.search).get('comparison') === 'merge') {
     native: {folder: 'villa-native-atlas-20261119', label: '合并后 · 自适应距离场',
       expected: {indirectDrawReuse: 2, vsmPageOptimization: 3}},
     clear: {folder: 'villa-motion-blur-off-20261119-clarity', label: '合并后 · 恢复老版运动清晰度',
-      expected: {indirectDrawReuse: 2, vsmPageOptimization: 3}},
-    temporaloff: {folder: 'villa-radiosity-temporal-off-20261119-b', label: 'R8 · 关闭间接光时间累积',
       expected: {indirectDrawReuse: 2, vsmPageOptimization: 3}},
   };
   globalThis.__villaComparisonPlayerStart = {x: -20, y: 200, pitch: 12, yaw: -35};

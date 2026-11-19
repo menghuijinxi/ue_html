@@ -62,9 +62,7 @@ assert(!renderTiming || (interactive && renderTiming.length === modes.length &&
 assert(!indirectReuse || (interactive && !backendDefaultModes && !cvarName && indirectReuse.length === modes.length &&
   indirectReuse.every(value => ['0', '2'].includes(value)) && modes.every(mode => mode === 'candidate')));
 const distanceFieldUpdates = option('distance-field-updates')?.split(',');
-const radiosityTemporal = option('radiosity-temporal')?.split(',');
-assert(!radiosityTemporal || (interactive && radiosityTemporal.length === modes.length &&
-  radiosityTemporal.every(value => ['0', '1'].includes(value)) && modes.every(mode => mode === 'candidate')));
+assert(!option('radiosity-temporal'), 'The Villa radiosity temporal comparison was retired');
 const atlasFormats = option('atlas-formats')?.split(',');
 assert(!atlasFormats || (interactive && !gpuTransfers && !distanceFieldUpdates && atlasFormats.length === modes.length &&
   modes.every(mode => mode === 'candidate') && atlasFormats.every(format => ['r32float', 'r8unorm'].includes(format))));
@@ -355,7 +353,6 @@ async function captureLivingTurn(page, box, owner, prefix) {
       const run = {index, mode, folder, errors: [], phases: [], assets: []}; report.runs.push(run);
       const motionBlur = motionBlurModes?.[index];
       if (distanceFieldUpdates) run.distanceFieldUpdates = {value: Number(distanceFieldUpdates[index]), logged: []};
-      if (radiosityTemporal) run.radiosityTemporal = {value:Number(radiosityTemporal[index]), logged:[]};
       const mouseSmoothing = mouseSmoothingModes?.[index];
       if (motionBlur) run.motionBlur = {mode: motionBlur, loggedQuality: []};
       if (mouseSmoothing) run.mouseSmoothing = {mode: mouseSmoothing};
@@ -441,7 +438,6 @@ async function captureLivingTurn(page, box, owner, prefix) {
           const response = await route.fetch();
           let body = await response.text();
           const iniSettings = {};
-          if (radiosityTemporal) iniSettings['r.LumenScene.Radiosity.Temporal'] = run.radiosityTemporal.value;
           if (indirectReuse) iniSettings['r.WebGPU.IndirectDrawReuse'] = Number(indirectReuse[index]);
           if (backendDefaultModes) {
             const settings = backendDefaultModes[index] !== 'off' ? Object.fromEntries(
@@ -492,8 +488,6 @@ ${marker}
           if (blurQuality) run.motionBlur.loggedQuality.push(Number(blurQuality[1]));
           const fieldUpdates = distanceFieldUpdates && m.text().match(/Set CVar \[\[r\.AOUpdateGlobalDistanceField:(\d+)\]\]/);
           if (fieldUpdates) run.distanceFieldUpdates.logged.push(Number(fieldUpdates[1]));
-          const temporal = radiosityTemporal && m.text().match(/Set CVar \[\[r\.LumenScene\.Radiosity\.Temporal:(\d+)\]\]/);
-          if (temporal) run.radiosityTemporal.logged.push(Number(temporal[1]));
           if (/GPU validation:|Fatal error:|Assertion failed:|DeviceLost/.test(m.text())) run.errors.push(m.text());
         });
         const startupBegin = Date.now();
@@ -531,8 +525,6 @@ ${marker}
         if (motionBlur === 'off') assert.equal(run.motionBlur.loggedQuality.at(-1), 0, 'Motion blur override did not take effect');
         if (distanceFieldUpdates)
           assert.equal(run.distanceFieldUpdates.logged.at(-1), run.distanceFieldUpdates.value, 'Distance field update override did not take effect');
-        if (radiosityTemporal)
-          assert.equal(run.radiosityTemporal.logged.at(-1), run.radiosityTemporal.value, 'Lumen radiosity temporal override did not take effect');
         if (mouseSmoothing) {
           const inputMode = await page.evaluate(value => __webEngineRPC('WebMotionBenchmarkControl', 7, value),
             mouseSmoothing === 'off' ? 1 : 0);
