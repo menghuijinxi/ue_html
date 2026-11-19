@@ -397,8 +397,9 @@ try {
         $taskExtraList = Join-Path $taskProjectRoot 'Config/Web/AdditionalCookFiles.json'
         if (Test-Path -LiteralPath $taskExtraList) {
             $taskExtraSources = @()
-            $taskExtraFiles = Get-Content -LiteralPath $taskExtraList -Raw -Encoding UTF8 | ConvertFrom-Json -NoEnumerate
-            if ($taskExtraFiles -isnot [array]) { throw 'Additional Cook files must be a JSON array.' }
+            $taskExtraJson = Get-Content -LiteralPath $taskExtraList -Raw -Encoding UTF8
+            if (-not $taskExtraJson.TrimStart().StartsWith('[')) { throw 'Additional Cook files must be a JSON array.' }
+            $taskExtraFiles = $taskExtraJson | ConvertFrom-Json
             foreach ($relative in $taskExtraFiles) {
                 if ($relative -isnot [string] -or $relative -notmatch '^(?:[\p{L}\p{N}_-][\p{L}\p{N}_.-]*/)*[\p{L}\p{N}_-][\p{L}\p{N}_.-]*$') {
                     throw "Invalid additional Cook file: $relative"
