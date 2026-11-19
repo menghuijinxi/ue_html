@@ -1,5 +1,5 @@
 // Observe allocation lifetimes without retaining GPU resources or changing device features.
-module.exports = function observeGPUResourceMemory() {
+module.exports = function observeGPUResourceMemory(observeTransfers) {
   const state = globalThis.__webGPUMemory = {created: {texture: 0, buffer: 0},
     destroyed: {texture: 0, buffer: 0}, collected: {texture: 0, buffer: 0}, errors: [],
     frames: 0, frameMilliseconds: [], draws: 0, submits: 0};
@@ -39,6 +39,7 @@ module.exports = function observeGPUResourceMemory() {
         (descriptor.dimension === '3d' ? Math.max(1, depth >> mip) : depth) * bytes;
     return total * (descriptor.sampleCount || 1);
   };
+  if (observeTransfers) observeTransfers(textureBytes);
   for (const kind of ['texture', 'buffer']) {
     const method = kind === 'texture' ? 'createTexture' : 'createBuffer';
     const original = GPUDevice.prototype[method];

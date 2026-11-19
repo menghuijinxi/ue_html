@@ -37,6 +37,18 @@ node tests/web-platform/probe-nanite-off-regression.cjs --interactive --interact
 node tests/web-platform/probe-nanite-off-regression.cjs --interactive --interactive-route=living --headed --browser=chrome --modes=candidate,candidate,candidate,candidate --folder=villa-nanite-merged-20261118-raw-mouse --game-frame-clocks=owner,page,page,owner --width=1920 --height=1080 --seconds=24 --tag=villa-living-clock-abba
 ```
 
+## 合并后显存排查
+
+从两个仓库各自的合并第一父提交比较新增的每帧路径。核对当前场景中实际分配的资源、流送更新和 GPU 命令，在同一条客厅移动路线比较每帧数据。浏览器和页面 DPR 取人工反馈的实际值。
+
+```powershell
+node tests/web-platform/probe-nanite-off-regression.cjs --interactive --interactive-route=living --interactive-phases=walk-turn-first --headed --browser=msedge --dpr=1.5 --width=1920 --height=1080 --seconds=24 --gpu-transfers --modes=legacy,candidate,candidate,legacy --baseline-folder=villa-pso-eager-20261117-d/release --folder=villa-nanite-merged-20261118-raw-mouse --tag=villa-living-gpu-transfers
+```
+
+逐轮核对 `naniteIdleBefore/After` 的页池、代理数、更新数和暂存字节。`allocation.groups` 按名称、格式汇总仍可达的 GPU 资源描述符。`transfers` 记录显式复制、上传、清零和映射请求。用 `phase.frames.length` 归一化，未知格式参看 `unknownSize`。`atlasDispatch` 记录计算任务绑定全局距离场图集时的布局权限。实际字节访问、缓存命中及硬件带宽需另行测量。性能验收使用关闭 `--gpu-transfers` 的采样。
+
+要验证距离场图集本身，以上命令去掉 `--gpu-transfers`，改用四个 `candidate`，增加 `--atlas-formats=r8unorm,r32float,r32float,r8unorm`，换一个 `--tag`。两组共用合并包的量化逻辑，启动时按实验格式创建图集和相应的 WebGPU 存储绑定。检查 `run.atlas` 的实际格式和尺寸、预缓存失败数、截图和五段帧节奏。该选项仅用于诊断。要单独检查常规 clipmap 更新，将格式参数换成 `--distance-field-updates=1,0,0,1`，核对引擎启动日志中的实际值。
+
 ## 交付判断
 
 - 逐段比较两组数据，保留每轮数字。平均 FPS、1% Low、长帧和可见抖动分别判断。两轮方向不一致、目标画面抖动无法解释或任一必测项缺失时，将该项标为待验收并写清缺口。

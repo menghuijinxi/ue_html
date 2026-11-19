@@ -52,6 +52,16 @@ assert(!materialPrecaches || (materialPrecaches.length === modes.length && mater
 assert(!nanites || ![packBatches,microBatches,fixedMerges,programmableMerges,shadeBinnings,hierarchyBatches,occlusionBatches,materialPrecaches].some(Boolean),'Isolate the Nanite switch');
 const tour = process.argv.includes('--tour');
 const interactive = process.argv.includes('--interactive');
+const gpuTransfers = process.argv.includes('--gpu-transfers');
+const distanceFieldUpdates = option('distance-field-updates')?.split(',');
+const atlasFormats = option('atlas-formats')?.split(',');
+assert(!atlasFormats || (interactive && !gpuTransfers && !distanceFieldUpdates && atlasFormats.length === modes.length &&
+  modes.every(mode => mode === 'candidate') && atlasFormats.every(format => ['r32float', 'r8unorm'].includes(format))));
+assert(!distanceFieldUpdates || (interactive && distanceFieldUpdates.length === modes.length &&
+  distanceFieldUpdates.every(value => ['0', '1'].includes(value))));
+const dpr = Number(option('dpr') || 1);
+assert(Number.isFinite(dpr) && dpr >= 1 && dpr <= 3);
+assert(!gpuTransfers || interactive, '--gpu-transfers requires an interactive route');
 const pagePacing = process.argv.includes('--page-pacing');
 assert(!pagePacing || interactive, '--page-pacing needs a headed interactive run');
 const frameBudgets = option('frame-budgets')?.split(',').map(Number);
@@ -123,7 +133,7 @@ fs.copyFileSync(__filename, path.join(output, 'source.cjs'));
 if (gpuTimestamps) fs.copyFileSync(require.resolve('./observe-nanite-motion-gpu.cjs'), path.join(output,'gpu-observer.cjs'));
 if (pointOnly) fs.copyFileSync(require.resolve('./diagnose-point-shadow-vsm.cjs'), path.join(output,'point-diagnostic.cjs'));
 const report = {date: new Date().toISOString(), pass: false, source: audit(__filename), origin, runtimeDefaultModes, backendDefaultModes, recordIdleStatus, baselineFolder, hierarchyBatches, occlusionBatches, packBatches, microBatches, fixedMerges, programmableMerges, shadeBinnings, cvarName, cvarValues, nanites, materialPrecaches, walk, tour, interactive, headed, browser, affinity, trace, traceStart, traceSeconds, gpuProbe, gpuTimestamps, pointOnly, width, height, seconds, runs: [],
-  boundary: 'Serial fresh browser contexts at the recorded viewport, DPR 1. Viewport submission intervals, not physical display timestamps. '
+  boundary: `Serial fresh browser contexts at the recorded viewport, DPR ${dpr}. Viewport submission intervals, not physical display timestamps. `
     + 'All intervals retained, including stalls. No-scene changes only the HTML -WebNaniteScene argument of the shipped Nanite-off package. '
     + 'Legacy also has different runtime and Cook, so its difference cannot be assigned to one code change. '
     + (interactive ? 'Headed browser keyboard and mouse input, sampled actual camera poses, and separate idle, first/repeated combined, turn and walk windows. Pass indicates successful capture, not performance acceptance. ' :
@@ -136,6 +146,15 @@ if (occlusionModes) report.boundary += ' Explicit per-run occlusion mode for dia
 if (parallelRecording) report.boundary += ' Explicit per-run draw recording startup flag for diagnosis.';
 if (pagePacing) report.boundary += ' Existing HUD animation-frame and observed update samples, not display timestamps.';
 if (frameBudgets) report.boundary += ' Explicit page clock frame budgets for diagnosis.';
+report.dpr = dpr;
+if (distanceFieldUpdates)
+  report.boundary += ' Explicit r.AOUpdateGlobalDistanceField override for diagnosing scheduled clipmap updates.';
+if (atlasFormats)
+  report.boundary += ' Device-side atlas format experiment. Package files and quantization are unchanged; textures, storage declarations and layout bindings match the selected format. Native UE accounting still describes the shipped format.';
+if (gpuTransfers) {
+  report.gpuTransfers = true;
+  report.boundary += ' Diagnostic API calls and estimated logical copy extents. Excludes shader memory accesses, driver traffic and physical residency. Instrumented FPS is excluded from acceptance.';
+}
 if (interactive) report.interactiveRoute = interactiveRoute;
 if (selectedPhases) {
   report.selectedPhases = selectedPhases;
@@ -277,6 +296,7 @@ async function browserMotion(page, box, seconds, {translate, rotate, livingRoute
       const folder = mode === 'candidate' ? candidateFolder : baselineFolder || (mode === 'legacy' ? 'villa-default-20261107' : 'villa-nanite-off-20261111');
       const run = {index, mode, folder, errors: [], phases: [], assets: []}; report.runs.push(run);
       const motionBlur = motionBlurModes?.[index];
+      if (distanceFieldUpdates) run.distanceFieldUpdates = {value: Number(distanceFieldUpdates[index]), logged: []};
       const mouseSmoothing = mouseSmoothingModes?.[index];
       if (motionBlur) run.motionBlur = {mode: motionBlur, loggedQuality: []};
       if (mouseSmoothing) run.mouseSmoothing = {mode: mouseSmoothing};
@@ -285,7 +305,7 @@ async function browserMotion(page, box, seconds, {translate, rotate, livingRoute
       run.browserProfile = profileNames?.[index] || `${tag}-${index}`;
       const profile = assertProjectOutputTree(path.join(__dirname, 'build/browser-profiles', run.browserProfile));
       const context = await chromium.launchPersistentContext(profile, {
-        channel: browser, headless: !headed, viewport: {width, height}, deviceScaleFactor: 1,
+        channel: browser, headless: !headed, viewport: {width, height}, deviceScaleFactor: dpr,
         downloadsPath: path.join(profile, 'downloads'),
         args: ['--disk-cache-dir=' + path.join(profile, 'http-cache'),
           '--crash-dumps-dir=' + path.join(profile, 'crashes')]});
@@ -348,6 +368,7 @@ async function browserMotion(page, box, seconds, {translate, rotate, livingRoute
             Object.assign(iniSettings, settings);
           }
           if (motionBlur === 'off') iniSettings['r.MotionBlurQuality'] = 0;
+          if (distanceFieldUpdates) iniSettings['r.AOUpdateGlobalDistanceField'] = run.distanceFieldUpdates.value;
           if (Object.keys(iniSettings).length) {
             const marker = "        removeRunDependency('worker-content');";
             assert.equal(body.split(marker).length, 2);
@@ -366,6 +387,8 @@ ${marker}
     if (probe) probe.completed = performance.now();`);
           }
           await route.fulfill({response, body: `(${installObserver.toString()})(${walk}, ${interactive});\n` +
+            (atlasFormats ? `(${require('./diagnostics/villa-distance-field-atlas.cjs')})(${JSON.stringify(atlasFormats[index])});\n` : '') +
+            (gpuTransfers ? `(${require('./web-gpu-memory-observer.cjs')})(${require('./observe-gpu-transfers.cjs')});\n` : '') +
             (pointOnly ? `(${pointDiagnostic.toString()})();\n` : '') +
             (gpuTimestamps ? `(${observeMotionGPU.toString()})(${JSON.stringify({start:gpuStart,end:gpuEnd})});\n` : '') + body});
         });
@@ -383,6 +406,8 @@ ${marker}
           log.write(m.text() + '\n');
           const blurQuality = motionBlur && m.text().match(/Set CVar \[\[r\.MotionBlurQuality:(\d+)\]\]/);
           if (blurQuality) run.motionBlur.loggedQuality.push(Number(blurQuality[1]));
+          const fieldUpdates = distanceFieldUpdates && m.text().match(/Set CVar \[\[r\.AOUpdateGlobalDistanceField:(\d+)\]\]/);
+          if (fieldUpdates) run.distanceFieldUpdates.logged.push(Number(fieldUpdates[1]));
           if (/GPU validation:|Fatal error:|Assertion failed:|DeviceLost/.test(m.text())) run.errors.push(m.text());
         });
         const startupBegin = Date.now();
@@ -414,6 +439,8 @@ ${marker}
           assert.equal(run.parallelRecording.arguments.includes('-WebParallelDrawRecording'), run.parallelRecording.enabled);
         }
         if (motionBlur === 'off') assert.equal(run.motionBlur.loggedQuality.at(-1), 0, 'Motion blur override did not take effect');
+        if (distanceFieldUpdates)
+          assert.equal(run.distanceFieldUpdates.logged.at(-1), run.distanceFieldUpdates.value, 'Distance field update override did not take effect');
         if (mouseSmoothing) {
           const inputMode = await page.evaluate(value => __webEngineRPC('WebMotionBenchmarkControl', 7, value),
             mouseSmoothing === 'off' ? 1 : 0);
@@ -431,7 +458,8 @@ ${marker}
           } while (!(status?.sequence > previous) && Date.now() < deadline);
           assert(status?.sequence > previous); return status;
         };
-        if (recordIdleStatus) run.naniteIdleBefore = await idleStatus();
+        const inspectNanite = recordIdleStatus || (gpuTransfers && mode === 'candidate');
+        if (inspectNanite) run.naniteIdleBefore = await idleStatus();
         if (hierarchyBatches || occlusionBatches || packBatches || microBatches || fixedMerges || programmableMerges || shadeBinnings || materialPrecaches || nanites || cvarName) {
           for(const [values,fn] of [[hierarchyBatches,'WebNaniteHierarchyBatchTest'],[occlusionBatches,'WebNaniteOcclusionBatchTest'],[packBatches,'WebNanitePackBatchTest'],[microBatches,'WebNaniteMicroBatchTest'],[fixedMerges,'WebNaniteFixedMergeTest'],[programmableMerges,'WebNaniteProgrammableMergeTest'],[shadeBinnings,'WebNaniteShadeBinningTest']])
             if(values)assert.equal(await page.evaluate(a => __webEngineRPC(a[0],a[1]), [fn,Number(values[index])]), 1);
@@ -515,6 +543,7 @@ ${marker}
           const traceMark = await owner.evaluate(() => {__naniteOffFrames.times = []; __naniteOffFrames.frames = [];
             __naniteOffFrames.samples = []; __naniteOffFrames.gpu = [];
             const time = performance.now(); performance.mark('UE motion capture begin');
+            globalThis.__webGPUTransferCapture?.start();
             __naniteOffFrames.active = true; return time;});
           const delayedTrace = trace && traceStart ? (async () => {
             assert(traceSeconds > 0 && traceStart + traceSeconds < seconds);
@@ -524,7 +553,10 @@ ${marker}
             await page.waitForTimeout(traceSeconds * 1000); await cdp.send('Tracing.end');
           })() : null;
           const input = await action(); await delayedTrace;
-          const capture = await owner.evaluate(() => {__naniteOffFrames.active = false; return __naniteOffFrames;});
+          const capture = await owner.evaluate(() => {
+            __naniteOffFrames.active = false;
+            return {...__naniteOffFrames, transfers: globalThis.__webGPUTransferCapture?.stop()};
+          });
           const {times} = capture;
           const after = await snapshot();
           if (checkAffinity) (run.affinityAfter ||= []).push(checkAffinity(profile, affinity, false));
@@ -539,6 +571,23 @@ ${marker}
           result.renderMs = (after.stages.renderWorkMilliseconds - before.stages.renderWorkMilliseconds) /
             (after.stages.presented - before.stages.presented);
           const phase = {name, before, after, result, times, traceMark};
+          if (gpuTransfers) {
+            phase.transfers = capture.transfers;
+            assert(phase.transfers.some(row => row.calls && row.bytes > 0), 'No GPU transfers recorded');
+            phase.allocation = await owner.evaluate(() => {
+              const {live, totals, errors} = __webGPUMemorySnapshot();
+              const groups = new Map();
+              for (const {kind, label, format, bytes} of live) {
+                const key = JSON.stringify([kind, label, format]);
+                const row = groups.get(key) || {kind, label, format, count: 0, bytes: 0};
+                ++row.count;
+                row.bytes += bytes || 0;
+                groups.set(key, row);
+              }
+              return {totals, errors, groups: [...groups.values()]};
+            });
+            assert.deepEqual(phase.allocation.errors, []);
+          }
           if (interactive) {
             phase.input = input;
             phase.page = await page.evaluate(() => ({visible: document.visibilityState === 'visible',
@@ -572,7 +621,7 @@ ${marker}
           }
           run.phases.push(phase); save();
           if (interactive) {
-            assert(phase.page.visible && phase.page.focused && Math.abs(phase.page.dpr - 1) < .001,
+            assert(phase.page.visible && phase.page.focused && Math.abs(phase.page.dpr - dpr) < .001,
               'Interactive page lost focus or changed DPR');
             const players = [before.player, ...capture.samples.map(s => s.player), after.player];
             assert(players.every(p => p?.active), `${name}: playable camera lost control`);
@@ -661,6 +710,13 @@ ${marker}
               if (name !== 'walk-turn-first') await reset();
               await measure(name, () => browserMotion(page, box, seconds, {translate, rotate, livingRoute}));
             }
+          }
+          if (inspectNanite) run.naniteIdleAfter = await idleStatus();
+          if (atlasFormats) {
+            run.atlas = await owner.evaluate(() => globalThis.__villaAtlasFormat);
+            assert(run.atlas?.textures.length && run.atlas.shaders && run.atlas.storageGroups);
+            assert(run.atlas.textures.every(texture => texture.format === atlasFormats[index]));
+            assert(run.phases.every(phase => phase.after.optimization.asyncPrecacheFailed === 0));
           }
           run.environmentAfter = await require('./sample-test-environment.cjs')(page);
           await page.screenshot({path:path.join(output, index + '-' + mode + '.png')});
